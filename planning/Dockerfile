@@ -21,6 +21,7 @@ WORKDIR /workspace/ompl/build/Release
 RUN cmake ../.. -DPYTHON_EXEC=/opt/conda/bin/python
 RUN make -j 8 update_bindings
 RUN make -j 8
+RUN make install
 WORKDIR /workspace
 
 # Allow pybullet to connect to the host's display.
