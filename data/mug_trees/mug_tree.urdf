@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="mug.urdf">
+<robot name="mug_tree.urdf">
   <link name="base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -9,7 +9,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="0.stl" scale="1 1 1" />
+        <mesh filename="mug_tree.stl" scale="0.004 0.004 0.004" />
       </geometry>
       <material name="red">
         <color rgba="1 0 0 1"/>
@@ -18,7 +18,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="0_convex.obj" scale="1 1 1" />
+        <mesh filename="mug_tree_convex.obj" scale="0.004 0.004 0.004" />
       </geometry>
     </collision>
   </link>
@@ -26,7 +26,7 @@
   <link name="ap1">
     <visual>
       <geometry>
-        <sphere radius="0.01" />
+        <sphere radius="0.005" />
       </geometry>
     </visual>
   </link>
@@ -34,21 +34,6 @@
   <joint name="base_to_ap1" type="fixed">
     <parent link="base" />
     <child link="ap1" />
-    <origin xyz="0 0.048 0.107" />
+    <origin xyz="0.028 0.05 0.105" />
   </joint>
-
-  <link name="ap2">
-    <visual>
-      <geometry>
-        <sphere radius="0.01" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="base_to_ap2" type="fixed">
-    <parent link="base" />
-    <child link="ap2" />
-    <origin xyz="0.084 0.0 0.055" />
-  </joint>
-
 </robot>
