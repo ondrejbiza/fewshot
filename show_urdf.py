@@ -8,6 +8,7 @@ from pybullet_planning.pybullet_tools import utils as pu
 def main(args):
 
     pu.connect(use_gui=True)
+    pu.set_default_camera(distance=2)
     pu.disable_real_time()
     pu.draw_global_system()
 

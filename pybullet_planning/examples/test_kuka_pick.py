@@ -47,7 +47,6 @@ def main(display='execute'): # control | execute | step
         robot = load_model(DRAKE_IIWA_URDF) # KUKA_IIWA_URDF | DRAKE_IIWA_URDF
         floor = load_model('models/short_floor.urdf')
     block = load_model(BLOCK_URDF, fixed_base=False)
-    set_pose(block, Pose(Point(y=0.5, z=stable_z(block, floor))))
     set_default_camera(distance=2)
     dump_world()
 
