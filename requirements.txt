@@ -11,3 +11,5 @@ pyrealsense2==2.49.0.3474
 opencv-python==4.5.4.58
 open3d==0.14.1
 scikit_image==0.19.3
+trimesh==3.10.7
+pycpd==2.0.0

@@ -1,13 +1,29 @@
 FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 RUN apt update
 # Utilities.
-RUN apt install -y nano git cmake wget htop
+RUN apt install -y nano git cmake wget htop software-properties-common
 
 # Install python packages.
 COPY requirements.txt /workspace
 RUN pip install -r requirements.txt
 
+# Install OpenSCAD.
+RUN add-apt-repository --yes ppa:openscad/releases
+RUN apt install -y openscad
+
+# Install admesh. The prerequisite 'tzdata' has an annoying prompt we need preempt.
+RUN DEBIAN_FRONTEND=noninteractive TZ="America/New_York" apt install -y admesh
+
+# Install an old version of trimesh. Works well for convex decomposition for collision checking.
+COPY prereq/v-hacd/ /workspace/v-hacd/
+WORKDIR /workspace/v-hacd/src
+RUN cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt
+RUN cmake --build .
+RUN cp test/testVHACD /usr/bin/
+WORKDIR /workspace
+
 # Allow pybullet to connect to the host's display.
+# Run `xhost +` on the host machine.
 # docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -it image
 RUN apt install -y libglu1-mesa-dev libgl1-mesa-dri freeglut3-dev mesa-common-dev
 # Insert your nvidia driver version here.
