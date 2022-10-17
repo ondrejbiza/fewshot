@@ -1,0 +1,1 @@
+sudo docker run --privileged --net=host --env="DISPLAY" -v="$HOME/.Xauthority:/root/.Xauthority:rw" -v="/dev/bus/usb:/dev/bus/usb" -v="$HOME/Research/code:/workspace/code:rw" --name=fewshot --gpus all -itd fewshot
