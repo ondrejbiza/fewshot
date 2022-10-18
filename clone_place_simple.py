@@ -23,8 +23,8 @@ def main(args):
 
     with pu.HideOutput():
         floor = pu.load_model('models/short_floor.urdf')
-        mug = pu.load_model("../data/mugs/0.urdf", fixed_base=False)
-        tree = pu.load_model("../data/mug_tree/mug_tree.urdf")
+        mug = pu.load_model("../data/mugs/test/0.urdf")
+        tree = pu.load_model("../data/trees/test/0.urdf")
 
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.2, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
     pu.set_pose(tree, pu.Pose(pu.Point(x=-0.0, y=0.0, z=pu.stable_z(tree, floor))))
@@ -35,7 +35,7 @@ def main(args):
     dbg = dict()
     dbg['target_x'] = pb.addUserDebugParameter('target_x', vmin, vmax, pos[0])
     dbg['target_y'] = pb.addUserDebugParameter('target_y', vmin, vmax, pos[1])
-    dbg['target_z'] = pb.addUserDebugParameter('target_z', vmin, vmax, pos[2])
+    dbg['target_z'] = pb.addUserDebugParameter('target_z', -0.5, 0.5, pos[2])
     dbg['save'] =  pb.addUserDebugParameter('save', 1, 0, 0)
 
     spheres = []

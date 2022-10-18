@@ -13,3 +13,4 @@ open3d==0.14.1
 scikit_image==0.19.3
 trimesh==3.10.7
 pycpd==2.0.0
+h5py-3.7.0

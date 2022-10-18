@@ -1,19 +1,10 @@
 import argparse
 import time
 import os
-import pickle
 import numpy as np
 import pybullet as pb
-import open3d as o3d
-from scipy.special import softmax
-import torch
-from torch import nn
-from torch import optim
 from pybullet_planning.pybullet_tools import kuka_primitives
 from pybullet_planning.pybullet_tools import utils as pu
-import utils
-import viz_utils
-from get_scene import gd, show_scene
 
 
 def read_parameters(dbg_params):
@@ -32,7 +23,7 @@ def main(args):
 
     with pu.HideOutput():
         floor = pu.load_model('models/short_floor.urdf')
-        mug = pu.load_model("../data/mugs/train/0.urdf")
+        mug = pu.load_model("../data/mugs/test/0.urdf")
         point = pu.load_model("../data/sphere.urdf")
 
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.0, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
@@ -59,43 +50,6 @@ def main(args):
             break
 
     pos = np.array(pu.get_pose(point)[0], dtype=np.float32)
-
-    ###
-    canon = {}
-    with open("data/mugs_pca.pkl", "rb") as f:
-        canon[1] = pickle.load(f)
-
-    c, d, s = [], [], []
-    cfgs = utils.RealSenseD415.CONFIG
-    for cfg in cfgs:
-        out = utils.render_camera(cfg)
-        c.append(out[0])
-        d.append(out[1])
-        s.append(out[2])
-
-    pcs, colors = utils.reconstruct_segmented_point_cloud(c, d, s, cfgs, [1])
-    
-    for key in pcs.keys():
-        if len(pcs[key]) > 2000:
-            pcs[key], _ = utils.farthest_point_sample(pcs[key], 2000)
-    
-    filled_pcs = {}
-    filled_pcs[1] = gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
-
-    # show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
-    ###
-
-    prob = 1 / np.sqrt(np.sum(np.square(filled_pcs[1] - pos[None, :]), axis=1))
-    prob /= np.sum(prob)
-
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(filled_pcs[1])
-    color = np.zeros((len(prob), 3), dtype=np.float32)
-    idx = np.argmax(prob)
-    print(idx)
-    color[idx, 1] = 1.
-    pcd.colors = o3d.utility.Vector3dVector(color)
-    utils.o3d_visualize(pcd)
 
     print("Save shape:", pos.shape)
     print(pos)
