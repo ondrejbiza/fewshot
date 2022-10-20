@@ -3,6 +3,7 @@ import time
 import os
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
 import pybullet as pb
 import open3d as o3d
 from scipy.special import softmax
@@ -47,9 +48,6 @@ def main(args):
     dbg['target_z'] = pb.addUserDebugParameter('target_z', vmin, vmax, pos[2])
     dbg['save'] =  pb.addUserDebugParameter('save', 1, 0, 0)
 
-    spheres = []
-
-    i = 0
     while True:
 
         p = read_parameters(dbg)
@@ -60,7 +58,6 @@ def main(args):
 
     pos = np.array(pu.get_pose(point)[0], dtype=np.float32)
 
-    ###
     canon = {}
     with open("data/mugs_pca.pkl", "rb") as f:
         canon[1] = pickle.load(f)
@@ -82,24 +79,31 @@ def main(args):
     filled_pcs = {}
     filled_pcs[1] = gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
 
-    # show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
-    ###
+    bbox = [[np.min(filled_pcs[1][:, 0]), np.max(filled_pcs[1][:, 0])], 
+            [np.min(filled_pcs[1][:, 1]), np.max(filled_pcs[1][:, 1])], 
+            [np.min(filled_pcs[1][:, 2]), np.max(filled_pcs[1][:, 2])]]
+    max_dist = np.max([bbox[0][1] - bbox[0][0], bbox[1][1] - bbox[1][0], bbox[2][1] - bbox[2][0]])
+    dist = np.sqrt(np.sum(np.square(filled_pcs[1] - pos[None, :]), axis=1)) / max_dist
 
-    prob = 1 / np.sqrt(np.sum(np.square(filled_pcs[1] - pos[None, :]), axis=1))
-    prob /= np.sum(prob)
+    plt.subplot(1, 2, 1)
+    plt.hist(dist)
+    
+    temp = np.exp(5)
+    probs = softmax(- dist * temp, axis=0)
+
+    plt.subplot(1, 2, 2)
+    plt.hist(dist)
+
+    plt.show()
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(filled_pcs[1])
-    color = np.zeros((len(prob), 3), dtype=np.float32)
-    idx = np.argmax(prob)
-    print(idx)
-    color[idx, 1] = 1.
+    color = np.zeros((len(probs), 3), dtype=np.float32)
+    color[:, 0] = probs
     pcd.colors = o3d.utility.Vector3dVector(color)
     utils.o3d_visualize(pcd)
 
-    print("Save shape:", pos.shape)
-    print(pos)
-    np.save(args.save_path, pos)
+    np.save(args.save_path, probs)
 
     pu.disconnect()
 
