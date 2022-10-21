@@ -14,12 +14,11 @@ import utils
 import viz_utils
 
 
-def gd(pca, canonical_obj, points):
+def gd(pca, canonical_obj, points, n_angles=10, lr=1e-2, n_steps=100, verbose=False):
 
     start_angles = []
-    num_angles = 10
-    for i in range(num_angles):
-        angle = i * (2 * np.pi / num_angles)
+    for i in range(n_angles):
+        angle = i * (2 * np.pi / n_angles)
         start_angles.append(angle)
 
     global_means = np.mean(points, axis=0)
@@ -31,7 +30,7 @@ def gd(pca, canonical_obj, points):
 
     for trial_idx, start_pose in enumerate(start_angles):
 
-        latent = nn.Parameter(torch.zeros(4, dtype=torch.float32, device=device), requires_grad=True)
+        latent = nn.Parameter(torch.zeros(pca.n_components_, dtype=torch.float32, device=device), requires_grad=True)
         center = nn.Parameter(torch.zeros(3, dtype=torch.float32, device=device), requires_grad=True)
         angle = nn.Parameter(
             torch.tensor([start_pose], dtype=torch.float32, device=device),
@@ -42,9 +41,9 @@ def gd(pca, canonical_obj, points):
         canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
         points_pt = torch.tensor(points, dtype=torch.float32, device=device)
 
-        opt = optim.Adam([latent, center, angle], lr=1e-2)
+        opt = optim.Adam([latent, center, angle], lr=lr)
 
-        for i in range(100):
+        for i in range(n_steps):
 
             opt.zero_grad()
 
@@ -54,6 +53,9 @@ def gd(pca, canonical_obj, points):
             new_obj = canonical_obj_pt + deltas
             # cost = utils.cost_pt(torch.matmul(rot, (points_pt - center[None]).T).T, new_obj)
             cost = utils.cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
+
+            if verbose:
+                print("cost:", cost)
 
             cost.backward()
             opt.step()
@@ -125,7 +127,7 @@ def main(args):
     canon = {}
     with open("data/mugs_pca.pkl", "rb") as f:
         canon[1] = pickle.load(f)
-    with open("data/trees_pca.pkl", "rb") as f:
+    with open("data/trees_pca_8d.pkl", "rb") as f:
         canon[2] = pickle.load(f)
 
     c, d, s = [], [], []
@@ -144,7 +146,7 @@ def main(args):
     
     filled_pcs = {}
     filled_pcs[1] = gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
-    filled_pcs[2] = gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
+    filled_pcs[2] = gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], verbose=True, n_angles=1)
 
     show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
