@@ -25,14 +25,14 @@ WORKDIR /workspace
 # Allow pybullet to connect to the host's display.
 # Run `xhost +` on the host machine.
 # docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -it image
-# RUN apt install -y libglu1-mesa-dev libgl1-mesa-dri freeglut3-dev mesa-common-dev
+RUN apt install -y libglu1-mesa-dev libgl1-mesa-dri freeglut3-dev mesa-common-dev
 # Insert your nvidia driver version here.
-# RUN apt install -y libnvidia-gl-510
-# RUN apt install -y x11-apps
+RUN apt install -y libnvidia-gl-510
+RUN apt install -y x11-apps
 
 # Allow USB connection to a realsense camera.
-# RUN apt -y install libusb-1.0-0-dev
-# RUN apt -y install libglib2.0-0
+RUN apt -y install libusb-1.0-0-dev
+RUN apt -y install libglib2.0-0
 
 # # OMPL (https://github.com/ompl)
 # RUN apt install -y libboost-all-dev
