@@ -14,75 +14,6 @@ import utils
 import viz_utils
 
 
-def gd(pca, canonical_obj, points, n_angles=10, lr=1e-2, n_steps=100, verbose=False):
-
-    start_angles = []
-    for i in range(n_angles):
-        angle = i * (2 * np.pi / n_angles)
-        start_angles.append(angle)
-
-    global_means = np.mean(points, axis=0)
-    points = points - global_means[None]
-
-    all_new_objects = []
-    all_costs = []
-    device = torch.device("cuda:0")
-
-    for trial_idx, start_pose in enumerate(start_angles):
-
-        latent = nn.Parameter(torch.zeros(pca.n_components_, dtype=torch.float32, device=device), requires_grad=True)
-        center = nn.Parameter(torch.zeros(3, dtype=torch.float32, device=device), requires_grad=True)
-        angle = nn.Parameter(
-            torch.tensor([start_pose], dtype=torch.float32, device=device),
-            requires_grad=True
-        )
-        means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
-        components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
-        canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
-        points_pt = torch.tensor(points, dtype=torch.float32, device=device)
-
-        opt = optim.Adam([latent, center, angle], lr=lr)
-
-        for i in range(n_steps):
-
-            opt.zero_grad()
-
-            rot = utils.yaw_to_rot_pt(angle)
-
-            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
-            new_obj = canonical_obj_pt + deltas
-            # cost = utils.cost_pt(torch.matmul(rot, (points_pt - center[None]).T).T, new_obj)
-            cost = utils.cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
-
-            if verbose:
-                print("cost:", cost)
-
-            cost.backward()
-            opt.step()
-
-        with torch.no_grad():
-
-            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
-            rot = utils.yaw_to_rot_pt(angle)
-            new_obj = canonical_obj_pt + deltas
-            new_obj = torch.matmul(rot, new_obj.T).T
-            new_obj = new_obj + center[None]
-            new_obj = new_obj.cpu().numpy()
-
-            # pcd = o3d.geometry.PointCloud()
-            # pcd.points = o3d.utility.Vector3dVector(np.concatenate([points_pt.cpu().numpy(), new_obj], axis=0))
-            # pcd.colors = o3d.utility.Vector3dVector(np.concatenate([np.zeros_like(points_pt.cpu().numpy()) + 0.9, np.zeros_like(new_obj)], axis=0))
-            # utils.o3d_visualize(pcd)
-
-            new_obj = new_obj + global_means[None]
-
-        all_costs.append(cost.item())
-        all_new_objects.append(new_obj)
-
-    print(all_costs)
-    return all_new_objects[np.argmin(all_costs)]
-
-
 def show_scene(point_clouds, background=None):
 
     colors = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=np.float32)
@@ -145,8 +76,8 @@ def main(args):
             pcs[key], _ = utils.farthest_point_sample(pcs[key], 2000)
     
     filled_pcs = {}
-    filled_pcs[1] = gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
-    filled_pcs[2] = gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], verbose=True, n_angles=1)
+    filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]
+    filled_pcs[2] = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1)[0]
 
     show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 

@@ -1,7 +1,12 @@
+from typing import Tuple, Dict
 import numpy as np
+from numpy.typing import NDArray
+from sklearn.decomposition import PCA
 import pybullet as pb
 import open3d as o3d
 import torch
+from torch import nn
+from torch import optim
 
 
 class RealSenseD415():
@@ -141,7 +146,7 @@ def transform_pointcloud(points, transform):
   return points
 
 
-def reconstruct_segmented_point_cloud(color, depth, segm, configs, object_ids):
+def reconstruct_segmented_point_cloud(color, depth, segm, configs, object_ids) -> Tuple[Dict[int, NDArray], Dict[int, NDArray]]:
 
   object_points = {object_id: [] for object_id in object_ids}
   object_colors = {object_id: [] for object_id in object_ids}
@@ -277,3 +282,120 @@ def cost_pt(source, target):
     diff = torch.sqrt(torch.sum(torch.square(source[:, None] - target[None, :]), dim=2))
     c = diff[list(range(len(diff))), torch.argmin(diff, dim=1)]
     return torch.mean(c)
+
+
+def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArray]:
+    '''
+    https://github.com/ClayFlannigan/icp/blob/master/icp.py
+    Calculates the least-squares best-fit transform that maps corresponding points A to B in m spatial dimensions
+    Input:
+      A: Nxm numpy array of corresponding points
+      B: Nxm numpy array of corresponding points
+    Returns:
+      T: (m+1)x(m+1) homogeneous transformation matrix that maps A on to B
+      R: mxm rotation matrix
+      t: mx1 translation vector
+    '''
+
+    assert A.shape == B.shape
+
+    # get number of dimensions
+    m = A.shape[1]
+
+    # translate points to their centroids
+    centroid_A = np.mean(A, axis=0)
+    centroid_B = np.mean(B, axis=0)
+    AA = A - centroid_A
+    BB = B - centroid_B
+
+    # rotation matrix
+    H = np.dot(AA.T, BB)
+    U, S, Vt = np.linalg.svd(H)
+    R = np.dot(Vt.T, U.T)
+
+    # special reflection case
+    if np.linalg.det(R) < 0:
+       Vt[m-1,:] *= -1
+       R = np.dot(Vt.T, U.T)
+
+    # translation
+    t = centroid_B.T - np.dot(R,centroid_A.T)
+
+    # homogeneous transformation
+    T = np.identity(m+1)
+    T[:m, :m] = R
+    T[:m, m] = t
+
+    return T, R, t
+
+
+def planar_pose_warp_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+                        lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+    # find planar pose and warping parameters of a canonical object to match a target point cloud
+    start_angles = []
+    for i in range(n_angles):
+        angle = i * (2 * np.pi / n_angles)
+        start_angles.append(angle)
+
+    global_means = np.mean(points, axis=0)
+    points = points - global_means[None]
+
+    all_new_objects = []
+    all_costs = []
+    all_parameters = []
+    device = torch.device(device)
+
+    for trial_idx, start_pose in enumerate(start_angles):
+
+        latent = nn.Parameter(torch.zeros(pca.n_components, dtype=torch.float32, device=device), requires_grad=True)
+        center = nn.Parameter(torch.zeros(3, dtype=torch.float32, device=device), requires_grad=True)
+        angle = nn.Parameter(
+            torch.tensor([start_pose], dtype=torch.float32, device=device),
+            requires_grad=True
+        )
+        means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
+        components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
+        canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
+        points_pt = torch.tensor(points, dtype=torch.float32, device=device)
+
+        opt = optim.Adam([latent, center, angle], lr=lr)
+
+        for i in range(n_steps):
+
+            opt.zero_grad()
+
+            rot = yaw_to_rot_pt(angle)
+
+            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
+            new_obj = canonical_obj_pt + deltas
+            # cost = utils.cost_pt(torch.matmul(rot, (points_pt - center[None]).T).T, new_obj)
+            cost = cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
+
+            if verbose:
+                print("cost:", cost)
+
+            cost.backward()
+            opt.step()
+
+        with torch.no_grad():
+
+            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
+            rot = yaw_to_rot_pt(angle)
+            new_obj = canonical_obj_pt + deltas
+            new_obj = torch.matmul(rot, new_obj.T).T
+            new_obj = new_obj + center[None]
+            new_obj = new_obj.cpu().numpy()
+
+            # pcd = o3d.geometry.PointCloud()
+            # pcd.points = o3d.utility.Vector3dVector(np.concatenate([points_pt.cpu().numpy(), new_obj], axis=0))
+            # pcd.colors = o3d.utility.Vector3dVector(np.concatenate([np.zeros_like(points_pt.cpu().numpy()) + 0.9, np.zeros_like(new_obj)], axis=0))
+            # utils.o3d_visualize(pcd)
+
+            new_obj = new_obj + global_means[None]
+
+            all_costs.append(cost.item())
+            all_new_objects.append(new_obj)
+            all_parameters.append((latent.cpu().numpy(), center.cpu().numpy(), angle.cpu().numpy()))
+
+    best_idx = np.argmin(all_costs)
+    return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]

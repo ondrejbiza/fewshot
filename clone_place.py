@@ -1,9 +1,11 @@
 import argparse
 import time
 import os
+import pickle
 import numpy as np
 import pybullet as pb
 from pybullet_planning.pybullet_tools import utils as pu
+import utils
 
 
 def read_parameters(dbg_params):
@@ -26,7 +28,7 @@ def main(args):
         tree = pu.load_model("../data/trees/test/0.urdf")
 
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.2, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
-    pu.set_pose(tree, pu.Pose(pu.Point(x=-0.0, y=0.0, z=pu.stable_z(tree, floor))))
+    pu.set_pose(tree, pu.Pose(pu.Point(x=0.0, y=0.0, z=pu.stable_z(tree, floor))))
 
     pos = pu.get_pose(mug)[0]
 
@@ -40,6 +42,7 @@ def main(args):
     spheres = []
 
     i = 0
+    cols = None
     while True:
 
         p = read_parameters(dbg)
@@ -64,18 +67,51 @@ def main(args):
 
         i += 1
 
-        if p['save'] > 0:
+        if p['save'] > 0 and cols is not None:
             break
 
-    out = [col[5] for col in cols]
-    out = np.stack(out, axis=0).astype(np.float32)
+    pos_1 = [col[5] for col in cols]
+    pos_2 = [col[6] for col in cols]
 
-    pos = pu.get_pose(mug)[0]
-    out = out - np.array(pos)[None]
+    pos_1 = np.stack(pos_1, axis=0).astype(np.float32)
+    pos_2 = np.stack(pos_2, axis=0).astype(np.float32)
 
-    print("Save shape:", out.shape)
-    print(out)
-    np.save(args.save_path, out)
+    canon = {}
+    with open("data/mugs_pca.pkl", "rb") as f:
+        canon[1] = pickle.load(f)
+    with open("data/trees_pca_8d.pkl", "rb") as f:
+        canon[2] = pickle.load(f)
+
+    c, d, s = [], [], []
+    cfgs = utils.RealSenseD415.CONFIG
+    for cfg in cfgs:
+        out = utils.render_camera(cfg)
+        c.append(out[0])
+        d.append(out[1])
+        s.append(out[2])
+
+    pcs, colors = utils.reconstruct_segmented_point_cloud(c, d, s, cfgs, [1, 2])
+    
+    for key in pcs.keys():
+        if len(pcs[key]) > 2000:
+            pcs[key], _ = utils.farthest_point_sample(pcs[key], 2000)
+    
+    filled_pcs = {}
+    filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]
+    filled_pcs[2] = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1)[0]
+
+    dist_1 = np.sqrt(np.sum(np.square(filled_pcs[1][:, None] - pos_1[None]), axis=2))
+    dist_2 = np.sqrt(np.sum(np.square(filled_pcs[2][:, None] - pos_2[None]), axis=2))
+
+    i_1 = np.argmin(dist_1, axis=0).transpose()
+    i_2 = np.argmin(dist_2, axis=0).transpose()
+
+    # i_1 for mug contacts, i_2 for tree contacts
+    indices = np.stack([i_1, i_2], axis=0)
+
+    print("Save shape:", indices.shape)
+    print(indices)
+    np.save(args.save_path, indices)
 
     pu.disconnect()
 

@@ -3,7 +3,6 @@ import time
 import os
 import numpy as np
 import pybullet as pb
-from pybullet_planning.pybullet_tools import kuka_primitives
 from pybullet_planning.pybullet_tools import utils as pu
 
 

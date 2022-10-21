@@ -10,11 +10,9 @@ from scipy.special import softmax
 import torch
 from torch import nn
 from torch import optim
-from pybullet_planning.pybullet_tools import kuka_primitives
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
 import viz_utils
-from get_scene import gd, show_scene
 
 
 def read_parameters(dbg_params):
@@ -77,7 +75,7 @@ def main(args):
             pcs[key], _ = utils.farthest_point_sample(pcs[key], 2000)
     
     filled_pcs = {}
-    filled_pcs[1] = gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
+    filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]
 
     bbox = [[np.min(filled_pcs[1][:, 0]), np.max(filled_pcs[1][:, 0])], 
             [np.min(filled_pcs[1][:, 1]), np.max(filled_pcs[1][:, 1])], 
