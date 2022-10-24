@@ -82,19 +82,7 @@ def main(args):
     with open("data/trees_pca_8d.pkl", "rb") as f:
         canon[2] = pickle.load(f)
 
-    c, d, s = [], [], []
-    cfgs = utils.RealSenseD415.CONFIG
-    for cfg in cfgs:
-        out = utils.render_camera(cfg)
-        c.append(out[0])
-        d.append(out[1])
-        s.append(out[2])
-
-    pcs, colors = utils.reconstruct_segmented_point_cloud(c, d, s, cfgs, [1, 2])
-    
-    for key in pcs.keys():
-        if len(pcs[key]) > 2000:
-            pcs[key], _ = utils.farthest_point_sample(pcs[key], 2000)
+    pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [1, 2])
     
     filled_pcs = {}
     filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]

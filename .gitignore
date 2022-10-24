@@ -1,5 +1,6 @@
-# custp,
+# custom
 .vscode
+.lcov
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

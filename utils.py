@@ -1,4 +1,4 @@
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List, Any, Optional
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA
@@ -180,6 +180,27 @@ def reconstruct_segmented_point_cloud(color, depth, segm, configs, object_ids) -
   return object_points, object_colors
 
 
+def observe_point_cloud(
+  camera_configs: List[Any], object_ids: List[int], n_points: Optional[int]=2000
+) -> Tuple[Dict[int, NDArray], Dict[int, NDArray]]:
+
+  c, d, s = [], [], []
+  for cfg in camera_configs:
+    out = render_camera(cfg)
+    c.append(out[0])
+    d.append(out[1])
+    s.append(out[2])
+
+  pcs, colors = reconstruct_segmented_point_cloud(c, d, s, camera_configs, object_ids)
+  
+  for key in pcs.keys():
+    if n_points is not None and len(pcs[key]) > n_points:
+      pcs[key], indices = farthest_point_sample(pcs[key], 2000)
+      colors[key] = colors[key][indices]  # TODO: test
+
+  return pcs, colors
+
+
 def farthest_point_sample(point, npoint):
   # https://github.com/yanx27/Pointnet_Pointnet2_pytorch
   """
@@ -253,7 +274,22 @@ def s2s2_batch_inverse(rot):
     return rot[:, 0], rot[:, 1]
 
 
-def yaw_to_rot_pt(yaw):
+def yaw_to_rot(yaw: NDArray) -> NDArray:
+
+    c = np.cos(yaw)
+    s = np.sin(yaw)
+
+    t0 = np.zeros(1)
+    t1 = np.ones(1)
+
+    return np.stack([
+        np.concatenate([c, -s, t0]),
+        np.concatenate([s, c, t0]),
+        np.concatenate([t0, t0, t1])
+    ], axis=0)
+
+
+def yaw_to_rot_pt(yaw: torch.Tensor) -> torch.Tensor:
 
     c = torch.cos(yaw)
     s = torch.sin(yaw)
@@ -396,6 +432,69 @@ def planar_pose_warp_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, devic
             all_costs.append(cost.item())
             all_new_objects.append(new_obj)
             all_parameters.append((latent.cpu().numpy(), center.cpu().numpy(), angle.cpu().numpy()))
+
+    best_idx = np.argmin(all_costs)
+    return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def planar_pose_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+                   lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+    # find planar pose and warping parameters of a canonical object to match a target point cloud
+    assert n_angles > 0 and n_steps > 0
+
+    start_angles = []
+    for i in range(n_angles):
+        angle = i * (2 * np.pi / n_angles)
+        start_angles.append(angle)
+
+    global_means = np.mean(points, axis=0)
+    points = points - global_means[None]
+
+    all_new_objects = []
+    all_costs = []
+    all_parameters = []
+    device = torch.device(device)
+
+    for trial_idx, start_pose in enumerate(start_angles):
+
+        center = nn.Parameter(torch.zeros(3, dtype=torch.float32, device=device), requires_grad=True)
+        angle = nn.Parameter(
+            torch.tensor([start_pose], dtype=torch.float32, device=device),
+            requires_grad=True
+        )
+        means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
+        components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
+        canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
+        points_pt = torch.tensor(points, dtype=torch.float32, device=device)
+
+        opt = optim.Adam([center, angle], lr=lr)
+
+        for i in range(n_steps):
+
+            opt.zero_grad()
+
+            rot = yaw_to_rot_pt(angle)
+
+            cost = cost_pt(points_pt, torch.matmul(rot, canonical_obj_pt.T).T + center[None])
+
+            if verbose:
+                print("cost:", cost)
+
+            cost.backward()
+            opt.step()
+
+        with torch.no_grad():
+
+            rot = yaw_to_rot_pt(angle)
+            new_obj = torch.matmul(rot, canonical_obj_pt.T).T
+            new_obj = new_obj + center[None]
+            new_obj = new_obj.cpu().numpy()
+
+            new_obj = new_obj + global_means[None]
+
+            all_costs.append(cost.item())
+            all_new_objects.append(new_obj)
+            all_parameters.append((center.cpu().numpy(), angle.cpu().numpy()))
 
     best_idx = np.argmin(all_costs)
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
