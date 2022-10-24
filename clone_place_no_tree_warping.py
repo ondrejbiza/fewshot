@@ -8,13 +8,6 @@ from pybullet_planning.pybullet_tools import utils as pu
 import utils
 
 
-def read_parameters(dbg_params):
-    values = dict()
-    for name, param in dbg_params.items():
-        values[name] = pb.readUserDebugParameter(param)
-    return values
-
-
 def main(args):
 
     pu.connect(use_gui=True, show_sliders=True)
@@ -25,7 +18,7 @@ def main(args):
     with pu.HideOutput():
         floor = pu.load_model('models/short_floor.urdf')
         mug = pu.load_model("../data/mugs/test/0.urdf")
-        tree = pu.load_model("../data/trees/test/0.urdf")
+        tree = pu.load_model("../data/simple_trees/train/0.urdf")
 
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.2, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
     pu.set_pose(tree, pu.Pose(pu.Point(x=0.0, y=0.0, z=pu.stable_z(tree, floor))))
@@ -45,14 +38,15 @@ def main(args):
     cols = None
     while True:
 
-        p = read_parameters(dbg)
+        p = utils.read_parameters(dbg)
         pu.set_pose(mug, pu.Pose(pu.Point(p['target_x'], p['target_y'], p['target_z'])))
 
         if i > 5e+5:
             i = 0
             pb.performCollisionDetection()
 
-            cols = pb.getContactPoints(mug, tree)
+            # cols = pb.getContactPoints(mug, tree)
+            cols = pb.getClosestPoints(mug, tree, 0.005)
 
             for s in spheres:
                 pu.remove_body(s)
@@ -79,14 +73,14 @@ def main(args):
     canon = {}
     with open("data/mugs_pca.pkl", "rb") as f:
         canon[1] = pickle.load(f)
-    with open("data/trees_pca_8d.pkl", "rb") as f:
+    with open("data/simple_trees_pca.pkl", "rb") as f:
         canon[2] = pickle.load(f)
 
     pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [1, 2])
     
     filled_pcs = {}
     filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]
-    filled_pcs[2] = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1)[0]
+    filled_pcs[2] = utils.planar_pose_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1)[0]
 
     dist_1 = np.sqrt(np.sum(np.square(filled_pcs[1][:, None] - pos_1[None]), axis=2))
     dist_2 = np.sqrt(np.sum(np.square(filled_pcs[2][:, None] - pos_2[None]), axis=2))

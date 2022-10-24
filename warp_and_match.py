@@ -64,7 +64,7 @@ def main(args):
     canon = {}
     with open("data/mugs_pca.pkl", "rb") as f:
         canon[1] = pickle.load(f)
-    with open("data/trees_pca_8d.pkl", "rb") as f:
+    with open("data/simple_trees_pca.pkl", "rb") as f:
         canon[2] = pickle.load(f)
 
     latent_1 = interpolate_pca(canon[1]["pca"], canon[1]["canonical_obj"], indices[0])

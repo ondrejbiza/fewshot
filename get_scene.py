@@ -1,17 +1,10 @@
 import argparse
-import time
-import os
 import pickle
 import numpy as np
-import pybullet as pb
 import open3d as o3d
-import torch
-from torch import nn
-from torch import optim
-from pybullet_planning.pybullet_tools import kuka_primitives
+
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
-import viz_utils
 
 
 def show_scene(point_clouds, background=None):
@@ -49,8 +42,8 @@ def main(args):
 
     with pu.HideOutput():
         floor = pu.load_model('models/short_floor.urdf')
-        mug = pu.load_model("../data/mugs/test/0.urdf")
-        tree = pu.load_model("../data/trees/test/0.urdf")
+        mug = pu.load_model("../data/mugs/test/{:d}.urdf".format(args.mug_index))
+        tree = pu.load_model("../data/simple_trees/test/{:d}.urdf".format(args.tree_index))
 
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.2, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
     pu.set_pose(tree, pu.Pose(pu.Point(x=-0.0, y=0.0, z=pu.stable_z(tree, floor))))
@@ -58,26 +51,14 @@ def main(args):
     canon = {}
     with open("data/mugs_pca.pkl", "rb") as f:
         canon[1] = pickle.load(f)
-    with open("data/trees_pca_8d.pkl", "rb") as f:
+    with open("data/simple_trees_pca.pkl", "rb") as f:
         canon[2] = pickle.load(f)
 
-    c, d, s = [], [], []
-    cfgs = utils.RealSenseD415.CONFIG
-    for cfg in cfgs:
-        out = utils.render_camera(cfg)
-        c.append(out[0])
-        d.append(out[1])
-        s.append(out[2])
-
-    pcs, colors = utils.reconstruct_segmented_point_cloud(c, d, s, cfgs, [1, 2])
-    
-    for key in pcs.keys():
-        if len(pcs[key]) > 2000:
-            pcs[key], _ = utils.farthest_point_sample(pcs[key], 2000)
+    pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [1, 2])
     
     filled_pcs = {}
     filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]
-    filled_pcs[2] = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1)[0]
+    filled_pcs[2] = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1, object_size_reg=0.1)[0]
 
     show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
@@ -86,4 +67,6 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--mug-index", type=int, default=0)
+    parser.add_argument("-t", "--tree-index", type=int, default=0)
     main(parser.parse_args())

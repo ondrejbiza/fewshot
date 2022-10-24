@@ -313,6 +313,13 @@ def o3d_visualize(pcd):
     vis.destroy_window()
 
 
+def read_parameters(dbg_params):
+    values = dict()
+    for name, param in dbg_params.items():
+        values[name] = pb.readUserDebugParameter(param)
+    return values
+
+
 def cost_pt(source, target):
 
     diff = torch.sqrt(torch.sum(torch.square(source[:, None] - target[None, :]), dim=2))
@@ -365,8 +372,10 @@ def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArra
     return T, R, t
 
 
-def planar_pose_warp_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
-                        lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+def planar_pose_warp_gd(
+  pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+  lr: float=1e-2, n_steps: int=100, object_size_reg: Optional[float]=None, verbose: bool=False
+) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
     # find planar pose and warping parameters of a canonical object to match a target point cloud
     start_angles = []
     for i in range(n_angles):
@@ -407,6 +416,10 @@ def planar_pose_warp_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, devic
             # cost = utils.cost_pt(torch.matmul(rot, (points_pt - center[None]).T).T, new_obj)
             cost = cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
 
+            if object_size_reg is not None:
+              size = torch.max(torch.sqrt(torch.sum(torch.square(new_obj), dim=1)))
+              cost = cost + object_size_reg * size
+
             if verbose:
                 print("cost:", cost)
 
@@ -438,7 +451,7 @@ def planar_pose_warp_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, devic
 
 
 def planar_pose_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
-                   lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+                   lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray]]:
     # find planar pose and warping parameters of a canonical object to match a target point cloud
     assert n_angles > 0 and n_steps > 0
 

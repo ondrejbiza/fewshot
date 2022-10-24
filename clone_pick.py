@@ -12,14 +12,6 @@ from torch import nn
 from torch import optim
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
-import viz_utils
-
-
-def read_parameters(dbg_params):
-    values = dict()
-    for name, param in dbg_params.items():
-        values[name] = pb.readUserDebugParameter(param)
-    return values
 
 
 def main(args):
@@ -48,7 +40,7 @@ def main(args):
 
     while True:
 
-        p = read_parameters(dbg)
+        p = utils.read_parameters(dbg)
         pu.set_pose(point, pu.Pose(pu.Point(p['target_x'], p['target_y'], p['target_z'])))
 
         if p['save'] > 0:
