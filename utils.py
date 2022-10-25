@@ -304,6 +304,15 @@ def yaw_to_rot_pt(yaw: torch.Tensor) -> torch.Tensor:
     ], dim=0)
 
 
+def create_o3d_pointcloud(points: NDArray, colors: Optional[NDArray]=None):
+
+  pcd = o3d.geometry.PointCloud()
+  pcd.points = o3d.utility.Vector3dVector(points)
+  if colors is not None:
+    pcd.colors = o3d.utility.Vector3dVector(colors)
+  return pcd
+
+
 def o3d_visualize(pcd):
 
     vis = o3d.visualization.Visualizer()
@@ -320,7 +329,7 @@ def read_parameters(dbg_params):
     return values
 
 
-def cost_pt(source, target):
+def cost_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
     diff = torch.sqrt(torch.sum(torch.square(source[:, None] - target[None, :]), dim=2))
     c = diff[list(range(len(diff))), torch.argmin(diff, dim=1)]
