@@ -29,32 +29,27 @@ def main(args):
     info = PANDA_INFO
     tool_link = pu.link_from_name(robot, "panda_hand")
     ik_joints = get_ik_joints(robot, info, tool_link)
+
+    f1 = pu.joint_from_name(robot, "panda_finger_joint1")
+    f2 = pu.joint_from_name(robot, "panda_finger_joint2")
+    ik_joints = ik_joints + [f1, f2]
+
+    conf = pu.get_joint_positions(robot, ik_joints)
     pos, quat = pu.get_link_pose(robot, tool_link)
     print("Link position:", pos)
     print("Link orientation:", quat)
 
-    vmin, vmax = -2, 2
     dbg = dict()
-    dbg['target_x'] = pb.addUserDebugParameter('target_x', vmin, vmax, pos[0])
-    dbg['target_y'] = pb.addUserDebugParameter('target_y', vmin, vmax, pos[1])
-    dbg['target_z'] = pb.addUserDebugParameter('target_z', vmin, vmax, pos[2])
+    for i in range(len(ik_joints)):
+        vmin, vmax = pu.get_joint_limits(robot, ik_joints[i])
+        dbg['joint_{:d}'.format(i)] = pb.addUserDebugParameter('joint_{:d}'.format(i), vmin, vmax, conf[i])
     dbg['close'] =  pb.addUserDebugParameter('close', 1, 0, 0)
 
     while True:
 
         p = utils.read_parameters(dbg)
-        pos = pu.Point(p['target_x'], p['target_y'], p['target_z'])
-
-        end_pose = pos, quat
-        # TODO: max_distance, max_candidates?
-        conf = next(either_inverse_kinematics(
-            robot, info, tool_link, end_pose, max_distance=pu.INF,
-            max_time=0.05, max_candidate=pu.INF, use_pybullet=False
-        ), None)
-        print("# Conf:", conf)
-
-        if conf is not None:
-            pu.set_joint_positions(robot, ik_joints, conf)
+        conf = [p['joint_{:d}'.format(i)] for i in range(len(ik_joints))]
+        pu.set_joint_positions(robot, ik_joints, conf)
 
         if p['close'] > 0:
             break
