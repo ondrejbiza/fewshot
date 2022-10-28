@@ -8,6 +8,8 @@ import torch
 from torch import nn
 from torch import optim
 
+from pybullet_planning.pybullet_tools import utils as pu
+
 
 class RealSenseD415():
   """Default configuration with 3 RealSense RGB-D cameras."""
@@ -520,3 +522,13 @@ def planar_pose_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: st
 
     best_idx = np.argmin(all_costs)
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def move_hand_back(pose: Tuple[NDArray, NDArray], delta: float) -> Tuple[NDArray, NDArray]:
+
+    pos, quat = pose
+    rot = pu.matrix_from_quat(quat)
+    vec = np.array([0., 0., delta], dtype=np.float32)
+    vec = np.matmul(rot, vec)
+    pos = pos - vec
+    return pos, quat
