@@ -79,14 +79,15 @@ def main(args):
     robot.execute_path(path)
     robot.close_hand()
 
-    # TODO: get picked object.
-    # https://github.com/ColinKohler/BulletArm/blob/cb744b4212b9c0049c6801ba82805a0eaa07d8c7/bulletarm/pybullet/robots/robot_base.py#L68
+    print("Picked object:", robot.get_picked_object([mug]))
 
     pu.wait_if_gui()
 
     pose = robot.init_tool_pos, pu.get_link_pose(robot.robot, robot.tool_link)[1]
     path = robot.plan_motion(pose, [])
     robot.execute_path(path)
+
+    print("Picked object:", robot.get_picked_object([mug]))
 
     pu.wait_if_gui()
 

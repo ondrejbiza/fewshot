@@ -110,6 +110,21 @@ class Robot:
 
         return path
 
+    def get_picked_object(self, objects: List[int]) -> Optional[int]:
+        """Find an object that the robot is holding."""
+        if len(objects) == 0:
+            return None
+
+        for obj in objects:
+            # check the contact force normal to count the horizontal contact points
+            contact_points = pb.getContactPoints(self.robot, obj)
+            # TODO: what is this?
+            horizontal = list(filter(lambda p: abs(p[7][2]) < 0.3, contact_points))
+            if len(horizontal) >= 2:
+                return obj
+
+        return None
+
     def open_hand(self):
         conf1 = pu.get_joint_positions(self.robot, self.fingers)
         conf2 = [pu.get_joint_limits(self.robot, finger)[1] for finger in self.fingers]
