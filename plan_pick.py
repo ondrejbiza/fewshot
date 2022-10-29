@@ -3,23 +3,9 @@ import pickle
 import numpy as np
 
 from pybullet_planning.pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, FRANKA_URDF
-from pybullet_planning.pybullet_tools.ikfast.ikfast import get_ik_joints, either_inverse_kinematics
 from pybullet_planning.pybullet_tools import utils as pu
-from robot import Robot, Panda
+from robot import Panda
 import utils
-
-
-def get_franka_finger_joints(robot):
-
-    f1 = pu.joint_from_name(robot, "panda_finger_joint1")
-    f2 = pu.joint_from_name(robot, "panda_finger_joint2")
-    return f1, f2  # left and right
-
-
-def open_fingers(robot, fingers):
-
-    # TODO: do this incrementally
-    pu.set_joint_positions(robot, fingers, (0.04, 0.04))
 
 
 def main(args):

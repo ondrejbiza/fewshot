@@ -110,7 +110,7 @@ def render_camera(config):
     return color, depth, segm
 
 
-def get_pointcloud(depth, intrinsics):
+def get_pointcloud(depth: NDArray, intrinsics: NDArray) -> NDArray:
   """Get 3D pointcloud from perspective depth image.
 
   Args:
@@ -203,7 +203,7 @@ def observe_point_cloud(
   return pcs, colors
 
 
-def farthest_point_sample(point, npoint):
+def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray]:
   # https://github.com/yanx27/Pointnet_Pointnet2_pytorch
   """
   Input:
