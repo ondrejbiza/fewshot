@@ -75,12 +75,18 @@ def main(args):
     pu.wait_if_gui()
 
     # path = robot.plan_grasp(pose, 0.1, [mug])
-    path = robot.plan_grasp_naive(pose, 0.1)
+    path = robot.plan_grasp_naive(pose, 0.09)
     robot.execute_path(path)
     robot.close_hand()
 
     # TODO: get picked object.
     # https://github.com/ColinKohler/BulletArm/blob/cb744b4212b9c0049c6801ba82805a0eaa07d8c7/bulletarm/pybullet/robots/robot_base.py#L68
+
+    pu.wait_if_gui()
+
+    pose = robot.init_tool_pos, pu.get_link_pose(robot.robot, robot.tool_link)[1]
+    path = robot.plan_motion(pose, [])
+    robot.execute_path(path)
 
     pu.wait_if_gui()
 
