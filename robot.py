@@ -1,3 +1,4 @@
+from re import M
 from typing import Tuple, Dict, List, Any, Optional
 from dataclasses import dataclass
 import collections
@@ -89,7 +90,7 @@ class Robot:
         return path
 
     def plan_motion(
-        self, pose: Tuple[NDArray, NDArray], obstacles: List[int]
+        self, pose: Tuple[NDArray, NDArray], obstacles: List[int], attachments: List[pu.Attachment]=[]
     ) -> List[Tuple[float, ...]]:
         """Get joint configuration for hand pose and plan a collision free path."""
 
@@ -103,7 +104,8 @@ class Robot:
 
         #saved_world.restore()
 
-        path = pu.plan_joint_motion(self.robot, self.ik_joints, conf, obstacles=obstacles)
+        path = pu.plan_joint_motion(
+            self.robot, self.ik_joints, conf, obstacles=obstacles, attachments=attachments)
         assert path is not None
 
         saved_world.restore()

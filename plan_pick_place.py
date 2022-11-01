@@ -10,6 +10,32 @@ from robot import Panda
 import utils
 
 
+def show_scene(point_clouds, background=None):
+    import open3d as o3d
+    colors = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=np.float32)
+
+    points = []
+    point_colors = []
+
+    for i, key in enumerate(sorted(point_clouds.keys())):
+        points.append(point_clouds[key])
+        point_colors.append(np.tile(colors[i][None, :], (len(points[-1]), 1)))
+
+    points = np.concatenate(points, axis=0).astype(np.float32)
+    point_colors = np.concatenate(point_colors, axis=0)
+
+    if background is not None:
+        points = np.concatenate([points, background], axis=0)
+        background_colors = np.zeros_like(background)
+        background_colors[:] = 0.9
+        point_colors = np.concatenate([point_colors, background_colors], axis=0)
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(points)
+    pcd.colors = o3d.utility.Vector3dVector(point_colors)
+    utils.o3d_visualize(pcd)
+
+
 def main(args):
 
     # setup sim and robot
@@ -31,7 +57,7 @@ def main(args):
     robot = Panda(robot=robot_id)
 
     mug = pu.load_model("../data/mugs/test/0.urdf", fixed_base=False)
-    tree = pu.load_model("../data/simple_trees/test/0.urdf", fixed_base=False)
+    tree = pu.load_model("../data/simple_trees/test/0.urdf", fixed_base=True)
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.4, y=0.3, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., np.pi / 4)))
     pu.set_pose(tree, pu.Pose(pu.Point(x=-0.4, y=0.3, z=pu.stable_z(tree, floor))))
     objects = [mug, tree]
@@ -55,6 +81,8 @@ def main(args):
     # fit canonical objects to observed point clouds
     new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
     new_obj_2, _, _ = utils.planar_pose_warp_gd(canon[3]["pca"], canon[3]["canonical_obj"], pcs[3], n_angles=1, object_size_reg=0.1)
+    filled_pcs = {2: new_obj_1, 3: new_obj_2}
+    show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
     # get grasp
     position = new_obj_1[pick_indices]
@@ -87,6 +115,9 @@ def main(args):
 
     pu.wait_if_gui()
 
+    pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [2, 3])
+    new_obj_1, _, params_1 = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
+
     points_1 = new_obj_1[place_indices[0]]
     points_2 = new_obj_2[place_indices[1]]
 
@@ -102,22 +133,52 @@ def main(args):
     mug_pos = np.array(mug_pos, dtype=np.float32)
     mug_rot = np.array(pb.getMatrixFromQuaternion(mug_rot), dtype=np.float32).reshape((3, 3))
     
+    # W to mug
     mug_T = np.concatenate([mug_rot, mug_pos[:, None]], axis=1)
     mug_T = np.concatenate([mug_T, np.array([[0., 0., 0., 1.]])], axis=0)
+
+    # W to mug PC
+    mug_pc_T = np.concatenate([utils.yaw_to_rot(params_1[2]), params_1[1][:, None]], axis=1)
+    mug_pc_T = np.concatenate([mug_T, np.array([[0., 0., 0., 1.]])], axis=0)
+
     print("Original mug spatial transform:")
     print(mug_T)
 
     # get a new mug pose
-    new_mug_T = np.matmul(T, mug_T)
-    print("New mug spatial transform:")
-    print(new_mug_T)
+    # new_mug_T = np.matmul(T, mug_T)
+    # print("New mug spatial transform:")
+    # print(new_mug_T)
+
+    w_t_g = pu.get_link_pose(robot.robot, robot.tool_link)
+    w_t_g = np.concatenate([pu.matrix_from_quat(w_t_g[1]), np.array(w_t_g[0], dtype=np.float32)[:, None]], axis=1)
+    w_t_g = np.concatenate([w_t_g, np.array([[0., 0., 0., 1.]])], axis=0)
+
+    # w_t_g^-1 w_t_m
+    g_t_m = np.matmul(np.linalg.inv(w_t_g), mug_T)
+    g_t_m_pos = g_t_m[:3, 3]
+    g_t_m_quat = pu.quat_from_matrix(g_t_m[:3, :3])
+
+    new_mug_T = np.matmul(T, w_t_g)
 
     # make pose pybullet compatible
     new_mug_rot = new_mug_T[:3, :3]
     new_mug_pos = new_mug_T[:3, 3]
     new_mug_quat= Rotation.from_matrix(new_mug_rot).as_quat()
 
-    pu.set_pose(mug, (new_mug_pos, new_mug_quat))
+    pose = (new_mug_pos, new_mug_quat)
+
+    mug_attach = pu.Attachment(robot.robot, robot.tool_link, (g_t_m_pos, g_t_m_quat), mug)
+
+    conf = robot.plan_motion(pose, obstacles=[tree], attachments=[mug_attach])
+    pu.set_joint_positions(robot.robot, robot.ik_joints, conf)
+    mug_attach.assign()
+    import time ; time.sleep(100)
+
+    path = robot.plan_motion(pose, obstacles=[tree], attachments=[mug_attach])
+    robot.execute_path(path)
+    robot.open_hand()
+
+    # pu.set_pose(mug, (new_mug_pos, new_mug_quat))
 
     pu.wait_if_gui()
     pu.disconnect()

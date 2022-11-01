@@ -40,6 +40,7 @@ def main(args):
 
     # get registered points on the warped canonical object
     indices = np.load(args.load_path)
+    print("Indices:", indices)
 
     points_1 = new_obj_1[indices[0]]
     points_2 = new_obj_2[indices[1]]
@@ -77,6 +78,6 @@ def main(args):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("load_path")
-parser.add_argument("-m", "--mug-index", type=int, default=1)
-parser.add_argument("-t", "--tree-index", type=int, default=1)
+parser.add_argument("-m", "--mug-index", type=int, default=0)
+parser.add_argument("-t", "--tree-index", type=int, default=0)
 main(parser.parse_args())
