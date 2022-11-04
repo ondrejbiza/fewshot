@@ -13,7 +13,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="0.stl" scale="1 1 1" />
+        <mesh filename="0_convex.obj" scale="1 1 1" />
       </geometry>
       <material name="red">
         <color rgba="1 0 0 1"/>

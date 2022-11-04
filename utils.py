@@ -9,6 +9,7 @@ from torch import nn
 from torch import optim
 
 from pybullet_planning.pybullet_tools import utils as pu
+from exceptions import PlanningError
 
 
 class RealSenseD415():
@@ -532,3 +533,28 @@ def move_hand_back(pose: Tuple[NDArray, NDArray], delta: float) -> Tuple[NDArray
     vec = np.matmul(rot, vec)
     pos = pos - vec
     return pos, quat
+
+
+def wiggle(source_obj: int, target_obj: int, max_tries: int=100000) -> Tuple[NDArray, NDArray]:
+  """Wiggle the source object out of a collision with the target object.
+  
+  Important: this function will change the state of the world and we assume
+  the world was saved before and will be restored after.
+  """
+  i = 0
+  pos, quat = pu.get_pose(source_obj)
+  while True:
+
+    new_pos = pos + np.random.normal(0, 0.015, 3)
+    pu.set_pose(source_obj, (new_pos, quat))
+
+    pb.performCollisionDetection()
+    in_collision = pu.body_collision(source_obj, target_obj)
+    if not in_collision:
+      break
+
+    i += 1
+    if i > max_tries:
+      raise PlanningError("Could not wiggle object out of collision.")
+
+  return new_pos, quat

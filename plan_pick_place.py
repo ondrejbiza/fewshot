@@ -82,7 +82,7 @@ def main(args):
     new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
     new_obj_2, _, _ = utils.planar_pose_warp_gd(canon[3]["pca"], canon[3]["canonical_obj"], pcs[3], n_angles=1, object_size_reg=0.1)
     filled_pcs = {2: new_obj_1, 3: new_obj_2}
-    show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
+    # show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
     # get grasp
     position = new_obj_1[pick_indices]
@@ -90,13 +90,13 @@ def main(args):
 
     pose = pu.Pose(position, pu.Euler(roll=np.pi))
 
-    pu.wait_if_gui()
+    # pu.wait_if_gui()
 
     path = robot.plan_grasp(pose, 0.15, objects)
     robot.execute_path(path)
     robot.open_hand()
 
-    pu.wait_if_gui()
+    # pu.wait_if_gui()
 
     # path = robot.plan_grasp(pose, 0.1, [mug])
     path = robot.plan_grasp_naive(pose, 0.09)
@@ -105,7 +105,7 @@ def main(args):
 
     print("Picked object:", robot.get_picked_object(objects))
 
-    pu.wait_if_gui()
+    # pu.wait_if_gui()
 
     pose = robot.init_tool_pos, pu.get_link_pose(robot.robot, robot.tool_link)[1]
     path = robot.plan_motion(pose, [])
@@ -113,33 +113,26 @@ def main(args):
 
     print("Picked object:", robot.get_picked_object(objects))
 
-    pu.wait_if_gui()
+    # pu.wait_if_gui()
 
     pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [2, 3])
-    new_obj_1, _, params_1 = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
+    new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
 
     points_1 = new_obj_1[place_indices[0]]
     points_2 = new_obj_2[place_indices[1]]
 
     # find best pair-wise fit
-    # TODO: I want the target position and orientation here
-    # Therefore, I need to get the estimated pose of the mug PC and multiply with the inverse.
-    T, R, t = utils.best_fit_transform(points_1, points_2)
+    p1_to_p2, _, _ = utils.best_fit_transform(points_1, points_2)
     print("Best fit spatial transform:")
-    print(T)
+    print(p1_to_p2)
 
     # create a spatial transformation matrix for the mug
     mug_pos, mug_rot = pu.get_pose(mug)
     mug_pos = np.array(mug_pos, dtype=np.float32)
-    mug_rot = np.array(pb.getMatrixFromQuaternion(mug_rot), dtype=np.float32).reshape((3, 3))
+    mug_rot = pu.matrix_from_quat(mug_rot)
     
-    # W to mug
     mug_T = np.concatenate([mug_rot, mug_pos[:, None]], axis=1)
     mug_T = np.concatenate([mug_T, np.array([[0., 0., 0., 1.]])], axis=0)
-
-    # W to mug PC
-    mug_pc_T = np.concatenate([utils.yaw_to_rot(params_1[2]), params_1[1][:, None]], axis=1)
-    mug_pc_T = np.concatenate([mug_T, np.array([[0., 0., 0., 1.]])], axis=0)
 
     print("Original mug spatial transform:")
     print(mug_T)
@@ -149,30 +142,54 @@ def main(args):
     # print("New mug spatial transform:")
     # print(new_mug_T)
 
-    w_t_g = pu.get_link_pose(robot.robot, robot.tool_link)
-    w_t_g = np.concatenate([pu.matrix_from_quat(w_t_g[1]), np.array(w_t_g[0], dtype=np.float32)[:, None]], axis=1)
-    w_t_g = np.concatenate([w_t_g, np.array([[0., 0., 0., 1.]])], axis=0)
+    hand_T = pu.get_link_pose(robot.robot, robot.tool_link)
+    hand_T = np.concatenate([pu.matrix_from_quat(hand_T[1]), np.array(hand_T[0], dtype=np.float32)[:, None]], axis=1)
+    hand_T = np.concatenate([hand_T, np.array([[0., 0., 0., 1.]])], axis=0)
 
     # w_t_g^-1 w_t_m
-    g_t_m = np.matmul(np.linalg.inv(w_t_g), mug_T)
+    g_t_m = np.matmul(np.linalg.inv(hand_T), mug_T)
+    print("g_t_m:", g_t_m)
     g_t_m_pos = g_t_m[:3, 3]
     g_t_m_quat = pu.quat_from_matrix(g_t_m[:3, :3])
 
-    new_mug_T = np.matmul(T, w_t_g)
+    new_hand_T = np.matmul(p1_to_p2, hand_T)
+    print("new_hand_T:", new_hand_T)
 
     # make pose pybullet compatible
+    new_hand_rot = new_hand_T[:3, :3]
+    new_hand_pos = new_hand_T[:3, 3]
+    new_hand_quat = pu.quat_from_matrix(new_hand_rot)
+
+    new_mug_T = np.matmul(p1_to_p2, mug_T)
     new_mug_rot = new_mug_T[:3, :3]
     new_mug_pos = new_mug_T[:3, 3]
-    new_mug_quat= Rotation.from_matrix(new_mug_rot).as_quat()
+    new_mug_quat = pu.quat_from_matrix(new_mug_rot)
 
-    pose = (new_mug_pos, new_mug_quat)
+    pose = (new_hand_pos, new_hand_quat)
+
+    save = pu.WorldSaver()
+    pu.set_pose(mug, (new_mug_pos, new_mug_quat))
+    import time ; time.sleep(5)
+    pose = utils.wiggle(mug, tree)
+    pu.set_pose(mug, pose)
+    print("In collision:", pu.body_collision(mug, tree))
+    # import time ; time.sleep(100)
+    save.restore()
 
     mug_attach = pu.Attachment(robot.robot, robot.tool_link, (g_t_m_pos, g_t_m_quat), mug)
 
-    conf = robot.plan_motion(pose, obstacles=[tree], attachments=[mug_attach])
+    # conf = robot.plan_motion(pose, obstacles=[tree], attachments=[mug_attach])
+    conf = robot.ik(pose)
     pu.set_joint_positions(robot.robot, robot.ik_joints, conf)
     mug_attach.assign()
-    import time ; time.sleep(100)
+
+    print("In collision:", pu.body_collision(mug, tree))
+
+    # pu.step_simulation()
+    # cols = pb.getContactPoints(mug, tree)
+    # print("Num colissions:", len(cols))
+
+    # import time ; time.sleep(100)
 
     path = robot.plan_motion(pose, obstacles=[tree], attachments=[mug_attach])
     robot.execute_path(path)

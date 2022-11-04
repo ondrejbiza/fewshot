@@ -78,11 +78,7 @@ class Robot:
         """Get joint configuration for hand pose and simply interpolate it."""
         approach_pose = utils.move_hand_back(pose, delta)
 
-        conf2 = next(ikf.either_inverse_kinematics(
-            self.robot, self.info, self.tool_link, approach_pose, max_distance=pu.INF,
-            max_time=1., max_attempts=pu.INF, use_pybullet=False
-        ), None)
-        assert conf2 is not None
+        conf2 = self.ik(approach_pose)
 
         conf1 = pu.get_joint_positions(self.robot, self.ik_joints)
         path = [conf1, conf2]
@@ -93,16 +89,9 @@ class Robot:
         self, pose: Tuple[NDArray, NDArray], obstacles: List[int], attachments: List[pu.Attachment]=[]
     ) -> List[Tuple[float, ...]]:
         """Get joint configuration for hand pose and plan a collision free path."""
+        conf = self.ik(pose)
 
         saved_world = pu.WorldSaver()
-
-        conf = next(ikf.either_inverse_kinematics(
-            self.robot, self.info, self.tool_link, pose, max_distance=pu.INF,
-            max_time=1., max_attempts=pu.INF, use_pybullet=False
-        ), None)
-        assert conf is not None
-
-        #saved_world.restore()
 
         path = pu.plan_joint_motion(
             self.robot, self.ik_joints, conf, obstacles=obstacles, attachments=attachments)
@@ -111,6 +100,15 @@ class Robot:
         saved_world.restore()
 
         return path
+
+    def ik(self, pose: Tuple[NDArray, NDArray]) -> Tuple[float, ...]:
+
+        conf = next(ikf.either_inverse_kinematics(
+            self.robot, self.info, self.tool_link, pose, max_distance=pu.INF,
+            max_time=1., max_attempts=pu.INF, use_pybullet=False
+        ), None)
+        assert conf is not None
+        return conf
 
     def get_picked_object(self, objects: List[int]) -> Optional[int]:
         """Find an object that the robot is holding."""
