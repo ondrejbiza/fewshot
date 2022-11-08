@@ -6,6 +6,7 @@ import numpy as np
 import pybullet as pb
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
+import viz_utils
 
 
 def main(args):
@@ -20,6 +21,7 @@ def main(args):
         mug = pu.load_model("../data/mugs/test/0.urdf")
         tree = pu.load_model("../data/simple_trees/test/0.urdf")
 
+    # TODO: Let's make an actual workspace.
     pu.set_pose(mug, pu.Pose(pu.Point(x=0.2, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
     pu.set_pose(tree, pu.Pose(pu.Point(x=0.0, y=0.0, z=pu.stable_z(tree, floor))))
 
@@ -41,7 +43,7 @@ def main(args):
         p = utils.read_parameters(dbg)
         pu.set_pose(mug, pu.Pose(pu.Point(p['target_x'], p['target_y'], p['target_z'])))
 
-        if i > 5e+5:
+        if i > 5e+5:  # Update once in a while.
             i = 0
             pb.performCollisionDetection()
 
@@ -79,21 +81,30 @@ def main(args):
     pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [1, 2])
     
     filled_pcs = {}
-    filled_pcs[1] = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])[0]
-    filled_pcs[2] = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1, object_size_reg=0.1)[0]
+    filled_pcs[1], _, param_1 = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
+    filled_pcs[2], _, param_2 = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1, object_size_reg=0.1)
 
-    dist_1 = np.sqrt(np.sum(np.square(filled_pcs[1][:, None] - pos_1[None]), axis=2))
+    T1 = np.concatenate([utils.yaw_to_rot(param_1[2]), param_1[1][:, None]], axis=1)
+    T1 = np.concatenate([T1, np.array([[0., 0., 0., 1.]])], axis=0)
+
+    tmp = np.concatenate([pos_2, np.ones_like(pos_2)[:, 0: 1]], axis=1)
+    vp = np.matmul(np.linalg.inv(T1), tmp.T).T
+    vp /= vp[:, -1][:, None]
+    vp = vp[:, :-1]
+
+    tmp = {k: v for k, v in filled_pcs.items()}
+    tmp[3] = vp
+    viz_utils.show_scene(tmp, background=np.concatenate(list(pcs.values())))
+
     dist_2 = np.sqrt(np.sum(np.square(filled_pcs[2][:, None] - pos_2[None]), axis=2))
 
-    i_1 = np.argmin(dist_1, axis=0).transpose()
     i_2 = np.argmin(dist_2, axis=0).transpose()
 
-    # i_1 for mug contacts, i_2 for tree contacts
-    indices = np.stack([i_1, i_2], axis=0)
-
-    print("Save shape:", indices.shape)
-    print(indices)
-    np.save(args.save_path, indices)
+    with open(args.save_path, "wb") as f:
+        pickle.dump({
+            "source_positions": vp,
+            "target_indices": i_2
+        }, f)
 
     pu.disconnect()
 

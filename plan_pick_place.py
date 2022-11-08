@@ -8,32 +8,7 @@ from pybullet_planning.pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, 
 from pybullet_planning.pybullet_tools import utils as pu
 from robot import Panda
 import utils
-
-
-def show_scene(point_clouds, background=None):
-    import open3d as o3d
-    colors = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=np.float32)
-
-    points = []
-    point_colors = []
-
-    for i, key in enumerate(sorted(point_clouds.keys())):
-        points.append(point_clouds[key])
-        point_colors.append(np.tile(colors[i][None, :], (len(points[-1]), 1)))
-
-    points = np.concatenate(points, axis=0).astype(np.float32)
-    point_colors = np.concatenate(point_colors, axis=0)
-
-    if background is not None:
-        points = np.concatenate([points, background], axis=0)
-        background_colors = np.zeros_like(background)
-        background_colors[:] = 0.9
-        point_colors = np.concatenate([point_colors, background_colors], axis=0)
-
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(points)
-    pcd.colors = o3d.utility.Vector3dVector(point_colors)
-    utils.o3d_visualize(pcd)
+import viz_utils
 
 
 def main(args):
@@ -64,9 +39,8 @@ def main(args):
 
     # get registered points on the warped canonical object
     pick_indices = np.load(args.pick_path)
-    place_indices = np.load(args.place_path)
-    print("Pick index:", pick_indices)
-    print("Place indices:", place_indices)
+    with open(args.place_path, "rb") as f:
+        place_data = pickle.load(f)
 
     # get a point cloud
     pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [2, 3])
@@ -82,7 +56,7 @@ def main(args):
     new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
     new_obj_2, _, _ = utils.planar_pose_warp_gd(canon[3]["pca"], canon[3]["canonical_obj"], pcs[3], n_angles=1, object_size_reg=0.1)
     filled_pcs = {2: new_obj_1, 3: new_obj_2}
-    # show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
+    viz_utils.show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
     # get grasp
     position = new_obj_1[pick_indices]
@@ -118,6 +92,7 @@ def main(args):
     pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [2, 3])
     new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2])
 
+    # TODO: ...
     points_1 = new_obj_1[place_indices[0]]
     points_2 = new_obj_2[place_indices[1]]
 

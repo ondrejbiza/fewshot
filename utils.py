@@ -316,15 +316,6 @@ def create_o3d_pointcloud(points: NDArray, colors: Optional[NDArray]=None):
   return pcd
 
 
-def o3d_visualize(pcd):
-
-    vis = o3d.visualization.Visualizer()
-    vis.create_window()
-    vis.add_geometry(pcd)
-    vis.run()
-    vis.destroy_window()
-
-
 def read_parameters(dbg_params):
     values = dict()
     for name, param in dbg_params.items():

@@ -35,20 +35,37 @@ def main(args):
         canon[2] = pickle.load(f)
 
     # fit canonical objects to observed point clouds
-    new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
+    new_obj_1, _, param_1 = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
     new_obj_2, _, _ = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1, object_size_reg=0.1)
 
-    # get registered points on the warped canonical object
-    indices = np.load(args.load_path)
-    print("Indices:", indices)
+    T = np.concatenate([utils.yaw_to_rot(param_1[2]), param_1[1][:, None]], axis=1)
+    T = np.concatenate([T, np.array([[0., 0., 0., 1.]])], axis=0)
 
-    points_1 = new_obj_1[indices[0]]
-    points_2 = new_obj_2[indices[1]]
+    # get registered points on the warped canonical object
+    with open(args.load_path, "rb") as f:
+        place_data = pickle.load(f)
+
+    source_positions = place_data["source_positions"]
+    target_indices = place_data["target_indices"]
+
+    k = 10
+    dists = np.sum(np.square(canon[1]["canonical_obj"] - source_positions), axis=1)
+    knn = np.argpartition(dists, k)[:k]
+    print("knn shape:", knn.shape)
+    deltas = source_positions[None] - canon[1]["canonical_obj"][knn]
+    # TODO: Need to rotate the deltas, etc. Or do something else.
+
+    points_2 = new_obj_2[target_indices]
+
+    tmp = np.concatenate([source_positions, np.ones_like(source_positions)[:, 0: 1]], axis=1)
+    vp = np.matmul(T, tmp.T).T
+    vp /= vp[:, -1][:, None]
+    vp = vp[:, :-1]
 
     # find best pair-wise fit
-    p1_to_p2, _, _ = utils.best_fit_transform(points_1, points_2)
+    vp_to_p2, _, _ = utils.best_fit_transform(vp, points_2)
     print("Best fit spatial transform:")
-    print(p1_to_p2)
+    print(vp_to_p2)
 
     # create a spatial transformation matrix for the mug
     mug_pos, mug_rot = pu.get_pose(mug)
@@ -61,7 +78,7 @@ def main(args):
     print(mug_T)
 
     # get a new mug pose
-    new_mug_T = np.matmul(mug_T, p1_to_p2)
+    new_mug_T = np.matmul(mug_T, vp_to_p2)
     print("New mug spatial transform:")
     print(new_mug_T)
 
@@ -76,10 +93,10 @@ def main(args):
     pb.performCollisionDetection()
     print("In collision:", pu.body_collision(mug, tree))
 
-    save = pu.WorldSaver()
-    pos, quat = utils.wiggle(mug, tree)
-    save.restore()
-    pu.set_pose(mug, (pos, quat))
+    # save = pu.WorldSaver()
+    # pos, quat = utils.wiggle(mug, tree)
+    # save.restore()
+    # pu.set_pose(mug, (pos, quat))
 
     pb.performCollisionDetection()
     print("In collision:", pu.body_collision(mug, tree))
