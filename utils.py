@@ -536,7 +536,7 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000) -> Tuple[NDA
   pos, quat = pu.get_pose(source_obj)
   while True:
 
-    new_pos = pos + np.random.normal(0, 0.015, 3)
+    new_pos = pos + np.random.normal(0, 0.01, 3)
     pu.set_pose(source_obj, (new_pos, quat))
 
     pb.performCollisionDetection()

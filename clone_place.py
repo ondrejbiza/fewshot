@@ -3,10 +3,37 @@ import time
 import os
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
 import pybullet as pb
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
 import viz_utils
+
+
+def get_knn_and_deltas(obj, vps):
+
+    k = 10
+    # [n_pairs, n_points, 3]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection="3d")
+    ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color="red", alpha=0.1)
+    ax.scatter(vps[:, 0], vps[:, 1], vps[:, 2], color="green")
+    plt.show()
+
+    dists = np.sum(np.square(obj[None] - vps[:, None]), axis=-1)
+    knn_list = []
+    deltas_list = []
+
+    for i in range(dists.shape[0]):
+        knn = np.argpartition(dists[i], k)[:k]
+        deltas = vps[i: i + 1] - obj[knn]
+        knn_list.append(knn)
+        deltas_list.append(deltas)
+
+    knn_list = np.stack(knn_list)
+    deltas_list = np.stack(deltas_list)
+    return knn_list, deltas_list
 
 
 def main(args):
@@ -55,7 +82,7 @@ def main(args):
             spheres = []
 
             for col in cols:
-                pos = col[5]
+                pos = col[6]
                 with pu.HideOutput():
                     s = pu.load_model("../data/sphere.urdf")
                     pu.set_pose(s, pu.Pose(pu.Point(*pos)))
@@ -87,14 +114,14 @@ def main(args):
     T1 = np.concatenate([utils.yaw_to_rot(param_1[2]), param_1[1][:, None]], axis=1)
     T1 = np.concatenate([T1, np.array([[0., 0., 0., 1.]])], axis=0)
 
+    vp = pos_2
+
+    knns, deltas = get_knn_and_deltas(filled_pcs[1], vp)
+
     tmp = np.concatenate([pos_2, np.ones_like(pos_2)[:, 0: 1]], axis=1)
     vp = np.matmul(np.linalg.inv(T1), tmp.T).T
-    vp /= vp[:, -1][:, None]
+    vp /= vp[:, -1:]
     vp = vp[:, :-1]
-
-    tmp = {k: v for k, v in filled_pcs.items()}
-    tmp[3] = vp
-    viz_utils.show_scene(tmp, background=np.concatenate(list(pcs.values())))
 
     dist_2 = np.sqrt(np.sum(np.square(filled_pcs[2][:, None] - pos_2[None]), axis=2))
 
@@ -102,7 +129,8 @@ def main(args):
 
     with open(args.save_path, "wb") as f:
         pickle.dump({
-            "source_positions": vp,
+            "knns": knns,
+            "deltas": deltas,
             "target_indices": i_2
         }, f)
 
