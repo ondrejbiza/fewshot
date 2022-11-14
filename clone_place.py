@@ -1,13 +1,21 @@
 import argparse
+from typing import List
 import time
 import os
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 import pybullet as pb
+
 from pybullet_planning.pybullet_tools import utils as pu
+from pybullet_planning.pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, FRANKA_URDF
 import utils
 import viz_utils
+import exceptions
+
+WORKSPACE_LOW = np.array([0.25, -0.5, 0.], dtype=np.float32)
+# TODO: what to do with the z-axis?
+WORKSPACE_HIGH = np.array([0.75, 0.5, 0.28], dtype=np.float32)
 
 
 def get_knn_and_deltas(obj, vps):
@@ -36,28 +44,13 @@ def get_knn_and_deltas(obj, vps):
     return knn_list, deltas_list
 
 
-def main(args):
-
-    pu.connect(use_gui=True, show_sliders=True)
-    pu.set_default_camera(distance=2)
-    pu.disable_real_time()
-    pu.draw_global_system()
-
-    with pu.HideOutput():
-        floor = pu.load_model('models/short_floor.urdf')
-        mug = pu.load_model("../data/mugs/test/0.urdf")
-        tree = pu.load_model("../data/simple_trees/test/0.urdf")
-
-    # TODO: Let's make an actual workspace.
-    pu.set_pose(mug, pu.Pose(pu.Point(x=0.2, y=0.0, z=pu.stable_z(mug, floor)), pu.Euler(0., 0., 0.)))
-    pu.set_pose(tree, pu.Pose(pu.Point(x=0.0, y=0.0, z=pu.stable_z(tree, floor))))
+def record_place(mug, tree):
 
     pos = pu.get_pose(mug)[0]
 
-    vmin, vmax = -0.2, 0.2
     dbg = dict()
-    dbg['target_x'] = pb.addUserDebugParameter('target_x', vmin, vmax, pos[0])
-    dbg['target_y'] = pb.addUserDebugParameter('target_y', vmin, vmax, pos[1])
+    dbg['target_x'] = pb.addUserDebugParameter('target_x', WORKSPACE_LOW[0], WORKSPACE_HIGH[0], pos[0])
+    dbg['target_y'] = pb.addUserDebugParameter('target_y', WORKSPACE_LOW[1], WORKSPACE_HIGH[1], pos[1])
     dbg['target_z'] = pb.addUserDebugParameter('target_z', -0.5, 0.5, pos[2])
     dbg['save'] =  pb.addUserDebugParameter('save', 1, 0, 0)
 
@@ -75,7 +68,7 @@ def main(args):
             pb.performCollisionDetection()
 
             # cols = pb.getContactPoints(mug, tree)
-            cols = pb.getClosestPoints(mug, tree, 0.005)
+            cols = pb.getClosestPoints(mug, tree, 0.01)
 
             for s in spheres:
                 pu.remove_body(s)
@@ -99,31 +92,54 @@ def main(args):
     pos_1 = np.stack(pos_1, axis=0).astype(np.float32)
     pos_2 = np.stack(pos_2, axis=0).astype(np.float32)
 
+    return pos_1, pos_2
+
+
+def main(args):
+
+    pu.connect(use_gui=True, show_sliders=True)
+    pu.set_default_camera(distance=2)
+    pu.disable_real_time()
+    pu.draw_global_system()
+
+    with pu.HideOutput():
+        floor = pu.load_model("models/short_floor.urdf", fixed_base=True)
+        robot = pu.load_model(FRANKA_URDF, fixed_base=True)
+
+        mug = pu.load_model("../data/mugs/test/0.urdf")
+        pu.set_pose(mug, pu.Pose(pu.Point(x=0.5, y=-0.25, z=pu.stable_z(mug, floor))))
+
+        tree = pu.load_model("../data/simple_trees/test/0.urdf", fixed_base=True)
+        pu.set_pose(tree, pu.Pose(pu.Point(x=0.5, y=0.25, z=pu.stable_z(tree, floor))))
+
+    pos_1, pos_2 = record_place(mug, tree)
+
     canon = {}
     with open("data/mugs_pca.pkl", "rb") as f:
-        canon[1] = pickle.load(f)
+        canon[mug] = pickle.load(f)
     with open("data/simple_trees_pca.pkl", "rb") as f:
-        canon[2] = pickle.load(f)
+        canon[tree] = pickle.load(f)
 
-    pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [1, 2])
+    pcs, _ = utils.observe_point_cloud(utils.RealSenseD415.CONFIG, [mug, tree])
     
     filled_pcs = {}
-    filled_pcs[1], _, param_1 = utils.planar_pose_warp_gd(canon[1]["pca"], canon[1]["canonical_obj"], pcs[1])
-    filled_pcs[2], _, param_2 = utils.planar_pose_warp_gd(canon[2]["pca"], canon[2]["canonical_obj"], pcs[2], n_angles=1, object_size_reg=0.1)
+    filled_pcs[mug], _, param_1 = utils.planar_pose_warp_gd(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
+    filled_pcs[tree], _, param_2 = utils.planar_pose_warp_gd(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree], n_angles=1, object_size_reg=0.1)
+    viz_utils.show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
     T1 = np.concatenate([utils.yaw_to_rot(param_1[2]), param_1[1][:, None]], axis=1)
     T1 = np.concatenate([T1, np.array([[0., 0., 0., 1.]])], axis=0)
 
     vp = pos_2
 
-    knns, deltas = get_knn_and_deltas(filled_pcs[1], vp)
+    knns, deltas = get_knn_and_deltas(filled_pcs[mug], vp)
 
     tmp = np.concatenate([pos_2, np.ones_like(pos_2)[:, 0: 1]], axis=1)
     vp = np.matmul(np.linalg.inv(T1), tmp.T).T
     vp /= vp[:, -1:]
     vp = vp[:, :-1]
 
-    dist_2 = np.sqrt(np.sum(np.square(filled_pcs[2][:, None] - pos_2[None]), axis=2))
+    dist_2 = np.sqrt(np.sum(np.square(filled_pcs[tree][:, None] - pos_2[None]), axis=2))
 
     i_2 = np.argmin(dist_2, axis=0).transpose()
 

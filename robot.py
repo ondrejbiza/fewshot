@@ -161,7 +161,7 @@ class Robot:
 
     def execute_path_motors(self, path: List[Tuple[float, ...]], fingers: bool=False, max_it: int=1000):
         """Execute a path by sending a position control command for each segment."""
-        maxlen =5
+        maxlen = 5
 
         if fingers:
             joints = self.fingers

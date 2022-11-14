@@ -9,7 +9,7 @@ from torch import nn
 from torch import optim
 
 from pybullet_planning.pybullet_tools import utils as pu
-from exceptions import PlanningError
+from exceptions import PlanningError, EnvironmentSetupError
 
 
 class RealSenseD415():
@@ -549,3 +549,57 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000) -> Tuple[NDA
       raise PlanningError("Could not wiggle object out of collision.")
 
   return new_pos, quat
+
+
+def place_object(object: int, floor: int, placed_objects: List[int], 
+                 workspace_low: NDArray, workspace_high: NDArray,
+                 min_distance_between_objects: float=0.2, max_tries: int=10001):
+
+    n_tries = 0
+
+    while True:
+
+        n_tries += 1
+        if n_tries == max_tries:
+            raise EnvironmentSetupError("Cannot place an object.")
+
+        # TODO: first rotate the object
+
+        # set random position
+        x = np.random.uniform(workspace_low[0], workspace_high[0])
+        y = np.random.uniform(workspace_low[1], workspace_high[1])
+        pu.set_pose(object, pu.Pose(pu.Point(x=x, y=y, z=pu.stable_z(object, floor))))
+
+        # get bbox
+        bbox_min, bbox_max = pb.getAABB(object)
+
+        # check if objects overlap
+        overlapping = pb.getOverlappingObjects(bbox_min, bbox_max)
+        flag = False
+        for pair in overlapping:
+            tmp = pair[0]
+            if tmp != object and tmp != floor:
+                flag = True
+                break
+        if flag:
+            # print("Objects are overlapping.")
+            continue
+
+        # check for minimum distance between objects
+        flag = False
+        for tmp in placed_objects:
+            tmp_x, tmp_y = pu.get_pose(tmp)[0][:2]
+            l2 = np.sqrt((x - tmp_x)**2 + (y - tmp_y)**2)
+            if l2 < min_distance_between_objects:
+                flag = True
+        if flag:
+            # print("Objects too close.")
+            continue
+
+        # check if the object is out of bounds
+        if (bbox_min[0] < workspace_low[0] or bbox_min[1] < workspace_low[1] or
+            bbox_max[0] > workspace_high[0] or bbox_max[1] > workspace_high[1]):
+            # print("Object bbox outside of bounds.")
+            continue
+
+        break
