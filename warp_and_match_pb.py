@@ -10,6 +10,10 @@ from pybullet_planning.pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, 
 import utils
 import viz_utils
 
+WORKSPACE_LOW = np.array([0.25, -0.5, 0.], dtype=np.float32)
+# TODO: what to do with the z-axis?
+WORKSPACE_HIGH = np.array([0.75, 0.5, 0.28], dtype=np.float32)
+
 
 def setup_scene(mug_index, tree_index):
 
@@ -23,11 +27,15 @@ def setup_scene(mug_index, tree_index):
         floor = pu.load_model("models/short_floor.urdf", fixed_base=True)
         robot = pu.load_model(FRANKA_URDF, fixed_base=True)
 
-        mug = pu.load_model("../data/mugs/test/0.urdf")
-        pu.set_pose(mug, pu.Pose(pu.Point(x=0.5, y=-0.25, z=pu.stable_z(mug, floor))))
+        placed = []
 
-        tree = pu.load_model("../data/simple_trees/test/0.urdf", fixed_base=True)
-        pu.set_pose(tree, pu.Pose(pu.Point(x=0.5, y=0.25, z=pu.stable_z(tree, floor))))
+        mug = pu.load_model("../data/mugs/test/{:d}.urdf".format(mug_index))
+        utils.place_object(mug, floor, placed, WORKSPACE_LOW, WORKSPACE_HIGH)
+        placed.append(mug)
+
+        tree = pu.load_model("../data/simple_trees/test/{:d}.urdf".format(tree_index), fixed_base=True)
+        utils.place_object(tree, floor, placed, WORKSPACE_LOW, WORKSPACE_HIGH)
+        placed.append(tree)
 
     return mug, tree
 
@@ -46,7 +54,7 @@ def observe_and_fill_in(mug, tree):
 
     # fit canonical objects to observed point clouds
     new_obj_1, _, param_1 = utils.planar_pose_warp_gd(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
-    new_obj_2, _, param_2 = utils.planar_pose_warp_gd(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree], n_angles=1, object_size_reg=0.1)
+    new_obj_2, _, param_2 = utils.planar_pose_warp_gd(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree], object_size_reg=0.1)
     viz_utils.show_scene({mug: new_obj_1, tree: new_obj_2}, background=np.concatenate(list(pcs.values())))
     return new_obj_1, param_1, new_obj_2, param_2, canon
 
@@ -72,11 +80,11 @@ def main(args):
     anchors = new_obj_1[knns]
     targets = np.mean(anchors + new_deltas, axis=1)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    ax.scatter(new_obj_1[:, 0], new_obj_1[:, 1], new_obj_1[:, 2], color="red", alpha=0.1)
-    ax.scatter(targets[:, 0], targets[:, 1], targets[:, 2], color="green")
-    plt.show()
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection="3d")
+    # ax.scatter(new_obj_1[:, 0], new_obj_1[:, 1], new_obj_1[:, 2], color="red", alpha=0.1)
+    # ax.scatter(targets[:, 0], targets[:, 1], targets[:, 2], color="green")
+    # plt.show()
 
     points_2 = new_obj_2[target_indices]
     print(points_2.shape)
@@ -123,6 +131,13 @@ def main(args):
     print("In collision:", pu.body_collision(mug, tree))
 
     pu.wait_if_gui()
+
+    for i in range(100):
+        pu.enable_gravity()
+        pu.step_simulation()
+
+    pu.wait_if_gui()
+
     pu.disconnect()
 
 

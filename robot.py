@@ -1,3 +1,4 @@
+import time
 from re import M
 from typing import Tuple, Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -57,11 +58,7 @@ class Robot:
 
         saved_world = pu.WorldSaver()
 
-        conf = next(ikf.either_inverse_kinematics(
-            self.robot, self.info, self.tool_link, approach_pose, max_distance=pu.INF,
-            max_time=1., max_attempts=pu.INF, use_pybullet=False
-        ), None)
-        assert conf is not None
+        conf = self.ik(approach_pose)
 
         #saved_world.restore()
 
@@ -94,7 +91,8 @@ class Robot:
         saved_world = pu.WorldSaver()
 
         path = pu.plan_joint_motion(
-            self.robot, self.ik_joints, conf, obstacles=obstacles, attachments=attachments)
+            self.robot, self.ik_joints, conf, obstacles=obstacles, attachments=attachments,
+            max_iterations=10000)
         assert path is not None
 
         saved_world.restore()
@@ -105,7 +103,7 @@ class Robot:
 
         conf = next(ikf.either_inverse_kinematics(
             self.robot, self.info, self.tool_link, pose, max_distance=pu.INF,
-            max_time=1., max_attempts=pu.INF, use_pybullet=False
+            max_time=pu.INF, max_attempts=10000, use_pybullet=False
         ), None)
         assert conf is not None
         return conf
@@ -183,6 +181,7 @@ class Robot:
                     break
                 past_joint_pos.append(joint_pos)
                 joint_pos = pu.get_joint_positions(self.robot, joints)
+                time.sleep(1 / 2000)  # TODO: add a switch
 
     def send_position_command(self, target, fingers: bool=False):
         """Send a position control command either to the arm's joints or to the fingers."""

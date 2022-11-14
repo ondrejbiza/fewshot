@@ -534,6 +534,12 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000) -> Tuple[NDA
   """
   i = 0
   pos, quat = pu.get_pose(source_obj)
+  
+  pb.performCollisionDetection()
+  in_collision = pu.body_collision(source_obj, target_obj)
+  if not in_collision:
+    return pos, quat
+  
   while True:
 
     new_pos = pos + np.random.normal(0, 0.01, 3)
@@ -553,7 +559,8 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000) -> Tuple[NDA
 
 def place_object(object: int, floor: int, placed_objects: List[int], 
                  workspace_low: NDArray, workspace_high: NDArray,
-                 min_distance_between_objects: float=0.2, max_tries: int=10001):
+                 random_rotations: bool=True, min_distance_between_objects: float=0.2,
+                 max_tries: int=10001):
 
     n_tries = 0
 
@@ -563,12 +570,15 @@ def place_object(object: int, floor: int, placed_objects: List[int],
         if n_tries == max_tries:
             raise EnvironmentSetupError("Cannot place an object.")
 
-        # TODO: first rotate the object
+        yaw = 0.
+        if random_rotations:
+          yaw = np.random.uniform(0, 2 * np.pi)
+        quat = pu.quat_from_euler(pu.Euler(yaw=yaw))
 
         # set random position
         x = np.random.uniform(workspace_low[0], workspace_high[0])
         y = np.random.uniform(workspace_low[1], workspace_high[1])
-        pu.set_pose(object, pu.Pose(pu.Point(x=x, y=y, z=pu.stable_z(object, floor))))
+        pu.set_pose(object, (pu.Point(x=x, y=y, z=pu.stable_z(object, floor)), quat))
 
         # get bbox
         bbox_min, bbox_max = pb.getAABB(object)
