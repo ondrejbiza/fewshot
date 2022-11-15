@@ -51,6 +51,13 @@ def setup_scene(mug_index, tree_index):
     return mug, tree, robot, floor
 
 
+def mock_warp(*args, **kwargs):
+
+    o, c, p = utils.planar_pose_gd(*args, **kwargs)
+    p = (np.zeros(4, dtype=np.float32), p[0], p[1])
+    return o, c, p
+
+
 def pick(mug: int, tree: int, robot: Robot, floor: int, pick_path: str):
 
     objects = [mug, tree, floor]
@@ -71,6 +78,10 @@ def pick(mug: int, tree: int, robot: Robot, floor: int, pick_path: str):
     # fit canonical objects to observed point clouds
     new_obj_1, _, param_1 = utils.planar_pose_warp_gd(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
     new_obj_2, _, _ = utils.planar_pose_warp_gd(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree], object_size_reg=0.1)
+
+    # new_obj_1, _, param_1 = mock_warp(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
+    # new_obj_2, _, _ = mock_warp(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree])
+
     # filled_pcs = {mug: new_obj_1, tree: new_obj_2}
     # viz_utils.show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
@@ -149,6 +160,9 @@ def place(mug: int, tree: int, robot: Robot, floor: int, place_path: str):
     new_obj_1, _, param_1 = utils.planar_pose_warp_gd(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
     new_obj_2, _, param_2 = utils.planar_pose_warp_gd(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree], object_size_reg=0.1)
     
+    # new_obj_1, _, param_1 = mock_warp(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
+    # new_obj_2, _, param_2 = mock_warp(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree])
+
     # bring delta into the reference frame of the current mug
     # !!! only rotate, do not translate
     rot = utils.yaw_to_rot(param_1[2])
