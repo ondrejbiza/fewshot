@@ -10,9 +10,12 @@ from robot import Panda, Robot
 import utils
 import viz_utils
 
+# WORKSPACE_LOW = np.array([0.25, -0.5, 0.], dtype=np.float32)
+# # TODO: what to do with the z-axis?
+# WORKSPACE_HIGH = np.array([0.75, 0.5, 0.28], dtype=np.float32)
 WORKSPACE_LOW = np.array([0.25, -0.5, 0.], dtype=np.float32)
 # TODO: what to do with the z-axis?
-WORKSPACE_HIGH = np.array([0.75, 0.5, 0.28], dtype=np.float32)
+WORKSPACE_HIGH = np.array([0.6, 0.5, 0.28], dtype=np.float32)
 
 
 def setup_scene(mug_index, tree_index):
@@ -26,12 +29,24 @@ def setup_scene(mug_index, tree_index):
     with pu.HideOutput():
         floor = pu.load_model("models/short_floor.urdf", fixed_base=True)
         robot = pu.load_model(FRANKA_URDF, fixed_base=True)
+        pu.assign_link_colors(robot, max_colors=3, s=0.5, v=1.)
+
+        noise = np.random.normal(0, 0.01, size=2)
+        tree = pu.load_model("../data/simple_trees/test/{:d}.urdf".format(tree_index), fixed_base=True)
+        pu.set_pose(tree, pu.Pose(pu.Point(x=0.35 + noise[0], y=0.25 + noise[1], z=pu.stable_z(tree, floor))))
+
+        placed = [tree]
 
         mug = pu.load_model("../data/mugs/test/{:d}.urdf".format(mug_index))
-        pu.set_pose(mug, pu.Pose(pu.Point(x=0.5, y=-0.25, z=pu.stable_z(mug, floor))))
+        utils.place_object(mug, floor, placed, WORKSPACE_LOW, WORKSPACE_HIGH)
+        placed.append(mug)
 
-        tree = pu.load_model("../data/simple_trees/test/{:d}.urdf".format(tree_index), fixed_base=True)
-        pu.set_pose(tree, pu.Pose(pu.Point(x=0.5, y=0.25, z=pu.stable_z(tree, floor))))
+        # tree = pu.load_model("../data/simple_trees/test/{:d}.urdf".format(tree_index), fixed_base=True)
+        # utils.place_object(tree, floor, placed, WORKSPACE_LOW, WORKSPACE_HIGH)
+        # placed.append(tree)
+
+        # mug = pu.load_model("../data/mugs/test/{:d}.urdf".format(mug_index))
+        # pu.set_pose(mug, pu.Pose(pu.Point(x=0.5, y=-0.25, z=pu.stable_z(mug, floor))))
 
     return mug, tree, robot, floor
 
@@ -54,16 +69,21 @@ def pick(mug: int, tree: int, robot: Robot, floor: int, pick_path: str):
         canon[tree] = pickle.load(f)
 
     # fit canonical objects to observed point clouds
-    new_obj_1, _, _ = utils.planar_pose_warp_gd(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
+    new_obj_1, _, param_1 = utils.planar_pose_warp_gd(canon[mug]["pca"], canon[mug]["canonical_obj"], pcs[mug])
     new_obj_2, _, _ = utils.planar_pose_warp_gd(canon[tree]["pca"], canon[tree]["canonical_obj"], pcs[tree], object_size_reg=0.1)
-    filled_pcs = {mug: new_obj_1, tree: new_obj_2}
+    # filled_pcs = {mug: new_obj_1, tree: new_obj_2}
     # viz_utils.show_scene(filled_pcs, background=np.concatenate(list(pcs.values())))
 
     # get grasp
+    # TODO: This has to be better. Save the pose of the hand during pick
+    # as well as the closest point to the one between the two fingers.
+    # I want the point to define the position of the gripper.
+    # I then want to transform the pose using the objects orientation.
+    # TODO: I could even consider using contact points during picking!
     position = new_obj_1[pick_indices]
     print("Position:", position)
 
-    pose = pu.Pose(position, pu.Euler(roll=np.pi))
+    pose = pu.Pose(position, pu.Euler(roll=np.pi, yaw=param_1[2]))
 
     # pu.wait_if_gui()
 
@@ -100,7 +120,7 @@ def pick(mug: int, tree: int, robot: Robot, floor: int, pick_path: str):
     mug_attach = pu.Attachment(robot.robot, robot.tool_link, (g_t_m_pos, g_t_m_quat), mug)
 
     pose = robot.init_tool_pos, pu.get_link_pose(robot.robot, robot.tool_link)[1]
-    path = robot.plan_motion(pose, [tree, floor], attachments=[mug_attach])
+    path = robot.plan_motion(pose, [tree], attachments=[mug_attach])
     robot.execute_path(path)
 
     print("Picked object:", robot.get_picked_object(objects))
@@ -213,9 +233,13 @@ def place(mug: int, tree: int, robot: Robot, floor: int, place_path: str):
 
     # import time ; time.sleep(100)
 
-    path = robot.plan_motion(pose, obstacles=[tree, floor], attachments=[mug_attach])
+    path = robot.plan_motion(pose, obstacles=[tree], attachments=[mug_attach])
     robot.execute_path(path)
     robot.open_hand()
+
+    pose = robot.init_tool_pos, pu.get_link_pose(robot.robot, robot.tool_link)[1]
+    path = robot.plan_motion(pose, [tree], attachments=[])
+    robot.execute_path(path)
 
     # pu.set_pose(mug, (new_mug_pos, new_mug_quat))
 
@@ -226,11 +250,17 @@ def main(args):
     robot = Panda(robot=robot_id)
 
     pick(mug, tree, robot, floor, args.pick_path)
-    pu.wait_if_gui()
 
     place(mug, tree, robot, floor, args.place_path)
-    pu.wait_if_gui()
 
+    for i in range(100):
+        pu.step_simulation()
+    # pu.wait_if_gui()
+
+    pose = pu.get_pose(mug)
+    if pose[0][2] > 0.02:
+        print("### SUCCESS ###")
+    print("### DONE ###")
     pu.disconnect()
 
 

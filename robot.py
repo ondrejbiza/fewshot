@@ -86,16 +86,21 @@ class Robot:
         self, pose: Tuple[NDArray, NDArray], obstacles: List[int], attachments: List[pu.Attachment]=[]
     ) -> List[Tuple[float, ...]]:
         """Get joint configuration for hand pose and plan a collision free path."""
-        conf = self.ik(pose)
+        for i in range(50):
 
-        saved_world = pu.WorldSaver()
+            conf = self.ik(pose)
 
-        path = pu.plan_joint_motion(
-            self.robot, self.ik_joints, conf, obstacles=obstacles, attachments=attachments,
-            max_iterations=10000)
+            saved_world = pu.WorldSaver()
+
+            path = pu.plan_joint_motion(
+                self.robot, self.ik_joints, conf, obstacles=obstacles, attachments=attachments)
+
+            saved_world.restore()
+
+            if path is not None:
+                break
+        
         assert path is not None
-
-        saved_world.restore()
 
         return path
 
@@ -103,7 +108,7 @@ class Robot:
 
         conf = next(ikf.either_inverse_kinematics(
             self.robot, self.info, self.tool_link, pose, max_distance=pu.INF,
-            max_time=pu.INF, max_attempts=10000, use_pybullet=False
+            max_time=0.1, max_attempts=pu.INF, use_pybullet=False
         ), None)
         assert conf is not None
         return conf
@@ -156,9 +161,11 @@ class Robot:
             # TODO: not sure what real_time does.
             if not self.real_time:
                 pu.step_simulation()
-
+    
     def execute_path_motors(self, path: List[Tuple[float, ...]], fingers: bool=False, max_it: int=1000):
         """Execute a path by sending a position control command for each segment."""
+
+        pu.enable_gravity()
         maxlen = 5
 
         if fingers:
@@ -182,6 +189,7 @@ class Robot:
                 past_joint_pos.append(joint_pos)
                 joint_pos = pu.get_joint_positions(self.robot, joints)
                 time.sleep(1 / 2000)  # TODO: add a switch
+        pu.disable_gravity()
 
     def send_position_command(self, target, fingers: bool=False):
         """Send a position control command either to the arm's joints or to the fingers."""
@@ -225,8 +233,9 @@ class Panda(Robot):
     info: ikfu.IKFastInfo = PANDA_INFO
     tool_name: str = "panda_hand"
     finger_names: Tuple[str, ...] = ("panda_finger_joint1", "panda_finger_joint2")
-    init_tool_pos: NDArray = np.array([0., 0.27, 0.59], dtype=np.float32)
+    # init_tool_pos: NDArray = np.array([0., 0.27, 0.59], dtype=np.float32)
+    init_tool_pos: NDArray = np.array([0.4, 0.0, 0.7], dtype=np.float32)
     max_force: float = 240.
-    max_finger_force: float = 10.  # TODO: set this.
+    max_finger_force: float = 20.  # TODO: set this.
     position_gain: float = 0.02  # TODO: not sure what the value for Panda is.
     velocity_gain: float = 1.0  # TODO: what does this do?
