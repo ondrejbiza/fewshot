@@ -558,3 +558,15 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000) -> Tuple[NDA
       raise PlanningError("Could not wiggle object out of collision.")
 
   return new_pos, quat
+
+
+def transform_pointcloud_2(cloud: NDArray, T: NDArray, is_position: bool=True) -> NDArray:
+  # TODO: what's up with transform_pointcloud?
+  n = cloud.shape[0]
+  cloud = cloud.T
+  augment = np.ones((1, n)) if is_position else np.zeros((1, n))
+  cloud = np.concatenate((cloud, augment), axis=0)
+  cloud = np.dot(T, cloud)
+  # TODO: divide by the fourth coordinate?
+  cloud = cloud[0: 3, :].T
+  return cloud
