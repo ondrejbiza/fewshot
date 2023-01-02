@@ -11,7 +11,7 @@ Licensed under the MIT License.
   <arg name="depth_rect" default="1" />
   <arg name="ir_rect" default="1" />
   <arg name="point_cloud" default="1" />
-  <arg name="rgb_point_cloud" default="0" />
+  <arg name="rgb_point_cloud" default="1" />
 
   <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" /> -->

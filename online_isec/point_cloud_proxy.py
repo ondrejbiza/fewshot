@@ -37,6 +37,7 @@ class PointCloudProxy:
         self.subs = [rospy.Subscriber(self.topics[i], PointCloud2, functools.partial(self.callback, camera_index=i), queue_size=1) for i in range(len(self.topics))]
 
     def callback(self, msg, camera_index):
+        print("YY")
         cloud_frame = msg.header.frame_id
         cloud = ros_numpy.numpify(msg)
         pc = ros_numpy.numpify(msg)
