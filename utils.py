@@ -2,6 +2,7 @@ from typing import Tuple, Dict, List, Any, Optional
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA
+from scipy.spatial.transform import Rotation
 import pybullet as pb
 import open3d as o3d
 import torch
@@ -570,3 +571,9 @@ def transform_pointcloud_2(cloud: NDArray, T: NDArray, is_position: bool=True) -
   # TODO: divide by the fourth coordinate?
   cloud = cloud[0: 3, :].T
   return cloud
+
+
+def rotate_for_open3d(pc):
+    # Going from realsense to open3d, the point cloud will be upside down and rotated opposite to the camera angle.
+    mat = Rotation.from_euler("zyx", (np.pi, np.pi, 0.)).as_matrix()
+    return np.matmul(pc, mat)
