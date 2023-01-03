@@ -46,6 +46,7 @@ class PointCloudProxy:
 
     def callback(self, msg: rospy.Message, camera_index: int):
 
+        # Get XYZRGB point cloud from a message.
         cloud_frame = msg.header.frame_id
         cloud = ros_numpy.numpify(msg)
         pc = ros_numpy.numpify(msg)
@@ -57,10 +58,17 @@ class PointCloudProxy:
         cloud[:, 3] = np.resize(pc["r"], 720*1280)
         cloud[:, 4] = np.resize(pc["g"], 720*1280)
         cloud[:, 5] = np.resize(pc["b"], 720*1280)
+
+        # We want to keep the raw image in uint8 format.
         image = cloud[:, 3: 6].reshape(720, 1280, 3).astype(np.uint8)
+
+        # On the other hand, we'll keep point cloud RGB values in 0-1 floats.
         cloud[:, 3: 6] /= 255.
+
+        # Mask out NANs and keep the mask so that we can go from image to PC.
         mask = np.logical_not(np.isnan(cloud).any(axis=1))
         cloud = cloud[mask]
+
         T = self.lookup_transform(cloud_frame, "base", rospy.Time(0))
         cloud[:, :3] = utils.transform_pointcloud_2(cloud[:, :3], T)
 
@@ -93,20 +101,25 @@ if __name__ == "__main__":
 
     # Show outputs of the proxy.
     print("Setup proxy and wait a bit.")
-    rospy.init_node("test")
+    rospy.init_node("point_cloud_proxy_example")
     pc_proxy = PointCloudProxy()
     time.sleep(2)
 
-    cloud, image, _ = pc_proxy.get(0)
+    cloud, image, mask = pc_proxy.get(0)
     if cloud is None or image is None:
         print("Something went wrong.")
         exit(1)
 
     print("PC size:", cloud.shape)
     print("Image size:", image.shape)
+    print("Mask size:", mask.shape)
 
     print("Showing RGB image.")
     plt.imshow(image)
+    plt.show()
+
+    print("Showing mask.")
+    plt.imshow(mask.reshape(720, 1280).astype(np.float32))
     plt.show()
 
     print("Showing point cloud.")

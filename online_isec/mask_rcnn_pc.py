@@ -12,16 +12,22 @@ import open3d as o3d
 import torch
 from torchvision.models import detection
 # from torchvision.utils import draw_segmentation_masks
-from camera import Camera
 import mask_rcnn_utils
 import utils
+import rospy
+from online_isec.point_cloud_proxy import PointCloudProxy
+
+X_MIN = 540
+X_MAX = 1040
+Y_MIN = 30
+Y_MAX = 620
 
 
-def perception_on_point_cloud(model, torch_device, object_threshold, mask_threshold, pc, tex, color_image):
+def perception_on_point_cloud(model, torch_device, object_threshold, mask_threshold, pc, color_image, pc_mask):
 
-    # Important! OpenCV uses BGR.
-    color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
-
+    color_image = np.rot90(color_image)
+    color_image_shape = color_image.shape
+    color_image = color_image[X_MIN: X_MAX, Y_MIN: Y_MAX]
     image_pt = torch.tensor(color_image / 255., dtype=torch.float32, device=torch_device)[None].permute((0, 3, 1, 2))
 
     with torch.no_grad():
@@ -52,25 +58,22 @@ def perception_on_point_cloud(model, torch_device, object_threshold, mask_thresh
     masks = (masks > mask_threshold).astype(np.int32)
 
     n_objects = len(scores)
-    total_mask = np.zeros_like(masks[:, :, 0], dtype=np.bool)
+    total_mask = np.zeros_like(masks[:, :, 0], dtype=np.bool_)
     colors = mask_rcnn_utils.random_colors(n_objects)
 
     for i in range(n_objects):
 
         color_image = mask_rcnn_utils.apply_mask(color_image, masks[:, :, i], colors[i], alpha=0.2)
-        total_mask += masks[:, :, i].astype(np.bool)
+        total_mask += masks[:, :, i].astype(np.bool_)
 
-    u, v, mask1 = utils.tex_coords_to_u_v_mask(tex, color_image)
+    # TODO: Work in progress. Figure out when to mask the point cloud.
+    tmp = np.zeros((color_image_shape[0], color_image_shape[1]), dtype=np.bool_)
+    tmp[X_MIN: X_MAX, Y_MIN: Y_MAX] = total_mask
+    tmp = np.rot90(tmp, -1)
+    tmp = tmp.reshape(-1)
 
-    colors = color_image[u, v] / 255.
-    mask2 = total_mask[u, v]
-
-    pc = pc[mask1]
-    colors = colors[mask1]
-    mask2 = mask2[mask1]
-
-    pc = pc[mask2]
-    colors = colors[mask2]
+    pc = pc[tmp[pc_mask]]
+    colors = np.rot90(color_image, -1).reshape(-1, 3)[tmp]
 
     return pc, colors, True
 
@@ -97,9 +100,9 @@ def main(args):
     model.eval()
 
     # setup camera
-    camera = Camera()
-    camera.start()
-    camera.setup_pointcloud()
+    rospy.init_node("mask_rcnn_pc")
+    pc_proxy = PointCloudProxy()
+    time.sleep(2)
 
     # setup point cloud
     pcd = o3d.geometry.PointCloud()
@@ -120,8 +123,8 @@ def main(args):
     while not close:
 
         # get a frame and send it for processing
-        frame = camera.get_pointcloud_and_texture()
-        input_queue.put(frame)
+        out = pc_proxy.get(0)
+        input_queue.put(out)
         
         # update the visualization while we wait
         while not close:
@@ -157,7 +160,6 @@ def main(args):
     # send a stop signal
     input_queue.put(None)
     t.join()
-    camera.stop()
     vis.destroy_window()
 
 

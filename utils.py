@@ -577,3 +577,11 @@ def rotate_for_open3d(pc):
     # Going from realsense to open3d, the point cloud will be upside down and rotated opposite to the camera angle.
     mat = Rotation.from_euler("zyx", (np.pi, np.pi, 0.)).as_matrix()
     return np.matmul(pc, mat)
+
+
+
+def update_open3d_pointcloud(pcd: o3d.geometry.PointCloud, vertices: np.ndarray, colors: Optional[np.ndarray]=None):
+
+    pcd.points = o3d.utility.Vector3dVector(vertices)
+    if colors is not None:
+        pcd.colors = o3d.utility.Vector3dVector(colors)
