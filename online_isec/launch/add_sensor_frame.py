@@ -37,5 +37,6 @@ if __name__ == '__main__':
 
     # realsense
     br.sendTransform((0.778, -0.094, 0.431), (0.4147, -0.0251, -0.9096, -0.0023), rospy.Time.now(), "cam1_depth_frame", "base_link")
+    br.sendTransform((0.778, -0.094, 0.431), (0.4147, -0.0251, -0.9096, -0.0023), rospy.Time.now(), "cam1_color_optical_frame", "base_link")  # TODO: calibrate
 
     rate.sleep()

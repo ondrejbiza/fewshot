@@ -21,11 +21,20 @@ X_MIN = 540
 X_MAX = 1040
 Y_MIN = 30
 Y_MAX = 620
+ROT90 = True
+
+X_MIN = 270
+X_MAX = 720
+Y_MIN = 430
+Y_MAX = 1100
+ROT90 = False
 
 
 def perception_on_point_cloud(model, torch_device, object_threshold, mask_threshold, pc, color_image, pc_mask):
 
-    tmp_image = np.rot90(color_image)
+    tmp_image = color_image
+    if ROT90:
+        tmp_image = np.rot90(tmp_image)
     tmp_image = tmp_image[X_MIN: X_MAX, Y_MIN: Y_MAX]
     image_pt = torch.tensor(tmp_image / 255., dtype=torch.float32, device=torch_device)[None].permute((0, 3, 1, 2))
 
@@ -66,9 +75,13 @@ def perception_on_point_cloud(model, torch_device, object_threshold, mask_thresh
         total_mask += masks[:, :, i].astype(np.bool_)
 
     # TODO: Work in progress. Figure out when to mask the point cloud.
-    tmp = np.zeros((color_image.shape[1], color_image.shape[0]), dtype=np.bool_)
+    if ROT90:
+        tmp = np.zeros((color_image.shape[1], color_image.shape[0]), dtype=np.bool_)
+    else:
+        tmp = np.zeros((color_image.shape[0], color_image.shape[1]), dtype=np.bool_)
     tmp[X_MIN: X_MAX, Y_MIN: Y_MAX] = total_mask
-    tmp = np.rot90(tmp, -1)
+    if ROT90:
+        tmp = np.rot90(tmp, -1)
     tmp = tmp.reshape(-1)
 
     # tmp2 = np.zeros((color_image.shape[1], color_image.shape[0], color_image.shape[2]), dtype=np.float32)

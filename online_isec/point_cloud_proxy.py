@@ -8,8 +8,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import rospy
 import ros_numpy
-from sensor_msgs.msg import PointCloud2
+from sensor_msgs.msg import PointCloud2, Image
 from sensor_msgs import point_cloud2
+from skimage.transform import resize
 import tf as not_tensorflow
 import tf2_ros
 import utils
@@ -20,17 +21,12 @@ class PointCloudProxy:
     # from the original code:
     # topics: Tuple[str] = ("/camera/depth/points", "/k4a/points2", "/cam1/depth/points")
 
-    # Azure: pretty bad point clouds
-    # topics: Tuple[str] = ("/k4a/depth_registered/points",)
-    # heights: Tuple[int] = (720,)
-    # widths: Tuple[int] = (1280,)
-    # nans_in_pc: Tuple[bool] = (True,)
-
-    # realsense
-    topics: Tuple[str] = ("/cam1/depth/color/points",)
-    heights: Tuple[int] = (480,)
-    widths: Tuple[int] = (848,)
-    nans_in_pc: Tuple[bool] = (False,)
+    # (realsense, azure)
+    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points")
+    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", None)
+    heights: Tuple[int, ...] = (720, 720)
+    widths: Tuple[int, ...] = (1280, 1280)
+    nans_in_pc: Tuple[bool, ...] = (False, True)
 
     desk_center: Tuple[float, float] = (-0.527, -0.005)
     z_min: float = -0.07
@@ -45,26 +41,44 @@ class PointCloudProxy:
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
-        self.msgs = [None for _ in range(len(self.topics))]
+        self.msgs = [None for _ in range(len(self.pc_topics))]
         # XYZRGB point cloud.
-        self.clouds = [None for _ in range(len(self.topics))]
-        self.images = [None for _ in range(len(self.topics))]
+        self.clouds = [None for _ in range(len(self.pc_topics))]
+        self.images = [None for _ in range(len(self.pc_topics))]
         # Flatten image and apply mask to turn it into a point cloud.
         # Useful if we want to have correspondence between a predicted segmentation mask
         # and the point cloud.
-        self.masks = [None for _ in range(len(self.topics))]
+        self.masks = [None for _ in range(len(self.pc_topics))]
+        self.locks = [Lock() for _ in range(len(self.pc_topics))]
 
-        self.subs = [rospy.Subscriber(self.topics[i], PointCloud2, functools.partial(
-            self.callback, camera_index=i, width=self.widths[i], height=self.heights[i], nans_in_pc=self.nans_in_pc[i]
-        ), queue_size=1) for i in range(len(self.topics))]
-        self.locks = [Lock() for _ in range(len(self.topics))]
+        self.pc_subs = []
+        self.image_subs = []
+        for i in range(len(self.pc_topics)):
+            save_image = self.image_topics[i] is None
+            # Get point clouds.
+            self.pc_subs.append(rospy.Subscriber(self.pc_topics[i], PointCloud2, functools.partial(
+                self.pc_callback, camera_index=i, width=self.widths[i], height=self.heights[i], nans_in_pc=self.nans_in_pc[i],
+                save_image=save_image
+            ), queue_size=1))
 
-    def callback(self, msg: rospy.Message, camera_index: int, width: int, height: int, nans_in_pc: bool):
+            # Some point clouds return blank RGB values for depth pixels that do not have a valid value.
+            # This means we will get an ugly image from the XYZRGB point cloud.
+            # Hence, we need to have one subscriber for the point cloud and one for the image.
+            # It is important to make sure the image and the point cloud are aligned (i.e. image.reshape(-1, 3)[mask] ~= cloud[..., 3: 6]).
+            if not save_image:
+                self.image_subs.append(
+                    rospy.Subscriber(self.image_topics[i], Image, functools.partial(self.image_callback, camera_index=i),
+                    queue_size=1))
+            else:
+                self.image_subs.append(None)
+
+    def pc_callback(self, msg: rospy.Message, camera_index: int, width: int, height: int, nans_in_pc: bool, save_image: bool):
 
         # Get XYZRGB point cloud from a message.
         cloud_frame = msg.header.frame_id
         pc = ros_numpy.numpify(msg)
         pc = ros_numpy.point_cloud2.split_rgb_field(pc)
+
         cloud = np.zeros((height * width, 6), dtype=np.float32)
         cloud[:, 0] = np.resize(pc["x"], height * width)
         cloud[:, 1] = np.resize(pc["y"], height * width)
@@ -96,8 +110,15 @@ class PointCloudProxy:
         with self.locks[camera_index]:
             self.msgs[camera_index] = msg
             self.clouds[camera_index] = cloud
-            self.images[camera_index] = image
+            if save_image:
+                self.images[camera_index] = image
             self.masks[camera_index] = mask
+
+    def image_callback(self, msg: rospy.Message, camera_index: int):
+
+        image = ros_numpy.numpify(msg)
+        with self.locks[camera_index]:
+            self.images[camera_index] = image
 
     def lookup_transform(self, from_frame: str, to_frame: str, lookup_time=rospy.Time(0)) -> NDArray:
 
@@ -126,7 +147,8 @@ if __name__ == "__main__":
     pc_proxy = PointCloudProxy()
     time.sleep(2)
 
-    cloud, image, mask = pc_proxy.get(0)
+    camera_index = 0
+    cloud, image, mask = pc_proxy.get(camera_index)
 
     if cloud is None or image is None:
         print("Something went wrong.")

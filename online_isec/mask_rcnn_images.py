@@ -10,6 +10,19 @@ import rospy
 from mask_rcnn_utils import display_instances, coco_class_names
 from online_isec.point_cloud_proxy import PointCloudProxy
 
+# TODO: make these better
+X_MIN = 540
+X_MAX = 1040
+Y_MIN = 30
+Y_MAX = 620
+ROT90 = True
+
+X_MIN = 270
+X_MAX = 720
+Y_MIN = 430
+Y_MAX = 1100
+ROT90 = False
+
 
 def main(args):
 
@@ -36,8 +49,9 @@ def main(args):
             time.sleep(1)
             continue
 
-        color_image = np.rot90(color_image)
-        color_image = color_image[540: 1040, 30: 620]
+        if ROT90:
+            color_image = np.rot90(color_image)
+        color_image = color_image[X_MIN: X_MAX, Y_MIN: Y_MAX]
         image_pt = torch.tensor(color_image / 255., dtype=torch.float32, device=torch_device)[None].permute((0, 3, 1, 2))
 
         with torch.no_grad():
