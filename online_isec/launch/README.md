@@ -1,5 +1,11 @@
 # stack
 
+Left: structure sensor
+Middle: realsense 455
+Right: Azure
+TODO: recalibrate realsense -- previously calibrated in the frame of depth, now in the frame of RGB (90% sure)
+https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy
+
 ## Requirements
 * fmauch_universal_robot
 * robotiq
@@ -14,7 +20,7 @@
 ### Instructions
 1. Start UR driver.
     ```
-    roslaunch ur_robot_driver ur5_bringup.launch robot_ip:=10.75.15.168 limited:=true headless_mode:=true
+    roslaunch ur_robot_driver ur5_bringup.launch robot_ip:=10.75.15.199 limited:=true headless_mode:=true
     ```
 2. Open subscriber
     ```
@@ -29,10 +35,10 @@
 
 4. Start depth sensor driver.
     ```
-    roslaunch openni2_launch openni2.launch
-   cd ~/catkin_ws/src/helping_hands_rl_ur5/src
+   cd ~/catkin_ws/src/fewshot/online_isec/launch
+   roslaunch openni2_launch openni2.launch
    roslaunch azure.launch
-   cd ~/catkin_ws/src/helping_hands_rl_ur5/src
+   roslaunch realsense.launch
    python add_sensor_frame.py 
     ```
 5. Example for openni2 launch file

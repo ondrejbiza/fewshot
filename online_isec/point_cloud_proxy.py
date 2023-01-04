@@ -17,8 +17,21 @@ import utils
 
 @dataclass
 class PointCloudProxy:
+    # from the original code:
     # topics: Tuple[str] = ("/camera/depth/points", "/k4a/points2", "/cam1/depth/points")
-    topics: Tuple[str] = ("/k4a/depth_registered/points",)
+
+    # Azure: pretty bad point clouds
+    # topics: Tuple[str] = ("/k4a/depth_registered/points",)
+    # heights: Tuple[int] = (720,)
+    # widths: Tuple[int] = (1280,)
+    # nans_in_pc: Tuple[bool] = (True,)
+
+    # realsense
+    topics: Tuple[str] = ("/cam1/depth/color/points",)
+    heights: Tuple[int] = (480,)
+    widths: Tuple[int] = (848,)
+    nans_in_pc: Tuple[bool] = (False,)
+
     desk_center: Tuple[float, float] = (-0.527, -0.005)
     z_min: float = -0.07
     obs_clip_offset: float = 0.0
@@ -41,32 +54,40 @@ class PointCloudProxy:
         # and the point cloud.
         self.masks = [None for _ in range(len(self.topics))]
 
-        self.subs = [rospy.Subscriber(self.topics[i], PointCloud2, functools.partial(self.callback, camera_index=i), queue_size=1) for i in range(len(self.topics))]
+        self.subs = [rospy.Subscriber(self.topics[i], PointCloud2, functools.partial(
+            self.callback, camera_index=i, width=self.widths[i], height=self.heights[i], nans_in_pc=self.nans_in_pc[i]
+        ), queue_size=1) for i in range(len(self.topics))]
         self.locks = [Lock() for _ in range(len(self.topics))]
 
-    def callback(self, msg: rospy.Message, camera_index: int):
+    def callback(self, msg: rospy.Message, camera_index: int, width: int, height: int, nans_in_pc: bool):
 
         # Get XYZRGB point cloud from a message.
         cloud_frame = msg.header.frame_id
-        cloud = ros_numpy.numpify(msg)
         pc = ros_numpy.numpify(msg)
         pc = ros_numpy.point_cloud2.split_rgb_field(pc)
-        cloud = np.zeros((720*1280, 6), dtype=np.float32)
-        cloud[:, 0] = np.resize(pc["x"], 720*1280)
-        cloud[:, 1] = np.resize(pc["y"], 720*1280)
-        cloud[:, 2] = np.resize(pc["z"], 720*1280)
-        cloud[:, 3] = np.resize(pc["r"], 720*1280)
-        cloud[:, 4] = np.resize(pc["g"], 720*1280)
-        cloud[:, 5] = np.resize(pc["b"], 720*1280)
+        cloud = np.zeros((height * width, 6), dtype=np.float32)
+        cloud[:, 0] = np.resize(pc["x"], height * width)
+        cloud[:, 1] = np.resize(pc["y"], height * width)
+        cloud[:, 2] = np.resize(pc["z"], height * width)
+        cloud[:, 3] = np.resize(pc["r"], height * width)
+        cloud[:, 4] = np.resize(pc["g"], height * width)
+        cloud[:, 5] = np.resize(pc["b"], height * width)
 
         # We want to keep the raw image in uint8 format.
-        image = cloud[:, 3: 6].reshape(720, 1280, 3).astype(np.uint8)
+        image = cloud[:, 3: 6].reshape(height, width, 3).astype(np.uint8)
 
         # On the other hand, we'll keep point cloud RGB values in 0-1 floats.
         cloud[:, 3: 6] /= 255.
 
-        # Mask out NANs and keep the mask so that we can go from image to PC.
-        mask = np.logical_not(np.isnan(cloud).any(axis=1))
+        if nans_in_pc:
+            # Mask out NANs and keep the mask so that we can go from image to PC.
+            # TODO: I added ..., 3 here, double check if there are NaNs in colors.
+            mask = np.logical_not(np.isnan(cloud[..., :3]).any(axis=1))
+        else:
+            # If empty pixels are not NaN they should be (0, 0, 0).
+            # Note the corresponding RGB values will not be NaN.
+            mask = np.logical_not((cloud[..., :3] == 0).all(axis=1))
+
         cloud = cloud[mask]
 
         T = self.lookup_transform(cloud_frame, "base", rospy.Time(0))
@@ -106,6 +127,7 @@ if __name__ == "__main__":
     time.sleep(2)
 
     cloud, image, mask = pc_proxy.get(0)
+
     if cloud is None or image is None:
         print("Something went wrong.")
         exit(1)
@@ -119,7 +141,7 @@ if __name__ == "__main__":
     plt.show()
 
     print("Showing mask.")
-    plt.imshow(mask.reshape(720, 1280).astype(np.float32))
+    plt.imshow(mask.reshape(image.shape[0], image.shape[1]).astype(np.float32))
     plt.show()
 
     print("Showing point cloud.")

@@ -2,6 +2,7 @@
 import random
 import colorsys
 import numpy as np
+from numpy.typing import NDArray
 from skimage.measure import find_contours
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
@@ -104,7 +105,7 @@ coco_class_names = [
 coco_class_names = {k + 1: v for k, v in enumerate(coco_class_names)}
 
 
-def random_colors(N, bright=True):
+def random_colors(N: int, bright: bool=True):
     """
     Generate random colors.
     To get visually distinct colors, generate them in HSV space then
@@ -117,9 +118,10 @@ def random_colors(N, bright=True):
     return colors
 
 
-def apply_mask(image, mask, color, alpha=0.5):
-    """Apply the given mask to the image.
+def apply_mask(image: NDArray, mask: NDArray, color: NDArray, alpha: float=0.5):
+    """Apply the given mask to the image. Expects [0, 255] range.
     """
+    image = np.copy(image)
     for c in range(3):
         image[:, :, c] = np.where(mask == 1,
                                   image[:, :, c] *

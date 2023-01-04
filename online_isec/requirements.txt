@@ -16,3 +16,5 @@ trimesh==3.10.7
 pycpd==2.0.0
 h5py==3.7.0
 cython==0.29.32
+
+pymodbus==2.1.0

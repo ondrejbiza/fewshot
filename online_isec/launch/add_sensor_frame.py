@@ -31,7 +31,11 @@ if __name__ == '__main__':
     # br.sendTransform((0.493, -0.604, 0.776), (-0.6642, -0.2664, 0.6351, 0.2906), rospy.Time.now(), "cam1_depth_frame", "base_link")
     # br.sendTransform((0.513, -0.529, 0.841), (0.6798, 0.6427, 0.2918, -0.199), rospy.Time.now(), "depth_camera_link", "base_link")
 
+    # azure and structure?
     br.sendTransform((0.503, 0.547, 0.762), (-0.2611, 0.649, -0.2638, 0.6641), rospy.Time.now(), "camera_depth_frame", "base_link")
     br.sendTransform((0.691, -0.833, 0.018), (0.035, 0.664, 0.746, 0.035), rospy.Time.now(), "depth_camera_link", "camera_depth_frame")
+
+    # realsense
+    br.sendTransform((0.778, -0.094, 0.431), (0.4147, -0.0251, -0.9096, -0.0023), rospy.Time.now(), "cam1_depth_frame", "base_link")
 
     rate.sleep()

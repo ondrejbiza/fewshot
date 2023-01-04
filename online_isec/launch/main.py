@@ -9,8 +9,9 @@ ROBOT_LOG_PATH = "logs/robot.txt"
 AZURE_LISTEN_LOG_PATH = "logs/azure_listen.txt"
 REALSENSE_LISTEN_LOG_PATH = "logs/realsense_listen.txt"
 GRIPPER_LOG_PATH = "logs/gripper.txt"
-OPENNI2_DRIVER_LOG_PATH = "logs/openni2_driver.txt"
+STRUCTURE_DRIVER_LOG_PATH = "logs/structure_driver.txt"
 AZURE_DRIVER_LOG_PATH = "logs/azure_driver.txt"
+REALSENSE_DRIVER_LOG_PATH = "logs/realsense_driver.txt"
 ADD_SENSOR_FRAME_LOG_PATH = "logs/add_sensor_frame.txt"
 
 # TODO: Not sure why I don't get other outputs.
@@ -59,11 +60,14 @@ def main(args):
     realsense_listen_log = None
     realsense_listen_p = None
 
-    openni2_driver_log = None
-    openni2_driver_p = None
+    structure_driver_log = None
+    structure_driver_p = None
 
     azure_driver_log = None
     azure_driver_p = None
+
+    realsense_driver_log = None
+    realsense_driver_p = None
 
     add_sensor_frame_log = None
     add_sensor_frame_p = None
@@ -98,6 +102,7 @@ def main(args):
                 print("Robot is taking too long to start. ")
             i += 1
         print("UR5 connected.")
+        time.sleep(1)
 
         # Connect gripper.
         print("Connecting gripper.")
@@ -111,6 +116,7 @@ def main(args):
             stdout=gripper_log, stderr=gripper_log
         )
         print("Gripper connected.")
+        time.sleep(1)
 
         print("Connecting cameras.")
 
@@ -119,24 +125,35 @@ def main(args):
             ["rostopic", "hz", "/k4a/points2"],
             stdout=azure_listen_log, stderr=azure_listen_log
         )
+        time.sleep(1)
 
         realsense_listen_log = open(REALSENSE_LISTEN_LOG_PATH, "w")
         realsense_listen_p = subprocess.Popen(
             ["rostopic", "hz", "/camera/depth/points"],
             stdout=realsense_listen_log, stderr=realsense_listen_log
         )
+        time.sleep(1)
 
-        openni2_driver_log = open(OPENNI2_DRIVER_LOG_PATH, "w")
-        openni2_driver_p = subprocess.Popen(
+        structure_driver_log = open(STRUCTURE_DRIVER_LOG_PATH, "w")
+        structure_driver_p = subprocess.Popen(
             ["roslaunch", "openni2_launch", "openni2.launch"],
-            stdout=openni2_driver_log, stderr=openni2_driver_log
+            stdout=structure_driver_log, stderr=structure_driver_log
         )
+        time.sleep(1)
 
         azure_driver_log = open(AZURE_DRIVER_LOG_PATH, "w")
         azure_driver_p = subprocess.Popen(
             ["roslaunch", "azure.launch"],
             stdout=azure_driver_log, stderr=azure_driver_log
         )
+        time.sleep(1)
+
+        realsense_driver_log = open(REALSENSE_DRIVER_LOG_PATH, "w")
+        realsense_driver_p = subprocess.Popen(
+            ["roslaunch", "realsense.launch"],
+            stdout=realsense_driver_log, stderr=realsense_driver_log
+        )
+        time.sleep(1)
 
         add_sensor_frame_log = open(ADD_SENSOR_FRAME_LOG_PATH, "w")
         add_sensor_frame_p = subprocess.Popen(
@@ -176,15 +193,20 @@ def main(args):
         if realsense_listen_log is not None:
             close_log(realsense_listen_log)
 
-        if openni2_driver_p is not None:
-            close_process(openni2_driver_p)
-        if openni2_driver_log is not None:
-            close_log(openni2_driver_log)
+        if structure_driver_p is not None:
+            close_process(structure_driver_p)
+        if structure_driver_log is not None:
+            close_log(structure_driver_log)
 
         if azure_driver_p is not None:
             close_process(azure_driver_p)
         if azure_driver_log is not None:
             close_log(azure_driver_log)
+
+        if realsense_driver_p is not None:
+            close_process(realsense_driver_p)
+        if realsense_driver_log is not None:
+            close_log(realsense_driver_log)
 
         if add_sensor_frame_p is not None:
             close_process(add_sensor_frame_p)
