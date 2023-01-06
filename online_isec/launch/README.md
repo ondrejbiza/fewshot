@@ -1,3 +1,36 @@
+Start:
+
+roslaunch ur_robot_driver ur5_bringup.launch robot_ip:=10.75.15.199 limited:=true headless_mode:=true
+
+sudo chmod 777 /dev/ttyUSB0
+rosrun robotiq_c_model_control CModelRtuNode.py /dev/ttyUSB0
+
+rostopic hz /cam1/depth/color/points
+rostopic hz /k4a/depth_registered/points
+rostopic hz /camera/depth/points
+
+cd ~/catkin_ws/src/fewshot/online_isec/launch
+roslaunch realsense.launch
+roslaunch azure.launch
+roslaunch openni2_launch openni2.launch
+python add_sensor_frame.py 
+
+Calibrate:
+
+Stop python add_sensor_frame.py.
+Optionally set <arg name="ordered_pc" value="false"/> in realsense.launch to speed up rviz.
+
+tab1:
+roslaunch ur5_moveit_config ur5_moveit_planning_execution.launch
+
+tab2:
+roslaunch ur5_moveit_config moveit_rviz.launch config:=true
+
+tab3:
+sudo su
+source /home/ur5/.bashrc
+python keyboard_py.py base_link cam1_color_optical_frame 0.513 0.551 0.767 quaternion -0.2546 0.6516 -0.2704 0.6615 50
+
 # stack
 
 Left: structure sensor
@@ -26,6 +59,7 @@ https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy
     ```
    rostopic hz /k4a/depth_registered/points
    rostopic hz /cam1/depth/color/points
+   rostopic hz /camera/
    ```
 3. Start gripper driver.
     ```
