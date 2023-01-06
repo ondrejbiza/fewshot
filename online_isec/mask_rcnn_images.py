@@ -83,6 +83,7 @@ def main(args):
 
         masks = masks.transpose((1, 2, 0))
         masks = (masks > args.mask_threshold).astype(np.int32)
+        print(masks.shape)
 
         display_instances(color_image, boxes, masks, labels, coco_class_names, scores=scores, show_bbox=True, ax=ax)
         plt.pause(0.1)

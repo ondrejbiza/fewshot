@@ -24,8 +24,8 @@ https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy
     ```
 2. Open subscriber
     ```
-   rostopic hz /k4a/points2
-   rostopic hz /camera/depth/points
+   rostopic hz /k4a/depth_registered/points
+   rostopic hz /cam1/depth/color/points
    ```
 3. Start gripper driver.
     ```
