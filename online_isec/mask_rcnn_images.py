@@ -63,12 +63,6 @@ def main(args):
         if len(segm_d["labels"]) == 0:
             continue
 
-        # I would need to filter by instances here. Doesn't display class labels.
-        # segm = segm_d["masks"][:, 0]
-        # images = draw_segmentation_masks((image_pt[0].cpu() * 255).type(torch.uint8), segm.cpu() > 0.5)
-        # images = images.permute((1, 2, 0))
-        # images = images.cpu().numpy()
-
         boxes = segm_d["boxes"].numpy()
         masks = segm_d["masks"][:, 0].numpy()
         labels = segm_d["labels"].numpy()
@@ -81,11 +75,9 @@ def main(args):
         labels = labels[m]
         scores = scores[m]
 
-        masks = masks.transpose((1, 2, 0))
-        masks = (masks > args.mask_threshold).astype(np.int32)
-        print(masks.shape)
+        masks = (masks > args.mask_threshold).astype(np.uint8)
 
-        display_instances(color_image, boxes, masks, labels, coco_class_names, scores=scores, show_bbox=True, ax=ax)
+        display_instances(ax, color_image, boxes, masks, labels, coco_class_names, scores)
         plt.pause(0.1)
 
 
