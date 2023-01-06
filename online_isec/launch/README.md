@@ -5,14 +5,14 @@ roslaunch ur_robot_driver ur5_bringup.launch robot_ip:=10.75.15.199 limited:=tru
 sudo chmod 777 /dev/ttyUSB0
 rosrun robotiq_c_model_control CModelRtuNode.py /dev/ttyUSB0
 
+rostopic hz /camera/depth/points
 rostopic hz /cam1/depth/color/points
 rostopic hz /k4a/depth_registered/points
-rostopic hz /camera/depth/points
 
 cd ~/catkin_ws/src/fewshot/online_isec/launch
+roslaunch openni2_launch openni2.launch
 roslaunch realsense.launch
 roslaunch azure.launch
-roslaunch openni2_launch openni2.launch
 python add_sensor_frame.py 
 
 Calibrate:

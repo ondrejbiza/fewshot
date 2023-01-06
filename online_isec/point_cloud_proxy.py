@@ -18,15 +18,13 @@ import utils
 
 @dataclass
 class PointCloudProxy:
-    # from the original code:
-    # topics: Tuple[str] = ("/camera/depth/points", "/k4a/points2", "/cam1/depth/points")
-
-    # (realsense, azure)
-    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points")
-    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", None)
-    heights: Tuple[int, ...] = (720, 720)
-    widths: Tuple[int, ...] = (1280, 1280)
-    nans_in_pc: Tuple[bool, ...] = (False, True)
+    # (realsense, azure, structure)
+    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points", "/camera/depth/points")
+    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", None, None)
+    save_image: Tuple[bool, ...] = (True, True, False)
+    heights: Tuple[int, ...] = (720, 720, 480)
+    widths: Tuple[int, ...] = (1280, 1280, 640)
+    nans_in_pc: Tuple[bool, ...] = (False, True, True)
 
     desk_center: Tuple[float, float] = (-0.527, -0.005)
     z_min: float = -0.07
@@ -54,18 +52,18 @@ class PointCloudProxy:
         self.pc_subs = []
         self.image_subs = []
         for i in range(len(self.pc_topics)):
-            save_image = self.image_topics[i] is None
+            save_image_from_pc = (self.image_topics[i] is None) and self.save_image[i]
             # Get point clouds.
             self.pc_subs.append(rospy.Subscriber(self.pc_topics[i], PointCloud2, functools.partial(
                 self.pc_callback, camera_index=i, width=self.widths[i], height=self.heights[i], nans_in_pc=self.nans_in_pc[i],
-                save_image=save_image
+                save_image=save_image_from_pc
             ), queue_size=1))
 
             # Some point clouds return blank RGB values for depth pixels that do not have a valid value.
             # This means we will get an ugly image from the XYZRGB point cloud.
             # Hence, we need to have one subscriber for the point cloud and one for the image.
             # It is important to make sure the image and the point cloud are aligned (i.e. image.reshape(-1, 3)[mask] ~= cloud[..., 3: 6]).
-            if not save_image:
+            if self.image_topics[i] is not None:
                 self.image_subs.append(
                     rospy.Subscriber(self.image_topics[i], Image, functools.partial(self.image_callback, camera_index=i),
                     queue_size=1))
@@ -77,21 +75,26 @@ class PointCloudProxy:
         # Get XYZRGB point cloud from a message.
         cloud_frame = msg.header.frame_id
         pc = ros_numpy.numpify(msg)
-        pc = ros_numpy.point_cloud2.split_rgb_field(pc)
+        if save_image:
+            pc = ros_numpy.point_cloud2.split_rgb_field(pc)
 
+        # Get point cloud.
         cloud = np.zeros((height * width, 6), dtype=np.float32)
         cloud[:, 0] = np.resize(pc["x"], height * width)
         cloud[:, 1] = np.resize(pc["y"], height * width)
         cloud[:, 2] = np.resize(pc["z"], height * width)
-        cloud[:, 3] = np.resize(pc["r"], height * width)
-        cloud[:, 4] = np.resize(pc["g"], height * width)
-        cloud[:, 5] = np.resize(pc["b"], height * width)
 
-        # We want to keep the raw image in uint8 format.
-        image = cloud[:, 3: 6].reshape(height, width, 3).astype(np.uint8)
+        if save_image:
+            # Get point colors.
+            cloud[:, 3] = np.resize(pc["r"], height * width)
+            cloud[:, 4] = np.resize(pc["g"], height * width)
+            cloud[:, 5] = np.resize(pc["b"], height * width)
 
-        # On the other hand, we'll keep point cloud RGB values in 0-1 floats.
-        cloud[:, 3: 6] /= 255.
+            # We want to keep the raw image in uint8 format.
+            image = cloud[:, 3: 6].reshape(height, width, 3).astype(np.uint8)
+
+            # On the other hand, we'll keep point cloud RGB values in 0-1 floats.
+            cloud[:, 3: 6] /= 255.
 
         if nans_in_pc:
             # Mask out NANs and keep the mask so that we can go from image to PC.
@@ -137,6 +140,27 @@ class PointCloudProxy:
             return self.clouds[camera_index], self.images[camera_index], self.masks[camera_index]
 
 
+@dataclass
+class RealsenseAzureProxy:
+    # (realsense, azure)
+    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points")
+    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", None)
+    save_image: Tuple[bool, ...] = (True, True)
+    heights: Tuple[int, ...] = (720, 720)
+    widths: Tuple[int, ...] = (1280, 1280)
+    nans_in_pc: Tuple[bool, ...] = (False, True)
+
+
+@dataclass
+class StructureProxy(PointCloudProxy):
+    pc_topics: Tuple[str, ...] = ("/camera/depth/points",)
+    image_topics: Tuple[Optional[str], ...] = (None,)
+    save_image: Tuple[bool, ...] = (False,)
+    heights: Tuple[int, ...] = (480,)
+    widths: Tuple[int, ...] = (640,)
+    nans_in_pc: Tuple[bool, ...] = (True,)
+
+
 if __name__ == "__main__":
     import time
     import open3d as o3d
@@ -147,23 +171,25 @@ if __name__ == "__main__":
     pc_proxy = PointCloudProxy()
     time.sleep(2)
 
-    camera_index = 0
+    camera_index = 1
     cloud, image, mask = pc_proxy.get(camera_index)
 
-    if cloud is None or image is None:
+    if cloud is None:
         print("Something went wrong.")
         exit(1)
 
     print("PC size:", cloud.shape)
-    print("Image size:", image.shape)
+    if image is not None:
+        print("Image size:", image.shape)
     print("Mask size:", mask.shape)
 
-    print("Showing RGB image.")
-    plt.imshow(image)
-    plt.show()
+    if image is not None:
+        print("Showing RGB image.")
+        plt.imshow(image)
+        plt.show()
 
     print("Showing mask.")
-    plt.imshow(mask.reshape(image.shape[0], image.shape[1]).astype(np.float32))
+    plt.imshow(mask.reshape(pc_proxy.heights[camera_index], pc_proxy.widths[camera_index]).astype(np.float32))
     plt.show()
 
     print("Showing point cloud.")
@@ -174,5 +200,7 @@ if __name__ == "__main__":
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(utils.rotate_for_open3d(points))
-    pcd.colors = o3d.utility.Vector3dVector(colors)
+    if image is not None:
+        # If image is None, force open3d to use default colors.
+        pcd.colors = o3d.utility.Vector3dVector(colors)
     o3d.visualization.draw_geometries([pcd])
