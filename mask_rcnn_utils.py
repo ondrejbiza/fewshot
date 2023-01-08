@@ -120,7 +120,7 @@ def random_colors(N: int, bright: bool=True):
 
 
 def display_instances(ax, image: NDArray, boxes: Optional[NDArray]=None, masks: Optional[NDArray]=None,
-                        class_ids: Optional[NDArray]=None, class_names: Optional[Lis[str]]=None, scores: Optional[NDArray]=None):
+                        class_ids: Optional[NDArray]=None, class_names: Optional[List[str]]=None, scores: Optional[NDArray]=None):
 
     assert boxes is not None or masks is not None
 

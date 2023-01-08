@@ -7,7 +7,6 @@ import torch
 from torchvision.models import detection
 from torchvision.utils import draw_segmentation_masks
 import rospy
-from mask_rcnn_utils import display_instances, coco_class_names
 from online_isec.point_cloud_proxy import PointCloudProxy
 from transformers import OwlViTProcessor, OwlViTForObjectDetection
 from transformers.image_utils import ImageFeatureExtractionMixin
@@ -36,7 +35,7 @@ def main(args):
     model.eval()
     processor = OwlViTProcessor.from_pretrained(checkpoint_name)
     # text_queries = ["mug", "cup", "measuring cup", "mug tree", "top of a mug", "mug from the top", "mug from top", "glass"]
-    text_queries = ["mug", "mug tree"]
+    text_queries = ["mug"]
 
     # setup camera
     rospy.init_node("mask_rcnn_images")

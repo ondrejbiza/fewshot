@@ -29,7 +29,7 @@ class PointCloudProxy:
     desk_center: Tuple[float, float] = (-0.527, -0.005)
     z_min: float = -0.07
     obs_clip_offset: float = 0.0
-    desk_offset: float = 0.05
+    desk_offset: float = 0.05  # TODO: what is this?
 
     def __post_init__(self):
 
@@ -141,7 +141,7 @@ class PointCloudProxy:
 
 
 @dataclass
-class RealsenseAzureProxy:
+class RealsenseAzureProxy(PointCloudProxy):
     # (realsense, azure)
     pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points")
     image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", None)
