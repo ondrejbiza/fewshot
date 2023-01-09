@@ -2,6 +2,7 @@ from typing import Tuple, Dict, List, Any, Optional
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA
+from scipy.spatial.transform import Rotation
 import pybullet as pb
 import open3d as o3d
 import torch
@@ -613,3 +614,28 @@ def place_object(object: int, floor: int, placed_objects: List[int],
             continue
 
         break
+
+
+def transform_pointcloud_2(cloud: NDArray, T: NDArray, is_position: bool=True) -> NDArray:
+  # TODO: what's up with transform_pointcloud?
+  n = cloud.shape[0]
+  cloud = cloud.T
+  augment = np.ones((1, n)) if is_position else np.zeros((1, n))
+  cloud = np.concatenate((cloud, augment), axis=0)
+  cloud = np.dot(T, cloud)
+  # TODO: divide by the fourth coordinate?
+  cloud = cloud[0: 3, :].T
+  return cloud
+
+
+def rotate_for_open3d(pc):
+    # Going from realsense to open3d, the point cloud will be upside down and rotated opposite to the camera angle.
+    mat = Rotation.from_euler("zyx", (np.pi, np.pi, 0.)).as_matrix()
+    return np.matmul(pc, mat)
+
+
+def update_open3d_pointcloud(pcd: o3d.geometry.PointCloud, vertices: np.ndarray, colors: Optional[np.ndarray]=None):
+
+    pcd.points = o3d.utility.Vector3dVector(vertices)
+    if colors is not None:
+        pcd.colors = o3d.utility.Vector3dVector(colors)

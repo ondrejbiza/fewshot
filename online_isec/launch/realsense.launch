@@ -1,0 +1,24 @@
+<launch>
+<include file="$(find realsense2_camera)/launch/rs_camera.launch">
+<arg name="camera" value="cam1"/>
+<arg name="clip_distance" value="1.3"/>
+<!-- pointcloud filter publishes /cam1/depth/color/points. -->
+<arg name="filters" value="pointcloud"/>
+<!-- Order PC makes sure we can resize the point cloud into an image.-->
+<arg name="ordered_pc" value="true"/>
+<!-- Align depth will change the size of the point cloud! 
+I believe it's because the point cloud was previously aligned to depth.
+Now it should be aligned to the RGB camera.
+ -->
+<arg name="align_depth" value="true"/>
+<!-- <arg name="depth_pcloud_enable" value="true"/> -->
+<!-- <node pkg="dynamic_reconfigure" type="dynparam" args="set sc_nodelet depth_range_mode 2"/> -->
+</include>
+<!--   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" /> -->
+<!--   <node pkg="nodelet" type="nodelet" name="nodelet1" -->
+<!--         args="load depth_image_proc/point_cloud_xyz nodelet_manager"> -->
+<!--     <remap from="camera_info" to="/cam1/depth/camera_info"/> -->
+<!--     <remap from="image_rect" to="/cam1/depth/image_rect_raw"/> -->
+<!--     <remap from="points" to="/cam1/depth/points"/> -->
+<!--   </node> -->
+</launch>
