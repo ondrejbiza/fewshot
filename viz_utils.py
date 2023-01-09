@@ -40,7 +40,7 @@ def show_scene(point_clouds: Dict[int, NDArray], background: Optional[NDArray]=N
     if background is not None:
         points = np.concatenate([points, background], axis=0)
         background_colors = np.zeros_like(background)
-        background_colors[:] = 0.9
+        background_colors[:] = 0.7
         point_colors = np.concatenate([point_colors, background_colors], axis=0)
 
     pcd = o3d.geometry.PointCloud()
