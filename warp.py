@@ -68,7 +68,7 @@ def main(args):
         mesh_reconstruction = trimesh.base.Trimesh(
             vertices=new_obj[:len(canonical_mesh_points)], faces=canonical_mesh_faces
         )
-        mesh_reconstruction.show()
+        mesh_reconstruction.show(smooth=False)
 
     for s in sliders:
         s.on_changed(sliders_on_changed)
