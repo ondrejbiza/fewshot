@@ -27,10 +27,11 @@ def main():
         obj = load_object_create_verts(
             obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation)
         objs.append(obj)
+    obj_points = [x["points"] for x in objs]
 
     pc = example_pc
-    for i in range(len(objs)):
-        tmp = np.copy(objs[i])
+    for i in range(len(obj_points)):
+        tmp = np.copy(obj_points[i])
         tmp[..., 0] += (i + 1) * 0.2
         pc = np.concatenate([pc, tmp])
 

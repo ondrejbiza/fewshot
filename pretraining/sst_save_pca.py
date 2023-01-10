@@ -36,33 +36,37 @@ def main(args):
                 obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation)
             objs.append(obj)
 
-    tmp = np.concatenate(objs, axis=0)
+    obj_points = [x["points"] for x in objs]
+
+    tmp = np.concatenate(obj_points, axis=0)
     print("PC stats:")
     print("x min {:f} x max {:f} x mean {:f}".format(tmp[:, 0].min(), tmp[:, 0].max(), tmp[:, 0].mean()))
     print("y min {:f} y max {:f} y mean {:f}".format(tmp[:, 1].min(), tmp[:, 1].max(), tmp[:, 1].mean()))
     print("z min {:f} z max {:f} z mean {:f}".format(tmp[:, 2].min(), tmp[:, 2].max(), tmp[:, 2].mean()))
 
     print("Picking canonical object.")
-    canonical_idx = pick_canonical(objs)
+    canonical_idx = pick_canonical(obj_points)
     print("Canonical obj index: {:d}.".format(canonical_idx))
 
     if args.show:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        for i, obj in enumerate(objs):
+        for i, obj in enumerate(obj_points):
             if i == canonical_idx:
                 ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color=[1., 0., 0., 1.])
             else:
                 ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color=[0.9, 0.9, 0.9, 0.5])
         plt.show()
 
-    warps = warp_gen(canonical_idx, objs, scale_factor=args.scale, visualize=args.show)
+    warps = warp_gen(canonical_idx, obj_points, scale_factor=args.scale, visualize=args.show)
     components, pca = pca_transform(warps, n_dimensions=args.n_dimensions)
 
     with open(args.save_path, "wb") as f:
         pickle.dump({
             "pca": pca,
-            "canonical_obj": objs[canonical_idx],
+            "canonical_obj": obj_points[canonical_idx],
+            "canonical_mesh_points": objs[canonical_idx]["mesh_points"],
+            "canonical_mesh_faces": objs[canonical_idx]["faces"],
             "scale": args.scale
         }, f)
 
