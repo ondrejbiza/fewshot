@@ -2,6 +2,7 @@
 .vscode
 .lcov
 venv/
+/data/ndf_objects/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

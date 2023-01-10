@@ -1,5 +1,6 @@
 from functools import partial
 import numpy as np
+from numpy.typing import NDArray
 import matplotlib.pyplot as plt
 import torch
 import trimesh
@@ -15,10 +16,25 @@ def load_object(obj_path):
     return trimesh.load(obj_path)
 
 
-def load_object_create_verts(obj_path, voxel_size=0.015, center=True):
+def load_object_create_verts(obj_path, voxel_size=0.015, center=True, scale=None, rotation=None):
     # loads a mesh (STL), samples  points from its watertight mesh using voxelization
     # !!! centers the resulting point cloud, but doesn't scale it
     mesh = trimesh.load(obj_path)
+
+    if scale is not None or rotation is not None:
+        # Apply transforms.
+        transform = np.eye(3)
+        if scale is not None:
+            transform[0, 0] *= scale
+            transform[1, 1] *= scale
+            transform[2, 2] *= scale
+        if rotation is not None:
+            transform = np.matmul(rotation, transform)
+
+        tmp = np.eye(4)
+        tmp[:3, :3] = transform
+        mesh.apply_transform(tmp)
+
     voxels = vcreate.voxelize(mesh, voxel_size)
     verts = np.array(voxels.points, dtype=np.float32)
     print("Num. vertices: {:d}".format(len(verts)))
@@ -30,13 +46,19 @@ def load_object_create_verts(obj_path, voxel_size=0.015, center=True):
     return verts
 
 
-def cost(source, target):
+def cost(source: NDArray, target: NDArray) -> float:
 
     total_cost = 0
     for point in source:
         idx = (np.sum(np.abs(point - target), axis=1)).argmin()
         total_cost += np.linalg.norm(point - target[idx])
-    return total_cost
+    return total_cost / len(source)  # TODO: test averaging instead of sum
+
+
+def cost_batch(source: NDArray, target: NDArray) -> float:
+
+    idx = np.sum(np.abs(source[None, :] - target[:, None]), axis=2).argmin(axis=0)
+    return np.mean(np.linalg.norm(source - target[idx], axis=1))  # TODO: test averaging instead of sum
 
 
 def cost_pt(source, target):
@@ -75,10 +97,11 @@ def pick_canonical(known_pts):
 
     overall_costs = []
     for i in range(len(known_pts)):
+        print(i)
         cost_per_target = []
         for j in range(len(known_pts)):
             if i != j:
-                cost_per_target.append(cost(known_pts[i], known_pts[j]))
+                cost_per_target.append(cost_batch(known_pts[i], known_pts[j]))
         overall_costs.append(np.mean(cost_per_target))
     print("overall costs: {:s}".format(str(overall_costs)))
     return np.argmin(overall_costs)
