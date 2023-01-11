@@ -5,7 +5,8 @@
 <!-- pointcloud filter publishes /cam1/depth/color/points. -->
 <arg name="filters" value="pointcloud"/>
 <!-- Order PC makes sure we can resize the point cloud into an image.-->
-<arg name="ordered_pc" value="true"/>
+<!-- <arg name="ordered_pc" value="true"/> -->
+
 <!-- Align depth will change the size of the point cloud! 
 I believe it's because the point cloud was previously aligned to depth.
 Now it should be aligned to the RGB camera.

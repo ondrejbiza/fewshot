@@ -10,7 +10,7 @@ from torchvision.models import detection
 from torchvision.utils import draw_segmentation_masks
 import rospy
 from mask_rcnn_utils import display_instances
-from online_isec.point_cloud_proxy import PointCloudProxy
+from online_isec.point_cloud_proxy_with_images import PointCloudProxy
 import mask2former_utils
 
 from detectron2.utils.visualizer import GenericMask

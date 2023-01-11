@@ -6,6 +6,7 @@ sudo chmod 777 /dev/ttyUSB0
 rosrun robotiq_c_model_control CModelRtuNode.py /dev/ttyUSB0
 
 rostopic hz /camera/depth/points
+rostopic hz /camera/ir/image
 rostopic hz /cam1/depth/color/points
 rostopic hz /k4a/depth_registered/points
 

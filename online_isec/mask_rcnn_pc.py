@@ -15,7 +15,7 @@ from torchvision.models import detection
 import mask_rcnn_utils
 import utils
 import rospy
-from online_isec.point_cloud_proxy import PointCloudProxy
+from online_isec.point_cloud_proxy_with_images import PointCloudProxy
 
 X_MIN = 540
 X_MAX = 1040

@@ -7,7 +7,7 @@ import torch
 from torchvision.models import detection
 from torchvision.utils import draw_segmentation_masks
 import rospy
-from online_isec.point_cloud_proxy import PointCloudProxy
+from online_isec.point_cloud_proxy_with_images import PointCloudProxy
 from transformers import OwlViTProcessor, OwlViTForObjectDetection
 from transformers.image_utils import ImageFeatureExtractionMixin
 from PIL import Image

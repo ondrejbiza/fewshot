@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
-from online_isec.point_cloud_proxy import StructureProxy
+from online_isec.point_cloud_proxy_with_images import StructureProxy
 import utils
 
 

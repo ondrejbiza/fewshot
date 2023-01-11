@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
-from online_isec.point_cloud_proxy import StructureProxy
+from online_isec.point_cloud_proxy_with_images import StructureProxy
 import utils
 import viz_utils
 
@@ -66,7 +66,7 @@ def main():
     o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(tree_pc)])
 
     # load canonical objects
-    with open("data/mugs_pca.pkl", "rb") as f:
+    with open("data/ndf_mugs_pca_8_dim.npy", "rb") as f:
         canon_mug = pickle.load(f)
     with open("data/simple_trees_pca.pkl", "rb") as f:
         canon_tree = pickle.load(f)
