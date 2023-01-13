@@ -7,21 +7,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
-from online_isec.point_cloud_proxy_with_images import StructureProxy
+from online_isec.point_cloud_proxy import PointCloudProxy
 import utils
 import viz_utils
 
 
 def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size: float=0.2) -> NDArray:
 
+    print(cloud[..., 0].min(), cloud[..., 0].max(), cloud[..., 1].min(), cloud[..., 1].max(), cloud[..., 2].min(), cloud[..., 2].max())
+
     cloud = np.copy(cloud)
     cloud[..., 0] -= desk_center[0]
     cloud[..., 1] -= desk_center[1]
     cloud[..., 2] -= desk_center[2]
 
+    print(cloud[..., 0].min(), cloud[..., 0].max(), cloud[..., 1].min(), cloud[..., 1].max(), cloud[..., 2].min(), cloud[..., 2].max())
+
     mask = np.logical_and(np.abs(cloud[..., 0]) <= size, np.abs(cloud[..., 1]) <= size)
+    print(np.sum(mask), np.prod(mask.shape))
     mask = np.logical_and(mask, cloud[..., 2] >= 0)
+    print(np.sum(mask), np.prod(mask.shape))
     mask = np.logical_and(mask, cloud[..., 2] <= 2 * size)
+    print(np.sum(mask), np.prod(mask.shape))
     return cloud[mask]
 
 
@@ -50,14 +57,21 @@ def cluster_objects(cloud: NDArray) -> Tuple[NDArray, NDArray]:
 def main():
 
     rospy.init_node("easy_perception")
-    pc_proxy = StructureProxy()
+    pc_proxy = PointCloudProxy()
     time.sleep(2)
 
-    cloud, _, _ = pc_proxy.get(0)
+    cloud = pc_proxy.get_all()
     assert cloud is not None
+
+    print("pc:")
+    o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
 
     cloud = cloud[..., :3]
     cloud = mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min))
+
+    print("masked pc:")
+    o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
+
     mug_pc, tree_pc = cluster_objects(cloud)
 
     print("mug:")

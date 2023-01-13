@@ -35,9 +35,9 @@ if __name__ == '__main__':
     # Hand calibration. Use this if align_depth is false in the realsense.launch config.
     # br.sendTransform((0.778, -0.094, 0.431), (0.4147, -0.0251, -0.9096, -0.0023), rospy.Time.now(), "cam1_depth_frame", "base_link")
     # Hand calibration.
-    # br.sendTransform((0.779, -0.022, 0.43), (-0.6558, -0.6589, 0.2725, 0.248), rospy.Time.now(), "cam1_color_optical_frame", "base_link")  # TODO: calibrate
+    br.sendTransform((0.779, -0.022, 0.43), (-0.6558, -0.6589, 0.2725, 0.248), rospy.Time.now(), "cam1_color_optical_frame", "base_link")  # TODO: calibrate
     # Automatic calibration.
-    br.sendTransform((-0.78480323, 0.04703094, 0.44310847), (-0.65515551, 0.66065954, -0.24920589, 0.26869435), rospy.Time.now(), "cam1_color_optical_frame", "base")
+    # br.sendTransform((-0.78480323, 0.04703094, 0.44310847), (-0.65515551, 0.66065954, -0.24920589, 0.26869435), rospy.Time.now(), "cam1_color_optical_frame", "base")
   
     # azure
     # Hand calibration.

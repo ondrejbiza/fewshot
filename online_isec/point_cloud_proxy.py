@@ -2,6 +2,7 @@ from typing import Tuple, Optional
 from dataclasses import dataclass
 from numpy.typing import NDArray
 import functools
+import time
 
 from threading import Lock
 import numpy as np
@@ -70,15 +71,32 @@ class PointCloudProxy:
         T = self.tf_proxy.lookup_transform(cloud_frame, "base", rospy.Time(0))
         cloud[:, :3] = utils.transform_pointcloud_2(cloud[:, :3], T)
 
-        time.sleep(1.)
         with self.locks[camera_index]:
             self.msgs[camera_index] = msg
             self.clouds[camera_index] = cloud
+
+        time.sleep(0.5)
 
     def get(self, camera_index: int) -> Optional[NDArray]:
 
         with self.locks[camera_index]:
             return self.clouds[camera_index]
+
+    def get_all(self) -> Optional[NDArray]:
+
+        for lock in self.locks:
+            lock.acquire()
+
+        clouds = []
+        for cloud in self.clouds:
+            if cloud is not None:
+                clouds.append(cloud)
+        clouds = np.concatenate(clouds)
+
+        for lock in self.locks:
+            lock.release()
+
+        return clouds
 
 
 if __name__ == "__main__":
