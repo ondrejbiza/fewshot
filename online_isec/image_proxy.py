@@ -22,6 +22,7 @@ from online_isec.tf_proxy import TFProxy
 @dataclass
 class ImageProxy:
     # (realsense, azure, structure)
+    # image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", "/k4a/rgb_to_depth/image_raw", "/camera/ir/image")
     image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", "/k4a/rgb/image_rect_color", "/camera/ir/image")
     heights: Tuple[int, ...] = (720, 720, 480)
     widths: Tuple[int, ...] = (1280, 1280, 640)

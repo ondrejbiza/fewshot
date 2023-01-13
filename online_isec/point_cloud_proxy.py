@@ -16,6 +16,7 @@ import tf2_ros
 import utils
 
 from online_isec.tf_proxy import TFProxy
+from online_isec import constants
 
 
 @dataclass
@@ -24,8 +25,8 @@ class PointCloudProxy:
     pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points", "/camera/depth/points")
     nans_in_pc: Tuple[bool, ...] = (False, True, True)
 
-    desk_center: Tuple[float, float] = (-0.527, -0.005)
-    z_min: float = -0.07
+    desk_center: Tuple[float, float] = (constants.DESK_CENTER[0], constants.DESK_CENTER[1])
+    z_min: float = constants.DESK_CENTER[2]
     obs_clip_offset: float = 0.0
     desk_offset: float = 0.05  # TODO: what is this?
 

@@ -47,3 +47,24 @@ def show_scene(point_clouds: Dict[int, NDArray], background: Optional[NDArray]=N
     pcd.points = o3d.utility.Vector3dVector(points)
     pcd.colors = o3d.utility.Vector3dVector(point_colors)
     o3d_visualize(pcd)
+
+
+def draw_square(img: np.ndarray, x: int, y: int, square_size=20, copy=False, intensity: float=1.):
+
+    size = square_size // 2
+    x_limits = [x - size, x + size]
+    y_limits = [y - size, y + size]
+    for i in range(len(x_limits)):
+        x_limits[i] = min(img.shape[0], max(0, x_limits[i]))
+    for i in range(len(y_limits)):
+        y_limits[i] = min(img.shape[1], max(0, y_limits[i]))
+
+    if copy:
+        img = np.array(img, dtype=img.dtype)
+
+    if img.dtype == np.uint8:
+        img[x_limits[0]: x_limits[1], y_limits[0]: y_limits[1]] = int(255 * intensity)
+    else:
+        img[x_limits[0]: x_limits[1], y_limits[0]: y_limits[1]] = intensity
+
+    return img
