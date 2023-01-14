@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
-from online_isec.point_cloud_proxy import PointCloudProxy
+from online_isec.point_cloud_proxy import PointCloudProxy, RealsenseStructure
 import utils
 import viz_utils
 
@@ -57,14 +57,14 @@ def cluster_objects(cloud: NDArray) -> Tuple[NDArray, NDArray]:
 def main():
 
     rospy.init_node("easy_perception")
-    pc_proxy = PointCloudProxy()
+    pc_proxy = RealsenseStructure()
     time.sleep(2)
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
-    print("pc:")
-    o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
+    # print("pc:")
+    # o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
 
     cloud = cloud[..., :3]
     cloud = mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min))

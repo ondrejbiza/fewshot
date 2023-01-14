@@ -21,7 +21,8 @@ class TFProxy:
         :return: transformation matrix from fromFrame to toFrame
         :rtype: 4x4 np.array
         """
-        transformMsg = self.tf_buffer.lookup_transform(fromFrame, toFrame, lookupTime, rospy.Duration(1.0))
+        # TODO: I might need to swap toFrame and fromFrame for the robot.
+        transformMsg = self.tf_buffer.lookup_transform(toFrame, fromFrame, lookupTime, rospy.Duration(1.0))
         translation = transformMsg.transform.translation
         pos = [translation.x, translation.y, translation.z]
         rotation = transformMsg.transform.rotation

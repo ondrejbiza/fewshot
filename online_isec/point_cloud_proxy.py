@@ -31,6 +31,8 @@ class PointCloudProxy:
     obs_clip_offset: float = 0.0
     desk_offset: float = 0.05  # TODO: what is this?
 
+    apply_transform: bool = True
+
     def __post_init__(self):
 
         self.image = None
@@ -50,7 +52,7 @@ class PointCloudProxy:
                 self.pc_callback, camera_index=i, nans_in_pc=self.nans_in_pc[i]
             ), queue_size=1))
 
-    def pc_callback(self, msg: rospy.Message, camera_index: int, nans_in_pc: bool):
+    def pc_callback(self, msg: PointCloud2, camera_index: int, nans_in_pc: bool):
 
         # Get XYZRGB point cloud from a message.
         cloud_frame = msg.header.frame_id
@@ -68,8 +70,9 @@ class PointCloudProxy:
 
         cloud = cloud[mask]
 
-        T = self.tf_proxy.lookup_transform(cloud_frame, "base", rospy.Time(0))
-        cloud[:, :3] = utils.transform_pointcloud_2(cloud[:, :3], T)
+        if self.apply_transform:
+            T = self.tf_proxy.lookup_transform(cloud_frame, "base", rospy.Time(0))
+            cloud[:, :3] = utils.transform_pointcloud_2(cloud[:, :3], T)
 
         with self.locks[camera_index]:
             self.msgs[camera_index] = msg
@@ -97,6 +100,18 @@ class PointCloudProxy:
             lock.release()
 
         return clouds
+
+    def close(self):
+
+        for sub in self.pc_subs:
+            sub.unregister()
+
+
+@dataclass
+class RealsenseStructurePointCloudProxy(PointCloudProxy):
+    # (realsense, structure)
+    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/camera/depth/points")
+    nans_in_pc: Tuple[bool, ...] = (False, True)
 
 
 if __name__ == "__main__":

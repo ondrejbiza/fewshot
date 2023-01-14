@@ -32,20 +32,18 @@ if __name__ == '__main__':
     # br.sendTransform((0.513, -0.529, 0.841), (0.6798, 0.6427, 0.2918, -0.199), rospy.Time.now(), "depth_camera_link", "base_link")
 
     # realsense
-    # Hand calibration. Use this if align_depth is false in the realsense.launch config.
-    # br.sendTransform((0.778, -0.094, 0.431), (0.4147, -0.0251, -0.9096, -0.0023), rospy.Time.now(), "cam1_depth_frame", "base_link")
-    # Hand calibration.
-    br.sendTransform((0.779, -0.022, 0.43), (-0.6558, -0.6589, 0.2725, 0.248), rospy.Time.now(), "cam1_color_optical_frame", "base_link")  # TODO: calibrate
-    # Automatic calibration.
-    # br.sendTransform((-0.78480323, 0.04703094, 0.44310847), (-0.65515551, 0.66065954, -0.24920589, 0.26869435), rospy.Time.now(), "cam1_color_optical_frame", "base")
-  
+    # Automatic calibration with depths.
+    br.sendTransform((-0.78302526, 0.0488187, 0.44769223), (-0.6538833, 0.66373159, -0.24695839, 0.26628662), rospy.Time.now(), "cam1_color_optical_frame", "base")
+
     # azure
     # Hand calibration.
-    br.sendTransform((0.503, 0.547, 0.762), (-0.2611, 0.649, -0.2638, 0.6641), rospy.Time.now(), "camera_depth_frame", "base_link")
+    # br.sendTransform((0.503, 0.547, 0.762), (-0.2611, 0.649, -0.2638, 0.6641), rospy.Time.now(), "camera_depth_frame", "base_link")
     # Automatic calibration. Doesn't work.
     # br.sendTransform((-0.54775263, -0.04869692, 0.92453691), (0.93359084, -0.00268021, 0.35799047, 0.0156135), rospy.Time.now(), "camera_depth_frame", "base")
+    # br.sendTransform((0., 0., 0.), (1., 0., 0., 0.), rospy.Time.now(), "camera_depth_frame", "base")
 
     # structure
-    br.sendTransform((0.691, -0.833, 0.018), (0.035, 0.664, 0.746, 0.035), rospy.Time.now(), "depth_camera_link", "camera_depth_frame")
+    # Automatic calibration with depths.
+    br.sendTransform((-0.50859704, -0.55556215, 0.77484579), (0.65841246, 0.65057976, 0.262971, -0.27218609), rospy.Time.now(), "camera_depth_optical_frame", "base")
 
     rate.sleep()
