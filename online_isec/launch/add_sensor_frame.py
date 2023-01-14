@@ -32,17 +32,20 @@ if __name__ == '__main__':
     # br.sendTransform((0.513, -0.529, 0.841), (0.6798, 0.6427, 0.2918, -0.199), rospy.Time.now(), "depth_camera_link", "base_link")
 
     # realsense
+    # Automatic calibration with images.
+    # br.sendTransform((-0.779918, 0.043688, 0.449073), (-0.656797, 0.662001, -0.243188, 0.266894), rospy.Time.now(), "cam1_color_optical_frame", "base")
     # Automatic calibration with depths.
     br.sendTransform((-0.78302526, 0.0488187, 0.44769223), (-0.6538833, 0.66373159, -0.24695839, 0.26628662), rospy.Time.now(), "cam1_color_optical_frame", "base")
 
     # azure
-    # Hand calibration.
-    # br.sendTransform((0.503, 0.547, 0.762), (-0.2611, 0.649, -0.2638, 0.6641), rospy.Time.now(), "camera_depth_frame", "base_link")
-    # Automatic calibration. Doesn't work.
-    # br.sendTransform((-0.54775263, -0.04869692, 0.92453691), (0.93359084, -0.00268021, 0.35799047, 0.0156135), rospy.Time.now(), "camera_depth_frame", "base")
-    # br.sendTransform((0., 0., 0.), (1., 0., 0., 0.), rospy.Time.now(), "camera_depth_frame", "base")
+    # Automatic calibration with images.
+    # TODO: only works for /k4a/depth/points, not /k4a/depth_registered/points
+    br.sendTransform((-0.499851, 0.545556, 0.854526), (0.658480, -0.656506, 0.242301, 0.276939), rospy.Time.now(), "rgb_camera_link", "base")
+    br.sendTransform((0., 0., 0.), (1., 0., 0., 0.), rospy.Time.now(), "depth_camera_link", "rgb_camera_link")
 
     # structure
+    # Automatic calibration with images.
+    # br.sendTransform((-0.479379, -0.564626, 0.776313), (0.656418, 0.650506, 0.254785, -0.284680), rospy.Time.now(), "camera_depth_optical_frame", "base")
     # Automatic calibration with depths.
     br.sendTransform((-0.50859704, -0.55556215, 0.77484579), (0.65841246, 0.65057976, 0.262971, -0.27218609), rospy.Time.now(), "camera_depth_optical_frame", "base")
 

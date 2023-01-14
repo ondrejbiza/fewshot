@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
-from online_isec.point_cloud_proxy import PointCloudProxy, RealsenseStructure
+from online_isec.point_cloud_proxy import PointCloudProxy, RealsenseStructurePointCloudProxy
 import utils
 import viz_utils
 
@@ -25,7 +25,7 @@ def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size
 
     mask = np.logical_and(np.abs(cloud[..., 0]) <= size, np.abs(cloud[..., 1]) <= size)
     print(np.sum(mask), np.prod(mask.shape))
-    mask = np.logical_and(mask, cloud[..., 2] >= 0)
+    mask = np.logical_and(mask, cloud[..., 2] >= 0.02)
     print(np.sum(mask), np.prod(mask.shape))
     mask = np.logical_and(mask, cloud[..., 2] <= 2 * size)
     print(np.sum(mask), np.prod(mask.shape))
@@ -57,7 +57,7 @@ def cluster_objects(cloud: NDArray) -> Tuple[NDArray, NDArray]:
 def main():
 
     rospy.init_node("easy_perception")
-    pc_proxy = RealsenseStructure()
+    pc_proxy = RealsenseStructurePointCloudProxy()
     time.sleep(2)
 
     cloud = pc_proxy.get_all()
