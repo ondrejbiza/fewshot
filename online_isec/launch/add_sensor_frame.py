@@ -41,6 +41,7 @@ if __name__ == '__main__':
     # Automatic calibration with images.
     # TODO: only works for /k4a/depth/points, not /k4a/depth_registered/points
     br.sendTransform((-0.499851, 0.545556, 0.854526), (0.658480, -0.656506, 0.242301, 0.276939), rospy.Time.now(), "rgb_camera_link", "base")
+    # TODO: somehow I need to calibrate this
     br.sendTransform((0., 0., 0.), (1., 0., 0., 0.), rospy.Time.now(), "depth_camera_link", "rgb_camera_link")
 
     # structure

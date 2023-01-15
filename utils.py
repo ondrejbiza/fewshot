@@ -454,7 +454,7 @@ def planar_pose_warp_gd(
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
 
 
-def planar_pose_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+def planar_pose_gd(canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
                    lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray]]:
     # find planar pose and warping parameters of a canonical object to match a target point cloud
     assert n_angles > 0 and n_steps > 0
@@ -479,8 +479,6 @@ def planar_pose_gd(pca: PCA, canonical_obj: NDArray, points: NDArray, device: st
             torch.tensor([start_pose], dtype=torch.float32, device=device),
             requires_grad=True
         )
-        means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
-        components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
         canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
         points_pt = torch.tensor(points, dtype=torch.float32, device=device)
 

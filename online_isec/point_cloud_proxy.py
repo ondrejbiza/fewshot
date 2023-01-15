@@ -78,8 +78,6 @@ class PointCloudProxy:
             self.msgs[camera_index] = msg
             self.clouds[camera_index] = cloud
 
-        time.sleep(0.5)
-
     def get(self, camera_index: int) -> Optional[NDArray]:
 
         with self.locks[camera_index]:
