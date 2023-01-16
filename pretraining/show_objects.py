@@ -23,7 +23,7 @@ def main():
         "5c48d471200d2bf16e8a121e6886e18d", "5d72df6bc7e93e6dd0cd466c08863ebd", "5fe74baba21bba7ca4eec1b19b3a18f8",
         "6aec84952a5ffcf33f60d03e1cb068dc"]
     obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
-    scale = 0.2
+    scale = 0.14
     rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
     voxel_size = 0.0075  # usually 2k to 3k
 
