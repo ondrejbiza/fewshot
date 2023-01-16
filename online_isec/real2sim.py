@@ -116,7 +116,7 @@ def main(args):
         o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(tree_pc)])
 
     # load canonical objects
-    with open("data/ndf_mugs_pca_8_dim.npy", "rb") as f:
+    with open("data/ndf_mugs_pca_4_dim.npy", "rb") as f:
         canon_mug = pickle.load(f)
     with open("data/real_tree_pc.pkl", "rb") as f:
         canon_tree = pickle.load(f)
@@ -134,7 +134,7 @@ def main(args):
 
     # TODO: Resolution=1M was taking too long, but resolution=100k is not very good.
     convex_meshes = trimesh.decomposition.convex_decomposition(
-        mesh, resolution=100000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
+        mesh, resolution=1000000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
         alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
         convexhullApproximation=1, oclDeviceID=0
     )
