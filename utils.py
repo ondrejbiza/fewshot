@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Any, Optional
+from typing import Tuple, Dict, List, Any, Optional, Union
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA
@@ -8,6 +8,7 @@ import open3d as o3d
 import torch
 from torch import nn
 from torch import optim
+import cv2
 
 from pybullet_planning.pybullet_tools import utils as pu
 from exceptions import PlanningError, EnvironmentSetupError
@@ -637,3 +638,31 @@ def update_open3d_pointcloud(pcd: o3d.geometry.PointCloud, vertices: np.ndarray,
     pcd.points = o3d.utility.Vector3dVector(vertices)
     if colors is not None:
         pcd.colors = o3d.utility.Vector3dVector(colors)
+
+
+def pos_quat_to_transform(pos: Union[Tuple[float, float, float], NDArray], quat: Union[Tuple[float, float, float, float], NDArray]) -> NDArray[np.float32]:
+
+  T = np.eye(4).astype(np.float32)
+  T[:3, 3] = pos
+  T[:3, :3] = Rotation.from_quat(quat).as_matrix()
+  return T
+
+
+def transform_to_pos_quat(T: NDArray) -> Tuple[NDArray[np.float32], NDArray[np.float32]]:
+
+  pos = T[:3, 3].astype(np.float32)
+  quat = Rotation.from_matrix(T[:3, :3]).as_quat().astype(np.float32)
+  return pos, quat
+
+
+def update_opencv_window(image: NDArray) -> bool:
+
+    cv2.namedWindow("RealSense", cv2.WINDOW_AUTOSIZE)
+    cv2.imshow("RealSense", image)
+
+    key = cv2.waitKey(1)
+    if key & 0xFF == ord("q") or key == 27:
+        cv2.destroyAllWindows()
+        return True
+
+    return False

@@ -43,7 +43,6 @@ class ImageProxy:
     def image_callback(self, msg: rospy.Message, camera_index: int):
 
         image = ros_numpy.numpify(msg)
-        time.sleep(0.5)
         with self.locks[camera_index]:
             self.images[camera_index] = image
 

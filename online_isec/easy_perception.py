@@ -17,6 +17,7 @@ def cluster_objects_and_show(cloud: NDArray):
     pcd.points = o3d.utility.Vector3dVector(utils.rotate_for_open3d(cloud))
 
     labels = np.array(pcd.cluster_dbscan(eps=0.05, min_points=10))
+    print("Labels:", np.unique(labels))
 
     max_label = labels.max()
     colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
