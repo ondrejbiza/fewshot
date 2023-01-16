@@ -308,7 +308,7 @@ def yaw_to_rot_pt(yaw: torch.Tensor) -> torch.Tensor:
     ], dim=0)
 
 
-def create_o3d_pointcloud(points: NDArray, colors: Optional[NDArray]=None):
+def create_o3d_pointcloud(points: NDArray, colors: Optional[NDArray]=None) -> o3d.geometry.PointCloud:
 
   pcd = o3d.geometry.PointCloud()
   pcd.points = o3d.utility.Vector3dVector(points)

@@ -1,5 +1,5 @@
 # https://raw.githubusercontent.com/matterport/Mask_RCNN/master/mrcnn/visualize.py
-from typing import Optional
+from typing import Optional, List
 import random
 import colorsys
 import numpy as np

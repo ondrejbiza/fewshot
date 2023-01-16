@@ -85,7 +85,8 @@ def main():
     # load canonical objects
     with open("data/ndf_mugs_pca_8_dim.npy", "rb") as f:
         canon_mug = pickle.load(f)
-    canon_tree_pc = np.load("data/real_tree_pc.npy")
+    with open("data/real_tree_pc.pkl", "rb") as f:
+        canon_tree_pc = pickle.load(f)["canonical_obj"]
 
     mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=20)
     tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree_pc, tree_pc, n_angles=20)
