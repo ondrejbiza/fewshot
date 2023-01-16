@@ -3,6 +3,8 @@
 .lcov
 venv/
 /data/ndf_objects/
+/tmp.stl
+/tmp.obj
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

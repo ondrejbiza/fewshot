@@ -4,6 +4,7 @@ import numpy as np
 from numpy.typing import NDArray
 import rospy
 from sensor_msgs.msg import CameraInfo
+import open3d as o3d
 
 
 def get_camera_intrinsics_and_distortion(topic: str) -> Tuple[NDArray, NDArray]:
@@ -22,3 +23,45 @@ def get_camera_intrinsics_and_distortion(topic: str) -> Tuple[NDArray, NDArray]:
             return out[1], out[2]
 
     raise RuntimeError("Could not get camera information.")
+
+
+def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size: float=0.2) -> NDArray:
+
+    cloud = np.copy(cloud)
+    cloud[..., 0] -= desk_center[0]
+    cloud[..., 1] -= desk_center[1]
+    cloud[..., 2] -= desk_center[2]
+
+    mask = np.logical_and(np.abs(cloud[..., 0]) <= size, np.abs(cloud[..., 1]) <= size)
+    mask = np.logical_and(mask, cloud[..., 2] >= 0.)
+    mask = np.logical_and(mask, cloud[..., 2] <= 2 * size)
+
+    return cloud[mask]
+
+
+def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(cloud)
+
+    labels = np.array(pcd.cluster_dbscan(eps=0.05, min_points=10))
+    assert not np.any(labels == 2), "The world must have two objects."
+    pc1 = cloud[labels == 0]
+    pc2 = cloud[labels == 1]
+
+    assert len(pc1) > 10
+    assert len(pc2) > 10
+
+    # Tree is taller than mug.
+    if np.max(pc1[..., 2]) > np.max(pc2[..., 2]):
+        tree = pc1
+        mug = pc2
+    else:
+        tree = pc2
+        mug = pc1
+    
+    # Cut off the base of the tree.
+    mask = tree[..., 2] >= 0.03
+    tree = tree[mask]
+
+    return mug, tree

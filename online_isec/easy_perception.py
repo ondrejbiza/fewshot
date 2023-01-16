@@ -7,20 +7,8 @@ import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
 from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
+import online_isec.utils as isec_utils
 import utils
-
-
-def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size: float=0.2) -> NDArray:
-
-    cloud = np.copy(cloud)
-    cloud[..., 0] -= desk_center[0]
-    cloud[..., 1] -= desk_center[1]
-    cloud[..., 2] -= desk_center[2]
-
-    mask = np.logical_and(np.abs(cloud[..., 0]) <= size, np.abs(cloud[..., 1]) <= size)
-    mask = np.logical_and(mask, cloud[..., 2] >= 0.)
-    mask = np.logical_and(mask, cloud[..., 2] <= 2 * size)
-    return cloud[mask]
 
 
 def cluster_objects_and_show(cloud: NDArray):
@@ -48,7 +36,7 @@ def main():
     assert cloud is not None
 
     cloud = cloud[..., :3]
-    cloud = mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
+    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
     cluster_objects_and_show(cloud)
 
 

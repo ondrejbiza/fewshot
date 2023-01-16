@@ -509,7 +509,7 @@ def planar_pose_gd(canonical_obj: NDArray, points: NDArray, device: str="cuda:0"
 
             all_costs.append(cost.item())
             all_new_objects.append(new_obj)
-            all_parameters.append((center.cpu().numpy(), angle.cpu().numpy()))
+            all_parameters.append((center.cpu().numpy() + global_means, angle.cpu().numpy()))
 
     best_idx = np.argmin(all_costs)
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]

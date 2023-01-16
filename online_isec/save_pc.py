@@ -10,22 +10,9 @@ from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 
 from online_isec.point_cloud_proxy import PointCloudProxy, RealsenseStructurePointCloudProxy
+import online_isec.utils as isec_utils
 import utils
 import viz_utils
-
-
-def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size: float=0.2) -> NDArray:
-
-    cloud = np.copy(cloud)
-    cloud[..., 0] -= desk_center[0]
-    cloud[..., 1] -= desk_center[1]
-    cloud[..., 2] -= desk_center[2]
-
-    mask = np.logical_and(np.abs(cloud[..., 0]) <= size, np.abs(cloud[..., 1]) <= size)
-    mask = np.logical_and(mask, cloud[..., 2] >= 0.)
-    mask = np.logical_and(mask, cloud[..., 2] <= 2 * size)
-
-    return cloud[mask]
 
 
 def find_tree(cloud: NDArray) -> NDArray:
@@ -72,7 +59,7 @@ def main(args):
     pc_proxy.close()
 
     # TODO: generalize to any object
-    cloud = mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
+    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
     o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
 
     tree_pc = find_tree(cloud)
