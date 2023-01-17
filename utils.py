@@ -704,3 +704,8 @@ def canon_to_transformed_pc(canon: Dict[str, Any], params: Tuple[NDArray, NDArra
   pc = canon_to_pc(canon, params)
   T = pos_rot_to_transform(params[1], yaw_to_rot(params[2]))
   return transform_pointcloud_2(pc, T)
+
+
+def compute_relative_transform(from_T: NDArray, to_T: NDArray) -> NDArray:
+
+  return np.matmul(np.linalg.inv(from_T), to_T)

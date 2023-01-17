@@ -208,7 +208,7 @@ def main(args):
     mug_pos, mug_rot = pu.get_pose(mug)
     T_m = utils.pos_quat_to_transform(mug_pos, mug_rot)
 
-    T = np.matmul(np.linalg.inv(T_g), T_m)
+    T = utils.compute_relative_transform(T_g, T_m)
     data["T"] = T
 
     ur5.gripper.close_gripper()
