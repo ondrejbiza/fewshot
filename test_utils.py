@@ -9,6 +9,10 @@ import utils
 
 class TestUtils(TestCase):
 
+    def setUp(self):
+
+        np.random.seed(2023)
+
     def test_canon_to_pc(self):
 
         with open("data/mugs_pca.pkl", "rb") as f:
@@ -35,6 +39,21 @@ class TestUtils(TestCase):
         tmp = utils.transform_pointcloud_2(pc_T, np.linalg.inv(T))
 
         np.testing.assert_almost_equal(pc, tmp)
+
+    def test_compute_relative_transform(self):
+
+        T_from = utils.pos_quat_to_transform(
+            np.random.normal(3, 1, size=3),
+            Rotation.from_euler("zyx", np.random.uniform(0, 2 * np.pi, size=3)).as_quat()
+        )
+        T_to = utils.pos_quat_to_transform(
+            np.random.normal(3, 1, size=3),
+            Rotation.from_euler("zyx", np.random.uniform(0, 2 * np.pi, size=3)).as_quat()
+        )
+
+        T = utils.compute_relative_transform(T_from, T_to)
+        tmp = np.matmul(T_from, T)
+        np.testing.assert_almost_equal(tmp, T_to, decimal=4)
 
     def test_move_hand_back(self):
 
