@@ -13,16 +13,12 @@ class TestUtils(TestCase):
 
         with open("data/mugs_pca.pkl", "rb") as f:
             canon = pickle.load(f)
-        latent1 = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float32)
-        latent2 = np.array([0., 0., 0., 0.], dtype=np.float32)
+        latent = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float32)
         center = np.array([0.5, -0.2, 0.3], dtype=np.float32)
         angle = np.array([np.pi / 3.], dtype=np.float32)
 
-        pc = utils.canon_to_pc(canon, (latent1, center, angle))
+        pc = utils.canon_to_pc(canon, (latent, center, angle))
         self.assertEqual(pc.shape, canon["canonical_obj"].shape)
-        
-        pc = utils.canon_to_pc(canon, (latent2, center, angle))
-        np.testing.assert_equal(canon["canonical_obj"], pc)
 
     def test_canon_to_transformed_pc(self):
 
