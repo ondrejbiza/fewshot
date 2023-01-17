@@ -9,6 +9,7 @@ import torch
 from torch import nn
 from torch import optim
 import cv2
+import trimesh
 
 from pybullet_planning.pybullet_tools import utils as pu
 from exceptions import PlanningError, EnvironmentSetupError
@@ -648,6 +649,14 @@ def pos_quat_to_transform(pos: Union[Tuple[float, float, float], NDArray], quat:
   return T
 
 
+def pos_rot_to_transform(pos: Union[Tuple[float, float, float], NDArray], rot: NDArray) -> NDArray[np.float32]:
+
+  T = np.eye(4).astype(np.float32)
+  T[:3, 3] = pos
+  T[:3, :3] = rot
+  return T
+
+
 def transform_to_pos_quat(T: NDArray) -> Tuple[NDArray[np.float32], NDArray[np.float32]]:
 
   pos = T[:3, 3].astype(np.float32)
@@ -666,3 +675,32 @@ def update_opencv_window(image: NDArray) -> bool:
         return True
 
     return False
+
+
+def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=None) -> List[trimesh.base.Trimesh]:
+
+    convex_meshes = trimesh.decomposition.convex_decomposition(
+      mesh, resolution=1000000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
+      alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
+      convexhullApproximation=1, oclDeviceID=0
+    )
+
+    if save_path is not None:
+      decomposed_scene = trimesh.scene.Scene()
+      for i, convex_mesh in enumerate(convex_meshes):
+          decomposed_scene.add_geometry(convex_mesh, node_name="hull_{:d}".format(i))
+      decomposed_scene.export(save_path, file_type="obj")
+
+    return convex_meshes
+
+
+def canon_to_pc(canon: Dict[str, Any], params: Tuple[NDArray, NDArray, NDArray]) -> NDArray:
+
+  return canon["canonical_obj"] + canon["pca"].inverse_transform(params[0]).reshape(-1, 3)
+
+
+def canon_to_transformed_pc(canon: Dict[str, Any], params: Tuple[NDArray, NDArray, NDArray]) -> NDArray:
+
+  pc = canon_to_pc(canon, params)
+  T = pos_rot_to_transform(params[1], yaw_to_rot(params[2]))
+  return transform_pointcloud_2(pc, T)

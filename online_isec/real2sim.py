@@ -1,7 +1,7 @@
 import argparse
 import subprocess
 import threading
-from typing import Tuple
+from typing import Tuple, Dict, Any
 import time
 import rospy
 import open3d as o3d
@@ -22,7 +22,7 @@ import utils
 import viz_utils
 
 
-def worker(ur5, sphere, mug, data):
+def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
 
     while True:
 
@@ -30,15 +30,15 @@ def worker(ur5, sphere, mug, data):
             break
 
         pos, quat = ur5.get_end_effector_pose()
+        pos = pos - constants.DESK_CENTER
 
         if data["T"] is not None:
-            T_g = utils.pos_quat_to_transform(pos - constants.DESK_CENTER, quat)
+            T_g = utils.pos_quat_to_transform(pos, quat)
             T = np.matmul(T_g, data["T"])
-
             m_pos, m_quat = utils.transform_to_pos_quat(T)
             pu.set_pose(mug, (m_pos, m_quat))
 
-        pu.set_position(sphere, pos[0] - constants.DESK_CENTER[0], pos[1] - constants.DESK_CENTER[1], pos[2] - constants.DESK_CENTER[2])
+        pu.set_position(sphere, pos[0], pos[1], pos[2])
         time.sleep(0.1)
 
 
@@ -68,24 +68,25 @@ def get_knn_and_deltas(obj, vps):
     return knn_list, deltas_list
 
 
-def save_pick_pose(filled_and_transformed_mug, gripper_pos, gripper_rot):
+def save_pick_pose(filled_and_transformed_mug, gripper_pos, gripper_rot, save: bool):
 
     dist = np.sqrt(np.sum(np.square(filled_and_transformed_mug - gripper_pos), axis=1))
     index = np.argmin(dist)
-    with open("data/real_pick_clone.pkl", "wb") as f:
-        pickle.dump({
-            "index": index,
-            "quat": gripper_rot
-        }, f)
+
+    if save:
+        with open("data/real_pick_clone.pkl", "wb") as f:
+            pickle.dump({
+                "index": index,
+                "quat": gripper_rot
+            }, f)
 
 
-def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, canon_tree):
+def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, canon_tree, save: bool):
 
     spheres = []
 
     pb.performCollisionDetection()
 
-    # cols = pb.getContactPoints(mug, tree)
     cols = pb.getClosestPoints(mug, tree, 0.01)
 
     for s in spheres:
@@ -109,7 +110,7 @@ def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, ca
     T_g = utils.pos_quat_to_transform(pos - constants.DESK_CENTER, quat)
     T = np.matmul(T_g, T_g_to_m)
 
-    tmp = canon_mug["canonical_obj"] + canon_mug["pca"].inverse_transform(mug_param[0]).reshape((-1, 3))
+    tmp = utils.canon_to_pc(canon_mug, mug_param)
     tmp_2 = utils.transform_pointcloud_2(pos_2, np.linalg.inv(T))
 
     knns, deltas = get_knn_and_deltas(tmp, tmp_2)
@@ -117,14 +118,13 @@ def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, ca
     dist_2 = np.sqrt(np.sum(np.square(canon_tree["canonical_obj"][:, None] - tmp_2[None]), axis=2))
     i_2 = np.argmin(dist_2, axis=0).transpose()
 
-    import pdb ; pdb.set_trace()
-
-    with open("data/real_place_clone.pkl", "wb") as f:
-        pickle.dump({
-            "knns": knns,
-            "deltas": deltas,
-            "target_indices": i_2
-        }, f)
+    if save:
+        with open("data/real_place_clone.pkl", "wb") as f:
+            pickle.dump({
+                "knns": knns,
+                "deltas": deltas,
+                "target_indices": i_2
+            }, f)
 
 
 def main(args):
@@ -171,22 +171,13 @@ def main(args):
     if args.show_perception:
         viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
 
-    vertices = (canon_mug["canonical_obj"] + canon_mug["pca"].inverse_transform(mug_param[0]).reshape((-1, 3)))[:len(canon_mug["canonical_mesh_points"])]
+    vertices = utils.canon_to_pc(canon_mug, mug_param)[:len(canon_mug["canonical_mesh_points"])]
+
     mesh = trimesh.base.Trimesh(vertices=vertices, faces=canon_mug["canonical_mesh_faces"])
     mesh.export("tmp.stl")
     # subprocess.call(["admesh", "--write-binary-stl={:s}".format("tmp.stl"), "tmp.stl"])
 
-    # TODO: Resolution=1M was taking too long, but resolution=100k is not very good.
-    convex_meshes = trimesh.decomposition.convex_decomposition(
-        mesh, resolution=1000000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
-        alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
-        convexhullApproximation=1, oclDeviceID=0
-    )
-
-    decomposed_scene = trimesh.scene.Scene()
-    for i, convex_mesh in enumerate(convex_meshes):
-        decomposed_scene.add_geometry(convex_mesh, node_name="hull_{:d}".format(i))
-    decomposed_scene.export("tmp.obj", file_type="obj")
+    utils.convex_decomposition(mesh, "tmp.obj")
 
     pu.connect(use_gui=True, show_sliders=False)
     pu.set_default_camera(distance=2)
@@ -210,7 +201,7 @@ def main(args):
     gripper_pos = gripper_pos - constants.DESK_CENTER
 
     # TODO: We do not account for the mug moving as it is picked.
-    save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot)
+    save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot, args.save)
 
     T_g = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
 
@@ -227,7 +218,7 @@ def main(args):
     data["stop"] = True
     thread.join()
 
-    save_place_contact_points(ur5, mug, tree, T, canon_mug, mug_param, canon_tree)
+    save_place_contact_points(ur5, mug, tree, T, canon_mug, mug_param, canon_tree, args.save)
 
     ur5.gripper.open_gripper()
     ur5.move_to_j(ur5.home_joint_values)
@@ -235,4 +226,5 @@ def main(args):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--show-perception", default=False, action="store_true")
+parser.add_argument("--save", default=False, action="store_true")
 main(parser.parse_args())
