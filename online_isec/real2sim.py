@@ -42,6 +42,32 @@ def worker(ur5, sphere, mug, data):
         time.sleep(0.1)
 
 
+def get_knn_and_deltas(obj, vps):
+
+    k = 10
+    # [n_pairs, n_points, 3]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection="3d")
+    ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color="red", alpha=0.1)
+    ax.scatter(vps[:, 0], vps[:, 1], vps[:, 2], color="green")
+    plt.show()
+
+    dists = np.sum(np.square(obj[None] - vps[:, None]), axis=-1)
+    knn_list = []
+    deltas_list = []
+
+    for i in range(dists.shape[0]):
+        knn = np.argpartition(dists[i], k)[:k]
+        deltas = vps[i: i + 1] - obj[knn]
+        knn_list.append(knn)
+        deltas_list.append(deltas)
+
+    knn_list = np.stack(knn_list)
+    deltas_list = np.stack(deltas_list)
+    return knn_list, deltas_list
+
+
 def save_pick_pose(filled_and_transformed_mug, gripper_pos, gripper_rot):
 
     dist = np.sqrt(np.sum(np.square(filled_and_transformed_mug - gripper_pos), axis=1))
@@ -53,7 +79,7 @@ def save_pick_pose(filled_and_transformed_mug, gripper_pos, gripper_rot):
         }, f)
 
 
-def save_place_contact_points(mug, tree):
+def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, canon_tree):
 
     spheres = []
 
@@ -79,8 +105,26 @@ def save_place_contact_points(mug, tree):
     pos_1 = np.stack(pos_1, axis=0).astype(np.float32)
     pos_2 = np.stack(pos_2, axis=0).astype(np.float32)
 
-    # TODO: Perform the rest of place cloning.
-    input("Done?")
+    pos, quat = ur5.get_end_effector_pose()
+    T_g = utils.pos_quat_to_transform(pos - constants.DESK_CENTER, quat)
+    T = np.matmul(T_g, T_g_to_m)
+
+    tmp = canon_mug["canonical_obj"] + canon_mug["pca"].inverse_transform(mug_param[0]).reshape((-1, 3))
+    tmp_2 = utils.transform_pointcloud_2(pos_2, np.linalg.inv(T))
+
+    knns, deltas = get_knn_and_deltas(tmp, tmp_2)
+
+    dist_2 = np.sqrt(np.sum(np.square(canon_tree["canonical_obj"][:, None] - tmp_2[None]), axis=2))
+    i_2 = np.argmin(dist_2, axis=0).transpose()
+
+    import pdb ; pdb.set_trace()
+
+    with open("data/real_place_clone.pkl", "wb") as f:
+        pickle.dump({
+            "knns": knns,
+            "deltas": deltas,
+            "target_indices": i_2
+        }, f)
 
 
 def main(args):
@@ -183,7 +227,7 @@ def main(args):
     data["stop"] = True
     thread.join()
 
-    save_place_contact_points(mug, tree)
+    save_place_contact_points(ur5, mug, tree, T, canon_mug, mug_param, canon_tree)
 
     ur5.gripper.open_gripper()
     ur5.move_to_j(ur5.home_joint_values)
