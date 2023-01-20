@@ -12,7 +12,7 @@ def main():
     example_pc = np.load("data/example_mug_pc.npy")
     example_pc -= np.mean(example_pc, axis=0, keepdims=True)
 
-    base_dir = "data/ndf_objects/mug_centered_obj_normalized"
+    base_dir = "data/ndf_objects_sample/mug_centered_obj_normalized"
     # obj_ids = ["1a97f3c83016abca21d0de04f408950f", "1ae1ba5dfb2a085247df6165146d5bbd", "1bc5d303ff4d6e7e1113901b72a68e7c",
     #            "1be6b2c84cdab826c043c2d07bb83fc8", "1c3fccb84f1eeb97a3d0a41d6c77ec7c", "1c9f9e25c654cbca3c71bf3f4dd78475",
     #            "1d18255a04d22794e521eeb8bb14c5b3", "1ea9ea99ac8ed233bf355ac8109b9988", "1eaf8db2dd2b710c7d5b1b70ae595e60",
@@ -30,7 +30,7 @@ def main():
     objs = []
     for obj_path in obj_paths:
         obj = load_object_create_verts(
-            obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation)
+            obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation, num_surface_samples=0)
         objs.append(obj)
     obj_points = [x["points"] for x in objs]
 
