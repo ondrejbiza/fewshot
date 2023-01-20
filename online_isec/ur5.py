@@ -10,6 +10,7 @@ import moveit_commander
 from online_isec.robotiq_gripper import Gripper
 from online_isec.tf_proxy import TFProxy
 from online_isec import transformation
+import exceptions
 
 
 @dataclass
@@ -36,8 +37,9 @@ class UR5:
         self.joint_values = np.array([0] * 6)
         self.joints_sub = rospy.Subscriber("/joint_states", JointState, self.joints_callback)
 
-        # commanding the arm
-        self.pub = rospy.Publisher("/ur_hardware_interface/script_command", String, queue_size=10)
+        if not self.setup_planning:
+            # commanding the arm using ur script
+            self.pub = rospy.Publisher("/ur_hardware_interface/script_command", String, queue_size=10)
 
         self.tf_proxy = TFProxy()
 
@@ -50,7 +52,9 @@ class UR5:
             self.moveit_move_group = moveit_commander.MoveGroupCommander(name)
             self.moveit_move_group.set_end_effector_link(tool_frame_id)
 
-    def move_to_j(self, joint_pos: Tuple[float, float, float, float, float, float], speed: float=0.5):
+    def ur_script_move_to_j(self, joint_pos: Tuple[float, float, float, float, float, float], speed: float=0.5):
+
+        assert not self.setup_planning, "Using move-it instead of ur script. Use plan_and_execute_joints_target or set setup_planning=False."
 
         self.pub.publish("stopl(2)")
         rospy.sleep(0.2)
@@ -78,14 +82,37 @@ class UR5:
         self.moveit_move_group.set_pose_target(pose_msg)
 
         plan_raw = self.moveit_move_group.plan()
-        assert plan_raw[0], "Planning failed."
+        if not plan_raw:
+            raise exceptions.PlanningError()
 
         plan = plan_raw[1]
-        print(plan)
-        self.moveit_move_group.execute(plan, wait=True)
+        success = self.moveit_move_group.execute(plan, wait=True)
         self.moveit_move_group.stop()
         self.moveit_move_group.clear_pose_targets()
-        rospy.sleep(0.1)      
+        rospy.sleep(0.1)
+
+        if not success:
+            raise exceptions.ExecutionError()
+
+    def plan_and_execute_joints_target(self, joints):
+
+        assert self.setup_planning, "setup_planning has to be true."
+        self.moveit_move_group.set_max_velocity_scaling_factor(0.1)
+        self.moveit_move_group.set_max_acceleration_scaling_factor(0.1)
+        self.moveit_move_group.set_joint_value_target(joints)
+
+        plan_raw = self.moveit_move_group.plan()
+        if not plan_raw:
+            raise exceptions.PlanningError()
+
+        plan = plan_raw[1]
+        success = self.moveit_move_group.execute(plan, wait=True)
+        self.moveit_move_group.stop()
+        self.moveit_move_group.clear_pose_targets()
+        rospy.sleep(0.1)
+
+        if not success:
+            raise exceptions.ExecutionError()
 
     def joints_callback(self, msg: JointState):
 
