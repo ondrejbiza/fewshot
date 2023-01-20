@@ -64,16 +64,7 @@ def main(args):
     mesh.export("tmp.stl")
     # subprocess.call(["admesh", "--write-binary-stl={:s}".format("tmp.stl"), "tmp.stl"])
 
-    convex_meshes = trimesh.decomposition.convex_decomposition(
-        mesh, resolution=1000000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
-        alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
-        convexhullApproximation=1, oclDeviceID=0
-    )
-
-    decomposed_scene = trimesh.scene.Scene()
-    for i, convex_mesh in enumerate(convex_meshes):
-        decomposed_scene.add_geometry(convex_mesh, node_name="hull_{:d}".format(i))
-    decomposed_scene.export("tmp.obj", file_type="obj")
+    utils.convex_decomposition(mesh, "tmp.obj")
 
     pu.connect(use_gui=True, show_sliders=False)
     pu.set_default_camera(distance=2)
