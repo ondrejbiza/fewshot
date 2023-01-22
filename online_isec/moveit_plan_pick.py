@@ -32,11 +32,15 @@ def main():
     pc_proxy = RealsenseStructurePointCloudProxy()
     ur5 = UR5(setup_planning=True)
     time.sleep(2)
-    # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
     ur5.moveit_scene.clear()
+
+    
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
+    pc_proxy.close()
+
     cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
     mug_pc, tree_pc = isec_utils.find_mug_and_tree(cloud)
     max_size = 2000
@@ -64,57 +68,7 @@ def main():
     T = T_bl_to_b @ T_b_to_m
     pos, quat = utils.transform_to_pos_quat(T)
 
-    msg = PoseStamped()
-    msg.header.frame_id = "base_link"
-    msg.pose = ur5.to_pose_message(pos, quat)
-
-    scene = pyassimp.load("tmp.obj", file_type="obj")
-
-    co = CollisionObject()
-    co.operation = CollisionObject.ADD
-    co.id = "mug"
-    co.header = msg.header
-    co.pose = msg.pose
-
-    scale = [1., 1., 1.]
-
-    meshes = []
-    for assimp_mesh in scene.meshes:
-        mesh = Mesh()
-        meshes.append(mesh)
-        first_face = assimp_mesh.faces[0]
-        if hasattr(first_face, "__len__"):
-            for face in assimp_mesh.faces:
-                if len(face) == 3:
-                    triangle = MeshTriangle()
-                    triangle.vertex_indices = [face[0], face[1], face[2]]
-                    mesh.triangles.append(triangle)
-        elif hasattr(first_face, "indices"):
-            for face in assimp_mesh.faces:
-                if len(face.indices) == 3:
-                    triangle = MeshTriangle()
-                    triangle.vertex_indices = [
-                        face.indices[0],
-                        face.indices[1],
-                        face.indices[2],
-                    ]
-                    mesh.triangles.append(triangle)
-        else:
-            assert False, "Unable to build triangles from mesh due to mesh object structure"
-        for vertex in assimp_mesh.vertices:
-            point = Point()
-            point.x = vertex[0] * scale[0]
-            point.y = vertex[1] * scale[1]
-            point.z = vertex[2] * scale[2]
-            mesh.vertices.append(point)
-
-    co.meshes = meshes
-    pyassimp.release(scene)
-
-    ur5.moveit_scene.add_object(co)
-    print("obj added to planning scene")
-
-    time.sleep(9999999)
+    isec_utils.load_obj_as_cubes_to_moveit_scene("tmp.obj", pos, quat, "mug", ur5.moveit_scene)
 
     with open("data/real_pick_clone.pkl", "rb") as f:
         data = pickle.load(f)
