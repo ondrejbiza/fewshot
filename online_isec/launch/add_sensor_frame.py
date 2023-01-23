@@ -35,7 +35,9 @@ if __name__ == '__main__':
     # Automatic calibration with images.
     # br.sendTransform((-0.779918, 0.043688, 0.449073), (-0.656797, 0.662001, -0.243188, 0.266894), rospy.Time.now(), "cam1_color_optical_frame", "base")
     # Automatic calibration with depths.
-    br.sendTransform((-0.78302526, 0.0488187, 0.44769223), (-0.6538833, 0.66373159, -0.24695839, 0.26628662), rospy.Time.now(), "cam1_color_optical_frame", "base")
+    # br.sendTransform((-0.78302526, 0.0488187, 0.44769223), (-0.6538833, 0.66373159, -0.24695839, 0.26628662), rospy.Time.now(), "cam1_color_optical_frame", "base")
+    # Automatic calibration with depths. Fine-tuned by hand.
+    br.sendTransform((-0.774, 0.0378, 0.4377), (-0.6538833, 0.66373159, -0.24695839, 0.26628662), rospy.Time.now(), "cam1_color_optical_frame", "base")
 
     # azure
     # Automatic calibration with images.
@@ -48,6 +50,8 @@ if __name__ == '__main__':
     # Automatic calibration with images.
     # br.sendTransform((-0.479379, -0.564626, 0.776313), (0.656418, 0.650506, 0.254785, -0.284680), rospy.Time.now(), "camera_depth_optical_frame", "base")
     # Automatic calibration with depths.
-    br.sendTransform((-0.50859704, -0.55556215, 0.77484579), (0.65841246, 0.65057976, 0.262971, -0.27218609), rospy.Time.now(), "camera_depth_optical_frame", "base")
+    # br.sendTransform((-0.50859704, -0.55556215, 0.77484579), (0.65841246, 0.65057976, 0.262971, -0.27218609), rospy.Time.now(), "camera_depth_optical_frame", "base")
+    # Automatic calibration with depths. Fine-tuned by hand.
+    br.sendTransform((-0.5056, -0.5606, 0.7568), (0.65841246, 0.65057976, 0.262971, -0.27218609), rospy.Time.now(), "camera_depth_optical_frame", "base")
 
     rate.sleep()
