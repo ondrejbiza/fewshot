@@ -10,11 +10,13 @@ AZURE_LISTEN_LOG_PATH = "logs/azure_listen.txt"
 REALSENSE_LISTEN_LOG_PATH = "logs/realsense_listen.txt"
 STRUCTURE_LISTEN_LOG_PATH = "logs/structure_listen.txt"
 GRIPPER_LOG_PATH = "logs/gripper.txt"
+GRIPPER_PUB_LOG_PATH = "logs/gripper_pub.txt"
 STRUCTURE_DRIVER_LOG_PATH = "logs/structure_driver.txt"
 AZURE_DRIVER_LOG_PATH = "logs/azure_driver.txt"
 REALSENSE_DRIVER_LOG_PATH = "logs/realsense_driver.txt"
 ADD_SENSOR_FRAME_LOG_PATH = "logs/add_sensor_frame.txt"
 PLANNING_LOG_PATH = "logs/planning.txt"
+RVIZ_LOG_PATH = "logs/rviz.txt"
 
 # TODO: Not sure why I don't get other outputs.
 ROBOT_SUCCESS_PHRASE = "No realtime capabilities found. Consider using a realtime system for better performance"
@@ -48,6 +50,11 @@ def close_process(p):
     p.wait()
 
 
+def kill_process(p):
+    p.send_signal(signal.SIGKILL)
+    p.wait()
+
+
 def main(args):
 
     # Every process and log we have to open and close.
@@ -56,6 +63,9 @@ def main(args):
 
     gripper_log = None
     gripper_p = None
+
+    gripper_pub_log = None
+    gripper_pub_p = None
 
     structure_listen_log = None
     structure_listen_p = None
@@ -80,6 +90,9 @@ def main(args):
 
     planning_log = None
     planning_p = None
+
+    rviz_log = None
+    rviz_p = None
 
     # Proper ctrl+C handling.
     signal.signal(signal.SIGINT, signal.default_int_handler)
@@ -123,6 +136,12 @@ def main(args):
         gripper_p = subprocess.Popen(
             ["rosrun", "robotiq_c_model_control", "CModelRtuNode.py", "/dev/ttyUSB0"],
             stdout=gripper_log, stderr=subprocess.STDOUT
+        )
+
+        gripper_pub_log = open(GRIPPER_PUB_LOG_PATH, "w")
+        gripper_pub_p = subprocess.Popen(
+            ["python", "publish_finger_state.py"],
+            stdout=gripper_pub_log, stderr=subprocess.STDOUT
         )
         print("Gripper connected.")
         time.sleep(1)
@@ -179,10 +198,18 @@ def main(args):
         print("Connecting planning.")
         planning_log = open(PLANNING_LOG_PATH, "w")
         planning_p = subprocess.Popen(
-            ["roslaunch", "ur5_moveit_config", "ur5_moveit_planning_execution.launch"],
+            ["roslaunch", "ur5_robotiq_moveit_config", "move_group.launch"],
             stdout=planning_log, stderr=subprocess.STDOUT
         )
         print("Planning connected.")
+
+        print("Starting rviz.")
+        rviz_log = open(PLANNING_LOG_PATH, "w")
+        rviz_p = subprocess.Popen(
+            ["roslaunch", "ur5_moveit_config", "moveit_rviz.launch", "config:=true"],
+            stdout=rviz_log, stderr=subprocess.STDOUT
+        )
+        print("rviz started.")
 
         while True:
             time.sleep(1)
@@ -202,6 +229,11 @@ def main(args):
             close_process(gripper_p)
         if gripper_log is not None:
             close_log(gripper_log)
+
+        if gripper_pub_p is not None:
+            kill_process(gripper_pub_p)
+        if gripper_pub_log is not None:
+            close_log(gripper_pub_log)
         print("Gripper connection closed.")
 
         print("Closing camera connection.")
@@ -249,6 +281,13 @@ def main(args):
         if planning_log is not None:
             close_log(planning_log)
         print("Planning closed.")
+
+        print("Closing rviz.")
+        if rviz_p is not None:
+            kill_process(rviz_p)
+        if rviz_log is not None:
+            close_log(rviz_log)
+        print("rviz closed.")
 
         sys.exit(0)
 
