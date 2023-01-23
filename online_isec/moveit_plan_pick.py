@@ -31,11 +31,8 @@ def main():
     rospy.init_node("easy_perception")
     pc_proxy = RealsenseStructurePointCloudProxy()
     ur5 = UR5(setup_planning=True)
-    time.sleep(2)
+    time.sleep(9999)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
-    ur5.moveit_scene.clear()
-
-    
 
     cloud = pc_proxy.get_all()
     assert cloud is not None

@@ -204,9 +204,10 @@ def main(args):
         print("Planning connected.")
 
         print("Starting rviz.")
-        rviz_log = open(PLANNING_LOG_PATH, "w")
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        rviz_log = open(RVIZ_LOG_PATH, "w")
         rviz_p = subprocess.Popen(
-            ["roslaunch", "ur5_moveit_config", "moveit_rviz.launch", "config:=true"],
+            ["roslaunch", "ur5_moveit_config", "moveit_rviz.launch", "rviz_config:={:s}".format(os.path.join(dir_path, "rviz_config.rviz"))],
             stdout=rviz_log, stderr=subprocess.STDOUT
         )
         print("rviz started.")

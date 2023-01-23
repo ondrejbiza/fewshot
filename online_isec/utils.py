@@ -30,7 +30,7 @@ def get_camera_intrinsics_and_distortion(topic: str) -> Tuple[NDArray, NDArray]:
     raise RuntimeError("Could not get camera information.")
 
 
-def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size: float=0.2) -> NDArray:
+def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size: float=0.2, height_eps: float=0.005) -> NDArray:
 
     cloud = np.copy(cloud)
     cloud[..., 0] -= desk_center[0]
@@ -38,7 +38,7 @@ def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size
     cloud[..., 2] -= desk_center[2]
 
     mask = np.logical_and(np.abs(cloud[..., 0]) <= size, np.abs(cloud[..., 1]) <= size)
-    mask = np.logical_and(mask, cloud[..., 2] >= 0.)
+    mask = np.logical_and(mask, cloud[..., 2] >= height_eps)
     mask = np.logical_and(mask, cloud[..., 2] <= 2 * size)
 
     return cloud[mask]
@@ -81,6 +81,14 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
     tree = tree[mask]
 
     return mug, tree
+
+
+def to_stamped_pose_message(pos: NDArray, quat: NDArray, frame_id: str) -> geometry_msgs.msg.PoseStamped:
+
+    msg = geometry_msgs.msg.PoseStamped()
+    msg.header.frame_id = frame_id
+    msg.pose = to_pose_message(pos, quat)
+    return msg
 
 
 def to_pose_message(pos: NDArray, quat: NDArray) -> geometry_msgs.msg.Pose:
@@ -188,11 +196,61 @@ def load_obj_as_cubes_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray
         verts = verts - center[None]
         scale = np.max(np.abs(verts), axis=0)
 
-        msg = geometry_msgs.msg.PoseStamped()
-        msg.header.frame_id = "base_link"
-        # TODO: the yaw of the mug is wrong.
-        msg.pose = to_pose_message(pos + center, quat)
+        msg = to_stamped_pose_message(pos + center, quat, "base_link")
 
         moveit_scene.add_box("{:s}_box_{:d}".format(obj_base_name, mesh_idx), msg, scale)
 
     pyassimp.release(scene)
+
+
+def check_added_to_moveit_scene(
+    obj_name: str, moveit_scene: moveit_commander.PlanningSceneInterface, timeout: int=2,
+    obj_is_known: bool=True, obj_is_attached: bool=False) -> bool:
+    """
+    Set obj_is_known=False to wait for an object to be deleted.
+    Set obj_is_attached=True to wait for an object to be attached to another object.
+    """
+
+    start = rospy.get_time()
+    seconds = rospy.get_time()
+    while (seconds - start < timeout) and not rospy.is_shutdown():
+        # Test if the box is in attached objects
+        attached_objects = moveit_scene.get_attached_objects([obj_name])
+        is_attached = len(attached_objects.keys()) > 0
+
+        # Test if the box is in the scene.
+        # Note that attaching the box will remove it from known_objects
+        is_known = obj_name in moveit_scene.get_known_object_names()
+
+        # Test if we are in the expected state
+        if (obj_is_attached == is_attached) and (obj_is_known == is_known):
+            return True
+
+        # Sleep so that we give other threads time on the processor
+        rospy.sleep(0.1)
+        seconds = rospy.get_time()
+
+    # If we exited the while loop without returning then we timed out
+    return False
+
+
+def check_clean_moveit_scene(
+    moveit_scene: moveit_commander.PlanningSceneInterface, timeout: int=2) -> bool:
+    """
+    Set obj_is_known=False to wait for an object to be deleted.
+    Set obj_is_attached=True to wait for an object to be attached to another object.
+    """
+
+    start = rospy.get_time()
+    seconds = rospy.get_time()
+    while (seconds - start < timeout) and not rospy.is_shutdown():
+
+        if len(moveit_scene.get_known_object_names()) == 0:
+            return True
+
+        # Sleep so that we give other threads time on the processor
+        rospy.sleep(0.1)
+        seconds = rospy.get_time()
+
+    # If we exited the while loop without returning then we timed out
+    return False
