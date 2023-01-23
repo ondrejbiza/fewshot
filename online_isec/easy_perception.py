@@ -37,7 +37,9 @@ def main():
     assert cloud is not None
 
     cloud = cloud[..., :3]
-    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
+    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min))
+    o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
+
     cluster_objects_and_show(cloud)
 
 
