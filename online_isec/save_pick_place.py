@@ -1,25 +1,20 @@
 import argparse
-import subprocess
-import threading
-from typing import Tuple, Dict, Any
-import time
-import rospy
-import open3d as o3d
-import pickle
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy.typing import NDArray
-import trimesh
+import pickle
 import pybullet as pb
 from scipy.spatial.transform import Rotation
+import rospy
+import threading
+import time
+from typing import Any, Dict
 
-from pybullet_planning.pybullet_tools import utils as pu
-from online_isec.point_cloud_proxy import PointCloudProxy, RealsenseStructurePointCloudProxy
-import online_isec.utils as isec_utils
-from online_isec.ur5 import UR5
 from online_isec import constants
+from online_isec import perception
+from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
+from online_isec.ur5 import UR5
+from pybullet_planning.pybullet_tools import utils as pu
 import utils
-import viz_utils
 
 
 def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
@@ -134,49 +129,9 @@ def main(args):
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    cloud = pc_proxy.get_all()
-    assert cloud is not None
-
-    cloud = cloud[..., :3]
-    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
-
-    if args.show_perception:
-        print("masked pc:")
-        o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(cloud)])
-
-    mug_pc, tree_pc = isec_utils.find_mug_and_tree(cloud)
-
-    max_size = 2000
-    if len(mug_pc) > max_size:
-        mug_pc, _ = utils.farthest_point_sample(mug_pc, max_size)
-    if len(tree_pc) > max_size:
-        tree_pc, _ = utils.farthest_point_sample(tree_pc, max_size)
-
-    if args.show_perception:
-        print("mug:")
-        o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(mug_pc)])
-        print("tree:")
-        o3d.visualization.draw_geometries([utils.create_o3d_pointcloud(tree_pc)])
-
-    # load canonical objects
-    with open("data/ndf_mugs_pca_4_dim.npy", "rb") as f:
-        canon_mug = pickle.load(f)
-    with open("data/real_tree_pc.pkl", "rb") as f:
-        canon_tree = pickle.load(f)
-
-    mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=12)
-    tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree["canonical_obj"], tree_pc, n_angles=12)
-
-    if args.show_perception:
-        viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
-
-    vertices = utils.canon_to_pc(canon_mug, mug_param)[:len(canon_mug["canonical_mesh_points"])]
-
-    mesh = trimesh.base.Trimesh(vertices=vertices, faces=canon_mug["canonical_mesh_faces"])
-    mesh.export("tmp.stl")
-    # subprocess.call(["admesh", "--write-binary-stl={:s}".format("tmp.stl"), "tmp.stl"])
-
-    utils.convex_decomposition(mesh, "tmp.obj")
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
+        pc_proxy, np.array(constants.DESK_CENTER)
+    )
 
     pu.connect(use_gui=True, show_sliders=False)
     pu.set_default_camera(distance=2)
@@ -200,6 +155,11 @@ def main(args):
     gripper_pos = gripper_pos - constants.DESK_CENTER
 
     # TODO: We do not account for the mug moving as it is picked.
+    tmp = np.matmul(
+        np.linalg.inv(utils.yaw_to_rot(mug_param[2])),
+        Rotation.from_quat(gripper_rot).as_matrix()
+    )
+    gripper_rot = Rotation.from_matrix(tmp).as_quat()
     save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot, args.save)
 
     T_g = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
