@@ -31,14 +31,13 @@ def main():
     rospy.init_node("easy_perception")
     pc_proxy = RealsenseStructurePointCloudProxy()
     ur5 = UR5(setup_planning=True)
-    time.sleep(9999)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
     pc_proxy.close()
 
-    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min + 0.02))
+    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min))
     mug_pc, tree_pc = isec_utils.find_mug_and_tree(cloud)
     max_size = 2000
     if len(mug_pc) > max_size:
@@ -54,6 +53,7 @@ def main():
 
     mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=12)
     tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree["canonical_obj"], tree_pc, n_angles=12)
+    viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
 
     vertices = (canon_mug["canonical_obj"] + canon_mug["pca"].inverse_transform(mug_param[0]).reshape((-1, 3)))[:len(canon_mug["canonical_mesh_points"])]
     mesh = trimesh.base.Trimesh(vertices=vertices, faces=canon_mug["canonical_mesh_faces"])
@@ -65,7 +65,7 @@ def main():
     T = T_bl_to_b @ T_b_to_m
     pos, quat = utils.transform_to_pos_quat(T)
 
-    isec_utils.load_obj_as_cubes_to_moveit_scene("tmp.obj", pos, quat, "mug", ur5.moveit_scene)
+    isec_utils.load_obj_to_moveit_scene("tmp.obj", pos, quat, "mug", ur5.moveit_scene)
 
     with open("data/real_pick_clone.pkl", "rb") as f:
         data = pickle.load(f)
@@ -86,11 +86,17 @@ def main():
     T = T_bl_to_b @ T_b_to_g_prime @ T_g_to_b @ T_b_to_f
     target_pos, target_quat = utils.transform_to_pos_quat(T)
 
+    # pre_target_pos, _ = utils.move_hand_back((target_pos, target_quat), 0.05)
+    # print(pre_target_pos)
+    # print(target_pos)
+
     print("base_link to flange")
     print("Target pos: {}".format(target_pos))
     print("Target quat: {}".format(target_quat))
 
-    input("big red button")
+    # input("big red button")
+    # ur5.plan_and_execute_pose_target(pre_target_pos, target_quat)
+    input("big red button part 2")
     ur5.plan_and_execute_pose_target(target_pos, target_quat)
 
 

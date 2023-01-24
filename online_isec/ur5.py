@@ -34,8 +34,8 @@ class UR5:
     def __post_init__(self):
 
         self.gripper = Gripper(True)
-        # self.gripper.reset()
-        # self.gripper.activate()
+        self.gripper.reset()
+        self.gripper.activate()
 
         # current joint values
         self.joint_values = np.array([0] * 6)

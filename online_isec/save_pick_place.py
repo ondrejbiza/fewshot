@@ -131,9 +131,8 @@ def main(args):
 
     rospy.init_node("easy_perception")
     pc_proxy = RealsenseStructurePointCloudProxy()
-    ur5 = UR5()
-    time.sleep(2)
-    ur5.move_to_j(ur5.home_joint_values)
+    ur5 = UR5(setup_planning=True)
+    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -221,7 +220,7 @@ def main(args):
     save_place_contact_points(ur5, mug, tree, T, canon_mug, mug_param, canon_tree, args.save)
 
     ur5.gripper.open_gripper()
-    ur5.move_to_j(ur5.home_joint_values)
+    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
 parser = argparse.ArgumentParser()

@@ -102,7 +102,7 @@ def main(args):
 
     try:
         # Connect robot.
-        print("Connecting to UR5 at {:s}".format(args.ip))
+        print("Connecting to UR5 at {:s}.".format(args.ip))
         robot_log = open(ROBOT_LOG_PATH, "w")
         robot_p = subprocess.Popen(
             ["roslaunch", "ur_robot_driver", "ur5_bringup.launch",
