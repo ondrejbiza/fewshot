@@ -10,8 +10,6 @@ from std_msgs.msg import Header
 
 def main():
 
-    signal.signal(signal.SIGINT, signal.default_int_handler)
-
     rospy.init_node("publish_finger_state")
 
     data = [0.]
@@ -23,21 +21,20 @@ def main():
     joint_state_pub = rospy.Publisher("joint_states", JointState, queue_size=10)
     rate = rospy.Rate(10) # 10hz
 
-    try:
-        while True:
-            state_msg = JointState()
-            state_msg.header = Header()
-            state_msg.header.stamp = rospy.Time.now()
-            state_msg.name = ["robotiq_85_left_knuckle_joint"]
-            state_msg.position = [data[0]]
-            state_msg.velocity = []
-            state_msg.effort = []
-            joint_state_pub.publish(state_msg)
-            rate.sleep()
-    except KeyboardInterrupt:
-        gripper_sub.unregister()
-        joint_state_pub.unregister()
-        sys.exit(0)
+    while not rospy.is_shutdown():
+        state_msg = JointState()
+        state_msg.header = Header()
+        state_msg.header.stamp = rospy.Time.now()
+        state_msg.name = ["robotiq_85_left_knuckle_joint"]
+        state_msg.position = [data[0]]
+        state_msg.velocity = []
+        state_msg.effort = []
+        joint_state_pub.publish(state_msg)
+        rate.sleep()
+
+    gripper_sub.unregister()
+    joint_state_pub.unregister()
+    sys.exit(0)
 
 
 main()
