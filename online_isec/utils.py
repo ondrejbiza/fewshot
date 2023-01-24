@@ -12,6 +12,9 @@ import pyassimp
 import moveit_commander
 from scipy.spatial.transform import Rotation
 
+from online_isec.tf_proxy import TFProxy
+import utils
+
 
 def get_camera_intrinsics_and_distortion(topic: str) -> Tuple[NDArray, NDArray]:
 
@@ -50,8 +53,9 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
 
-    labels = np.array(pcd.cluster_dbscan(eps=0.05, min_points=10))
+    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
 
+    print("PC lengths (ignoring PCs above the ground)>")
     pcs = []
     for label in np.unique(labels):
         if label == -1:
@@ -63,9 +67,17 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
             # Above ground, probably robot gripper.
             continue
 
+        print(len(pc))
+
         pcs.append(pc)
 
-    assert len(pcs) == 2, "The world must have exactly two objects."
+    assert len(pcs) >= 2, "The world must have at least two objects."
+    if len(pcs) > 2:
+        # Pick the two point clouds with the most points.
+        sizes = [len(pc) for pc in pcs]
+        sort = list(reversed(np.argsort(sizes)))
+        pcs = [pcs[sort[0]], pcs[sort[1]]]
+
     assert len(pcs[0]) > 10, "Too small PC."
     assert len(pcs[1]) > 10, "Too small PC."
 
@@ -120,9 +132,9 @@ def to_quat_msg(quat: NDArray[np.float64]) -> geometry_msgs.msg.Quaternion:
 
 
 def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray, obj_name: str,
-                             moveit_scene: moveit_commander.PlanningSceneInterface):
+                             moveit_scene: moveit_commander.PlanningSceneInterface, file_type: str="obj"):
 
-    scene = pyassimp.load(obj_path, file_type="obj")
+    scene = pyassimp.load(obj_path, file_type=file_type)
     scale = [1., 1., 1.]
 
     if not scene.meshes or len(scene.meshes) == 0:
@@ -254,3 +266,20 @@ def check_clean_moveit_scene(
 
     # If we exited the while loop without returning then we timed out
     return False
+
+
+def base_tool0_controller_to_base_link_flange(T: NDArray, tf_proxy: TFProxy) -> NDArray:
+
+    T_b_to_g_prime = T
+    T_bl_to_b = np.linalg.inv(tf_proxy.lookup_transform("base_link", "base"))
+    T_g_to_b = np.linalg.inv(tf_proxy.lookup_transform("tool0_controller", "base"))
+    T_b_to_f = tf_proxy.lookup_transform("flange", "base")
+    return T_bl_to_b @ T_b_to_g_prime @ T_g_to_b @ T_b_to_f
+
+
+def desk_obj_param_to_base_link_T(obj_mean: NDArray, obj_yaw: NDArray, desk_center: NDArray,
+                                  tf_proxy: TFProxy) -> NDArray:
+
+    T_b_to_m = utils.pos_rot_to_transform(obj_mean + desk_center, utils.yaw_to_rot(obj_yaw))
+    T_bl_to_b = np.linalg.inv(tf_proxy.lookup_transform("base_link", "base"))
+    return T_bl_to_b @ T_b_to_m
