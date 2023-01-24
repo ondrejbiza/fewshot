@@ -10,6 +10,7 @@ import moveit_msgs.msg
 import shape_msgs.msg
 import pyassimp
 import moveit_commander
+from scipy.spatial.transform import Rotation
 
 
 def get_camera_intrinsics_and_distortion(topic: str) -> Tuple[NDArray, NDArray]:
@@ -118,12 +119,8 @@ def to_quat_msg(quat: NDArray[np.float64]) -> geometry_msgs.msg.Quaternion:
     return msg
 
 
-def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray,
-                             obj_base_name: str, moveit_scene: moveit_commander.PlanningSceneInterface):
-
-    msg = geometry_msgs.msg.PoseStamped()
-    msg.header.frame_id = "base_link"
-    msg.pose = to_pose_message(pos, quat)
+def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray, obj_name: str,
+                             moveit_scene: moveit_commander.PlanningSceneInterface):
 
     scene = pyassimp.load(obj_path, file_type="obj")
     scale = [1., 1., 1.]
@@ -131,18 +128,15 @@ def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray,
     if not scene.meshes or len(scene.meshes) == 0:
         raise ValueError("There are no meshes in the file")
 
+    meshes = []
     for mesh_idx, assimp_mesh in enumerate(scene.meshes):
 
         if len(assimp_mesh.faces) == 0:
             raise ValueError("There are no faces in the mesh")
 
-        co = moveit_msgs.msg.CollisionObject()
-        co.operation = moveit_msgs.msg.CollisionObject.ADD
-        co.id = "{:s}_{:d}".format(obj_base_name, mesh_idx)
-        co.header = msg.header
-        co.pose = msg.pose
-
         mesh = shape_msgs.msg.Mesh()
+        meshes.append(mesh)
+
         first_face = assimp_mesh.faces[0]
         if hasattr(first_face, "__len__"):
             for face in assimp_mesh.faces:
@@ -161,7 +155,7 @@ def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray,
                     ]
                     mesh.triangles.append(triangle)
         else:
-            assert False, "Unable to build triangles from mesh due to mesh object structure"
+            raise ValueError("Unable to build triangles from mesh due to mesh object structure")
 
         for vertex in assimp_mesh.vertices:
             point = geometry_msgs.msg.Point()
@@ -172,8 +166,15 @@ def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray,
 
         print("mesh {:d}: {:d} verts, {:d} faces".format(mesh_idx, len(mesh.vertices), len(mesh.triangles)))
 
-        co.meshes = [mesh]
-        moveit_scene.add_object(co)
+    msg = to_stamped_pose_message(pos, quat, "base_link")
+
+    co = moveit_msgs.msg.CollisionObject()
+    co.operation = moveit_msgs.msg.CollisionObject.ADD
+    co.id = obj_name
+    co.header = msg.header
+    co.pose = msg.pose
+    co.meshes = meshes
+    moveit_scene.add_object(co)
 
     pyassimp.release(scene)
 
@@ -192,11 +193,14 @@ def load_obj_as_cubes_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray
             raise ValueError("There are no faces in the mesh")
 
         verts = np.array(assimp_mesh.vertices)
+        rot = Rotation.from_quat(quat).as_matrix()
+        verts = np.matmul(verts, rot.T)
+
         center = np.mean(verts, axis=0)
         verts = verts - center[None]
-        scale = np.max(np.abs(verts), axis=0)
+        scale = np.max(np.abs(verts), axis=0) * 2
 
-        msg = to_stamped_pose_message(pos + center, quat, "base_link")
+        msg = to_stamped_pose_message(pos + center, np.array([1., 0., 0., 0.]), "base_link")
 
         moveit_scene.add_box("{:s}_box_{:d}".format(obj_base_name, mesh_idx), msg, scale)
 
@@ -236,10 +240,6 @@ def check_added_to_moveit_scene(
 
 def check_clean_moveit_scene(
     moveit_scene: moveit_commander.PlanningSceneInterface, timeout: int=2) -> bool:
-    """
-    Set obj_is_known=False to wait for an object to be deleted.
-    Set obj_is_attached=True to wait for an object to be attached to another object.
-    """
 
     start = rospy.get_time()
     seconds = rospy.get_time()
