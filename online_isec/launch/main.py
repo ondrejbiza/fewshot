@@ -232,7 +232,7 @@ def main(args):
             close_log(gripper_log)
 
         if gripper_pub_p is not None:
-            kill_process(gripper_pub_p)
+            close_process(gripper_pub_p)
         if gripper_pub_log is not None:
             close_log(gripper_pub_log)
         print("Gripper connection closed.")

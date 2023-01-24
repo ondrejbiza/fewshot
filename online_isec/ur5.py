@@ -30,6 +30,8 @@ class UR5:
                                            'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint')
     
     setup_planning: bool = False
+    move_group_name: str = "manipulator"
+    tool_frame_id: str = "flange"
 
     def __post_init__(self):
 
@@ -48,13 +50,10 @@ class UR5:
         self.tf_proxy = TFProxy()
 
         if self.setup_planning:
-            name = "manipulator"
-            tool_frame_id = "flange"
-
             self.moveit_robot = moveit_commander.RobotCommander()
             self.moveit_scene = moveit_commander.PlanningSceneInterface()
-            self.moveit_move_group = moveit_commander.MoveGroupCommander(name)
-            self.moveit_move_group.set_end_effector_link(tool_frame_id)
+            self.moveit_move_group = moveit_commander.MoveGroupCommander(self.move_group_name)
+            self.moveit_move_group.set_end_effector_link(self.tool_frame_id)
             rospy.sleep(2)
 
             self.moveit_scene.clear()
