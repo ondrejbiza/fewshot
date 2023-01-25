@@ -4,6 +4,7 @@ import numpy as np
 from numpy.typing import NDArray
 import rospy
 from sensor_msgs.msg import CameraInfo
+from moveit_msgs.msg import AttachedCollisionObject, CollisionObject
 import open3d as o3d
 import geometry_msgs.msg
 import moveit_msgs.msg
@@ -55,7 +56,7 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
 
     labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
 
-    print("PC lengths (ignoring PCs above the ground)>")
+    print("PC lengths (ignoring PCs above the ground).")
     pcs = []
     for label in np.unique(labels):
         if label == -1:
@@ -191,6 +192,13 @@ def load_obj_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray, obj_nam
     pyassimp.release(scene)
 
 
+def load_obj_to_moveit_scene_2(obj_path: str, pos: NDArray, quat: NDArray, obj_name: str,
+                               moveit_scene: moveit_commander.PlanningSceneInterface):
+
+    msg = to_stamped_pose_message(pos, quat, "base_link")
+    moveit_scene.add_mesh(obj_name, msg, obj_path)
+
+
 def load_obj_as_cubes_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray,
                                       obj_base_name: str, moveit_scene: moveit_commander.PlanningSceneInterface):
 
@@ -283,3 +291,15 @@ def desk_obj_param_to_base_link_T(obj_mean: NDArray, obj_yaw: NDArray, desk_cent
     T_b_to_m = utils.pos_rot_to_transform(obj_mean + desk_center, utils.yaw_to_rot(obj_yaw))
     T_bl_to_b = np.linalg.inv(tf_proxy.lookup_transform("base_link", "base"))
     return T_bl_to_b @ T_b_to_m
+
+
+def attach_obj_to_hand(name, moveit_scene):
+
+    # TODO: If the hand is deeper, the object might touch the upper parts of the gripper.
+    touch_links = ["robotiq_85_left_finger_tip_joint", "robotiq_85_right_finger_tip_joint"]
+    aco = AttachedCollisionObject()
+    aco.object = CollisionObject()
+    aco.object.id = name
+    aco.link_name = "flange"
+    aco.touch_links = touch_links
+    moveit_scene.attach_object(aco)

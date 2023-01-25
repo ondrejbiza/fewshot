@@ -153,12 +153,14 @@ def main(args):
 
     gripper_pos, gripper_rot = ur5.get_end_effector_pose()
     gripper_pos = gripper_pos - constants.DESK_CENTER
+    print("@", Rotation.from_quat(gripper_rot).as_matrix())
 
     # TODO: We do not account for the mug moving as it is picked.
     tmp = np.matmul(
         np.linalg.inv(utils.yaw_to_rot(mug_param[2])),
         Rotation.from_quat(gripper_rot).as_matrix()
     )
+    print("%", tmp)
     gripper_rot = Rotation.from_matrix(tmp).as_quat()
     save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot, args.save)
 
