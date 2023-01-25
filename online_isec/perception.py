@@ -17,7 +17,9 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
                         close_proxy: bool=True, max_pc_size: Optional[int]=2000,
                         canon_mug_path: str="data/ndf_mugs_pca_4_dim.npy",
                         canon_tree_path: str="data/real_tree_pc.pkl",
-                        mug_save_decomposition: bool=True) -> Tuple[NDArray, NDArray, NDArray, NDArray]:
+                        mug_save_decomposition: bool=True,
+                        add_mug_to_planning_scene: bool=True,
+                        add_tree_to_planning_scene: bool=True) -> Tuple[NDArray, NDArray, NDArray, NDArray]:
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -50,13 +52,14 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
         mesh.export("tmp.stl")
         utils.convex_decomposition(mesh, "tmp.obj")
 
-    if moveit_scene is not None and tf_proxy is not None:
+    if add_mug_to_planning_scene:
+        assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], desk_center, tf_proxy))
-        isec_utils.load_obj_to_moveit_scene("tmp.obj", pos, quat, "mug", moveit_scene)
+        isec_utils.load_obj_to_moveit_scene_2("tmp.stl", pos, quat, "mug", moveit_scene)
 
+    if add_tree_to_planning_scene:
+        assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
-        isec_utils.load_obj_to_moveit_scene("data/real_tree2.obj", pos, quat, "tree", moveit_scene)
-    else:
-        assert moveit_scene is None and tf_proxy is None, "Specify both the moveit scene and tf_proxy or neither."
+        isec_utils.load_obj_to_moveit_scene_2("data/real_tree2.stl", pos, quat, "tree", moveit_scene)
 
     return mug_pc_complete, mug_param, tree_pc_complete, tree_param
