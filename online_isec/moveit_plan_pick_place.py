@@ -10,7 +10,9 @@ import online_isec.utils as isec_utils
 import online_isec.utils as isec_utils
 from online_isec import perception
 from online_isec.ur5 import UR5
+from online_isec.mesh_viz import MeshViz
 import utils
+from pybullet_planning.pybullet_tools import utils as pu
 
 
 def main():
@@ -23,9 +25,11 @@ def main():
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
+    mesh_viz = MeshViz()
+
     mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True
+        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, mesh_viz=mesh_viz
     )
 
     with open("data/real_pick_clone.pkl", "rb") as f:
@@ -38,29 +42,14 @@ def main():
         utils.yaw_to_rot(mug_param[2]),
         Rotation.from_quat(target_quat).as_matrix()
     )
-    print("gripper rot")
-    print("before")
-    print(Rotation.from_quat(target_quat).as_matrix())
-    print("after")
-    print(tmp)
-    target_quat = Rotation.from_matrix(tmp).as_quat()
-    # target_quat = np.array([1., 0., 0., 0.])
 
-    print("base to tool0_controller")
-    print("Target pos: {}".format(target_pos))
-    print("Target quat: {}".format(target_quat))
+    target_quat = Rotation.from_matrix(tmp).as_quat()
 
     T = utils.pos_quat_to_transform(target_pos, target_quat)
     T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), 0.05))
 
-    print(T_pre)
-    print(T)
-    
     T = isec_utils.base_tool0_controller_to_base_link_flange(T, ur5.tf_proxy)
     T_pre = isec_utils.base_tool0_controller_to_base_link_flange(T_pre, ur5.tf_proxy)
-
-    print(T_pre)
-    print(T)
 
     input("big red button")
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
@@ -94,6 +83,24 @@ def main():
     print("Best fit spatial transform:")
     print(vp_to_p2)
 
+    # wiggle
+
+    # setup simulated scene
+    pu.connect(use_gui=True, show_sliders=True)
+    pu.set_default_camera(distance=2)
+    pu.disable_real_time()
+    pu.draw_global_system()
+
+    T = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, utils.yaw_to_rot(mug_param[2]))
+    T = np.matmul(vp_to_p2, T)
+    pu.load_model("../tmp.obj", utils.transform_to_pos_quat(T))
+
+    T = utils.pos_rot_to_transform(tree_param[0] + constants.DESK_CENTER, utils.yaw_to_rot(tree_param[1]))
+    pu.load_model("../data/real_tree2.obj", utils.transform_to_pos_quat(T))
+
+    while True:
+        time.sleep(1)
+
     # mug_T = utils.pos_quat_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
     gripper_pos, gripper_quat = ur5.get_end_effector_pose()
     hand_T = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
@@ -116,5 +123,6 @@ def main():
 
     input("reset")
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+
 
 main()
