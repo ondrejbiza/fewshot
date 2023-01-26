@@ -8,6 +8,7 @@ import moveit_commander
 from online_isec.point_cloud_proxy import PointCloudProxy
 from online_isec.tf_proxy import TFProxy
 import online_isec.utils as isec_utils
+from online_isec.mesh_viz import MeshViz
 import utils
 import viz_utils
 
@@ -19,7 +20,8 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
                         canon_tree_path: str="data/real_tree_pc.pkl",
                         mug_save_decomposition: bool=True,
                         add_mug_to_planning_scene: bool=True,
-                        add_tree_to_planning_scene: bool=True) -> Tuple[NDArray, NDArray, NDArray, NDArray]:
+                        add_tree_to_planning_scene: bool=True,
+                        mesh_viz: Optional[MeshViz]=None) -> Tuple[NDArray, NDArray, NDArray, NDArray]:
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -46,11 +48,14 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
     tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree["canonical_obj"], tree_pc, n_angles=12)
     viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
 
+    vertices = utils.canon_to_pc(canon_mug, mug_param)[:len(canon_mug["canonical_mesh_points"])]
+    mesh = trimesh.base.Trimesh(vertices=vertices, faces=canon_mug["canonical_mesh_faces"])
+    mesh.export("tmp.stl")
     if mug_save_decomposition:
-        vertices = utils.canon_to_pc(canon_mug, mug_param)[:len(canon_mug["canonical_mesh_points"])]
-        mesh = trimesh.base.Trimesh(vertices=vertices, faces=canon_mug["canonical_mesh_faces"])
-        mesh.export("tmp.stl")
         utils.convex_decomposition(mesh, "tmp.obj")
+
+    pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], desk_center, tf_proxy))
+    pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
 
     if add_mug_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
@@ -61,5 +66,15 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
         isec_utils.load_obj_to_moveit_scene_2("data/real_tree2.stl", pos, quat, "tree", moveit_scene)
+
+    if mesh_viz is not None:
+        # send STL meshes as Marker messages to rviz
+        assert tf_proxy is not None, "Need tf_proxy to calculate poses."
+
+        pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], desk_center, tf_proxy))
+        mesh_viz.send_stl_message("tmp.stl", pos, quat)
+
+        pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
+        mesh_viz.send_stl_message("data/real_tree2.stl", pos, quat)
 
     return mug_pc_complete, mug_param, tree_pc_complete, tree_param
