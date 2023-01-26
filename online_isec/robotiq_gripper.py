@@ -98,3 +98,7 @@ class Gripper:
   def is_holding(self):
     # return self.status.gOBJ == 2 and self.status.gPO < 215
     return self.status.gOBJ == 2
+
+  def get_open_fraction(self) -> float:
+    assert self.status is not None
+    return self.status.gPO / 255.

@@ -1,5 +1,6 @@
 import argparse
 import numpy as np
+from numpy.typing import NDArray
 import matplotlib.pyplot as plt
 import pickle
 import pybullet as pb
@@ -63,7 +64,8 @@ def get_knn_and_deltas(obj, vps):
     return knn_list, deltas_list
 
 
-def save_pick_pose(filled_and_transformed_mug, gripper_pos, gripper_rot, save: bool):
+def save_pick_pose(filled_and_transformed_mug: NDArray[np.float32], gripper_pos: NDArray[np.float32],
+                   gripper_rot: NDArray[np.float32], save: bool):
 
     dist = np.sqrt(np.sum(np.square(filled_and_transformed_mug - gripper_pos), axis=1))
     index = np.argmin(dist)
@@ -125,10 +127,10 @@ def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, ca
 def main(args):
 
     rospy.init_node("easy_perception")
-    pc_proxy = RealsenseStructurePointCloudProxy()
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
+    pc_proxy = RealsenseStructurePointCloudProxy()
     mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER)
     )
@@ -153,7 +155,6 @@ def main(args):
 
     gripper_pos, gripper_rot = ur5.get_end_effector_pose()
     gripper_pos = gripper_pos - constants.DESK_CENTER
-    print("@", Rotation.from_quat(gripper_rot).as_matrix())
 
     # TODO: We do not account for the mug moving as it is picked.
     tmp = np.matmul(
