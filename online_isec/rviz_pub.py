@@ -1,6 +1,7 @@
 import rospy
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PoseStamped
+from moveit_msgs.msg import DisplayTrajectory
 
 import online_isec.utils as isec_utils
 
@@ -10,7 +11,7 @@ class RVizPub:
     def __init__(self):
         self.marker_pub = rospy.Publisher("visualization_marker", Marker)
         self.pose_pub = rospy.Publisher  # TODO
-        # TODO: add trajecotry publisher
+        self.trajectory_pub = rospy.Publisher("/move_group/display_planned_path", DisplayTrajectory, queue_size=20)
 
     def send_stl_message(self, stl_path, pos, quat):
 
@@ -31,6 +32,5 @@ class RVizPub:
 
         self.marker_pub.publish(marker)
 
-    def send_pose_message(self, pos, quat, frame_id):
-
-        isec_utils.to_stamped_pose_message(pos, quat, frame_id)
+    def send_trajectory_message(self, ds: DisplayTrajectory):
+        self.trajectory_pub.publish(ds)
