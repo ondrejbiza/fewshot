@@ -17,6 +17,7 @@ import exceptions
 from online_isec import constants
 import utils
 import online_isec.utils as isec_utils
+from online_isec.rviz_pub import RVizPub
 
 
 @dataclass
@@ -37,12 +38,7 @@ class UR5:
 
     def __post_init__(self):
 
-        # TODO: delete and use RVizPub.
-        self.display_trajectory_pub = rospy.Publisher(
-            "/move_group/display_planned_path",
-            DisplayTrajectory,
-            queue_size=20
-        )
+        self.rviz_pub = RVizPub()
 
         self.gripper = Gripper(True)
         self.gripper.reset()
@@ -139,12 +135,6 @@ class UR5:
 
     def plan_and_execute_pose_target_2(self, base_to_tool0_controller_pos, base_to_tool0_controller_quat):
 
-        # angles = Rotation.from_quat(base_to_tool0_controller_quat).as_euler("zyx")
-        # print(angles[2])
-        # angles[2] = ((angles[2] + np.pi) % (2 * np.pi)) - np.pi
-        # print(angles[2])
-        # base_to_tool0_controller_quat = Rotation.from_euler("zyx", angles).as_quat()
-
         T = utils.pos_quat_to_transform(base_to_tool0_controller_pos, base_to_tool0_controller_quat)
         T = isec_utils.base_tool0_controller_to_base_link_flange(T, self.tf_proxy)
         base_link_to_flange_pos, base_link_to_flange_rot = utils.transform_to_pos_quat(T)
@@ -155,26 +145,48 @@ class UR5:
         self.moveit_move_group.set_max_velocity_scaling_factor(0.1)
         self.moveit_move_group.set_max_acceleration_scaling_factor(0.1)
         self.moveit_move_group.set_pose_target(pose_msg)
+        self.moveit_move_group.set_planner_id("RRTConnect")
 
-        plan_raw = self.moveit_move_group.plan()
-        if not plan_raw:
-            raise exceptions.PlanningError()
+        # TODO: refactor
+        num_plans = 10
+        plans = []
+        for _ in range(num_plans):
+            plan_raw = self.moveit_move_group.plan()
+            if not plan_raw:
+                #raise exceptions.PlanningError()
+                continue
 
-        plan = plan_raw[1]
+            plan = plan_raw[1]
+            plans.append(plan)
+
+        # TODO: test
+        distances = []
+        for plan in plans:
+            distance = 0.
+            prev_pos = None
+            for point in plan.joint_trajectory.points:
+                pos = np.array(point.positions)
+                if prev_pos is not None:
+                    distance += np.sum(np.abs(pos[:-1] - prev_pos[:-1]))
+                    distance += 0.1 * np.abs(pos[-1] - prev_pos[-1])
+                prev_pos = pos
+            distances.append(distance)
+
+        print("distances:", distances)
+        plan = plans[np.argmin(distances)]
 
         ds = DisplayTrajectory()
         ds.trajectory_start = self.moveit_robot.get_current_state()
         ds.trajectory.append(plan)
-        self.display_trajectory_pub.publish(ds)  # TODO: use RVizPub
+        self.rviz_pub.send_trajectory_message(ds)
 
-        # TODO: uncomment
-        # success = self.moveit_move_group.execute(plan, wait=True)
-        # self.moveit_move_group.stop()
-        # self.moveit_move_group.clear_pose_targets()
-        # rospy.sleep(0.1)
+        success = self.moveit_move_group.execute(plan, wait=True)
+        self.moveit_move_group.stop()
+        self.moveit_move_group.clear_pose_targets()
+        rospy.sleep(0.1)
 
-        # if not success:
-        #     raise exceptions.ExecutionError()
+        if not success:
+            raise exceptions.ExecutionError()
 
     def plan_and_execute_joints_target(self, joints):
 
