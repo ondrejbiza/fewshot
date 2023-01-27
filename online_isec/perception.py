@@ -8,7 +8,7 @@ import moveit_commander
 from online_isec.point_cloud_proxy import PointCloudProxy
 from online_isec.tf_proxy import TFProxy
 import online_isec.utils as isec_utils
-from online_isec.mesh_viz import MeshViz
+from online_isec.rviz_pub import MeshViz
 import utils
 import viz_utils
 

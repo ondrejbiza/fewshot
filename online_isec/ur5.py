@@ -2,11 +2,13 @@ from dataclasses import dataclass
 import time
 import numpy as np
 from numpy.typing import NDArray
+from scipy.spatial.transform import Rotation
 import rospy
 from typing import List, Tuple, Any
 from sensor_msgs.msg import JointState
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose, Point, Quaternion
+from moveit_msgs.msg import DisplayTrajectory
 import moveit_commander
 from online_isec.robotiq_gripper import Gripper
 from online_isec.tf_proxy import TFProxy
@@ -24,7 +26,7 @@ class UR5:
     place_offset: float = 0.1
     place_open_pos: float = 0.
 
-    home_joint_values: Tuple[float, ...] = (0.65601951, -1.76965791, 1.79728603, -1.60219127, -1.5338834, 2.21791005)
+    home_joint_values: Tuple[float, ...] = (0.65601951, -1.76965791, 1.79728603, -1.60219127, -1.5338834, -0.785)
     desk_joint_values: Tuple[float, ...] = (-0.1835673491, -1.446624104, 1.77286005, -1.90146142, -1.532696072, 1.339956641)
     joint_names_speedj: Tuple[str, ...] = ('shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 
                                            'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint')
@@ -34,6 +36,13 @@ class UR5:
     tool_frame_id: str = "flange"
 
     def __post_init__(self):
+
+        # TODO: delete and use RVizPub.
+        self.display_trajectory_pub = rospy.Publisher(
+            "/move_group/display_planned_path",
+            DisplayTrajectory,
+            queue_size=20
+        )
 
         self.gripper = Gripper(True)
         self.gripper.reset()
@@ -127,6 +136,45 @@ class UR5:
 
         if not success:
             raise exceptions.ExecutionError()
+
+    def plan_and_execute_pose_target_2(self, base_to_tool0_controller_pos, base_to_tool0_controller_quat):
+
+        # angles = Rotation.from_quat(base_to_tool0_controller_quat).as_euler("zyx")
+        # print(angles[2])
+        # angles[2] = ((angles[2] + np.pi) % (2 * np.pi)) - np.pi
+        # print(angles[2])
+        # base_to_tool0_controller_quat = Rotation.from_euler("zyx", angles).as_quat()
+
+        T = utils.pos_quat_to_transform(base_to_tool0_controller_pos, base_to_tool0_controller_quat)
+        T = isec_utils.base_tool0_controller_to_base_link_flange(T, self.tf_proxy)
+        base_link_to_flange_pos, base_link_to_flange_rot = utils.transform_to_pos_quat(T)
+
+        assert self.setup_planning, "setup_planning has to be true."
+        pose_msg = self.to_pose_message(base_link_to_flange_pos, base_link_to_flange_rot)
+        self.moveit_move_group.set_num_planning_attempts(10)
+        self.moveit_move_group.set_max_velocity_scaling_factor(0.1)
+        self.moveit_move_group.set_max_acceleration_scaling_factor(0.1)
+        self.moveit_move_group.set_pose_target(pose_msg)
+
+        plan_raw = self.moveit_move_group.plan()
+        if not plan_raw:
+            raise exceptions.PlanningError()
+
+        plan = plan_raw[1]
+
+        ds = DisplayTrajectory()
+        ds.trajectory_start = self.moveit_robot.get_current_state()
+        ds.trajectory.append(plan)
+        self.display_trajectory_pub.publish(ds)  # TODO: use RVizPub
+
+        # TODO: uncomment
+        # success = self.moveit_move_group.execute(plan, wait=True)
+        # self.moveit_move_group.stop()
+        # self.moveit_move_group.clear_pose_targets()
+        # rospy.sleep(0.1)
+
+        # if not success:
+        #     raise exceptions.ExecutionError()
 
     def plan_and_execute_joints_target(self, joints):
 
