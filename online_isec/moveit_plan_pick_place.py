@@ -10,7 +10,7 @@ import online_isec.utils as isec_utils
 import online_isec.utils as isec_utils
 from online_isec import perception
 from online_isec.ur5 import UR5
-from online_isec.mesh_viz import MeshViz
+from online_isec.rviz_pub import MeshViz
 import utils
 from pybullet_planning.pybullet_tools import utils as pu
 

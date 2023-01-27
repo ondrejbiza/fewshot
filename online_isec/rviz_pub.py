@@ -1,13 +1,16 @@
 import rospy
 from visualization_msgs.msg import Marker
+from geometry_msgs.msg import PoseStamped
 
 import online_isec.utils as isec_utils
 
 
-class MeshViz:
+class RVizPub:
 
     def __init__(self):
-        self.pub = rospy.Publisher("visualization_marker", Marker)
+        self.marker_pub = rospy.Publisher("visualization_marker", Marker)
+        self.pose_pub = rospy.Publisher  # TODO
+        # TODO: add trajecotry publisher
 
     def send_stl_message(self, stl_path, pos, quat):
 
@@ -26,4 +29,8 @@ class MeshViz:
         marker.color.b = 1.
         marker.color.a = 1.
 
-        self.pub.publish(marker)
+        self.marker_pub.publish(marker)
+
+    def send_pose_message(self, pos, quat, frame_id):
+
+        isec_utils.to_stamped_pose_message(pos, quat, frame_id)
