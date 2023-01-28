@@ -14,20 +14,7 @@ import utils
 from pybullet_planning.pybullet_tools import utils as pu
 
 
-def main():
-
-    rospy.init_node("easy_perception")
-    pc_proxy = RealsenseStructurePointCloudProxy()
-    ur5 = UR5(setup_planning=True)
-    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
-
-    cloud = pc_proxy.get_all()
-    assert cloud is not None
-
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
-        pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub
-    )
+def pick(mug_pc_complete, mug_param, ur5, safe_release: bool=False):
 
     with open("data/real_pick_clone.pkl", "rb") as f:
         data = pickle.load(f)
@@ -35,24 +22,48 @@ def main():
         target_pos = mug_pc_complete[index]
 
     target_pos = target_pos + constants.DESK_CENTER
-    tmp = np.matmul(
+    target_rot = np.matmul(
         utils.yaw_to_rot(mug_param[2]),
         Rotation.from_quat(target_quat).as_matrix()
     )
-
-    target_quat = Rotation.from_matrix(tmp).as_quat()
+    target_quat = Rotation.from_matrix(target_rot).as_quat()
 
     T = utils.pos_quat_to_transform(target_pos, target_quat)
-    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), 0.05))
+    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.05))
+    if safe_release:
+        T_pre_safe = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.01))
 
-    T = isec_utils.base_tool0_controller_to_base_link_flange(T, ur5.tf_proxy)
-    T_pre = isec_utils.base_tool0_controller_to_base_link_flange(T_pre, ur5.tf_proxy)
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
+    ur5.gripper.close_gripper()
 
-    input("big red button")
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
+    if safe_release:
+        ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre_safe))
+        rospy.sleep(1)
+        ur5.gripper.open_gripper()
+        ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
 
-    input("big red button part 2")
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
+
+
+def main():
+
+    rospy.init_node("moveit_plan_pick_place")
+    pc_proxy = RealsenseStructurePointCloudProxy()
+
+    ur5 = UR5(setup_planning=True)
+    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+
+    cloud = pc_proxy.get_all()
+    assert cloud is not None
+
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
+        pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
+        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub
+    )
+
+    pick(mug_pc_complete, mug_param, ur5)
+    return
 
     with open("data/real_place_clone.pkl", "rb") as f:
         place_data = pickle.load(f)
@@ -69,12 +80,6 @@ def main():
 
     points_2 = tree_pc_complete[target_indices]
 
-    # import matplotlib.pyplot as plt
-    # fig = plt.figure()
-    # ax = fig.add_subplot(projection='3d')
-    # ax.scatter(targets[:, 0], targets[:, 1], targets[:, 2])
-    # ax.scatter(points_2[:, 0], points_2[:, 1], points_2[:, 2])
-    # plt.show()
 
     vp_to_p2, _, _ = utils.best_fit_transform(targets + constants.DESK_CENTER, points_2 + constants.DESK_CENTER)
     print("Best fit spatial transform:")
@@ -122,4 +127,5 @@ def main():
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
-main()
+if __name__ == "__main__":
+    main()

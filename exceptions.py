@@ -8,3 +8,7 @@ class ExecutionError(Exception):
 
 class EnvironmentSetupError(Exception):
     pass
+
+
+class PerceptionError(Exception):
+    pass
