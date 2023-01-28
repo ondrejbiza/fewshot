@@ -23,6 +23,8 @@ from online_isec.rviz_pub import RVizPub
 @dataclass
 class UR5:
 
+    activate_gripper: bool = True
+
     pick_offset: float = 0.1
     place_offset: float = 0.1
     place_open_pos: float = 0.
@@ -42,8 +44,9 @@ class UR5:
         self.rviz_pub = RVizPub()
 
         self.gripper = Gripper(True)
-        self.gripper.reset()
-        self.gripper.activate()
+        if self.activate_gripper:
+            self.gripper.reset()
+            self.gripper.activate()
 
         # current joint values
         self.joint_values = np.array([0] * 6)

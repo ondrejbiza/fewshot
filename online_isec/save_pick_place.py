@@ -25,16 +25,16 @@ def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
         if data["stop"]:
             break
 
-        pos, quat = ur5.get_end_effector_pose()
-        pos = pos - constants.DESK_CENTER
+        gripper_pos, gripper_quat = ur5.get_end_effector_pose()
+        gripper_pos = gripper_pos - constants.DESK_CENTER
 
         if data["T"] is not None:
-            T_g = utils.pos_quat_to_transform(pos, quat)
-            T = np.matmul(T_g, data["T"])
-            m_pos, m_quat = utils.transform_to_pos_quat(T)
+            T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
+            T_m_to_b = np.matmul(T_g_to_b, data["T"])
+            m_pos, m_quat = utils.transform_to_pos_quat(T_m_to_b)
             pu.set_pose(mug, (m_pos, m_quat))
 
-        pu.set_position(sphere, pos[0], pos[1], pos[2])
+        pu.set_position(sphere, gripper_pos[0], gripper_pos[1], gripper_pos[2])
         time.sleep(0.1)
 
 
@@ -78,41 +78,45 @@ def save_pick_pose(filled_and_transformed_mug: NDArray[np.float32], gripper_pos:
             }, f)
 
 
-def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, canon_tree, save: bool):
-
-    spheres = []
+def save_place_contact_points(ur5, mug, tree, T_m_to_g, canon_mug, canon_tree, mug_param, tree_param, save: bool):
 
     pb.performCollisionDetection()
-
     cols = pb.getClosestPoints(mug, tree, 0.01)
 
-    for s in spheres:
-        pu.remove_body(s)
-    spheres = []
-
+    spheres_mug = []
+    spheres_tree = []
     for col in cols:
-        pos = col[6]
+        pos_mug = col[5]
+        with pu.HideOutput():
+            s = pu.load_model("../data/sphere_red.urdf")
+            pu.set_pose(s, pu.Pose(pu.Point(*pos_mug)))
+        spheres_mug.append(s)
+
+        pos_tree = col[6]
         with pu.HideOutput():
             s = pu.load_model("../data/sphere.urdf")
-            pu.set_pose(s, pu.Pose(pu.Point(*pos)))
-        spheres.append(s)
+            pu.set_pose(s, pu.Pose(pu.Point(*pos_tree)))
+        spheres_tree.append(s)
 
-    pos_1 = [col[5] for col in cols]
-    pos_2 = [col[6] for col in cols]
+    pos_mug = [col[5] for col in cols]
+    pos_tree = [col[6] for col in cols]
 
-    pos_1 = np.stack(pos_1, axis=0).astype(np.float32)
-    pos_2 = np.stack(pos_2, axis=0).astype(np.float32)
+    pos_mug = np.stack(pos_mug, axis=0).astype(np.float32)
+    pos_tree = np.stack(pos_tree, axis=0).astype(np.float32)
 
-    pos, quat = ur5.get_end_effector_pose()
-    T_g = utils.pos_quat_to_transform(pos - constants.DESK_CENTER, quat)
-    T = np.matmul(T_g, T_g_to_m)
+    gripper_pos, gripper_quat = ur5.get_end_effector_pose()
+    T_g_to_b = utils.pos_quat_to_transform(gripper_pos - constants.DESK_CENTER, gripper_quat)
+    T_m_to_b = np.matmul(T_g_to_b, T_m_to_g)
 
-    tmp = utils.canon_to_pc(canon_mug, mug_param)
-    tmp_2 = utils.transform_pointcloud_2(pos_2, np.linalg.inv(T))
+    T_t_to_b = utils.pos_rot_to_transform(tree_param[0], utils.yaw_to_rot(tree_param[1]))
 
-    knns, deltas = get_knn_and_deltas(tmp, tmp_2)
+    mug_pc_origin = utils.canon_to_pc(canon_mug, mug_param)
+    pos_tree_tree_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_t_to_b))  # TODO: is this correct?
+    pos_tree_mug_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_m_to_b))  # TODO: is this correct?
 
-    dist_2 = np.sqrt(np.sum(np.square(canon_tree["canonical_obj"][:, None] - tmp_2[None]), axis=2))
+    knns, deltas = get_knn_and_deltas(mug_pc_origin, pos_tree_mug_coords)  # TODO: is this correct?
+
+    dist_2 = np.sqrt(np.sum(np.square(canon_tree["canonical_obj"][:, None] - pos_tree_tree_coords[None]), axis=2))  # TODO: is this correct?
     i_2 = np.argmin(dist_2, axis=0).transpose()
 
     if save:
@@ -130,7 +134,7 @@ def main(args):
     pc_proxy = RealsenseStructurePointCloudProxy()
 
     ur5 = UR5(setup_planning=True)
-    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+    # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER),
@@ -168,13 +172,12 @@ def main(args):
     save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot, args.save)
 
 
-    T_g = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
-
-    mug_pos, mug_rot = pu.get_pose(mug)
-    T_m = utils.pos_quat_to_transform(mug_pos, mug_rot)
-
-    T = utils.compute_relative_transform(T_g, T_m)
-    data["T"] = T
+    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
+    gripper_pos = gripper_pos - constants.DESK_CENTER
+    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
+    T_m_to_b = utils.pos_rot_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
+    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
+    data["T"] = T_m_to_g
 
     ur5.gripper.close_gripper()
 
@@ -183,10 +186,10 @@ def main(args):
     data["stop"] = True
     thread.join()
 
-    save_place_contact_points(ur5, mug, tree, T, canon_mug, mug_param, canon_tree, args.save)
+    save_place_contact_points(ur5, mug, tree, T_m_to_g, canon_mug, canon_tree, mug_param, tree_param, args.save)
 
     ur5.gripper.open_gripper()
-    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+    # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
 parser = argparse.ArgumentParser()

@@ -8,6 +8,16 @@ import pickle
 import utils
 
 
+def show_tree_indices(ax, tree_pc: NDArray, indices: NDArray[np.int32], vmin: float, vmax: float):
+
+    ax.clear()
+    ax.scatter(tree_pc[:, 0], tree_pc[:, 1], tree_pc[:, 2], color="red", alpha=0.5)
+    ax.scatter(tree_pc[indices, 0], tree_pc[indices, 1], tree_pc[indices, 2], color="green", s=50)
+    ax.set_xlim(vmin, vmax)
+    ax.set_ylim(vmin, vmax)
+    ax.set_zlim(vmin, vmax)
+
+
 def update_axis(ax, new_obj: NDArray, tree: NDArray, vmin: float, vmax: float):
 
     ax.clear()
@@ -49,8 +59,14 @@ def main(args):
     smin, smax = -2., 2.
     vmin, vmax = -0.3, 0.3
 
+    print("Showing tree closest points:")
     fig = plt.figure()
+    ax = fig.add_subplot(111, projection="3d")
+    show_tree_indices(ax, canon_tree["canonical_obj"], target_indices, vmin, vmax)
+    plt.show()
 
+    print("Showing placement pose warping:")
+    fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
     update_axis(ax, warp(new_obj, canon_tree["canonical_obj"], knns, deltas, target_indices), canon_tree["canonical_obj"], vmin, vmax)
 
