@@ -6,8 +6,8 @@
       <geometry>
         <sphere radius="0.005" />
       </geometry>
-      <material name="black_metal">
-        <color rgba="0.1 0.1 0.1 1"/>
+      <material name="red_metal">
+        <color rgba="0.5 0.0 0.0 1"/>
       </material>
     </visual>
 
