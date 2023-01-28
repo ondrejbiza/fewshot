@@ -10,8 +10,8 @@ class RVizPub:
 
     def __init__(self):
         self.marker_pub = rospy.Publisher("visualization_marker", Marker)
-        self.pose_pub = rospy.Publisher  # TODO
-        self.trajectory_pub = rospy.Publisher("/move_group/display_planned_path", DisplayTrajectory, queue_size=20)
+        self.trajectory_pub = rospy.Publisher("/move_group/display_planned_path", DisplayTrajectory)
+        self.pose_pub = rospy.Publisher("pose_publisher", PoseStamped)
 
     def send_stl_message(self, stl_path, pos, quat):
 
@@ -34,3 +34,7 @@ class RVizPub:
 
     def send_trajectory_message(self, ds: DisplayTrajectory):
         self.trajectory_pub.publish(ds)
+
+    def send_pose(self, pos, quat, frame_id):
+        pose = isec_utils.to_stamped_pose_message(pos, quat, frame_id)
+        self.pose_pub.publish(pose)
