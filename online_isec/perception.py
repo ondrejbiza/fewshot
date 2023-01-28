@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict, Any
 import pickle
 import trimesh
 import numpy as np
@@ -13,6 +13,7 @@ import utils
 import viz_utils
 
 
+# TODO: finish typing
 def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_proxy: Optional[TFProxy]=None,
                         moveit_scene: Optional[moveit_commander.PlanningSceneInterface]=None,
                         close_proxy: bool=False, max_pc_size: Optional[int]=2000,
@@ -21,7 +22,7 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
                         mug_save_decomposition: bool=False,
                         add_mug_to_planning_scene: bool=False,
                         add_tree_to_planning_scene: bool=False,
-                        rviz_pub: Optional[RVizPub]=None) -> Tuple[NDArray, NDArray, NDArray, NDArray]:
+                        rviz_pub: Optional[RVizPub]=None) -> Tuple[NDArray, NDArray, NDArray, NDArray, Dict[Any, Any], Dict[Any, Any]]:
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -74,4 +75,4 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
         rviz_pub.send_stl_message("data/real_tree2.stl", pos, quat)
 
-    return mug_pc_complete, mug_param, tree_pc_complete, tree_param
+    return mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree
