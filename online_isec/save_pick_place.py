@@ -132,7 +132,7 @@ def main(args):
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER),
         add_mug_to_planning_scene=False, add_tree_to_planning_scene=False
     )
@@ -166,6 +166,7 @@ def main(args):
     gripper_rot = Rotation.from_matrix(tmp).as_quat()
 
     save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot, args.save)
+
 
     T_g = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
 
