@@ -1,74 +1,43 @@
+import argparse
 import numpy as np
-import pickle
 import rospy
-from scipy.spatial.transform import Rotation
 
 from online_isec import constants
-from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
-import online_isec.utils as isec_utils
-import online_isec.utils as isec_utils
 from online_isec import perception
+from online_isec.moveit_plan_pick_place import pick
+from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
-import utils
 
 
-def main():
+def main(args):
 
-    rospy.init_node("easy_perception")
+    rospy.init_node("moveit_plan_pick")
     pc_proxy = RealsenseStructurePointCloudProxy()
+
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
-        pc_proxy, np.array(constants.DESK_CENTER), # ur5.tf_proxy, ur5.moveit_scene
+    if args.pca_8_dim:
+        canon_mug_path = "data/ndf_mugs_pca_8_dim.npy"
+    else:
+        canon_mug_path = "data/ndf_mugs_pca_4_dim.npy"
+
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
+        pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
+        add_mug_to_planning_scene=False, add_tree_to_planning_scene=False, rviz_pub=ur5.rviz_pub,
+        canon_mug_path=canon_mug_path, ablate_no_mug_warping=args.ablate_no_mug_warping,
+        close_proxy=True
     )
 
-    with open("data/real_pick_clone.pkl", "rb") as f:
-        data = pickle.load(f)
-        index, target_quat = data["index"], data["quat"]
-        target_pos = mug_pc_complete[index]
+    pick(mug_pc_complete, mug_param, ur5, safe_release=True)
 
-    target_pos = target_pos + constants.DESK_CENTER
-    tmp = np.matmul(
-        utils.yaw_to_rot(mug_param[2]),
-        Rotation.from_quat(target_quat).as_matrix()
-    )
-    print("gripper rot")
-    print("before")
-    print(Rotation.from_quat(target_quat).as_matrix())
-    print("after")
-    print(tmp)
-    target_quat = Rotation.from_matrix(tmp).as_quat()
-    # target_quat = np.array([1., 0., 0., 0.])
-
-    print("base to tool0_controller")
-    print("Target pos: {}".format(target_pos))
-    print("Target quat: {}".format(target_quat))
-
-    T = utils.pos_quat_to_transform(target_pos, target_quat)
-    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), 0.05))
-
-    print(T_pre)
-    print(T)
-    
-    T = isec_utils.base_tool0_controller_to_base_link_flange(T, ur5.tf_proxy)
-    T_pre = isec_utils.base_tool0_controller_to_base_link_flange(T_pre, ur5.tf_proxy)
-
-    print(T_pre)
-    print(T)
-
-    input("big red button")
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
-
-    input("big red button part 2")
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T))
-
-    input("reset")
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
-
-main()
+parser = argparse.ArgumentParser()
+parser.add_argument("--pca-8-dim", default=False, action="store_true")
+parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
+main(parser.parse_args())

@@ -18,6 +18,7 @@ import utils
 
 from online_isec.tf_proxy import TFProxy
 from online_isec import constants
+import exceptions
 
 
 @dataclass
@@ -90,8 +91,9 @@ class PointCloudProxy:
 
         clouds = []
         for cloud in self.clouds:
-            if cloud is not None:
-                clouds.append(cloud)
+            if cloud is None:
+                raise exceptions.PerceptionError("A subset of depths sensors doesn't work.")
+            clouds.append(cloud)
         clouds = np.concatenate(clouds)
 
         for lock in self.locks:

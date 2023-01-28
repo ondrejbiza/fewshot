@@ -124,7 +124,7 @@ class UR5:
         self.moveit_move_group.set_pose_target(pose_msg)
 
         plan_raw = self.moveit_move_group.plan()
-        if not plan_raw:
+        if not plan_raw[0]:
             raise exceptions.PlanningError()
 
         plan = plan_raw[1]
@@ -153,8 +153,8 @@ class UR5:
         plans = []
         for i in range(num_plans):
             plan_raw = self.moveit_move_group.plan()
-            if not plan_raw:
-                # MoveIt silently wipes the planner when it fails to find a plan.
+            if not plan_raw[0]:
+                # not sure if I need this anymore.
                 self.setup_planning_attempt(pose_msg)
                 continue
 

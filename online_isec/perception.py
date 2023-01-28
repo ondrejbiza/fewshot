@@ -22,7 +22,8 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
                         mug_save_decomposition: bool=False,
                         add_mug_to_planning_scene: bool=False,
                         add_tree_to_planning_scene: bool=False,
-                        rviz_pub: Optional[RVizPub]=None) -> Tuple[NDArray, NDArray, NDArray, NDArray, Dict[Any, Any], Dict[Any, Any]]:
+                        rviz_pub: Optional[RVizPub]=None,
+                        ablate_no_mug_warping: bool=False) -> Tuple[NDArray, NDArray, NDArray, NDArray, Dict[Any, Any], Dict[Any, Any]]:
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -45,7 +46,13 @@ def mug_tree_perception(pc_proxy: PointCloudProxy, desk_center: NDArray, tf_prox
     with open(canon_tree_path, "rb") as f:
         canon_tree = pickle.load(f)
 
-    mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=12)
+    if ablate_no_mug_warping:
+        mug_pc_complete, _, mug_param = utils.planar_pose_gd(canon_mug["canonical_obj"], mug_pc, n_angles=12)
+        n_dimensions = canon_mug["pca"].n_components
+        mug_param = [np.zeros(n_dimensions, dtype=np.float32), *mug_param]
+    else:
+        mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=12)
+
     tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree["canonical_obj"], tree_pc, n_angles=12)
     viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
 

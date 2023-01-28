@@ -13,41 +13,23 @@ import utils
 from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 import viz_utils
 from online_isec import perception
+from online_isec.moveit_plan_pick_place import pick
 
 
 def main():
 
     rospy.init_node("test_robotiq_in_pybullet")
-
     pc_proxy = RealsenseStructurePointCloudProxy()
 
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
         add_mug_to_planning_scene=False, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub
     )
 
-    with open("data/real_pick_clone.pkl", "rb") as f:
-        data = pickle.load(f)
-        index, target_quat = data["index"], data["quat"]
-        target_pos = mug_pc_complete[index]
-
-    target_pos = target_pos + constants.DESK_CENTER
-    tmp = np.matmul(
-        utils.yaw_to_rot(mug_param[2]),
-        Rotation.from_quat(target_quat).as_matrix()
-    )
-    target_quat = Rotation.from_matrix(tmp).as_quat()
-
-    T = utils.pos_quat_to_transform(target_pos, target_quat)
-    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.05))
-
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
-    ur5.gripper.close_gripper()
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
+    pick(mug_pc_complete, mug_param, ur5)
 
     pu.connect(use_gui=True, show_sliders=True)
     pu.set_default_camera(distance=2)
