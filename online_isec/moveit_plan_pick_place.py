@@ -10,7 +10,6 @@ import online_isec.utils as isec_utils
 import online_isec.utils as isec_utils
 from online_isec import perception
 from online_isec.ur5 import UR5
-from online_isec.rviz_pub import MeshViz
 import utils
 from pybullet_planning.pybullet_tools import utils as pu
 
@@ -25,11 +24,9 @@ def main():
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
-    mesh_viz = MeshViz()
-
     mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, mesh_viz=mesh_viz
+        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub
     )
 
     with open("data/real_pick_clone.pkl", "rb") as f:

@@ -127,12 +127,14 @@ def save_place_contact_points(ur5, mug, tree, T_g_to_m, canon_mug, mug_param, ca
 def main(args):
 
     rospy.init_node("easy_perception")
+    pc_proxy = RealsenseStructurePointCloudProxy()
+
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    pc_proxy = RealsenseStructurePointCloudProxy()
     mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
-        pc_proxy, np.array(constants.DESK_CENTER)
+        pc_proxy, np.array(constants.DESK_CENTER),
+        add_mug_to_planning_scene=False, add_tree_to_planning_scene=False
     )
 
     pu.connect(use_gui=True, show_sliders=False)
@@ -158,11 +160,11 @@ def main(args):
 
     # TODO: We do not account for the mug moving as it is picked.
     tmp = np.matmul(
-        np.linalg.inv(utils.yaw_to_rot(mug_param[2])),
+        utils.yaw_to_rot(mug_param[2]).T,
         Rotation.from_quat(gripper_rot).as_matrix()
     )
-    print("%", tmp)
     gripper_rot = Rotation.from_matrix(tmp).as_quat()
+
     save_pick_pose(mug_pc_complete, gripper_pos, gripper_rot, args.save)
 
     T_g = utils.pos_quat_to_transform(gripper_pos, gripper_rot)

@@ -649,18 +649,18 @@ def pos_quat_to_transform(pos: Union[Tuple[float, float, float], NDArray], quat:
   return T
 
 
-def pos_rot_to_transform(pos: Union[Tuple[float, float, float], NDArray], rot: NDArray) -> NDArray[np.float32]:
+def pos_rot_to_transform(pos: Union[Tuple[float, float, float], NDArray], rot: NDArray) -> NDArray[np.float64]:
 
-  T = np.eye(4).astype(np.float32)
+  T = np.eye(4).astype(np.float64)
   T[:3, 3] = pos
   T[:3, :3] = rot
   return T
 
 
-def transform_to_pos_quat(T: NDArray) -> Tuple[NDArray[np.float32], NDArray[np.float32]]:
+def transform_to_pos_quat(T: NDArray) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
 
-  pos = T[:3, 3].astype(np.float32)
-  quat = Rotation.from_matrix(T[:3, :3]).as_quat().astype(np.float32)
+  pos = T[:3, 3].astype(np.float64)
+  quat = Rotation.from_matrix(T[:3, :3]).as_quat().astype(np.float64)
   return pos, quat
 
 

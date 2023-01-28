@@ -3,6 +3,7 @@ import pybullet as pb
 import rospy
 from scipy.spatial.transform import Rotation
 import time
+import pickle
 
 from online_isec.ur5 import UR5
 import online_isec.utils as isec_utils
@@ -11,6 +12,7 @@ from online_isec import constants
 import utils
 from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 import viz_utils
+from online_isec import perception
 
 
 def main():
@@ -20,11 +22,32 @@ def main():
     pc_proxy = RealsenseStructurePointCloudProxy()
 
     ur5 = UR5(setup_planning=True)
-    # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    # ur5.gripper.open_gripper()
-    # input("Close gripper?")
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param = perception.mug_tree_perception(
+        pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
+        add_mug_to_planning_scene=False, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub
+    )
+
+    with open("data/real_pick_clone.pkl", "rb") as f:
+        data = pickle.load(f)
+        index, target_quat = data["index"], data["quat"]
+        target_pos = mug_pc_complete[index]
+
+    target_pos = target_pos + constants.DESK_CENTER
+    tmp = np.matmul(
+        utils.yaw_to_rot(mug_param[2]),
+        Rotation.from_quat(target_quat).as_matrix()
+    )
+    target_quat = Rotation.from_matrix(tmp).as_quat()
+
+    T = utils.pos_quat_to_transform(target_pos, target_quat)
+    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.05))
+
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
     ur5.gripper.close_gripper()
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
 
     pu.connect(use_gui=True, show_sliders=True)
     pu.set_default_camera(distance=2)
@@ -46,7 +69,7 @@ def main():
     pos = pos_ws + constants.DESK_CENTER
     T = utils.pos_quat_to_transform(pos, np.array([0., 0., 0., 1.]))
 
-    input("red button 1")
+    # input("red button 1")
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
     time.sleep(0.5)
     cloud1 = pc_proxy.get_all()
@@ -56,23 +79,25 @@ def main():
 
     T2 = np.copy(T)
     T2[:3, :3] = np.matmul(rot1, T2[:3, :3])
-    input("red button 2")
+    # input("red button 2")
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T2))
     time.sleep(0.5)
     cloud2 = pc_proxy.get_all()
 
     T3 = np.copy(T)
     T3[:3, :3] = np.matmul(rot2, T3[:3, :3])
-    input("red button 3")
+    # input("red button 3")
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T3))
     time.sleep(0.5)
     cloud3 = pc_proxy.get_all()    
 
-    box_min = [-0.1, -0.1, -.15]
+    cloud1 = cloud1 - constants.DESK_CENTER
+    cloud2 = cloud2 - constants.DESK_CENTER
+    cloud3 = cloud3 - constants.DESK_CENTER
+
+    box_min = [-0.1, -0.1, -0.15]
     box_max = [0.1, 0.1, 0.05]
 
-    # find tool0_controller position in workspace
-    pos_ws
     # recenter PCs on tool
     cloud2 = cloud2 - pos_ws
     cloud3 = cloud3 - pos_ws
@@ -96,7 +121,7 @@ def main():
     cloud2 = cloud2 + pos_ws
     cloud3 = cloud3 + pos_ws
 
-    c = np.concatenate([cloud1, cloud2])
+    c = np.concatenate([cloud1, cloud2, cloud3])
     viz_utils.o3d_visualize(utils.create_o3d_pointcloud(c))
 
     # while not rospy.is_shutdown():

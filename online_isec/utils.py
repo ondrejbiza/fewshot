@@ -285,6 +285,13 @@ def base_tool0_controller_to_base_link_flange(T: NDArray, tf_proxy: TFProxy) -> 
     return T_bl_to_b @ T_b_to_g_prime @ T_g_to_b @ T_b_to_f
 
 
+def tool0_controller_base_to_flange_base_link(T: NDArray, tf_proxy: TFProxy) -> NDArray:
+
+    T_b_to_bl = tf_proxy.lookup_transform("base", "base_link")
+    T_f_to_g = tf_proxy.lookup_transform("flange", "tool0_controller")
+
+    return T_b_to_bl @ T @ T_f_to_g
+
 def desk_obj_param_to_base_link_T(obj_mean: NDArray, obj_yaw: NDArray, desk_center: NDArray,
                                   tf_proxy: TFProxy) -> NDArray:
 

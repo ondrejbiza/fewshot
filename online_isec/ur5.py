@@ -38,6 +38,7 @@ class UR5:
 
     def __post_init__(self):
 
+        self.tf_proxy = TFProxy()
         self.rviz_pub = RVizPub()
 
         self.gripper = Gripper(True)
@@ -52,7 +53,6 @@ class UR5:
             # commanding the arm using ur script
             self.pub = rospy.Publisher("/ur_hardware_interface/script_command", String, queue_size=10)
 
-        self.tf_proxy = TFProxy()
 
         if self.setup_planning:
             self.moveit_robot = moveit_commander.RobotCommander()
@@ -133,27 +133,26 @@ class UR5:
         if not success:
             raise exceptions.ExecutionError()
 
-    def plan_and_execute_pose_target_2(self, base_to_tool0_controller_pos, base_to_tool0_controller_quat):
+    def plan_and_execute_pose_target_2(self, tool0_controller_pos, tool0_controller__quat):
 
-        T = utils.pos_quat_to_transform(base_to_tool0_controller_pos, base_to_tool0_controller_quat)
-        T = isec_utils.base_tool0_controller_to_base_link_flange(T, self.tf_proxy)
+        self.rviz_pub.send_pose(tool0_controller_pos, tool0_controller__quat, "base")            
+
+        T = utils.pos_quat_to_transform(tool0_controller_pos, tool0_controller__quat)
+        T = isec_utils.tool0_controller_base_to_flange_base_link(T, self.tf_proxy)
         base_link_to_flange_pos, base_link_to_flange_rot = utils.transform_to_pos_quat(T)
 
         assert self.setup_planning, "setup_planning has to be true."
         pose_msg = self.to_pose_message(base_link_to_flange_pos, base_link_to_flange_rot)
-        self.moveit_move_group.set_num_planning_attempts(10)
-        self.moveit_move_group.set_max_velocity_scaling_factor(0.1)
-        self.moveit_move_group.set_max_acceleration_scaling_factor(0.1)
-        self.moveit_move_group.set_pose_target(pose_msg)
-        self.moveit_move_group.set_planner_id("RRTConnect")
+        self.setup_planning_attempt(pose_msg)
 
         # TODO: refactor
         num_plans = 10
         plans = []
-        for _ in range(num_plans):
+        for i in range(num_plans):
             plan_raw = self.moveit_move_group.plan()
             if not plan_raw:
-                #raise exceptions.PlanningError()
+                # MoveIt silently wipes the planner when it fails to find a plan.
+                self.setup_planning_attempt(pose_msg)
                 continue
 
             plan = plan_raw[1]
@@ -173,7 +172,13 @@ class UR5:
             distances.append(distance)
 
         print("distances:", distances)
-        plan = plans[np.argmin(distances)]
+        idx = np.argmin(distances)
+        distance = distances[idx]
+        plan = plans[idx]
+
+        if distance >= 10.:
+            print("WARNING: The motion planner might be doing something weird.")
+            input("Continue?")
 
         ds = DisplayTrajectory()
         ds.trajectory_start = self.moveit_robot.get_current_state()
@@ -208,6 +213,14 @@ class UR5:
         if not success:
             raise exceptions.ExecutionError()
 
+    def setup_planning_attempt(self, pose_msg):
+
+        self.moveit_move_group.set_num_planning_attempts(10)
+        self.moveit_move_group.set_max_velocity_scaling_factor(0.1)
+        self.moveit_move_group.set_max_acceleration_scaling_factor(0.1)
+        self.moveit_move_group.set_pose_target(pose_msg)
+        self.moveit_move_group.set_planner_id("RRTConnect")
+
     def joints_callback(self, msg: JointState):
 
         if self.joint_names_speedj[0] not in msg.name:
@@ -221,9 +234,7 @@ class UR5:
     def get_end_effector_pose(self) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
 
         T = self.tf_proxy.lookup_transform("tool0_controller", "base")
-        pos = T[:3, 3]
-        rot_q = transformation.quaternion_from_matrix(T)
-        return pos, rot_q
+        return utils.transform_to_pos_quat(T)
 
     @classmethod
     def to_pose_message(cls, pos: NDArray, quat: NDArray) -> Pose:
