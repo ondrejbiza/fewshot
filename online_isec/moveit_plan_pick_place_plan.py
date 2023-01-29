@@ -37,13 +37,6 @@ def pick(mug_pc_complete, mug_param, ur5, safe_release: bool=False):
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
     ur5.gripper.close_gripper()
 
-    # Calcualte mug to gripper transform at the point when we grasp it.
-    # TODO: If the grasp moved the mug we wouldn't know.
-    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
-    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
-    T_m_to_b = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, utils.yaw_to_rot(mug_param[2]))
-    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
-
     if safe_release:
         ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre_safe))
         rospy.sleep(1)
@@ -51,8 +44,6 @@ def pick(mug_pc_complete, mug_param, ur5, safe_release: bool=False):
         ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
 
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
-
-    return T_m_to_g
 
 
 def main():
@@ -72,7 +63,7 @@ def main():
         mug_save_decomposition=True, close_proxy=True
     )
 
-    T_m_to_g = pick(mug_pc_complete, mug_param, ur5)
+    pick(mug_pc_complete, mug_param, ur5)
 
     with open("data/real_place_clone.pkl", "rb") as f:
         place_data = pickle.load(f)
@@ -81,28 +72,49 @@ def main():
     deltas = place_data["deltas"]
     target_indices = place_data["target_indices"]
 
-    mug_orig = utils.canon_to_pc(canon_mug, mug_param)
-    tree_orig = canon_tree["canonical_obj"]
+    mug_rot = utils.yaw_to_rot(mug_param[2])
+    deltas_rot = np.matmul(deltas, mug_rot.T)
 
-    anchors = mug_orig[knns]
-    targets_mug = np.mean(anchors + deltas, axis=1)
+    anchors = mug_pc_complete[knns]
+    targets_mug = np.mean(anchors + deltas_rot, axis=1)
 
-    targets_tree = tree_orig[target_indices]
+    targets_tree = tree_pc_complete[target_indices]
 
-    T_new_m_to_t, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
+    rel_pose, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
     print("Best fit spatial transform:")
-    print(T_new_m_to_t)
+    print(rel_pose)
 
-    T_t_to_b = utils.pos_rot_to_transform(tree_param[0] + constants.DESK_CENTER, utils.yaw_to_rot(tree_param[1]))
-    T_new_m_to_b = np.matmul(T_t_to_b, T_new_m_to_t)
+    # setup simulated scene
+    pu.connect(use_gui=True, show_sliders=True)
+    pu.set_default_camera(distance=2)
+    pu.disable_real_time()
+    pu.draw_global_system()
 
-    T_g_to_b = np.matmul(T_new_m_to_b, np.linalg.inv(T_m_to_g))
+    T_m_to_b = utils.pos_rot_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
+    T_task = np.matmul(rel_pose, T_m_to_b)  # TODO: Not sure about this matmul.
+    pu.load_model("../tmp.obj", utils.transform_to_pos_quat(T_task))
 
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_to_b))
-    input("Release?")
+    T_t_to_b = utils.pos_rot_to_transform(tree_param[0], utils.yaw_to_rot(tree_param[1]))
+    pu.load_model("../data/real_tree2.obj", utils.transform_to_pos_quat(T_t_to_b))
+
+    # TODO: wiggle
+
+    # mug_T = utils.pos_quat_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
+    gripper_pos, gripper_quat = ur5.get_end_effector_pose()
+    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
+
+    # g_t_m = np.matmul(np.linalg.inv(hand_T), mug_T)
+    # g_t_m_pos, g_t_m_quat = utils.transform_to_pos_quat(g_t_m)
+
+    T_g_task_to_b = np.matmul(T_task, T_g_to_b)
+
+    # isec_utils.attach_obj_to_hand("mug", ur5.moveit_scene)
+    # isec_utils.check_added_to_moveit_scene("mug", ur5.moveit_scene, obj_is_attached=True)
+
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_task_to_b))
     ur5.gripper.open_gripper()
 
-    input("Reset?")
+    input("reset")
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
