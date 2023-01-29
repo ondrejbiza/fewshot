@@ -48,7 +48,7 @@ def main(args):
     with open("data/real_tree_pc.pkl", "rb") as f:
         canon_tree = pickle.load(f)
 
-    with open("data/real_place_clone.pkl", "rb") as f:
+    with open(args.load_path, "rb") as f:
         place_data = pickle.load(f)
 
     knns = place_data["knns"]
@@ -94,4 +94,5 @@ def main(args):
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument("load_path")
 main(parser.parse_args())
