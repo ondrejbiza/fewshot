@@ -18,6 +18,7 @@ from online_isec import constants
 import utils
 import online_isec.utils as isec_utils
 from online_isec.rviz_pub import RVizPub
+from online_isec.moveit_scene import MoveItScene
 
 
 @dataclass
@@ -59,40 +60,29 @@ class UR5:
 
         if self.setup_planning:
             self.moveit_robot = moveit_commander.RobotCommander()
-            self.moveit_scene = moveit_commander.PlanningSceneInterface()
+            self.moveit_scene = MoveItScene()
             self.moveit_move_group = moveit_commander.MoveGroupCommander(self.move_group_name)
             self.moveit_move_group.set_end_effector_link(self.tool_frame_id)
             rospy.sleep(2)
 
             self.moveit_scene.clear()
-            assert isec_utils.check_clean_moveit_scene(self.moveit_scene)
 
             desk_center = utils.transform_pointcloud_2(np.array(constants.DESK_CENTER)[None], self.tf_proxy.lookup_transform("base", "base_link"))[0]
-            pose = isec_utils.to_stamped_pose_message(desk_center, np.array([1., 0., 0., 0.]), "base_link")
-            self.moveit_scene.add_box("table", pose, [2., 2., 0.001])
-            assert isec_utils.check_added_to_moveit_scene("table", self.moveit_scene)
+            self.moveit_scene.add_box("table", desk_center, np.array([1., 0., 0., 0.]), np.array([2., 2., 0.001]))
 
-            pose = isec_utils.to_stamped_pose_message(np.array([0., 0., -0.04]), np.array([1., 0., 0., 0.]), "base_link")
-            self.moveit_scene.add_box("robot_box", pose, [0.16, 0.5, 0.075])
-            assert isec_utils.check_added_to_moveit_scene("robot_box", self.moveit_scene)
+            self.moveit_scene.add_box("robot_box", np.array([0., 0., -0.04]), np.array([1., 0., 0., 0.]), np.array([0.16, 0.5, 0.075]))
 
             tmp = np.copy(desk_center)
             tmp[1] -= 0.17 + 0.2 + 0.1
-            pose = isec_utils.to_stamped_pose_message(tmp, np.array([1., 0., 0., 0.]), "base_link")
-            self.moveit_scene.add_box("right_wall", pose, [2.0, 0.001, 2.0])
-            assert isec_utils.check_added_to_moveit_scene("robot_box", self.moveit_scene)
+            self.moveit_scene.add_box("right_wall", tmp, np.array([1., 0., 0., 0.]), np.array([2.0, 0.001, 2.0]))
 
             tmp = np.copy(desk_center)
             tmp[1] += 0.17 + 0.2 + 0.1
-            pose = isec_utils.to_stamped_pose_message(tmp, np.array([1., 0., 0., 0.]), "base_link")
-            self.moveit_scene.add_box("left_wall", pose, [2.0, 0.001, 2.0])
-            assert isec_utils.check_added_to_moveit_scene("robot_box", self.moveit_scene)
+            self.moveit_scene.add_box("left_wall", tmp, np.array([1., 0., 0., 0.]), np.array([2.0, 0.001, 2.0]))
 
             tmp = np.copy(desk_center)
             tmp[0] += 0.17 + 0.1
-            pose = isec_utils.to_stamped_pose_message(tmp, np.array([1., 0., 0., 0.]), "base_link")
-            self.moveit_scene.add_box("far_wall", pose, [0.001, 2.0, 2.0])
-            assert isec_utils.check_added_to_moveit_scene("robot_box", self.moveit_scene)
+            self.moveit_scene.add_box("far_wall", tmp, np.array([1., 0., 0., 0.]), np.array([0.001, 2.0, 2.0]))
 
     def ur_script_move_to_j(self, joint_pos: Tuple[float, float, float, float, float, float], speed: float=0.5):
 
@@ -174,7 +164,7 @@ class UR5:
                 prev_pos = pos
             distances.append(distance)
 
-        print("distances:", distances)
+        print("Plan distances in joint space:", distances)
         idx = np.argmin(distances)
         distance = distances[idx]
         plan = plans[idx]

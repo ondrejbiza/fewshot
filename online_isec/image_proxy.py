@@ -65,6 +65,14 @@ class RealsenseStructureImageProxy(ImageProxy):
     widths: Tuple[int, ...] = (1280, 640)
 
 
+@dataclass
+class RealsenseImageProxy(ImageProxy):
+    # (realsense,)
+    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw",)
+    heights: Tuple[int, ...] = (720,)
+    widths: Tuple[int, ...] = (1280,)
+
+
 if __name__ == "__main__":
 
     # Show outputs of the proxy.

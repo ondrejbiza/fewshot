@@ -9,6 +9,7 @@ from online_isec.point_cloud_proxy import PointCloudProxy
 from online_isec.tf_proxy import TFProxy
 import online_isec.utils as isec_utils
 from online_isec.rviz_pub import RVizPub
+from online_isec.moveit_scene import MoveItScene
 import utils
 import viz_utils
 
@@ -16,7 +17,7 @@ import viz_utils
 # TODO: finish typing
 def mug_tree_perception(
     pc_proxy: PointCloudProxy, desk_center: NDArray, tf_proxy: Optional[TFProxy]=None,
-    moveit_scene: Optional[moveit_commander.PlanningSceneInterface]=None,
+    moveit_scene: Optional[MoveItScene]=None,
     close_proxy: bool=False, max_pc_size: Optional[int]=2000,
     canon_mug_path: str="data/ndf_mugs_pca_4_dim.npy",
     canon_tree_path: str="data/real_tree_pc.pkl",
@@ -67,12 +68,12 @@ def mug_tree_perception(
     if add_mug_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], desk_center, tf_proxy))
-        isec_utils.load_obj_to_moveit_scene_2("tmp.stl", pos, quat, "mug", moveit_scene)
+        moveit_scene.add_object("tmp.stl", "mug", pos, quat)
 
     if add_tree_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
-        isec_utils.load_obj_to_moveit_scene_2("data/real_tree2.stl", pos, quat, "tree", moveit_scene)
+        moveit_scene.add_object("data/real_tree2.stl", "tree", pos, quat)
 
     if rviz_pub is not None:
         # send STL meshes as Marker messages to rviz

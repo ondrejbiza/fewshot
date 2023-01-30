@@ -183,7 +183,7 @@ def main(args):
     data["T"] = T_m_to_g
 
     # Save any number of waypoints.
-    # input("Save place waypoint?")
+    input("Save place waypoint?")
     i = 0
     while True:
         save_place_contact_points(

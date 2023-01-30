@@ -4,7 +4,7 @@ import rospy
 
 from online_isec import constants
 from online_isec import perception
-from online_isec.moveit_plan_pick_place_plan import pick
+from online_isec.moveit_plan_pick_place import pick
 from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
 
@@ -32,12 +32,14 @@ def main(args):
         close_proxy=True
     )
 
-    pick(mug_pc_complete, mug_param, ur5, safe_release=True)
+    pick(mug_pc_complete, mug_param, ur5, args.load_path + ".pkl", safe_release=True)
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--pca-8-dim", default=False, action="store_true")
-parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
-main(parser.parse_args())
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--load-path", type=str, default="data/220129_real_pick_clone", help="Postfix added automatically.")
+    parser.add_argument("--pca-8-dim", default=False, action="store_true")
+    parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
+    main(parser.parse_args())
