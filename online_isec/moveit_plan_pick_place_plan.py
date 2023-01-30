@@ -1,22 +1,26 @@
+import argparse
 import numpy as np
+from numpy.typing import NDArray
+import os
 import pickle
 import rospy
 from scipy.spatial.transform import Rotation
-import time
+from typing import Any, Dict, Tuple
 
 from online_isec import constants
-from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
-import online_isec.utils as isec_utils
-import online_isec.utils as isec_utils
 from online_isec import perception
+import online_isec.utils as isec_utils
+from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
+from online_isec.simulation import Simulation
 import utils
-from pybullet_planning.pybullet_tools import utils as pu
 
 
-def pick(mug_pc_complete, mug_param, ur5, safe_release: bool=False):
+def pick(
+    mug_pc_complete: NDArray, mug_param: Tuple[NDArray, NDArray, NDArray],
+    ur5: UR5, load_path: str, safe_release: bool=False) -> NDArray:
 
-    with open("data/real_pick_clone.pkl", "rb") as f:
+    with open(load_path, "rb") as f:
         data = pickle.load(f)
         index, target_quat = data["index"], data["quat"]
         target_pos = mug_pc_complete[index]
@@ -37,6 +41,16 @@ def pick(mug_pc_complete, mug_param, ur5, safe_release: bool=False):
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
     ur5.gripper.close_gripper()
 
+    # Lock mug to flange in the moveit scene.
+    ur5.moveit_scene.attach_object("mug")
+
+    # Calcualte mug to gripper transform at the point when we grasp it.
+    # TODO: If the grasp moved the mug we wouldn't know.
+    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
+    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
+    T_m_to_b = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, utils.yaw_to_rot(mug_param[2]))
+    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
+
     if safe_release:
         ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre_safe))
         rospy.sleep(1)
@@ -45,8 +59,46 @@ def pick(mug_pc_complete, mug_param, ur5, safe_release: bool=False):
 
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
 
+    return T_m_to_g
 
-def main():
+
+def place(
+    ur5: UR5, canon_mug: Dict[str, Any], canon_tree: Dict[str, Any],
+    mug_param: Tuple[NDArray, NDArray, NDArray], tree_param: Tuple[NDArray, NDArray],
+    T_m_to_g: NDArray, sim: Simulation, load_path: str):
+
+    with open(load_path, "rb") as f:
+        place_data = pickle.load(f)
+
+    knns = place_data["knns"]
+    deltas = place_data["deltas"]
+    target_indices = place_data["target_indices"]
+
+    mug_orig = utils.canon_to_pc(canon_mug, mug_param)
+    tree_orig = canon_tree["canonical_obj"]
+
+    anchors = mug_orig[knns]
+    targets_mug = np.mean(anchors + deltas, axis=1)
+
+    targets_tree = tree_orig[target_indices]
+
+    T_new_m_to_t, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
+    T_t_to_b = utils.pos_rot_to_transform(tree_param[0] + constants.DESK_CENTER, utils.yaw_to_rot(tree_param[1]))
+    T_new_m_to_b = np.matmul(T_t_to_b, T_new_m_to_t)
+
+    # Wiggle mug out of potential collision.
+    sim.remove_all_objects()
+    mug_id = sim.add_object("tmp.urdf", *utils.transform_to_pos_quat(T_new_m_to_b))
+    tree_id = sim.add_object("data/real_tree.urdf", *utils.transform_to_pos_quat(T_t_to_b), fixed_base=True)
+    # new_m_pos, new_m_quat = sim.wiggle(mug_id, tree_id)
+    # T_new_m_to_b = utils.pos_quat_to_transform(new_m_pos, new_m_quat)
+
+    T_g_to_b = np.matmul(T_new_m_to_b, np.linalg.inv(T_m_to_g))
+
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_to_b))
+
+
+def main(args):
 
     rospy.init_node("moveit_plan_pick_place")
     pc_proxy = RealsenseStructurePointCloudProxy()
@@ -57,66 +109,57 @@ def main():
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
+    if args.pca_8_dim:
+        canon_mug_path = "data/ndf_mugs_pca_8_dim.npy"
+    else:
+        canon_mug_path = "data/ndf_mugs_pca_4_dim.npy"
+
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=False, add_tree_to_planning_scene=False, rviz_pub=ur5.rviz_pub,
-        mug_save_decomposition=True, close_proxy=True
+        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
+        mug_save_decomposition=True, close_proxy=True,
+        canon_mug_path=canon_mug_path, ablate_no_mug_warping=args.ablate_no_mug_warping
     )
 
-    pick(mug_pc_complete, mug_param, ur5)
+    T_m_to_g = pick(mug_pc_complete, mug_param, ur5, args.pick_load_path + ".pkl")
 
-    with open("data/real_place_clone.pkl", "rb") as f:
-        place_data = pickle.load(f)
+    ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    knns = place_data["knns"]
-    deltas = place_data["deltas"]
-    target_indices = place_data["target_indices"]
+    sim = Simulation()
 
-    mug_rot = utils.yaw_to_rot(mug_param[2])
-    deltas_rot = np.matmul(deltas, mug_rot.T)
+    if args.multiple_waypoints:
+        i = 0
+        while True:
+            if i == 1:
+                # Hack for mug tree. Finish the mug placing motion without collision checking.
+                # Because the handle of the mug is too close to the tree and ROS collisions are hard to work with.
+                ur5.moveit_scene.detach_object("mug")
+                ur5.moveit_scene.remove_object("mug")
 
-    anchors = mug_pc_complete[knns]
-    targets_mug = np.mean(anchors + deltas_rot, axis=1)
+            load_path = args.place_load_path + "_{:d}.pkl".format(i)
+            if not os.path.isfile(load_path):
+                break
+            place(ur5, canon_mug, canon_tree, mug_param, tree_param, T_m_to_g, sim, load_path)
+            i += 1
+    else:
+        load_path = args.place_load_path + ".pkl"
+        if not os.path.isfile(load_path):
+            print("Place clone file not found. Set -m?")
+        else:
+            place(ur5, canon_mug, canon_tree, mug_param, tree_param, T_m_to_g, sim, load_path)
 
-    targets_tree = tree_pc_complete[target_indices]
-
-    rel_pose, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
-    print("Best fit spatial transform:")
-    print(rel_pose)
-
-    # setup simulated scene
-    pu.connect(use_gui=True, show_sliders=True)
-    pu.set_default_camera(distance=2)
-    pu.disable_real_time()
-    pu.draw_global_system()
-
-    T_m_to_b = utils.pos_rot_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
-    T_task = np.matmul(rel_pose, T_m_to_b)  # TODO: Not sure about this matmul.
-    pu.load_model("../tmp.obj", utils.transform_to_pos_quat(T_task))
-
-    T_t_to_b = utils.pos_rot_to_transform(tree_param[0], utils.yaw_to_rot(tree_param[1]))
-    pu.load_model("../data/real_tree2.obj", utils.transform_to_pos_quat(T_t_to_b))
-
-    # TODO: wiggle
-
-    # mug_T = utils.pos_quat_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
-    gripper_pos, gripper_quat = ur5.get_end_effector_pose()
-    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
-
-    # g_t_m = np.matmul(np.linalg.inv(hand_T), mug_T)
-    # g_t_m_pos, g_t_m_quat = utils.transform_to_pos_quat(g_t_m)
-
-    T_g_task_to_b = np.matmul(T_task, T_g_to_b)
-
-    # isec_utils.attach_obj_to_hand("mug", ur5.moveit_scene)
-    # isec_utils.check_added_to_moveit_scene("mug", ur5.moveit_scene, obj_is_attached=True)
-
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_task_to_b))
+    # input("Release?")
     ur5.gripper.open_gripper()
 
-    input("reset")
+    # input("Reset?")
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pick-load-path", type=str, default="data/220129_real_pick_clone", help="Postfix added automatically.")
+    parser.add_argument("--place-load-path", type=str, default="data/220129_real_place_clone", help="Postfix added automatically.")
+    parser.add_argument("-m", "--multiple-waypoints", default=False, action="store_true", help="Multiple place waypoint.")
+    parser.add_argument("--pca-8-dim", default=False, action="store_true")
+    parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
+    main(parser.parse_args())

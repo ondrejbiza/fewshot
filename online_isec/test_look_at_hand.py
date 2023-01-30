@@ -14,6 +14,7 @@ from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 import viz_utils
 from online_isec import perception
 from online_isec.moveit_plan_pick_place_plan import pick
+from online_isec.simulation import Simulation
 
 
 def main():
@@ -26,26 +27,13 @@ def main():
 
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=False, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub
+        add_mug_to_planning_scene=False, add_tree_to_planning_scene=False, rviz_pub=ur5.rviz_pub
     )
 
-    pick(mug_pc_complete, mug_param, ur5)
+    pick(mug_pc_complete, mug_param, ur5, "data/220129_real_pick_clone.pkl")
 
-    pu.connect(use_gui=True, show_sliders=True)
-    pu.set_default_camera(distance=2)
-    pu.disable_real_time()
-    pu.draw_global_system()
-
-    robotiq = pb.loadURDF("data/robotiq.urdf", useFixedBase=True)
-    pu.set_pose(robotiq, (np.array([0., 0, 0.]), np.array([1., 0., 0., 0.])))
-
-    joint_name = "robotiq_85_left_knuckle_joint"
-    joint_index = None
-    for idx in pu.get_joints(robotiq):
-        if pu.get_joint_name(robotiq, idx) == joint_name:
-            joint_index = idx
-            break
-    assert joint_index is not None
+    sim = Simulation()
+    robotiq = sim.add_object("data/robotiq.urdf", np.array([0., 0, 0.]), np.array([1., 0., 0., 0.]))
 
     pos_ws = np.array([0.16, -0.16, 0.2])
     pos = pos_ws + constants.DESK_CENTER

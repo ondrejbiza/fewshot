@@ -91,7 +91,10 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
         mug = pcs[0]
     
     # Cut off the base of the tree.
+    # No base.
     mask = tree[..., 2] >= 0.03
+    # With base.
+    # mask = tree[..., 2] >= 0.05
     tree = tree[mask]
 
     return mug, tree
@@ -303,7 +306,17 @@ def desk_obj_param_to_base_link_T(obj_mean: NDArray, obj_yaw: NDArray, desk_cent
 def attach_obj_to_hand(name, moveit_scene):
 
     # TODO: If the hand is deeper, the object might touch the upper parts of the gripper.
-    touch_links = ["robotiq_85_left_finger_tip_joint", "robotiq_85_right_finger_tip_joint"]
+    touch_links = [
+        "robotiq_85_base_link",
+        "robotiq_85_left_finger_link",
+        "robotiq_85_left_finger_tip_link",
+        "robotiq_85_left_inner_knuckle_list",
+        "robotiq_85_left_knuckle_link",
+        "robotiq_85_right_finger_link",
+        "robotiq_85_right_finger_tip_link",
+        "robotiq_85_right_inner_knuckle_link",
+        "robotiq_85_right_knuckle_link"
+    ]
     aco = AttachedCollisionObject()
     aco.object = CollisionObject()
     aco.object.id = name

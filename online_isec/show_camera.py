@@ -2,7 +2,7 @@ import rospy
 import cv2
 import time
 
-from online_isec.image_proxy import ImageProxy
+from online_isec.image_proxy import RealsenseImageProxy
 import utils
 
 
@@ -10,7 +10,7 @@ def main():
 
     rospy.init_node("show_camera")
 
-    image_proxy = ImageProxy()
+    image_proxy = RealsenseImageProxy()
     time.sleep(2)
 
     while True:
