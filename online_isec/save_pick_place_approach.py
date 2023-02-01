@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from online_isec import constants
 from online_isec import perception
-from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
+from online_isec.point_cloud_proxy_sync import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
@@ -150,6 +150,7 @@ def main(args):
 
     ur5 = UR5(setup_planning=True)
     # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+    ur5.gripper.open_gripper(position=70)
 
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,

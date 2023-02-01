@@ -10,7 +10,7 @@ from typing import Any, Dict, Tuple
 from online_isec import constants
 from online_isec import perception
 import online_isec.utils as isec_utils
-from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
+from online_isec.point_cloud_proxy_sync import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
 from online_isec.simulation import Simulation
 import utils
@@ -111,6 +111,9 @@ def main(args):
 
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
+    ur5.gripper.open_gripper(position=70)
+
+    sim = Simulation()
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -118,15 +121,12 @@ def main(args):
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
         add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
-        mug_save_decomposition=True, close_proxy=True,
-        ablate_no_mug_warping=args.ablate_no_mug_warping
+        mug_save_decomposition=True, ablate_no_mug_warping=args.ablate_no_mug_warping
     )
 
     T_m_to_g = pick(mug_pc_complete, mug_param, ur5, args.pick_load_path + ".pkl")
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
-
-    sim = Simulation()
 
     load_path = args.place_load_path + ".pkl"
     if not os.path.isfile(load_path):

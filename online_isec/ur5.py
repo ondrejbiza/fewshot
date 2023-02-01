@@ -77,7 +77,7 @@ class UR5:
             self.moveit_scene.add_box("right_wall", tmp, np.array([1., 0., 0., 0.]), np.array([2.0, 0.001, 2.0]))
 
             tmp = np.copy(desk_center)
-            tmp[1] += 0.17 + 0.2 + 0.1
+            tmp[1] += 0.17 + 0.2 + 0.2
             self.moveit_scene.add_box("left_wall", tmp, np.array([1., 0., 0., 0.]), np.array([2.0, 0.001, 2.0]))
 
             tmp = np.copy(desk_center)

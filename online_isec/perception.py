@@ -7,7 +7,7 @@ import moveit_commander
 import pybullet as pb
 from scipy.spatial.transform import Rotation
 
-from online_isec.point_cloud_proxy import PointCloudProxy
+from online_isec.point_cloud_proxy_sync import PointCloudProxy
 from online_isec.tf_proxy import TFProxy
 import online_isec.utils as isec_utils
 from online_isec.rviz_pub import RVizPub

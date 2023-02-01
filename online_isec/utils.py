@@ -339,7 +339,7 @@ def attach_obj_to_hand(name, moveit_scene):
         "robotiq_85_base_link",
         "robotiq_85_left_finger_link",
         "robotiq_85_left_finger_tip_link",
-        "robotiq_85_left_inner_knuckle_list",
+        "robotiq_85_left_inner_knuckle_link",
         "robotiq_85_left_knuckle_link",
         "robotiq_85_right_finger_link",
         "robotiq_85_right_finger_tip_link",
