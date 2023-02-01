@@ -16,11 +16,6 @@ def main(args):
 
     if args.objects == "ndf_mugs":
         base_dir = "data/ndf_objects/mug_centered_obj_normalized"
-        # Some (most?) of these mugs are closed. I can't used them for motion planning.
-        # obj_ids = ["1a97f3c83016abca21d0de04f408950f", "1ae1ba5dfb2a085247df6165146d5bbd", "1bc5d303ff4d6e7e1113901b72a68e7c",
-        #     "1be6b2c84cdab826c043c2d07bb83fc8", "1c3fccb84f1eeb97a3d0a41d6c77ec7c", "1c9f9e25c654cbca3c71bf3f4dd78475",
-        #     "1d18255a04d22794e521eeb8bb14c5b3", "1ea9ea99ac8ed233bf355ac8109b9988", "1eaf8db2dd2b710c7d5b1b70ae595e60",
-        #     "1f035aa5fc6da0983ecac81e09b15ea9"]
         obj_ids = [
             "1a97f3c83016abca21d0de04f408950f", "1c9f9e25c654cbca3c71bf3f4dd78475", "1eaf8db2dd2b710c7d5b1b70ae595e60",
             "3d1754b7cb46c0ce5c8081810641ef6", "4b8b10d03552e0891898dfa8eb8eefff", "4b7888feea81219ab5f4a9188bfa0ef6",
@@ -39,6 +34,10 @@ def main(args):
             "4fdb0bd89c490108b8c8761d8f1966ba", "5b6d840652f0050061d624c546a68fec",
             "5bb12905529c85359d3d767e1bc88d65", "7c43116dbe35797aea5000d9d3be7992"
         ]
+        obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
+        scale = 0.14
+        rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
+        num_surface_samples = 10000
     elif args.objects == "ndf_bottles":
         base_dir = "data/ndf_objects/bottle_centered_obj_normalized"
         obj_ids = [
@@ -48,6 +47,15 @@ def main(args):
             "1e5abf0465d97d826118a17db9de8c0", "1ef68777bfdb7d6ba7a07ee616e34cd7",
             "1ffd7113492d375593202bf99dddc268", "2a3e0c1cd0e9076cddf5870150a75bc"
         ]
+        obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
+        scale = 0.14
+        rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
+        num_surface_samples = 10000
+    elif args.objects == "boxes":
+        obj_paths = ["data/boxes/train/{:d}.stl".format(i) for i in range(10)]
+        scale = None
+        rotation = None
+        num_surface_samples = 1000
     else:
         raise ValueError("Unknown object class.")
 
