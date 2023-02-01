@@ -42,7 +42,7 @@ def warp(mug_pc, tree_pc, knns, deltas, target_indices):
 
 def main(args):
 
-    with open("data/ndf_mugs_pca_4_dim.npy", "rb") as f:
+    with open("data/230201_ndf_mugs_large_pca_8_dim.npy", "rb") as f:
         canon_mug = pickle.load(f)
 
     with open("data/real_tree_pc.pkl", "rb") as f:

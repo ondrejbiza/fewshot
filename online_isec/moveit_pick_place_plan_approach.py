@@ -115,16 +115,11 @@ def main(args):
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
-    if args.pca_8_dim:
-        canon_mug_path = "data/ndf_mugs_pca_8_dim.npy"
-    else:
-        canon_mug_path = "data/ndf_mugs_pca_4_dim.npy"
-
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
         add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
         mug_save_decomposition=True, close_proxy=True,
-        canon_mug_path=canon_mug_path, ablate_no_mug_warping=args.ablate_no_mug_warping
+        ablate_no_mug_warping=args.ablate_no_mug_warping
     )
 
     T_m_to_g = pick(mug_pc_complete, mug_param, ur5, args.pick_load_path + ".pkl")
@@ -148,8 +143,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pick-load-path", type=str, default="data/220131_real_pick_clone", help="Postfix added automatically.")
-    parser.add_argument("--place-load-path", type=str, default="data/220131_real_place_clone", help="Postfix added automatically.")
-    parser.add_argument("--pca-8-dim", default=False, action="store_true")
+    parser.add_argument("--pick-load-path", type=str, default="data/230201_real_pick_clone", help="Postfix added automatically.")
+    parser.add_argument("--place-load-path", type=str, default="data/230201_real_place_clone", help="Postfix added automatically.")
     parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
     main(parser.parse_args())

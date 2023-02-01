@@ -13,7 +13,7 @@ import utils
 from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 import viz_utils
 from online_isec import perception
-from online_isec.moveit_plan_pick_place_plan import pick
+from online_isec.moveit_pick_place_plan import pick
 from online_isec.simulation import Simulation
 
 

@@ -25,7 +25,7 @@ def mug_tree_perception(
     pc_proxy: PointCloudProxy, desk_center: NDArray, tf_proxy: Optional[TFProxy]=None,
     moveit_scene: Optional[MoveItScene]=None,
     close_proxy: bool=False, max_pc_size: Optional[int]=2000,
-    canon_mug_path: str="data/ndf_mugs_pca_4_dim.npy",
+    canon_mug_path: str="data/230201_ndf_mugs_large_pca_8_dim.npy",
     canon_tree_path: str="data/real_tree_pc.pkl",
     mug_save_decomposition: bool=False,
     add_mug_to_planning_scene: bool=False,

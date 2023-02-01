@@ -4,7 +4,7 @@ import rospy
 
 from online_isec import constants
 from online_isec import perception
-from online_isec.moveit_plan_pick_place import pick
+from online_isec.moveit_pick_place import pick
 from online_isec.point_cloud_proxy import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
 
