@@ -100,6 +100,35 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
     return mug, tree
 
 
+def find_held_mug(cloud: NDArray) -> NDArray:
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(cloud)
+
+    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+
+    print("PC lengths (ignoring PCs above the ground).")
+    pcs = []
+    for label in np.unique(labels):
+        if label == -1:
+            # Background label?
+            continue
+        
+        pc = cloud[labels == label]
+        if np.min(pc[..., 2]) > 0.1:
+            # Above ground, probably robot gripper.
+            continue
+
+        print(len(pc))
+
+        pcs.append(pc)
+
+    sizes = [len(pc) for pc in pcs]
+    sort = list(reversed(np.argsort(sizes)))
+
+    return pcs[sort[0]]
+
+
 def to_stamped_pose_message(pos: NDArray, quat: NDArray, frame_id: str) -> geometry_msgs.msg.PoseStamped:
 
     msg = geometry_msgs.msg.PoseStamped()

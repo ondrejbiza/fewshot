@@ -489,9 +489,7 @@ def planar_pose_gd(canonical_obj: NDArray, points: NDArray, device: str="cuda:0"
         for i in range(n_steps):
 
             opt.zero_grad()
-
             rot = yaw_to_rot_pt(angle)
-
             cost = cost_pt(points_pt, torch.matmul(rot, canonical_obj_pt.T).T + center[None])
 
             if verbose:

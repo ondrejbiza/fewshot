@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<robot name="sphere.urdf">
+
+  <link name="base">
+    <visual>
+      <geometry>
+        <sphere radius="0.005" />
+      </geometry>
+      <material name="black_metal">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <sphere radius="0.0" />
+      </geometry>
+    </collision>
+  </link>
+
+</robot>
