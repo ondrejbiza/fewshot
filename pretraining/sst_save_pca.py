@@ -29,19 +29,33 @@ def main(args):
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
         scale = 0.14
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
-        voxel_size = 0.0075  # usually 2k to 3k
+        num_surface_samples = 10000
+    elif args.objects == "ndf_bowls":
+        base_dir = "data/ndf_objects/bowl_centered_obj_normalized"
+        obj_ids = [
+            "1b4d7803a3298f8477bdcb8816a3fac9", "1fbb9f70d081630e638b4be15b07b442",
+            "2a1e9b5c0cead676b8183a4a81361b94", "2c1df84ec01cea4e525b133235812833",
+            "4b32d2c623b54dd4fe296ad57d60d898", "4eefe941048189bdb8046e84ebdc62d2",
+            "4fdb0bd89c490108b8c8761d8f1966ba", "5b6d840652f0050061d624c546a68fec",
+            "5bb12905529c85359d3d767e1bc88d65", "7c43116dbe35797aea5000d9d3be7992"
+        ]
+    elif args.objects == "ndf_bottles":
+        base_dir = "data/ndf_objects/bottle_centered_obj_normalized"
+        obj_ids = [
+            "1ae823260851f7d9ea600d1a6d9f6e07", "1b64b36bf7ddae3d7ad11050da24bb12",
+            "1c38ca26c65826804c35e2851444dc2f", "1cf98e5b6fff5471c8724d5673a063a6",
+            "1d4480abe9aa45ce51a99c0e19a8a54", "1df41477bce9915e362078f6fc3b29f5",
+            "1e5abf0465d97d826118a17db9de8c0", "1ef68777bfdb7d6ba7a07ee616e34cd7",
+            "1ffd7113492d375593202bf99dddc268", "2a3e0c1cd0e9076cddf5870150a75bc"
+        ]
     else:
         raise ValueError("Unknown object class.")
 
     objs = []
     for obj_path in obj_paths:
-        if obj_path[-3:] == "npy":
-            objs.append(np.load(obj_path))
-            # TODO: rotation and scaling
-        else:
-            obj = load_object_create_verts(
-                obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation, num_surface_samples=20000)
-            objs.append(obj)
+        obj = load_object_create_verts(
+            obj_path, scale=scale, rotation=rotation, num_surface_samples=num_surface_samples)
+        objs.append(obj)
 
     obj_points = [x["points"] for x in objs]
 
