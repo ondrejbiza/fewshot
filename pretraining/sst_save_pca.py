@@ -40,7 +40,7 @@ def main(args):
             # TODO: rotation and scaling
         else:
             obj = load_object_create_verts(
-                obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation)
+                obj_path, voxel_size=voxel_size, scale=scale, rotation=rotation, num_surface_samples=20000)
             objs.append(obj)
 
     obj_points = [x["points"] for x in objs]

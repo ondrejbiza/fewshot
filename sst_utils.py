@@ -120,13 +120,20 @@ def cost_batch_pt(source, target):
 
 def pick_canonical(known_pts):
 
+    # GPU acceleration makes this at least 100 times faster.
+    known_pts = [torch.tensor(x, device="cuda:0", dtype=torch.float32) for x in known_pts]
+
     overall_costs = []
     for i in range(len(known_pts)):
         print(i)
         cost_per_target = []
         for j in range(len(known_pts)):
             if i != j:
-                cost_per_target.append(cost_batch(known_pts[i], known_pts[j]))
+                with torch.no_grad():
+                    cost = cost_batch_pt(known_pts[i][None], known_pts[j][None]).cpu()
+
+                cost_per_target.append(cost.item())
+
         overall_costs.append(np.mean(cost_per_target))
     print("overall costs: {:s}".format(str(overall_costs)))
     return np.argmin(overall_costs)
@@ -185,7 +192,17 @@ def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
         plt.close()
 
         warp = np.dot(g, w)
-        warps.append(np.hstack(warp))
+ 
+        # print("##", warp.shape)
+        # tmp = source + warp
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection="3d")
+        # ax.scatter(tmp[:, 0], tmp[:, 1], tmp[:, 2], c="red")
+        # ax.scatter(target[:, 0], target[:, 1], target[:, 2], c="green")
+        # plt.show()
+
+        warp = np.hstack(warp)
+        warps.append(warp)
 
     return warps
 
