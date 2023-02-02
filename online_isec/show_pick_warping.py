@@ -11,8 +11,8 @@ import utils
 def update_axis(ax, new_obj: NDArray, index: int, vmin: float, vmax: float):
 
     ax.clear()
-    ax.scatter(new_obj[:, 0], new_obj[:, 1], new_obj[:, 2], color="red", alpha=0.5)
-    ax.scatter([new_obj[index, 0]], [new_obj[index, 1]])
+    ax.scatter(new_obj[:, 0], new_obj[:, 1], new_obj[:, 2], color="green", alpha=0.5)
+    ax.scatter([new_obj[index, 0]], [new_obj[index, 1]], color="red", s=200)
     ax.set_xlim(vmin, vmax)
     ax.set_ylim(vmin, vmax)
     ax.set_zlim(vmin, vmax)
@@ -20,10 +20,10 @@ def update_axis(ax, new_obj: NDArray, index: int, vmin: float, vmax: float):
 
 def main(args):
 
-    with open("data/ndf_mugs_pca_4_dim.npy", "rb") as f:
+    with open(args.canon_mug_path, "rb") as f:
         canon_mug = pickle.load(f)
 
-    with open("data/real_pick_clone.pkl", "rb") as f:
+    with open(args.load_path, "rb") as f:
         data = pickle.load(f)
         index, target_quat = data["index"], data["quat"]
 
@@ -60,4 +60,6 @@ def main(args):
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument("load_path")
+parser.add_argument("--canon-mug-path", default="data/230201_ndf_mugs_large_pca_8_dim.npy")
 main(parser.parse_args())

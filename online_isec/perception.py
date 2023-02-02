@@ -20,6 +20,25 @@ from online_isec.simulation import Simulation
 from online_isec.ur5 import UR5
 
 
+def mug_tree_simple_perception(
+    pc_proxy: PointCloudProxy, max_pc_size: Optional[int]=2000) -> Tuple[NDArray[np.float32], NDArray[np.float32]]:
+
+    cloud = pc_proxy.get_all()
+    assert cloud is not None
+
+    cloud = isec_utils.mask_workspace(cloud, (*pc_proxy.desk_center, pc_proxy.z_min))
+    # viz_utils.o3d_visualize(utils.create_o3d_pointcloud(cloud))
+
+    mug_pc, tree_pc = isec_utils.find_mug_and_tree(cloud)
+    if max_pc_size is not None:
+        if len(mug_pc) > max_pc_size:
+            mug_pc, _ = utils.farthest_point_sample(mug_pc, max_pc_size)
+        if len(tree_pc) > max_pc_size:
+            tree_pc, _ = utils.farthest_point_sample(tree_pc, max_pc_size)
+
+    return mug_pc, tree_pc
+
+
 # TODO: finish typing
 def mug_tree_perception(
     pc_proxy: PointCloudProxy, desk_center: NDArray, tf_proxy: Optional[TFProxy]=None,
@@ -32,7 +51,7 @@ def mug_tree_perception(
     add_tree_to_planning_scene: bool=False,
     rviz_pub: Optional[RVizPub]=None,
     ablate_no_mug_warping: bool=False
-    ) -> Tuple[NDArray, Tuple[NDArray, NDArray, NDArray], NDArray, Tuple[NDArray, NDArray], Dict[Any, Any], Dict[Any, Any]]:
+    ) -> Tuple[NDArray, Tuple[NDArray, NDArray, NDArray], NDArray, Tuple[NDArray, NDArray], Dict[Any, Any], Dict[Any, Any], NDArray, NDArray]:
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
@@ -91,7 +110,7 @@ def mug_tree_perception(
         pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
         rviz_pub.send_stl_message("data/real_tree2.stl", pos, quat)
 
-    return mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree
+    return mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree, mug_pc, tree_pc
 
 
 def perceive_mug_in_hand(pc_proxy: PointCloudProxy, sim: Simulation, ur5: UR5) -> NDArray[np.float32]:

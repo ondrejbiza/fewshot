@@ -42,10 +42,10 @@ def warp(mug_pc, tree_pc, knns, deltas, target_indices):
 
 def main(args):
 
-    with open("data/230201_ndf_mugs_large_pca_8_dim.npy", "rb") as f:
+    with open(args.canon_mug_path, "rb") as f:
         canon_mug = pickle.load(f)
 
-    with open("data/real_tree_pc.pkl", "rb") as f:
+    with open(args.canon_tree_path, "rb") as f:
         canon_tree = pickle.load(f)
 
     with open(args.load_path, "rb") as f:
@@ -95,4 +95,6 @@ def main(args):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("load_path")
+parser.add_argument("--canon-mug-path", default="data/230201_ndf_mugs_large_pca_8_dim.npy")
+parser.add_argument("--canon-tree-path", default="data/real_tree_pc.pkl")
 main(parser.parse_args())

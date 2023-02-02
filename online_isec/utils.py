@@ -13,6 +13,7 @@ import pyassimp
 import moveit_commander
 from scipy.spatial.transform import Rotation
 
+from online_isec import constants
 from online_isec.tf_proxy import TFProxy
 import utils
 
@@ -352,3 +353,10 @@ def attach_obj_to_hand(name, moveit_scene):
     aco.link_name = "flange"
     aco.touch_links = touch_links
     moveit_scene.attach_object(aco)
+
+
+def workspace_to_base():
+
+    T = np.eye(4)
+    T[:3, 3] = constants.DESK_CENTER
+    return T

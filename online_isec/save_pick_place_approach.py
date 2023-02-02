@@ -14,6 +14,7 @@ from online_isec import constants
 from online_isec import perception
 from online_isec.point_cloud_proxy_sync import RealsenseStructurePointCloudProxy
 from online_isec.ur5 import UR5
+import online_isec.utils as isec_utils
 from pybullet_planning.pybullet_tools import utils as pu
 import utils
 
@@ -64,33 +65,40 @@ def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10) -> Tuple[NDArray, 
     return knn_list, deltas_list
 
 
-def save_pick_pose(mug_pc_complete: NDArray[np.float32], mug_param: Tuple[NDArray, NDArray, NDArray],
-                   ur5: UR5, save_path: Optional[bool]=None):
+def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: Dict[str, Any],
+                   mug_param: Tuple[NDArray, NDArray, NDArray], ur5: UR5, save_path: Optional[bool]=None):
 
-    gripper_pos, gripper_quat = ur5.get_end_effector_pose()
-    gripper_pos = gripper_pos - constants.DESK_CENTER
-    gripper_rot = np.matmul(
-        utils.yaw_to_rot(mug_param[2]).T,
-        Rotation.from_quat(gripper_quat).as_matrix()
-    )
-    gripper_quat = Rotation.from_matrix(gripper_rot).as_quat()
+    T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
+    T_m_to_b = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, utils.yaw_to_rot(mug_param[2]))
+    T_g_to_m = np.matmul(np.linalg.inv(T_m_to_b), T_g_to_b)
 
-    dist = np.sqrt(np.sum(np.square(mug_pc_complete - gripper_pos), axis=1))
+    # Grasp in a canonical frame.
+    g_to_m_pos, g_to_m_quat = utils.transform_to_pos_quat(T_g_to_m)
+
+    # Warped object in a canonical frame.
+    mug_pc_complete = utils.canon_to_pc(canon_mug, mug_param)
+
+    # Index of the point on the canonical object closest to a point between the gripper fingers.
+    dist = np.sqrt(np.sum(np.square(mug_pc_complete - g_to_m_pos), axis=1))
     index = np.argmin(dist)
 
     if save_path:
         with open(save_path, "wb") as f:
             pickle.dump({
                 "index": index,
-                "quat": gripper_quat
+                "pos": g_to_m_pos,
+                "quat": g_to_m_quat,
+                "T_g_to_b": T_g_to_b,
+                "observed_pc": observed_pc,
             }, f)
 
 
 def save_place_contact_points(
-    ur5: UR5, mug: int, tree: int, T_m_to_g: NDArray, T_g_pre_to_b: NDArray, canon_mug: Dict[str, Any], canon_tree: Dict[str, Any],
+    tree_pc: NDArray, ur5: UR5, mug: int, tree: int, T_m_to_g: NDArray, T_g_pre_to_b: NDArray, canon_mug: Dict[str, Any], canon_tree: Dict[str, Any],
     mug_param: Tuple[NDArray, NDArray, NDArray], tree_param: Tuple[NDArray, NDArray], delta: float=0.1,
     save_path: Optional[str]=None):
 
+    # Find close points between the mug and the tree in pybullet.
     pb.performCollisionDetection()
     cols = pb.getClosestPoints(mug, tree, delta)
 
@@ -115,20 +123,19 @@ def save_place_contact_points(
     pos_mug = np.stack(pos_mug, axis=0).astype(np.float32)
     pos_tree = np.stack(pos_tree, axis=0).astype(np.float32)
 
-    gripper_pos, gripper_quat = ur5.get_end_effector_pose()
-    T_g_to_b = utils.pos_quat_to_transform(gripper_pos - constants.DESK_CENTER, gripper_quat)
-
+    T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
     T_g_pre_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_g_pre_to_b)
-
     T_m_to_b = np.matmul(T_g_to_b, T_m_to_g)
+    T_ws_to_b = isec_utils.workspace_to_base()
+    T_m_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_m_to_b)
 
-    T_t_to_b = utils.pos_rot_to_transform(tree_param[0], utils.yaw_to_rot(tree_param[1]))
+    T_t_to_ws = utils.pos_rot_to_transform(tree_param[0], utils.yaw_to_rot(tree_param[1]))
 
     mug_pc_origin = utils.canon_to_pc(canon_mug, mug_param)
-    pos_tree_tree_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_t_to_b))  # TODO: is this correct?
-    pos_tree_mug_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_m_to_b))  # TODO: is this correct?
+    pos_tree_tree_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_t_to_ws))
+    pos_tree_mug_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_m_to_ws))
 
-    knns, deltas = get_knn_and_deltas(mug_pc_origin, pos_tree_mug_coords)  # TODO: is this correct?
+    knns, deltas = get_knn_and_deltas(mug_pc_origin, pos_tree_mug_coords)
 
     dist_2 = np.sqrt(np.sum(np.square(canon_tree["canonical_obj"][:, None] - pos_tree_tree_coords[None]), axis=2))  # TODO: is this correct?
     i_2 = np.argmin(dist_2, axis=0).transpose()
@@ -139,7 +146,9 @@ def save_place_contact_points(
                 "knns": knns,
                 "deltas": deltas,
                 "target_indices": i_2,
+                "T_g_to_b": T_g_to_b,
                 "T_g_pre_to_g": T_g_pre_to_g,
+                "observed_pc": tree_pc,
             }, f)
 
 
@@ -152,7 +161,7 @@ def main(args):
     # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
     ur5.gripper.open_gripper(position=70)
 
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree, mug_pc, tree_pc = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
         add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
         mug_save_decomposition=False,
@@ -178,25 +187,24 @@ def main(args):
 
     input("Close gripper?")
     ur5.gripper.close_gripper()
-    save_pick_pose(mug_pc_complete, mug_param, ur5, args.pick_save_path + ".pkl")
+    save_pick_pose(mug_pc, canon_mug, mug_param, ur5, args.pick_save_path + ".pkl")
 
     # Calculate mug to gripper transform. Transmit it to simulation.
-    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
-    gripper_pos = gripper_pos - constants.DESK_CENTER
-    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
-    T_m_to_b = utils.pos_rot_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
-    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
+    T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
+    T_ws_to_b = isec_utils.workspace_to_base()
+    T_g_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_g_to_b)
+
+    T_m_to_ws = utils.pos_rot_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
+    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_ws), T_m_to_ws)
     data["T"] = T_m_to_g
 
     # Save any number of waypoints.
     input("Save place waypoint?")
-    g_pre_pos, g_pre_quat = ur5.get_end_effector_pose()
-    g_pre_pos = g_pre_pos - constants.DESK_CENTER
-    T_g_pre_to_b = utils.pos_quat_to_transform(g_pre_pos, g_pre_quat)
+    T_g_pre_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
 
     input("Save place pose?")
     save_place_contact_points(
-        ur5, mug, tree, T_m_to_g, T_g_pre_to_b, canon_mug, canon_tree, mug_param, tree_param, save_path=args.place_save_path + ".pkl")
+        tree_pc, ur5, mug, tree, T_m_to_g, T_g_pre_to_b, canon_mug, canon_tree, mug_param, tree_param, save_path=args.place_save_path + ".pkl")
 
     # Reset.
     # input("Open gripper?")

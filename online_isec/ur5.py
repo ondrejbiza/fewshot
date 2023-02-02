@@ -151,6 +151,9 @@ class UR5:
             plan = plan_raw[1]
             plans.append(plan)
 
+        if len(plans) == 0:
+            raise exceptions.PlanningError("Could not find a plan.")
+
         # TODO: test
         distances = []
         for plan in plans:

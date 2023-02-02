@@ -2,6 +2,7 @@
 .vscode
 .lcov
 venv/
+venv_ndf/
 /data/ndf_objects/
 /tmp.stl
 /tmp.obj
