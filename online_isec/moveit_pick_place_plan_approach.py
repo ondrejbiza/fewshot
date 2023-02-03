@@ -6,6 +6,7 @@ import pickle
 import rospy
 from scipy.spatial.transform import Rotation
 from typing import Any, Dict, Tuple
+import time
 
 from online_isec import constants
 from online_isec import perception
@@ -118,7 +119,7 @@ def main(args):
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree = perception.mug_tree_perception(
+    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree, _, _ = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
         add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
         mug_save_decomposition=True, ablate_no_mug_warping=args.ablate_no_mug_warping

@@ -33,7 +33,7 @@ def main():
     pick(mug_pc_complete, mug_param, ur5, "data/220129_real_pick_clone.pkl")
 
     sim = Simulation()
-    robotiq = sim.add_object("data/robotiq.urdf", np.array([0., 0, 0.]), np.array([1., 0., 0., 0.]))
+    robotiq = sim.add_object("data/robotiq.urdf", np.array([0., 0, 0.]), np.array([1., 0., 0., 0.]))  # TODO: wrong unit quats everywhere!
 
     pos_ws = np.array([0.16, -0.16, 0.2])
     pos = pos_ws + constants.DESK_CENTER

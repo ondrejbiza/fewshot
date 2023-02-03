@@ -456,6 +456,84 @@ def planar_pose_warp_gd(
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
 
 
+def pose_warp_gd(
+  pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+  lr: float=1e-2, n_steps: int=100, object_size_reg: Optional[float]=None, verbose: bool=False
+) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+    # find planar pose and warping parameters of a canonical object to match a target point cloud
+    start_angles = []
+    for i in range(n_angles):
+        angle = i * (2 * np.pi / n_angles)
+        start_angles.append(angle)
+
+    global_means = np.mean(points, axis=0)
+    points = points - global_means[None]
+
+    all_new_objects = []
+    all_costs = []
+    all_parameters = []
+    device = torch.device(device)
+
+    for trial_idx, start_pose in enumerate(start_angles):
+
+        latent = nn.Parameter(torch.zeros(pca.n_components, dtype=torch.float32, device=device), requires_grad=True)
+        center = nn.Parameter(torch.zeros(3, dtype=torch.float32, device=device), requires_grad=True)
+        angle = nn.Parameter(
+            torch.tensor([start_pose], dtype=torch.float32, device=device),
+            requires_grad=True
+        )
+        means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
+        components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
+        canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
+        points_pt = torch.tensor(points, dtype=torch.float32, device=device)
+
+        opt = optim.Adam([latent, center, angle], lr=lr)
+
+        for i in range(n_steps):
+
+            opt.zero_grad()
+
+            rot = yaw_to_rot_pt(angle)
+
+            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
+            new_obj = canonical_obj_pt + deltas
+            # cost = utils.cost_pt(torch.matmul(rot, (points_pt - center[None]).T).T, new_obj)
+            cost = cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
+
+            if object_size_reg is not None:
+              size = torch.max(torch.sqrt(torch.sum(torch.square(new_obj), dim=1)))
+              cost = cost + object_size_reg * size
+
+            if verbose:
+                print("cost:", cost)
+
+            cost.backward()
+            opt.step()
+
+        with torch.no_grad():
+
+            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
+            rot = yaw_to_rot_pt(angle)
+            new_obj = canonical_obj_pt + deltas
+            new_obj = torch.matmul(rot, new_obj.T).T
+            new_obj = new_obj + center[None]
+            new_obj = new_obj.cpu().numpy()
+
+            # pcd = o3d.geometry.PointCloud()
+            # pcd.points = o3d.utility.Vector3dVector(np.concatenate([points_pt.cpu().numpy(), new_obj], axis=0))
+            # pcd.colors = o3d.utility.Vector3dVector(np.concatenate([np.zeros_like(points_pt.cpu().numpy()) + 0.9, np.zeros_like(new_obj)], axis=0))
+            # utils.o3d_visualize(pcd)
+
+            new_obj = new_obj + global_means[None]
+
+            all_costs.append(cost.item())
+            all_new_objects.append(new_obj)
+            all_parameters.append((latent.cpu().numpy(), center.cpu().numpy() + global_means, angle.cpu().numpy()))
+
+    best_idx = np.argmin(all_costs)
+    return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
 def planar_pose_gd(canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
                    lr: float=1e-2, n_steps: int=100, verbose: bool=False) -> Tuple[NDArray, float, Tuple[NDArray, NDArray]]:
     # find planar pose and warping parameters of a canonical object to match a target point cloud

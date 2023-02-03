@@ -235,6 +235,8 @@ def load_obj_to_moveit_scene_2(obj_path: str, pos: NDArray, quat: NDArray, obj_n
 def load_obj_as_cubes_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray,
                                       obj_base_name: str, moveit_scene: moveit_commander.PlanningSceneInterface):
 
+    raise ValueError("I used the wrong unit quat. Need to redo.")
+
     scene = pyassimp.load(obj_path, file_type="obj")
 
     if not scene.meshes or len(scene.meshes) == 0:
@@ -253,7 +255,7 @@ def load_obj_as_cubes_to_moveit_scene(obj_path: str, pos: NDArray, quat: NDArray
         verts = verts - center[None]
         scale = np.max(np.abs(verts), axis=0) * 2
 
-        msg = to_stamped_pose_message(pos + center, np.array([1., 0., 0., 0.]), "base_link")
+        msg = to_stamped_pose_message(pos + center, np.array([0., 0., 0., 1.]), "base_link")  # TODO: wrong quat!
 
         moveit_scene.add_box("{:s}_box_{:d}".format(obj_base_name, mesh_idx), msg, scale)
 

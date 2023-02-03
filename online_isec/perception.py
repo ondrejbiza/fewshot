@@ -74,12 +74,15 @@ def mug_tree_perception(
     with open(canon_tree_path, "rb") as f:
         canon_tree = pickle.load(f)
 
+    import time
+    s = time.time()
     if ablate_no_mug_warping:
         mug_pc_complete, _, mug_param = utils.planar_pose_gd(canon_mug["canonical_obj"], mug_pc, n_angles=12)
         n_dimensions = canon_mug["pca"].n_components
         mug_param = (np.zeros(n_dimensions, dtype=np.float32), *mug_param)
     else:
         mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=12)
+    print(time.time() - s)
 
     tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree["canonical_obj"], tree_pc, n_angles=12)
     viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
@@ -162,13 +165,13 @@ def perceive_mug_in_hand(pc_proxy: PointCloudProxy, sim: Simulation, ur5: UR5) -
     mask2 = np.ones(len(mask1), dtype=np.bool_)
 
     # Add a sphere for collision checking.
-    sphere = sim.add_object("data/sphere_zero_radius.urdf", np.array([0., 0., 0.]), np.array([1., 0., 0., 0.]))
+    sphere = sim.add_object("data/sphere_zero_radius.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
 
     # Filter out all points that are 5mm away from the gripper.
     delta = 0.005
     for i in indices:
         pos = mug_pc[i] + g_pos
-        pu.set_pose(sphere, (pos, np.array([1., 0., 0., 0.])))
+        pu.set_pose(sphere, (pos, np.array([0., 0., 0., 1.])))
 
         pb.performCollisionDetection()
         cols = pb.getClosestPoints(sphere, robotiq, delta)
