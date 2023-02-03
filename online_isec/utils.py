@@ -50,7 +50,7 @@ def mask_workspace(cloud: NDArray, desk_center: Tuple[float, float, float], size
     return cloud[mask]
 
 
-def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
+def find_mug_and_tree(cloud: NDArray, tall_mug_plaform: bool=False, short_mug_platform: bool=False) -> Tuple[NDArray, NDArray]:
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
@@ -90,7 +90,13 @@ def find_mug_and_tree(cloud: NDArray) -> Tuple[NDArray, NDArray]:
     else:
         tree = pcs[1]
         mug = pcs[0]
-    
+
+    if tall_mug_plaform:
+        mug = mug[mug[..., 2] > 0.14]
+
+    if short_mug_platform:
+        mug = mug[mug[..., 2] > 0.02]
+
     # Cut off the base of the tree.
     # No base.
     mask = tree[..., 2] >= 0.03
@@ -327,10 +333,10 @@ def tool0_controller_base_to_flange_base_link(T: NDArray, tf_proxy: TFProxy) -> 
 
     return T_b_to_bl @ T @ T_f_to_g
 
-def desk_obj_param_to_base_link_T(obj_mean: NDArray, obj_yaw: NDArray, desk_center: NDArray,
+def desk_obj_param_to_base_link_T(obj_mean: NDArray, obj_rot: NDArray, desk_center: NDArray,
                                   tf_proxy: TFProxy) -> NDArray:
 
-    T_b_to_m = utils.pos_rot_to_transform(obj_mean + desk_center, utils.yaw_to_rot(obj_yaw))
+    T_b_to_m = utils.pos_rot_to_transform(obj_mean + desk_center, obj_rot)
     T_bl_to_b = np.linalg.inv(tf_proxy.lookup_transform("base_link", "base"))
     return T_bl_to_b @ T_b_to_m
 

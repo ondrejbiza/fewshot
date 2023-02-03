@@ -126,11 +126,24 @@ class UR5:
         if not success:
             raise exceptions.ExecutionError()
 
-    def plan_and_execute_pose_target_2(self, tool0_controller_pos, tool0_controller__quat):
+    def plan_and_execute_pose_target_2(self, tool0_controller_pos, tool0_controller_quat):
 
-        self.rviz_pub.send_pose(tool0_controller_pos, tool0_controller__quat, "base")            
+        self.rviz_pub.send_pose(tool0_controller_pos, tool0_controller_quat, "base")            
 
-        T = utils.pos_quat_to_transform(tool0_controller_pos, tool0_controller__quat)
+        num_plans = 10
+        plans = []
+
+        # for j in range(3):
+
+        T = utils.pos_quat_to_transform(tool0_controller_pos, tool0_controller_quat)
+
+        # if j == 1:
+        #     tmp = Rotation.from_euler("z", np.pi).as_matrix()
+        #     T[:3, :3] = np.matmul(tmp, T[:3, :3])
+        # elif j == 2:
+        #     tmp = Rotation.from_euler("z", -np.pi).as_matrix()
+        #     T[:3, :3] = np.matmul(tmp, T[:3, :3])
+
         T = isec_utils.tool0_controller_base_to_flange_base_link(T, self.tf_proxy)
         base_link_to_flange_pos, base_link_to_flange_rot = utils.transform_to_pos_quat(T)
 
@@ -138,9 +151,6 @@ class UR5:
         pose_msg = self.to_pose_message(base_link_to_flange_pos, base_link_to_flange_rot)
         self.setup_planning_attempt(pose_msg)
 
-        # TODO: refactor
-        num_plans = 10
-        plans = []
         for i in range(num_plans):
             plan_raw = self.moveit_move_group.plan()
             if not plan_raw[0]:

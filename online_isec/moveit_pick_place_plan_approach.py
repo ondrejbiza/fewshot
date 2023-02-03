@@ -19,7 +19,7 @@ import utils
 
 def pick(
     mug_pc_complete: NDArray, mug_param: Tuple[NDArray, NDArray, NDArray],
-    ur5: UR5, load_path: str, safe_release: bool=False) -> NDArray:
+    ur5: UR5, load_path: str, safe_release: bool=False, add_mug_to_scene: bool=False) -> NDArray:
 
     with open(load_path, "rb") as f:
         data = pickle.load(f)
@@ -28,19 +28,25 @@ def pick(
 
     target_pos = target_pos + constants.DESK_CENTER
     target_rot = np.matmul(
-        utils.yaw_to_rot(mug_param[2]),
+        mug_param[2],
         Rotation.from_quat(target_quat).as_matrix()
     )
     target_quat = Rotation.from_matrix(target_rot).as_quat()
 
     T = utils.pos_quat_to_transform(target_pos, target_quat)
-    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.05))
+    T_pre = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.075))
     if safe_release:
         T_pre_safe = utils.pos_quat_to_transform(*utils.move_hand_back((target_pos, target_quat), -0.01))
 
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
     ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T))
     ur5.gripper.close_gripper()
+
+    if add_mug_to_scene:
+        # Add mug to the planning scene.
+        pos, quat = utils.transform_to_pos_quat(
+            isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], np.array(constants.DESK_CENTER), ur5.tf_proxy))
+        ur5.moveit_scene.add_object("tmp.stl", "mug", pos, quat)
 
     # Lock mug to flange in the moveit scene.
     ur5.moveit_scene.attach_object("mug")
@@ -49,7 +55,7 @@ def pick(
     # TODO: If the grasp moved the mug we wouldn't know.
     gripper_pos, gripper_rot = ur5.get_end_effector_pose()
     T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
-    T_m_to_b = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, utils.yaw_to_rot(mug_param[2]))
+    T_m_to_b = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, mug_param[2])
     T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
 
     if safe_release:
@@ -85,7 +91,7 @@ def place(
     targets_tree = tree_orig[target_indices]
 
     T_new_m_to_t, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
-    T_t_to_b = utils.pos_rot_to_transform(tree_param[0] + constants.DESK_CENTER, utils.yaw_to_rot(tree_param[1]))
+    T_t_to_b = utils.pos_rot_to_transform(tree_param[0] + constants.DESK_CENTER, tree_param[1])
     T_new_m_to_b = np.matmul(T_t_to_b, T_new_m_to_t)
 
     # Wiggle mug out of potential collision.
@@ -116,16 +122,14 @@ def main(args):
 
     sim = Simulation()
 
-    cloud = pc_proxy.get_all()
-    assert cloud is not None
-
     mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree, _, _ = perception.mug_tree_perception(
         pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
-        mug_save_decomposition=True, ablate_no_mug_warping=args.ablate_no_mug_warping
+        add_mug_to_planning_scene=not args.disable_mug_collisions_during_pick, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
+        mug_save_decomposition=True, ablate_no_mug_warping=args.ablate_no_mug_warping, any_rotation=args.any_rotation,
+        short_mug_platform=args.short_platform, tall_mug_platform=args.tall_platform
     )
 
-    T_m_to_g = pick(mug_pc_complete, mug_param, ur5, args.pick_load_path + ".pkl")
+    T_m_to_g = pick(mug_pc_complete, mug_param, ur5, args.pick_load_path + ".pkl", add_mug_to_scene=args.disable_mug_collisions_during_pick)
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
@@ -144,7 +148,11 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--any-rotation", default=False, action="store_true")
+    parser.add_argument("-t", "--tall-platform", default=False, action="store_true")
+    parser.add_argument("-s", "--short-platform", default=False, action="store_true")
     parser.add_argument("--pick-load-path", type=str, default="data/230201_real_pick_clone", help="Postfix added automatically.")
     parser.add_argument("--place-load-path", type=str, default="data/230201_real_place_clone", help="Postfix added automatically.")
     parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
+    parser.add_argument("--disable-mug-collisions-during-pick", default=False, action="store_true")
     main(parser.parse_args())
