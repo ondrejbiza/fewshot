@@ -1,11 +1,11 @@
 from dataclasses import dataclass
+import pickle
 from typing import Optional, Tuple, Union
 
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 from sklearn.decomposition import PCA
-import torch
 
 
 @dataclass
@@ -25,6 +25,8 @@ class CanonObj:
     """Canonical object with shape warping.
     """
     canonical_pcd: NDArray[np.float32]
+    mesh_vertices: NDArray[np.float32]
+    mesh_faces: NDArray[np.float32]
     pca: Optional[PCA] = None
 
     def to_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
@@ -37,6 +39,18 @@ class CanonObj:
         pcd = self.to_pcd(obj_param)
         trans = pos_quat_to_transform(obj_param.position, obj_param.quat)
         return transform_pcd(pcd, trans)
+
+    @staticmethod
+    def from_pickle(load_path: str) -> "CanonObj":
+        with open(load_path, "rb") as f:
+            data = pickle.load(f)
+        pcd = data["canonical_obj"]
+        pca = None
+        if "pca" in data:
+            pca = data["pca"]
+        mesh_vertices = data["canonical_mesh_points"]
+        mesh_faces = data["canonical_mesh_faces"]
+        return CanonObj(pcd, mesh_vertices, mesh_faces, pca)
 
 
 @dataclass
