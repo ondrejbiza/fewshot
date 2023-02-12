@@ -228,7 +228,7 @@ class ObjectSE3Batch:
     def create_transformed_pcd(self, canonical_pcd: torch.Tensor) -> torch.Tensor:
         """Transform canonical object. Differentiable."""
         rotm = orthogonalize(self.pose_param)
-        new_pcd = canonical_pcd[None]
+        new_pcd = torch.repeat_interleave(canonical_pcd[None], len(self.pose_param), dim=0)
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -272,7 +272,7 @@ class ObjectSE2Batch(ObjectSE3Batch):
     def create_transformed_pcd(self, canonical_pcd: torch.Tensor) -> torch.Tensor:
         """Warp and transform canonical object. Differentiable."""
         rotm = yaw_to_rot_batch_pt(self.pose_param)
-        new_pcd = canonical_pcd[None]
+        new_pcd = torch.repeat_interleave(canonical_pcd[None], len(self.pose_param), dim=0)
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -324,7 +324,8 @@ def warp_to_pcd_se3(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch]
     return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
 
 
-def warp_to_pcd_se3_hemisphere(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch], n_angles: int=50,
+def warp_to_pcd_se3_hemisphere(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch],
+                               n_angles: int=50,
                                n_batches: int=3) -> Tuple[NDArray, float, utils.ObjParam]:
 
     poses = random_ortho_rots_hemisphere(n_angles * n_batches)
