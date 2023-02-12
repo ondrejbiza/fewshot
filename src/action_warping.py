@@ -7,8 +7,7 @@ from src import utils
 
 
 class ActionWarping:
-    """Action warping.
-    """
+    """Action warping."""
 
     def pick_by_single_vertex(
         self, obj_pc_complete: NDArray[np.float32], obj_param: utils.ObjParam,

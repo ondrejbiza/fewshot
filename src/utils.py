@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 import pickle
-from typing import Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 from sklearn.decomposition import PCA
+import trimesh
 
 
 @dataclass
@@ -39,6 +40,12 @@ class CanonObj:
         pcd = self.to_pcd(obj_param)
         trans = pos_quat_to_transform(obj_param.position, obj_param.quat)
         return transform_pcd(pcd, trans)
+
+    def to_mesh(self, obj_param: ObjParam) -> trimesh.base.Trimesh:
+        pcd = self.to_pcd(obj_param)
+        # The vertices are assumed to be at the start of the canonical_pcd.
+        vertices = pcd[:len(self.mesh_vertices)]
+        return trimesh.base.Trimesh(vertices, self.mesh_faces)
 
     @staticmethod
     def from_pickle(load_path: str) -> "CanonObj":
@@ -144,7 +151,6 @@ def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArra
       R: mxm rotation matrix
       t: mx1 translation vector
     '''
-
     assert A.shape == B.shape
 
     # get number of dimensions
@@ -175,3 +181,46 @@ def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArra
     T[:m, m] = t
 
     return T, R, t
+
+
+def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=None) -> List[trimesh.base.Trimesh]:
+    """Convex decomposition of a mesh using testVHCAD through trimesh."""
+    convex_meshes = trimesh.decomposition.convex_decomposition(
+        mesh, resolution=1000000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
+        alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
+        convexhullApproximation=1, oclDeviceID=0
+    )
+
+    if save_path is not None:
+        decomposed_scene = trimesh.scene.Scene()
+        for i, convex_mesh in enumerate(convex_meshes):
+            decomposed_scene.add_geometry(convex_mesh, node_name=f"hull_{i}")
+        decomposed_scene.export(save_path, file_type="obj")
+
+    return convex_meshes
+
+
+def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray]:
+    # https://github.com/yanx27/Pointnet_Pointnet2_pytorch
+    """
+    Input:
+        xyz: pointcloud data, [N, D]
+        npoint: number of samples
+    Return:
+        centroids: sampled pointcloud index, [npoint, D]
+    """
+    N, D = point.shape
+    xyz = point[:, :3]
+    centroids = np.zeros((npoint,))
+    distance = np.ones((N,)) * 1e10
+    farthest = np.random.randint(0, N)
+    for i in range(npoint):
+        centroids[i] = farthest
+        centroid = xyz[farthest, :]
+        dist = np.sum((xyz - centroid) ** 2, -1)
+        mask = dist < distance
+        distance[mask] = dist[mask]
+        farthest = np.argmax(distance, -1)
+    indices = centroids.astype(np.int32)
+    point = point[indices]
+    return point, indices
