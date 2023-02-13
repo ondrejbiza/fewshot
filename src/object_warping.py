@@ -13,13 +13,15 @@ class ObjectWarpingSE3Batch:
 
     def __init__(self, canon_obj: utils.CanonObj, pcd: NDArray[np.float32],
                  device: torch.device, lr: float, n_steps: int, n_samples: Optional[int],
-                 object_size_reg: Optional[float]):
+                 object_size_reg: Optional[float], scaling: bool=False, init_scale: float=1.0):
         self.device = device
         self.pca = canon_obj.pca
         self.lr = lr
         self.n_steps = n_steps
         self.n_samples = n_samples
         self.object_size_reg = object_size_reg
+        self.scaling = scaling
+        self.init_scale = init_scale
 
         self.global_means = np.mean(pcd, axis=0)
         pcd = pcd - self.global_means[None]
@@ -45,7 +47,15 @@ class ObjectWarpingSE3Batch:
         self.pose_param = nn.Parameter(
             torch.tensor(initial_poses, dtype=torch.float32, device=self.device),
             requires_grad=True)
-        self.optim = optim.Adam([self.latent_param, self.center_param, self.pose_param], lr=self.lr)
+        params = [self.latent_param, self.center_param, self.pose_param]
+
+        if self.scaling:
+            self.scale_param = nn.Parameter(
+                torch.ones((n_angles,), dtype=torch.float32, device=self.device) * self.init_scale,
+                requires_grad=True)
+            params.append(self.scale_param)
+
+        self.optim = optim.Adam(params, lr=self.lr)
 
         for _ in range(self.n_steps):
 
@@ -87,6 +97,8 @@ class ObjectWarpingSE3Batch:
         deltas = torch.matmul(self.latent_param, components) + means
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
+        if self.scaling:
+            new_pcd = new_pcd * self.scale_param[:, None, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -124,8 +136,9 @@ class ObjectWarpingSE3Batch:
                 position = position.astype(np.float64)
                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
                 latent = self.latent_param[i].cpu().numpy()
-                obj_param = utils.ObjParam(position, quat, latent)
+                scale = self.scale_param[i].cpu().item()
 
+                obj_param = utils.ObjParam(position, quat, latent, scale)
                 all_parameters.append(obj_param)
 
         return all_costs, all_new_pcds, all_parameters
@@ -140,6 +153,8 @@ class ObjectWarpingSE2Batch(ObjectWarpingSE3Batch):
         deltas = torch.matmul(self.latent_param, components) + means
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
+        if self.scaling:
+            new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -167,8 +182,9 @@ class ObjectWarpingSE2Batch(ObjectWarpingSE3Batch):
                 position = position.astype(np.float64)
                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
                 latent = self.latent_param[i].cpu().numpy()
-                obj_param = utils.ObjParam(position, quat, latent)
+                scale = self.scale_param[i].cpu().item()
 
+                obj_param = utils.ObjParam(position, quat, latent, scale)
                 all_parameters.append(obj_param)
 
         return all_costs, all_new_pcds, all_parameters

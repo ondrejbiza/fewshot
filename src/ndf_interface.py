@@ -29,7 +29,7 @@ class NDFInterface:
         # Perception.
         warp = ObjectWarpingSE3Batch(
             canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1)
+            n_samples=1000, object_size_reg=0.1, scaling=True)
         mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
         # See how tiny the canonical mug is:
         # warp = ObjectSE3Batch(

@@ -16,6 +16,7 @@ class ObjParam:
     position: NDArray[np.float64]
     quat: NDArray[np.float64]
     latent: Optional[NDArray[np.float32]] = None
+    scale: float = 1.
 
     def get_transform(self):
         return pos_quat_to_transform(self.position, self.quat)
@@ -32,9 +33,10 @@ class CanonObj:
 
     def to_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
         if self.pca is not None:
-            return self.canonical_pcd + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
+            pcd = self.canonical_pcd + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
         else:
-            return np.copy(self.canonical_pcd)
+            pcd = np.copy(self.canonical_pcd)
+        return pcd * obj_param.scale
 
     def to_transformed_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
         pcd = self.to_pcd(obj_param)
