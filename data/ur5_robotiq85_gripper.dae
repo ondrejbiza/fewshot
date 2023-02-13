@@ -1,0 +1,2582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COLLADA xmlns="http://www.collada.org/2008/03/COLLADASchema" version="1.5.0">
+	<asset>
+		<contributor>
+			<authoring_tool>URDF Collada Writer</authoring_tool>
+		</contributor>
+		<created>2023-02-07T23:03:47.000000</created>
+		<modified>2023-02-07T23:03:47.000000</modified>
+		<unit/>
+		<up_axis>Z_UP</up_axis>
+	</asset>
+	<library_visual_scenes id="vscenes">
+		<visual_scene id="vscene" name="URDF Visual Scene">
+			<node id="visual0" name="ur5" sid="visual0">
+				<node id="vkmodel0_node1" name="base_link" sid="node1">
+					<translate>0 0 0</translate>
+					<rotate>1 0 0 0</rotate>
+					<node id="vkmodel0_node0" name="base" sid="node0">
+						<translate>-0 -0 -0</translate>
+						<rotate>1 0 0 0</rotate>
+						<translate>0 0 0</translate>
+						<rotate>0 0 1 180</rotate>
+						<rotate sid="node_base_link-base_fixed_joint_axis0">0 0 0 0</rotate>
+						<translate>0 0 0</translate>
+						<rotate>1 0 0 0</rotate>
+					</node>
+					<node id="vkmodel0_node2" name="base_link_inertia" sid="node2">
+						<translate>-0 -0 -0</translate>
+						<rotate>1 0 0 0</rotate>
+						<translate>0 0 0</translate>
+						<rotate>0 0 1 180</rotate>
+						<rotate sid="node_base_link-base_link_inertia_axis0">0 0 0 0</rotate>
+						<translate>0 0 0</translate>
+						<rotate>0 0 1 180</rotate>
+						<instance_geometry url="#gkmodel0_base_link_inertia_geom0">
+							<bind_material>
+								<technique_common>
+									<instance_material symbol="mat0" target="#gkmodel0_base_link_inertia_geom0_mat"/>
+								</technique_common>
+							</bind_material>
+						</instance_geometry>
+						<node id="vkmodel0_node15" name="shoulder_link" sid="node15">
+							<translate>-0 -0 -0</translate>
+							<rotate>-0 -0 -1 180</rotate>
+							<translate>0 0 0.089159</translate>
+							<rotate>1 0 0 0</rotate>
+							<rotate sid="node_shoulder_pan_joint_axis0">0 0 1 0</rotate>
+							<translate>0 0 0</translate>
+							<rotate>0 0 1 180</rotate>
+							<instance_geometry url="#gkmodel0_shoulder_link_geom0">
+								<bind_material>
+									<technique_common>
+										<instance_material symbol="mat0" target="#gkmodel0_shoulder_link_geom0_mat"/>
+									</technique_common>
+								</bind_material>
+							</instance_geometry>
+							<node id="vkmodel0_node17" name="upper_arm_link" sid="node17">
+								<translate>-0 -0 -0</translate>
+								<rotate>-0 -0 -1 180</rotate>
+								<translate>0 0 0</translate>
+								<rotate>1 0 0 90.00000001175157</rotate>
+								<rotate sid="node_shoulder_lift_joint_axis0">0 0 1 0</rotate>
+								<translate>0 0 0.13585</translate>
+								<rotate>0.5773502691896258 -0.5773502691896256 -0.5773502691896258 120</rotate>
+								<instance_geometry url="#gkmodel0_upper_arm_link_geom0">
+									<bind_material>
+										<technique_common>
+											<instance_material symbol="mat0" target="#gkmodel0_upper_arm_link_geom0_mat"/>
+										</technique_common>
+									</bind_material>
+								</instance_geometry>
+								<node id="vkmodel0_node4" name="forearm_link" sid="node4">
+									<translate>-0 -0.13585 -3.01647595790655e-17</translate>
+									<rotate>-0.5773502691896258 0.5773502691896256 0.5773502691896258 120</rotate>
+									<translate>-0.425 0 0</translate>
+									<rotate>1 0 0 0</rotate>
+									<rotate sid="node_elbow_joint_axis0">0 0 1 0</rotate>
+									<translate>0 0 0.0165</translate>
+									<rotate>0.5773502691896258 -0.5773502691896256 -0.5773502691896258 120</rotate>
+									<instance_geometry url="#gkmodel0_forearm_link_geom0">
+										<bind_material>
+											<technique_common>
+												<instance_material symbol="mat0" target="#gkmodel0_forearm_link_geom0_mat"/>
+											</technique_common>
+										</bind_material>
+									</instance_geometry>
+									<node id="vkmodel0_node18" name="wrist_1_link" sid="node18">
+										<translate>-0 -0.0165 -3.663735981263017e-18</translate>
+										<rotate>-0.5773502691896258 0.5773502691896256 0.5773502691896258 120</rotate>
+										<translate>-0.39225 0 0.10915</translate>
+										<rotate>1 0 0 0</rotate>
+										<rotate sid="node_wrist_1_joint_axis0">0 0 1 0</rotate>
+										<translate>0 0 -0.093</translate>
+										<rotate>1 0 0 90</rotate>
+										<instance_geometry url="#gkmodel0_wrist_1_link_geom0">
+											<bind_material>
+												<technique_common>
+													<instance_material symbol="mat0" target="#gkmodel0_wrist_1_link_geom0_mat"/>
+												</technique_common>
+											</bind_material>
+										</instance_geometry>
+										<node id="vkmodel0_node19" name="wrist_2_link" sid="node19">
+											<translate>-0 0.093 2.065014825802791e-17</translate>
+											<rotate>-1 -0 -0 90</rotate>
+											<translate>0 -0.09465 -1.941303950897609e-11</translate>
+											<rotate>1 0 0 90.00000001175157</rotate>
+											<rotate sid="node_wrist_2_joint_axis0">0 0 1 0</rotate>
+											<translate>0 0 -0.095</translate>
+											<rotate>1 0 0 0</rotate>
+											<instance_geometry url="#gkmodel0_wrist_2_link_geom0">
+												<bind_material>
+													<technique_common>
+														<instance_material symbol="mat0" target="#gkmodel0_wrist_2_link_geom0_mat"/>
+													</technique_common>
+												</bind_material>
+											</instance_geometry>
+											<node id="vkmodel0_node20" name="wrist_3_link" sid="node20">
+												<translate>-0 -0 0.095</translate>
+												<rotate>1 0 0 0</rotate>
+												<translate>0 0.0823 -1.688001216681175e-11</translate>
+												<rotate>-1 1.224646799021764e-16 1.255896269160813e-26 90.00000001175157</rotate>
+												<rotate sid="node_wrist_3_joint_axis0">0 0 1 0</rotate>
+												<translate>0 0 -0.0818</translate>
+												<rotate>1 0 0 90</rotate>
+												<instance_geometry url="#gkmodel0_wrist_3_link_geom0">
+													<bind_material>
+														<technique_common>
+															<instance_material symbol="mat0" target="#gkmodel0_wrist_3_link_geom0_mat"/>
+														</technique_common>
+													</bind_material>
+												</instance_geometry>
+												<node id="vkmodel0_node3" name="flange" sid="node3">
+													<translate>-0 0.0818 1.816324868286756e-17</translate>
+													<rotate>-1 -0 -0 90</rotate>
+													<translate>0 0 0</translate>
+													<rotate>-0.5773502691896256 -0.5773502691896258 -0.5773502691896258 120</rotate>
+													<rotate sid="node_wrist_3-flange_axis0">0 0 0 0</rotate>
+													<translate>0 0 0</translate>
+													<rotate>1 0 0 0</rotate>
+													<node id="vkmodel0_node16" name="tool0" sid="node16">
+														<translate>-0 -0 -0</translate>
+														<rotate>1 0 0 0</rotate>
+														<translate>0 0 0</translate>
+														<rotate>0.5773502691896258 0.5773502691896256 0.5773502691896258 120</rotate>
+														<rotate sid="node_flange-tool0_axis0">0 0 0 0</rotate>
+														<translate>0 0 0</translate>
+														<rotate>1 0 0 0</rotate>
+														<node id="vkmodel0_node14" name="robotiq_coupler" sid="node14">
+															<translate>-0 -0 -0</translate>
+															<rotate>1 0 0 0</rotate>
+															<translate>0 0 0.004</translate>
+															<rotate>0 0 -1 90</rotate>
+															<rotate sid="node_robotiq_coupler_joint_axis0">0 0 0 0</rotate>
+															<translate>0 0 0</translate>
+															<rotate>1 0 0 0</rotate>
+															<instance_geometry url="#gkmodel0_robotiq_coupler_geom0">
+																<bind_material>
+																	<technique_common>
+																		<instance_material symbol="mat0" target="#gkmodel0_robotiq_coupler_geom0_mat"/>
+																	</technique_common>
+																</bind_material>
+															</instance_geometry>
+															<node id="vkmodel0_node5" name="robotiq_85_base_link" sid="node5">
+																<translate>-0 -0 -0</translate>
+																<rotate>1 0 0 0</rotate>
+																<translate>0 0 0.004</translate>
+																<rotate>0.7071067811865475 -4.329780281177466e-17 0.7071067811865476 180</rotate>
+																<rotate sid="node_robotiq_85_base_joint_axis0">0 0 0 0</rotate>
+																<translate>0 0 0</translate>
+																<rotate>1 0 0 0</rotate>
+																<instance_geometry url="#gkmodel0_robotiq_85_base_link_geom0">
+																	<bind_material>
+																		<technique_common>
+																			<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_base_link_geom0_mat"/>
+																		</technique_common>
+																	</bind_material>
+																</instance_geometry>
+																<node id="vkmodel0_node8" name="robotiq_85_left_inner_knuckle_link" sid="node8">
+																	<translate>-0 -0 -0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<translate>0.06142 0.0127 0</translate>
+																	<rotate>1 0 0 180</rotate>
+																	<rotate sid="node_robotiq_85_left_inner_knuckle_joint_axis0">0 0 1 0</rotate>
+																	<translate>0 0 0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<instance_geometry url="#gkmodel0_robotiq_85_left_inner_knuckle_link_geom0">
+																		<bind_material>
+																			<technique_common>
+																				<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_left_inner_knuckle_link_geom0_mat"/>
+																			</technique_common>
+																		</bind_material>
+																	</instance_geometry>
+																	<node id="vkmodel0_node7" name="robotiq_85_left_finger_tip_link" sid="node7">
+																		<translate>-0 -0 -0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<translate>0.04303959807 -0.03759940821 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<rotate sid="node_robotiq_85_left_finger_tip_joint_axis0">0 0 1 0</rotate>
+																		<translate>0 0 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<instance_geometry url="#gkmodel0_robotiq_85_left_finger_tip_link_geom0">
+																			<bind_material>
+																				<technique_common>
+																					<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_left_finger_tip_link_geom0_mat"/>
+																				</technique_common>
+																			</bind_material>
+																		</instance_geometry>
+																	</node>
+																</node>
+																<node id="vkmodel0_node9" name="robotiq_85_left_knuckle_link" sid="node9">
+																	<translate>-0 -0 -0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<translate>0.05490451627 0.03060114443 0</translate>
+																	<rotate>1 0 0 180</rotate>
+																	<rotate sid="node_robotiq_85_left_knuckle_joint_axis0">0 0 1 0</rotate>
+																	<translate>0 0 0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<instance_geometry url="#gkmodel0_robotiq_85_left_knuckle_link_geom0">
+																		<bind_material>
+																			<technique_common>
+																				<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_left_knuckle_link_geom0_mat"/>
+																			</technique_common>
+																		</bind_material>
+																	</instance_geometry>
+																	<node id="vkmodel0_node6" name="robotiq_85_left_finger_link" sid="node6">
+																		<translate>-0 -0 -0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<translate>-0.00408552455 -0.03148604435 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<rotate sid="node_robotiq_85_left_finger_joint_axis0">0 0 0 0</rotate>
+																		<translate>0 0 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<instance_geometry url="#gkmodel0_robotiq_85_left_finger_link_geom0">
+																			<bind_material>
+																				<technique_common>
+																					<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_left_finger_link_geom0_mat"/>
+																				</technique_common>
+																			</bind_material>
+																		</instance_geometry>
+																	</node>
+																</node>
+																<node id="vkmodel0_node12" name="robotiq_85_right_inner_knuckle_link" sid="node12">
+																	<translate>-0 -0 -0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<translate>0.06142 -0.0127 0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<rotate sid="node_robotiq_85_right_inner_knuckle_joint_axis0">0 0 1 0</rotate>
+																	<translate>0 0 0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<instance_geometry url="#gkmodel0_robotiq_85_right_inner_knuckle_link_geom0">
+																		<bind_material>
+																			<technique_common>
+																				<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_right_inner_knuckle_link_geom0_mat"/>
+																			</technique_common>
+																		</bind_material>
+																	</instance_geometry>
+																	<node id="vkmodel0_node11" name="robotiq_85_right_finger_tip_link" sid="node11">
+																		<translate>-0 -0 -0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<translate>0.04303959807 -0.03759940821 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<rotate sid="node_robotiq_85_right_finger_tip_joint_axis0">0 0 1 0</rotate>
+																		<translate>0 0 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<instance_geometry url="#gkmodel0_robotiq_85_right_finger_tip_link_geom0">
+																			<bind_material>
+																				<technique_common>
+																					<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_right_finger_tip_link_geom0_mat"/>
+																				</technique_common>
+																			</bind_material>
+																		</instance_geometry>
+																	</node>
+																</node>
+																<node id="vkmodel0_node13" name="robotiq_85_right_knuckle_link" sid="node13">
+																	<translate>-0 -0 -0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<translate>0.05490451627 -0.03060114443 0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<rotate sid="node_robotiq_85_right_knuckle_joint_axis0">0 0 1 0</rotate>
+																	<translate>0 0 0</translate>
+																	<rotate>1 0 0 0</rotate>
+																	<instance_geometry url="#gkmodel0_robotiq_85_right_knuckle_link_geom0">
+																		<bind_material>
+																			<technique_common>
+																				<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_right_knuckle_link_geom0_mat"/>
+																			</technique_common>
+																		</bind_material>
+																	</instance_geometry>
+																	<node id="vkmodel0_node10" name="robotiq_85_right_finger_link" sid="node10">
+																		<translate>-0 -0 -0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<translate>-0.00408552455 -0.03148604435 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<rotate sid="node_robotiq_85_right_finger_joint_axis0">0 0 0 0</rotate>
+																		<translate>0 0 0</translate>
+																		<rotate>1 0 0 0</rotate>
+																		<instance_geometry url="#gkmodel0_robotiq_85_right_finger_link_geom0">
+																			<bind_material>
+																				<technique_common>
+																					<instance_material symbol="mat0" target="#gkmodel0_robotiq_85_right_finger_link_geom0_mat"/>
+																				</technique_common>
+																			</bind_material>
+																		</instance_geometry>
+																	</node>
+																</node>
+															</node>
+														</node>
+													</node>
+												</node>
+											</node>
+										</node>
+									</node>
+								</node>
+							</node>
+						</node>
+					</node>
+				</node>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<library_geometries id="geometries">
+		<geometry id="gkmodel0_base_link_inertia_geom0" name="package://ur_description/meshes/ur5/visual/base.dae"/>
+		<geometry id="gkmodel0_shoulder_link_geom0" name="package://ur_description/meshes/ur5/visual/shoulder.dae"/>
+		<geometry id="gkmodel0_upper_arm_link_geom0" name="package://ur_description/meshes/ur5/visual/upperarm.dae"/>
+		<geometry id="gkmodel0_forearm_link_geom0" name="package://ur_description/meshes/ur5/visual/forearm.dae"/>
+		<geometry id="gkmodel0_wrist_1_link_geom0" name="package://ur_description/meshes/ur5/visual/wrist1.dae"/>
+		<geometry id="gkmodel0_wrist_2_link_geom0" name="package://ur_description/meshes/ur5/visual/wrist2.dae"/>
+		<geometry id="gkmodel0_wrist_3_link_geom0" name="package://ur_description/meshes/ur5/visual/wrist3.dae"/>
+		<geometry id="gkmodel0_robotiq_coupler_geom0" name="package://robotiq_description/meshes/robotiq_85_coupler.stl"/>
+		<geometry id="gkmodel0_robotiq_85_base_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_base_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_left_inner_knuckle_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_inner_knuckle_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_left_finger_tip_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_finger_tip_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_left_knuckle_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_knuckle_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_left_finger_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_finger_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_right_inner_knuckle_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_inner_knuckle_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_right_finger_tip_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_finger_tip_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_right_knuckle_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_knuckle_link.dae"/>
+		<geometry id="gkmodel0_robotiq_85_right_finger_link_geom0" name="package://robotiq_description/meshes/visual/robotiq_85_finger_link.dae"/>
+	</library_geometries>
+	<library_effects id="effects">
+		<effect id="gkmodel0_base_link_inertia_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_base_link_inertia_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_shoulder_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_shoulder_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_upper_arm_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_upper_arm_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_forearm_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_forearm_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_wrist_1_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_wrist_1_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_wrist_2_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_wrist_2_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_wrist_3_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_wrist_3_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.699999988079071 0.699999988079071 0.699999988079071 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_coupler_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0 0 0 1</color>
+						</ambient>
+						<diffuse>
+							<color>0 0 0 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_coupler_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0 0 0 1</color>
+						</ambient>
+						<diffuse>
+							<color>0 0 0 1</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_base_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_base_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_inner_knuckle_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_inner_knuckle_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_finger_tip_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_finger_tip_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_knuckle_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_knuckle_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_finger_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_left_finger_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_inner_knuckle_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_inner_knuckle_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_finger_tip_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_finger_tip_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_knuckle_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_knuckle_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_finger_link_geom0">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="gkmodel0_robotiq_85_right_finger_link_geom0_eff">
+			<profile_COMMON>
+				<technique sid="">
+					<phong>
+						<ambient>
+							<color>0.1000000014901161 0.1000000014901161 0.1000000014901161 0</color>
+						</ambient>
+						<diffuse>
+							<color>1 1 1 0</color>
+						</diffuse>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+	</library_effects>
+	<library_materials id="materials">
+		<material id="gkmodel0_base_link_inertia_geom0_mat">
+			<instance_effect url="#gkmodel0_base_link_inertia_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_base_link_inertia_geom0_mat">
+			<instance_effect url="#gkmodel0_base_link_inertia_geom0"/>
+		</material>
+		<material id="gkmodel0_shoulder_link_geom0_mat">
+			<instance_effect url="#gkmodel0_shoulder_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_shoulder_link_geom0_mat">
+			<instance_effect url="#gkmodel0_shoulder_link_geom0"/>
+		</material>
+		<material id="gkmodel0_upper_arm_link_geom0_mat">
+			<instance_effect url="#gkmodel0_upper_arm_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_upper_arm_link_geom0_mat">
+			<instance_effect url="#gkmodel0_upper_arm_link_geom0"/>
+		</material>
+		<material id="gkmodel0_forearm_link_geom0_mat">
+			<instance_effect url="#gkmodel0_forearm_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_forearm_link_geom0_mat">
+			<instance_effect url="#gkmodel0_forearm_link_geom0"/>
+		</material>
+		<material id="gkmodel0_wrist_1_link_geom0_mat">
+			<instance_effect url="#gkmodel0_wrist_1_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_wrist_1_link_geom0_mat">
+			<instance_effect url="#gkmodel0_wrist_1_link_geom0"/>
+		</material>
+		<material id="gkmodel0_wrist_2_link_geom0_mat">
+			<instance_effect url="#gkmodel0_wrist_2_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_wrist_2_link_geom0_mat">
+			<instance_effect url="#gkmodel0_wrist_2_link_geom0"/>
+		</material>
+		<material id="gkmodel0_wrist_3_link_geom0_mat">
+			<instance_effect url="#gkmodel0_wrist_3_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_wrist_3_link_geom0_mat">
+			<instance_effect url="#gkmodel0_wrist_3_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_coupler_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_coupler_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_coupler_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_coupler_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_base_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_base_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_base_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_base_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_inner_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_inner_knuckle_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_inner_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_inner_knuckle_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_finger_tip_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_finger_tip_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_finger_tip_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_finger_tip_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_knuckle_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_knuckle_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_finger_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_finger_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_left_finger_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_left_finger_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_inner_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_inner_knuckle_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_inner_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_inner_knuckle_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_finger_tip_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_finger_tip_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_finger_tip_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_finger_tip_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_knuckle_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_knuckle_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_knuckle_link_geom0"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_finger_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_finger_link_geom0_eff"/>
+		</material>
+		<material id="gkmodel0_robotiq_85_right_finger_link_geom0_mat">
+			<instance_effect url="#gkmodel0_robotiq_85_right_finger_link_geom0"/>
+		</material>
+	</library_materials>
+	<library_kinematics_models id="kmodels">
+		<kinematics_model id="kmodel0" name="ur5">
+			<technique_common>
+				<joint name="base_link-base_fixed_joint" sid="base_link-base_fixed_joint">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="base_link-base_link_inertia" sid="base_link-base_link_inertia">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="elbow_joint" sid="elbow_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>-180</min>
+							<max>180</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="flange-tool0" sid="flange-tool0">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_base_joint" sid="robotiq_85_base_joint">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_left_finger_joint" sid="robotiq_85_left_finger_joint">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_left_finger_tip_joint" sid="robotiq_85_left_finger_tip_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_left_inner_knuckle_joint" sid="robotiq_85_left_inner_knuckle_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_left_knuckle_joint" sid="robotiq_85_left_knuckle_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>0</min>
+							<max>45.99991658207814</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_right_finger_joint" sid="robotiq_85_right_finger_joint">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_right_finger_tip_joint" sid="robotiq_85_right_finger_tip_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_right_inner_knuckle_joint" sid="robotiq_85_right_inner_knuckle_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+					</revolute>
+				</joint>
+				<joint name="robotiq_85_right_knuckle_joint" sid="robotiq_85_right_knuckle_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+					</revolute>
+				</joint>
+				<joint name="robotiq_coupler_joint" sid="robotiq_coupler_joint">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="shoulder_lift_joint" sid="shoulder_lift_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>-360</min>
+							<max>360</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="shoulder_pan_joint" sid="shoulder_pan_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>-360</min>
+							<max>360</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="wrist_1_joint" sid="wrist_1_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>-360</min>
+							<max>360</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="wrist_2_joint" sid="wrist_2_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>-360</min>
+							<max>360</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="wrist_3-flange" sid="wrist_3-flange">
+					<revolute sid="axis0">
+						<axis>0 0 0</axis>
+						<limits>
+							<min>0</min>
+							<max>0</max>
+						</limits>
+					</revolute>
+				</joint>
+				<joint name="wrist_3_joint" sid="wrist_3_joint">
+					<revolute sid="axis0">
+						<axis>0 0 1</axis>
+						<limits>
+							<min>-182</min>
+							<max>182</max>
+						</limits>
+					</revolute>
+				</joint>
+				<link sid="base_link" name="base_link">
+					<attachment_full joint="kmodel0/base_link-base_fixed_joint">
+						<translate>0 0 0</translate>
+						<rotate>0 0 1 180</rotate>
+						<link sid="base" name="base"/>
+					</attachment_full>
+					<attachment_full joint="kmodel0/base_link-base_link_inertia">
+						<translate>0 0 0</translate>
+						<rotate>0 0 1 180</rotate>
+						<link sid="base_link_inertia" name="base_link_inertia">
+							<attachment_full joint="kmodel0/shoulder_pan_joint">
+								<translate>0 0 0.089159</translate>
+								<rotate>1 0 0 0</rotate>
+								<link sid="shoulder_link" name="shoulder_link">
+									<attachment_full joint="kmodel0/shoulder_lift_joint">
+										<translate>0 0 0</translate>
+										<rotate>1 0 0 90.00000001175157</rotate>
+										<link sid="upper_arm_link" name="upper_arm_link">
+											<attachment_full joint="kmodel0/elbow_joint">
+												<translate>-0.425 0 0</translate>
+												<rotate>1 0 0 0</rotate>
+												<link sid="forearm_link" name="forearm_link">
+													<attachment_full joint="kmodel0/wrist_1_joint">
+														<translate>-0.39225 0 0.10915</translate>
+														<rotate>1 0 0 0</rotate>
+														<link sid="wrist_1_link" name="wrist_1_link">
+															<attachment_full joint="kmodel0/wrist_2_joint">
+																<translate>0 -0.09465 -1.941303950897609e-11</translate>
+																<rotate>1 0 0 90.00000001175157</rotate>
+																<link sid="wrist_2_link" name="wrist_2_link">
+																	<attachment_full joint="kmodel0/wrist_3_joint">
+																		<translate>0 0.0823 -1.688001216681175e-11</translate>
+																		<rotate>-1 1.224646799021764e-16 1.255896269160813e-26 90.00000001175157</rotate>
+																		<link sid="wrist_3_link" name="wrist_3_link">
+																			<attachment_full joint="kmodel0/wrist_3-flange">
+																				<translate>0 0 0</translate>
+																				<rotate>-0.5773502691896256 -0.5773502691896258 -0.5773502691896258 120</rotate>
+																				<link sid="flange" name="flange">
+																					<attachment_full joint="kmodel0/flange-tool0">
+																						<translate>0 0 0</translate>
+																						<rotate>0.5773502691896258 0.5773502691896256 0.5773502691896258 120</rotate>
+																						<link sid="tool0" name="tool0">
+																							<attachment_full joint="kmodel0/robotiq_coupler_joint">
+																								<translate>0 0 0.004</translate>
+																								<rotate>0 0 -1 90</rotate>
+																								<link sid="robotiq_coupler" name="robotiq_coupler">
+																									<attachment_full joint="kmodel0/robotiq_85_base_joint">
+																										<translate>0 0 0.004</translate>
+																										<rotate>0.7071067811865475 -4.329780281177466e-17 0.7071067811865476 180</rotate>
+																										<link sid="robotiq_85_base_link" name="robotiq_85_base_link">
+																											<attachment_full joint="kmodel0/robotiq_85_left_inner_knuckle_joint">
+																												<translate>0.06142 0.0127 0</translate>
+																												<rotate>1 0 0 180</rotate>
+																												<link sid="robotiq_85_left_inner_knuckle_link" name="robotiq_85_left_inner_knuckle_link">
+																													<attachment_full joint="kmodel0/robotiq_85_left_finger_tip_joint">
+																														<translate>0.04303959807 -0.03759940821 0</translate>
+																														<rotate>1 0 0 0</rotate>
+																														<link sid="robotiq_85_left_finger_tip_link" name="robotiq_85_left_finger_tip_link"/>
+																													</attachment_full>
+																												</link>
+																											</attachment_full>
+																											<attachment_full joint="kmodel0/robotiq_85_left_knuckle_joint">
+																												<translate>0.05490451627 0.03060114443 0</translate>
+																												<rotate>1 0 0 180</rotate>
+																												<link sid="robotiq_85_left_knuckle_link" name="robotiq_85_left_knuckle_link">
+																													<attachment_full joint="kmodel0/robotiq_85_left_finger_joint">
+																														<translate>-0.00408552455 -0.03148604435 0</translate>
+																														<rotate>1 0 0 0</rotate>
+																														<link sid="robotiq_85_left_finger_link" name="robotiq_85_left_finger_link"/>
+																													</attachment_full>
+																												</link>
+																											</attachment_full>
+																											<attachment_full joint="kmodel0/robotiq_85_right_inner_knuckle_joint">
+																												<translate>0.06142 -0.0127 0</translate>
+																												<rotate>1 0 0 0</rotate>
+																												<link sid="robotiq_85_right_inner_knuckle_link" name="robotiq_85_right_inner_knuckle_link">
+																													<attachment_full joint="kmodel0/robotiq_85_right_finger_tip_joint">
+																														<translate>0.04303959807 -0.03759940821 0</translate>
+																														<rotate>1 0 0 0</rotate>
+																														<link sid="robotiq_85_right_finger_tip_link" name="robotiq_85_right_finger_tip_link"/>
+																													</attachment_full>
+																												</link>
+																											</attachment_full>
+																											<attachment_full joint="kmodel0/robotiq_85_right_knuckle_joint">
+																												<translate>0.05490451627 -0.03060114443 0</translate>
+																												<rotate>1 0 0 0</rotate>
+																												<link sid="robotiq_85_right_knuckle_link" name="robotiq_85_right_knuckle_link">
+																													<attachment_full joint="kmodel0/robotiq_85_right_finger_joint">
+																														<translate>-0.00408552455 -0.03148604435 0</translate>
+																														<rotate>1 0 0 0</rotate>
+																														<link sid="robotiq_85_right_finger_link" name="robotiq_85_right_finger_link"/>
+																													</attachment_full>
+																												</link>
+																											</attachment_full>
+																										</link>
+																									</attachment_full>
+																								</link>
+																							</attachment_full>
+																						</link>
+																					</attachment_full>
+																				</link>
+																			</attachment_full>
+																		</link>
+																	</attachment_full>
+																</link>
+															</attachment_full>
+														</link>
+													</attachment_full>
+												</link>
+											</attachment_full>
+										</link>
+									</attachment_full>
+								</link>
+							</attachment_full>
+						</link>
+					</attachment_full>
+				</link>
+				<formula sid="robotiq_85_left_finger_tip_joint_formula">
+					<target>
+						<param>kmodel0/robotiq_85_left_finger_tip_joint</param>
+					</target>
+					<technique_common>
+						<math>
+							<apply>
+								<plus/>
+								<apply>
+									<times/>
+									<cn>-1.000000</cn>
+									<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+								</apply>
+								<cn>0.000000</cn>
+							</apply>
+						</math>
+					</technique_common>
+					<technique profile="OpenRAVE">
+						<equation type="position">
+							<math>
+								<apply>
+									<plus/>
+									<apply>
+										<times/>
+										<cn>-1.000000</cn>
+										<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+									</apply>
+									<cn>0.000000</cn>
+								</apply>
+							</math>
+						</equation>
+						<equation type="first_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>-1.000000</cn>
+						</equation>
+						<equation type="second_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>-1.000000</cn>
+						</equation>
+					</technique>
+				</formula>
+				<formula sid="robotiq_85_left_inner_knuckle_joint_formula">
+					<target>
+						<param>kmodel0/robotiq_85_left_inner_knuckle_joint</param>
+					</target>
+					<technique_common>
+						<math>
+							<apply>
+								<plus/>
+								<apply>
+									<times/>
+									<cn>1.000000</cn>
+									<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+								</apply>
+								<cn>0.000000</cn>
+							</apply>
+						</math>
+					</technique_common>
+					<technique profile="OpenRAVE">
+						<equation type="position">
+							<math>
+								<apply>
+									<plus/>
+									<apply>
+										<times/>
+										<cn>1.000000</cn>
+										<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+									</apply>
+									<cn>0.000000</cn>
+								</apply>
+							</math>
+						</equation>
+						<equation type="first_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>1.000000</cn>
+						</equation>
+						<equation type="second_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>1.000000</cn>
+						</equation>
+					</technique>
+				</formula>
+				<formula sid="robotiq_85_right_finger_tip_joint_formula">
+					<target>
+						<param>kmodel0/robotiq_85_right_finger_tip_joint</param>
+					</target>
+					<technique_common>
+						<math>
+							<apply>
+								<plus/>
+								<apply>
+									<times/>
+									<cn>-1.000000</cn>
+									<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+								</apply>
+								<cn>0.000000</cn>
+							</apply>
+						</math>
+					</technique_common>
+					<technique profile="OpenRAVE">
+						<equation type="position">
+							<math>
+								<apply>
+									<plus/>
+									<apply>
+										<times/>
+										<cn>-1.000000</cn>
+										<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+									</apply>
+									<cn>0.000000</cn>
+								</apply>
+							</math>
+						</equation>
+						<equation type="first_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>-1.000000</cn>
+						</equation>
+						<equation type="second_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>-1.000000</cn>
+						</equation>
+					</technique>
+				</formula>
+				<formula sid="robotiq_85_right_inner_knuckle_joint_formula">
+					<target>
+						<param>kmodel0/robotiq_85_right_inner_knuckle_joint</param>
+					</target>
+					<technique_common>
+						<math>
+							<apply>
+								<plus/>
+								<apply>
+									<times/>
+									<cn>1.000000</cn>
+									<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+								</apply>
+								<cn>0.000000</cn>
+							</apply>
+						</math>
+					</technique_common>
+					<technique profile="OpenRAVE">
+						<equation type="position">
+							<math>
+								<apply>
+									<plus/>
+									<apply>
+										<times/>
+										<cn>1.000000</cn>
+										<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+									</apply>
+									<cn>0.000000</cn>
+								</apply>
+							</math>
+						</equation>
+						<equation type="first_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>1.000000</cn>
+						</equation>
+						<equation type="second_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>1.000000</cn>
+						</equation>
+					</technique>
+				</formula>
+				<formula sid="robotiq_85_right_knuckle_joint_formula">
+					<target>
+						<param>kmodel0/robotiq_85_right_knuckle_joint</param>
+					</target>
+					<technique_common>
+						<math>
+							<apply>
+								<plus/>
+								<apply>
+									<times/>
+									<cn>1.000000</cn>
+									<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+								</apply>
+								<cn>0.000000</cn>
+							</apply>
+						</math>
+					</technique_common>
+					<technique profile="OpenRAVE">
+						<equation type="position">
+							<math>
+								<apply>
+									<plus/>
+									<apply>
+										<times/>
+										<cn>1.000000</cn>
+										<csymbol encoding="COLLADA">kmodel0/robotiq_85_left_knuckle_joint</csymbol>
+									</apply>
+									<cn>0.000000</cn>
+								</apply>
+							</math>
+						</equation>
+						<equation type="first_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>1.000000</cn>
+						</equation>
+						<equation type="second_partial" target="kmodel0/robotiq_85_left_knuckle_joint">
+							<cn>1.000000</cn>
+						</equation>
+					</technique>
+				</formula>
+			</technique_common>
+		</kinematics_model>
+	</library_kinematics_models>
+	<library_articulated_systems id="asystems">
+		<articulated_system id="robot0_motion">
+			<motion>
+				<instance_articulated_system url="#robot0_kinematics">
+					<newparam sid="robot0_motion_kmodel0_inst">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_elbow_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_elbow_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_elbow_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_elbow_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_flange-tool0_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_flange-tool0_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_flange-tool0_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_flange-tool0_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0_value</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0_value">
+						<SIDREF>robot0_kinematics/robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0_value</SIDREF>
+					</newparam>
+				</instance_articulated_system>
+				<technique_common>
+					<axis_info axis="robot0_kinematics/axis_info_inst0"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst1"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst2">
+						<speed>
+							<float>3.141592653589793</float>
+						</speed>
+						<acceleration>
+							<float>150</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst3"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst4"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst5"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst6">
+						<speed>
+							<float>100</float>
+						</speed>
+						<acceleration>
+							<float>0.1</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst7">
+						<speed>
+							<float>100</float>
+						</speed>
+						<acceleration>
+							<float>0.1</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst8">
+						<speed>
+							<float>0.5</float>
+						</speed>
+						<acceleration>
+							<float>1000</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst9"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst10">
+						<speed>
+							<float>100</float>
+						</speed>
+						<acceleration>
+							<float>0.1</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst11">
+						<speed>
+							<float>100</float>
+						</speed>
+						<acceleration>
+							<float>0.1</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst12">
+						<speed>
+							<float>100</float>
+						</speed>
+						<acceleration>
+							<float>1000</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst13"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst14">
+						<speed>
+							<float>3.141592653589793</float>
+						</speed>
+						<acceleration>
+							<float>150</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst15">
+						<speed>
+							<float>3.141592653589793</float>
+						</speed>
+						<acceleration>
+							<float>150</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst16">
+						<speed>
+							<float>3.141592653589793</float>
+						</speed>
+						<acceleration>
+							<float>28</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst17">
+						<speed>
+							<float>3.141592653589793</float>
+						</speed>
+						<acceleration>
+							<float>28</float>
+						</acceleration>
+					</axis_info>
+					<axis_info axis="robot0_kinematics/axis_info_inst18"/>
+					<axis_info axis="robot0_kinematics/axis_info_inst19">
+						<speed>
+							<float>3.141592653589793</float>
+						</speed>
+						<acceleration>
+							<float>28</float>
+						</acceleration>
+					</axis_info>
+				</technique_common>
+			</motion>
+		</articulated_system>
+		<articulated_system id="robot0_kinematics">
+			<kinematics>
+				<instance_kinematics_model url="#kmodel0" sid="kmodel0_inst">
+					<newparam sid="robot0_kinematics_kmodel0_inst">
+						<SIDREF>robot0_kinematics/kmodel0_inst</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/base_link-base_fixed_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/base_link-base_link_inertia/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_elbow_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/elbow_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_elbow_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_flange-tool0_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/flange-tool0/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_flange-tool0_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_base_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_left_finger_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_left_finger_tip_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_left_inner_knuckle_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_left_knuckle_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_right_finger_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_right_finger_tip_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_right_inner_knuckle_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_85_right_knuckle_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/robotiq_coupler_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/shoulder_lift_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/shoulder_pan_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/wrist_1_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/wrist_2_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/wrist_3-flange/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0_value">
+						<float>0</float>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0">
+						<SIDREF>robot0_kinematics/kmodel0_inst/wrist_3_joint/axis0</SIDREF>
+					</newparam>
+					<newparam sid="robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0_value">
+						<float>0</float>
+					</newparam>
+				</instance_kinematics_model>
+				<technique_common>
+					<axis_info sid="axis_info_inst0" axis="kmodel0/base_link-base_fixed_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst1" axis="kmodel0/base_link-base_link_inertia/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst2" axis="kmodel0/elbow_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>-180</float>
+							</min>
+							<max>
+								<float>180</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst3" axis="kmodel0/flange-tool0/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst4" axis="kmodel0/robotiq_85_base_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst5" axis="kmodel0/robotiq_85_left_finger_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst6" axis="kmodel0/robotiq_85_left_finger_tip_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+					</axis_info>
+					<axis_info sid="axis_info_inst7" axis="kmodel0/robotiq_85_left_inner_knuckle_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+					</axis_info>
+					<axis_info sid="axis_info_inst8" axis="kmodel0/robotiq_85_left_knuckle_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>45.99991658207814</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst9" axis="kmodel0/robotiq_85_right_finger_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst10" axis="kmodel0/robotiq_85_right_finger_tip_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+					</axis_info>
+					<axis_info sid="axis_info_inst11" axis="kmodel0/robotiq_85_right_inner_knuckle_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+					</axis_info>
+					<axis_info sid="axis_info_inst12" axis="kmodel0/robotiq_85_right_knuckle_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+					</axis_info>
+					<axis_info sid="axis_info_inst13" axis="kmodel0/robotiq_coupler_joint/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst14" axis="kmodel0/shoulder_lift_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>-360</float>
+							</min>
+							<max>
+								<float>360</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst15" axis="kmodel0/shoulder_pan_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>-360</float>
+							</min>
+							<max>
+								<float>360</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst16" axis="kmodel0/wrist_1_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>-360</float>
+							</min>
+							<max>
+								<float>360</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst17" axis="kmodel0/wrist_2_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>-360</float>
+							</min>
+							<max>
+								<float>360</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst18" axis="kmodel0/wrist_3-flange/axis0">
+						<active>
+							<bool>false</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>0</float>
+							</min>
+							<max>
+								<float>0</float>
+							</max>
+						</limits>
+					</axis_info>
+					<axis_info sid="axis_info_inst19" axis="kmodel0/wrist_3_joint/axis0">
+						<active>
+							<bool>true</bool>
+						</active>
+						<locked>
+							<bool>false</bool>
+						</locked>
+						<limits>
+							<min>
+								<float>-182</float>
+							</min>
+							<max>
+								<float>182</float>
+							</max>
+						</limits>
+					</axis_info>
+				</technique_common>
+			</kinematics>
+		</articulated_system>
+	</library_articulated_systems>
+	<library_kinematics_scenes id="kscenes">
+		<kinematics_scene id="kscene" name="URDF Kinematics Scene">
+			<instance_articulated_system sid="robot0_motion_inst" url="#robot0_motion" name="ur5">
+				<bind symbol="kscene_kmodel0_inst">
+					<param ref="robot0_motion/robot0_motion_kmodel0_inst"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_elbow_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_elbow_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_elbow_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_elbow_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_flange-tool0_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_flange-tool0_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_flange-tool0_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_flange-tool0_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0_value"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0"/>
+				</bind>
+				<bind symbol="kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0_value">
+					<param ref="robot0_motion/robot0_motion_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0_value"/>
+				</bind>
+			</instance_articulated_system>
+		</kinematics_scene>
+	</library_kinematics_scenes>
+	<library_physics_scenes id="pscenes">
+		<physics_scene id="pscene" name="URDF Physics Scene">
+			<instance_physics_model url="#pmodel0" sid="pmodel0_inst" parent="#visual0">
+				<instance_rigid_body body="rigid0" target="#vkmodel0_node0"/>
+				<instance_rigid_body body="rigid1" target="#vkmodel0_node1"/>
+				<instance_rigid_body body="rigid2" target="#vkmodel0_node2"/>
+				<instance_rigid_body body="rigid3" target="#vkmodel0_node3"/>
+				<instance_rigid_body body="rigid4" target="#vkmodel0_node4"/>
+				<instance_rigid_body body="rigid5" target="#vkmodel0_node5"/>
+				<instance_rigid_body body="rigid6" target="#vkmodel0_node6"/>
+				<instance_rigid_body body="rigid7" target="#vkmodel0_node7"/>
+				<instance_rigid_body body="rigid8" target="#vkmodel0_node8"/>
+				<instance_rigid_body body="rigid9" target="#vkmodel0_node9"/>
+				<instance_rigid_body body="rigid10" target="#vkmodel0_node10"/>
+				<instance_rigid_body body="rigid11" target="#vkmodel0_node11"/>
+				<instance_rigid_body body="rigid12" target="#vkmodel0_node12"/>
+				<instance_rigid_body body="rigid13" target="#vkmodel0_node13"/>
+				<instance_rigid_body body="rigid14" target="#vkmodel0_node14"/>
+				<instance_rigid_body body="rigid15" target="#vkmodel0_node15"/>
+				<instance_rigid_body body="rigid16" target="#vkmodel0_node16"/>
+				<instance_rigid_body body="rigid17" target="#vkmodel0_node17"/>
+				<instance_rigid_body body="rigid18" target="#vkmodel0_node18"/>
+				<instance_rigid_body body="rigid19" target="#vkmodel0_node19"/>
+				<instance_rigid_body body="rigid20" target="#vkmodel0_node20"/>
+			</instance_physics_model>
+			<technique_common>
+				<gravity>0 0 0</gravity>
+			</technique_common>
+		</physics_scene>
+	</library_physics_scenes>
+	<library_physics_models id="pmodels">
+		<physics_model id="pmodel0" name="ur5">
+			<rigid_body sid="rigid0" name="base">
+				<technique_common/>
+			</rigid_body>
+			<rigid_body sid="rigid1" name="base_link">
+				<technique_common/>
+			</rigid_body>
+			<rigid_body sid="rigid2" name="base_link_inertia">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>4</mass>
+					<mass_frame>
+						<translate>0 0 0</translate>
+						<rotate>0 0 1 180</rotate>
+					</mass_frame>
+					<inertia>0.00443333156 0.00443333156 0.0072</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid3" name="flange">
+				<technique_common/>
+			</rigid_body>
+			<rigid_body sid="rigid4" name="forearm_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>2.275</mass>
+					<mass_frame>
+						<translate>0.6211249999999999 0.01649999999999992 0.08915899999661579</translate>
+						<rotate>0.5773502691501534 -0.5773502692685701 -0.5773502691501536 119.9999999932152</rotate>
+					</mass_frame>
+					<inertia>0.03121679102890359 0.03121679102890359 0.004095</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid5" name="robotiq_85_base_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.636951</mass>
+					<mass_frame>
+						<translate>0.81725 0.1994499999611738 -0.005491000040907884</translate>
+						<rotate>0.7071067811865477 0.7071067811865475 -7.251516054296303e-11 179.9999999916904</rotate>
+					</mass_frame>
+					<inertia>0.00038 0.00111 0.001171</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid6" name="robotiq_85_left_finger_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.027309</mass>
+					<mass_frame>
+						<translate>0.87933718878 0.2502689916811738 -0.005491000051331046</translate>
+						<rotate>-1.144249576015685e-10 1.02551775597474e-10 1 83.73559614542424</rotate>
+					</mass_frame>
+					<inertia>2.780455542707113e-06 2.121954445729289e-05 2e-05</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid7" name="robotiq_85_left_finger_tip_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.019555</mass>
+					<mass_frame>
+						<translate>0.8675494082099999 0.3039095980311738 -0.005491000062332912</translate>
+						<rotate>-1.025516094990289e-10 1.025517665082748e-10 1 90</rotate>
+					</mass_frame>
+					<inertia>2e-06 5e-06 6e-06</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid8" name="robotiq_85_left_inner_knuckle_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.029951</mass>
+					<mass_frame>
+						<translate>0.82995 0.2608699999611739 -0.005491000053505349</translate>
+						<rotate>-1.025516094990289e-10 1.025517665082748e-10 1 90</rotate>
+					</mass_frame>
+					<inertia>3.9e-05 5e-06 3.5e-05</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid9" name="robotiq_85_left_knuckle_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.018491</mass>
+					<mass_frame>
+						<translate>0.84785114443 0.2543545162311738 -0.005491000052169001</translate>
+						<rotate>-9.070108287164567e-11 1.025517574365458e-10 1 97.01812173396324</rotate>
+					</mass_frame>
+					<inertia>9.12310562561766e-06 8.768943743823394e-07 1e-05</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid10" name="robotiq_85_right_finger_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.027309</mass>
+					<mass_frame>
+						<translate>0.75516281122 0.2502689916811738 -0.005491000051331005</translate>
+						<rotate>0.6674141248537115 0.7446867703576816 -7.636903948632079e-11 179.9999999921569</rotate>
+					</mass_frame>
+					<inertia>2.780455542707113e-06 2.121954445729289e-05 2e-05</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid11" name="robotiq_85_right_finger_tip_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.019555</mass>
+					<mass_frame>
+						<translate>0.7669505917899999 0.3039095980311738 -0.005491000062332871</translate>
+						<rotate>0.7071067811865477 0.7071067811865475 -7.251516054296303e-11 179.9999999916904</rotate>
+					</mass_frame>
+					<inertia>2e-06 5e-06 6e-06</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid12" name="robotiq_85_right_inner_knuckle_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.029951</mass>
+					<mass_frame>
+						<translate>0.80455 0.2608699999611739 -0.005491000053505335</translate>
+						<rotate>0.7071067811865477 0.7071067811865475 -7.251516054296303e-11 179.9999999916904</rotate>
+					</mass_frame>
+					<inertia>3.9e-05 5e-06 3.5e-05</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid13" name="robotiq_85_right_knuckle_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.018491</mass>
+					<mass_frame>
+						<translate>0.78664885557 0.2543545162311738 -0.005491000052168987</translate>
+						<rotate>0.7490604994577224 0.6625015986034657 -6.794083705367634e-11 179.9999999911974</rotate>
+					</mass_frame>
+					<inertia>9.12310562561766e-06 8.768943743823394e-07 1e-05</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid14" name="robotiq_coupler">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.168</mass>
+					<mass_frame>
+						<translate>0.81579714 0.1943450999611696 -0.005511730039860852</translate>
+						<rotate>-0.5755877742334039 0.5808002577962793 0.5756472658640979 119.7454985038818</rotate>
+					</mass_frame>
+					<inertia>6.696954980125616e-05 7.850419429796942e-05 0.0001418243514007744</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid15" name="shoulder_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>3.7</mass>
+					<mass_frame>
+						<translate>0 0 0.089159</translate>
+						<rotate>0 0 1 180</rotate>
+					</mass_frame>
+					<inertia>0.01497235234439 0.01497235234439 0.01040625</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid16" name="tool0">
+				<technique_common/>
+			</rigid_body>
+			<rigid_body sid="rigid17" name="upper_arm_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>8.393000000000001</mass>
+					<mass_frame>
+						<translate>0.2125 0.136 0.08915899997210593</translate>
+						<rotate>0.5773502691501534 -0.5773502692685701 -0.5773502691501536 119.9999999932152</rotate>
+					</mass_frame>
+					<inertia>0.1338857818623325 0.1338857818623325 0.0151074</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid18" name="wrist_1_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>1.219</mass>
+					<mass_frame>
+						<translate>0.81725 0.1091499999999999 0.08915899997761295</translate>
+						<rotate>4.329780281621493e-17 0.7071067812590626 0.7071067811140325 180</rotate>
+					</mass_frame>
+					<inertia>0.0020138887777775 0.0020138887777775 0.0021942</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid19" name="wrist_2_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>1.219</mass>
+					<mass_frame>
+						<translate>0.81725 0.1091499999611738 -0.005491000022387046</translate>
+						<rotate>-6.123233995736766e-17 -1 2.051035452588224e-10 180</rotate>
+					</mass_frame>
+					<inertia>0.0018310388509175 0.0018310388509175 0.0021942</inertia>
+				</technique_common>
+			</rigid_body>
+			<rigid_body sid="rigid20" name="wrist_3_link">
+				<technique_common>
+					<dynamic>true</dynamic>
+					<mass>0.1879</mass>
+					<mass_frame>
+						<translate>0.81725 0.1761999999611738 -0.00549100003613923</translate>
+						<rotate>-4.329780284285651e-17 -0.7071067812590626 -0.7071067811140325 180</rotate>
+					</mass_frame>
+					<inertia>8.062472608343e-05 8.062472608343e-05 0.0001321171875</inertia>
+				</technique_common>
+			</rigid_body>
+		</physics_model>
+	</library_physics_models>
+	<scene>
+		<instance_physics_scene url="#pscene"/>
+		<instance_visual_scene url="#vscene"/>
+		<instance_kinematics_scene url="#kscene">
+			<bind_kinematics_model node="visual0/node1">
+				<param>kscene_kmodel0_inst</param>
+			</bind_kinematics_model>
+			<bind_joint_axis target="node0/node_base_link-base_fixed_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_fixed_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node2/node_base_link-base_link_inertia_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_base_link-base_link_inertia_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node4/node_elbow_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_elbow_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_elbow_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node16/node_flange-tool0_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_flange-tool0_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_flange-tool0_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node5/node_robotiq_85_base_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_base_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node5/node6/node_robotiq_85_left_finger_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node5/node7/node_robotiq_85_left_finger_tip_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_finger_tip_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node8/node_robotiq_85_left_inner_knuckle_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_inner_knuckle_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node9/node_robotiq_85_left_knuckle_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_left_knuckle_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node5/node10/node_robotiq_85_right_finger_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node5/node11/node_robotiq_85_right_finger_tip_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_finger_tip_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node12/node_robotiq_85_right_inner_knuckle_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_inner_knuckle_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node16/node14/node13/node_robotiq_85_right_knuckle_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_85_right_knuckle_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node20/node3/node14/node_robotiq_coupler_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_robotiq_coupler_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node17/node_shoulder_lift_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_lift_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node15/node_shoulder_pan_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_shoulder_pan_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node18/node_wrist_1_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_1_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node19/node_wrist_2_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_2_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node19/node3/node_wrist_3-flange_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3-flange_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+			<bind_joint_axis target="node1/node2/node15/node17/node4/node18/node20/node_wrist_3_joint_axis0">
+				<axis>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0</param>
+				</axis>
+				<value>
+					<param>kscene_kmodel0_inst_robot0_kinematics_kmodel0_inst_wrist_3_joint_axis0_value</param>
+				</value>
+			</bind_joint_axis>
+		</instance_kinematics_scene>
+	</scene>
+	<extra id="sensors" type="library_sensors">
+		<technique profile="OpenRAVE"/>
+	</extra>
+</COLLADA>
