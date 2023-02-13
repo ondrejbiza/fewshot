@@ -233,19 +233,6 @@ def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray
   return point, indices
 
 
-def orthogonalize(x):
-    """
-    Produce an orthogonal frame from two vectors
-    x: [B, 2, 3]
-    """
-    #u = torch.zeros([x.shape[0],3,3], dtype=torch.float32, device=x.device)
-    u0 = x[:, 0] / torch.norm(x[:, 0], dim=1)[:, None]
-    u1 = x[:, 1] - (torch.sum(u0 * x[:, 1], dim=1))[:, None] * u0
-    u1 = u1 / torch.norm(u1, dim=1)[:, None]
-    u2 = torch.cross(u0, u1, dim=1)
-    return torch.stack([u0, u1, u2], dim=1)
-
-
 def s2s2_pt(u, v):
 
     u = u / torch.norm(u, dim=0)
@@ -310,6 +297,21 @@ def yaw_to_rot_pt(yaw: torch.Tensor) -> torch.Tensor:
     ], dim=0)
 
 
+def yaw_to_rot_batch_pt(yaw: torch.Tensor) -> torch.Tensor:
+
+    c = torch.cos(yaw)
+    s = torch.sin(yaw)
+
+    t0 = torch.zeros((yaw.shape[0], 1), device=c.device)
+    t1 = torch.ones((yaw.shape[0], 1), device=c.device)
+
+    return torch.stack([
+        torch.cat([c, -s, t0], dim=1),
+        torch.cat([s, c, t0], dim=1),
+        torch.cat([t0, t0, t1], dim=1)
+    ], dim=1)
+
+
 def create_o3d_pointcloud(points: NDArray, colors: Optional[NDArray]=None) -> o3d.geometry.PointCloud:
 
   pcd = o3d.geometry.PointCloud()
@@ -331,6 +333,15 @@ def cost_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     diff = torch.sqrt(torch.sum(torch.square(source[:, None] - target[None, :]), dim=2))
     c = diff[list(range(len(diff))), torch.argmin(diff, dim=1)]
     return torch.mean(c)
+
+
+def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    # B x N x K
+    diff = torch.sqrt(torch.sum(torch.square(source[:, :, None] - target[:, None, :]), dim=3))
+    diff_flat = diff.view(diff.shape[0] * diff.shape[1], diff.shape[2])
+    c_flat = diff_flat[list(range(len(diff_flat))), torch.argmin(diff_flat, dim=1)]
+    c = c_flat.view(diff.shape[0], diff.shape[1])
+    return torch.mean(c, dim=1)
 
 
 def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArray]:
@@ -419,7 +430,6 @@ def planar_pose_warp_gd(
 
             deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
             new_obj = canonical_obj_pt + deltas
-            # cost = utils.cost_pt(torch.matmul(rot, (points_pt - center[None]).T).T, new_obj)
             cost = cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
 
             if object_size_reg is not None:
@@ -440,6 +450,159 @@ def planar_pose_warp_gd(
             new_obj = torch.matmul(rot, new_obj.T).T
             new_obj = new_obj + center[None]
             new_obj = new_obj.cpu().numpy()
+            new_obj = new_obj + global_means[None]
+
+            all_costs.append(cost.item())
+            all_new_objects.append(new_obj)
+            all_parameters.append((latent.cpu().numpy(), center.cpu().numpy() + global_means, rot.cpu().numpy()))
+
+    best_idx = np.argmin(all_costs)
+    return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def planar_pose_warp_gd_batch(
+  pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+  lr: float=1e-2, n_steps: int=100, object_size_reg: Optional[float]=None, verbose: bool=False,
+  num_samples: int=1000,
+) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+    # find planar pose and warping parameters of a canonical object to match a target point cloud
+    start_angles = []
+    for i in range(n_angles):
+        angle = i * (2 * np.pi / n_angles)
+        start_angles.append(angle)
+    start_angles = np.array(start_angles, dtype=np.float32)
+
+    global_means = np.mean(points, axis=0)
+    points = points - global_means[None]
+
+    all_new_objects = []
+    all_costs = []
+    all_parameters = []
+    device = torch.device(device)
+
+    latent = nn.Parameter(torch.zeros((n_angles, pca.n_components), dtype=torch.float32, device=device), requires_grad=True)
+    center = nn.Parameter(torch.zeros((n_angles, 3), dtype=torch.float32, device=device), requires_grad=True)
+    angle = nn.Parameter(
+        torch.tensor(start_angles[:, None], dtype=torch.float32, device=device),
+        requires_grad=True
+    )
+    means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
+    components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
+    canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
+    points_pt = torch.tensor(points, dtype=torch.float32, device=device)
+
+    opt = optim.Adam([latent, center, angle], lr=lr)
+
+    for i in range(n_steps):
+
+        indices = np.random.randint(0, components.shape[1] // 3, num_samples)
+        means_ = means.view(-1, 3)[indices].view(-1)
+        components_ = components.view(components.shape[0], -1, 3)[:, indices].view(components.shape[0], -1)
+        canonical_obj_pt_ = canonical_obj_pt[indices]
+
+        opt.zero_grad()
+
+        rot = yaw_to_rot_batch_pt(angle)
+
+        deltas = (torch.matmul(latent, components_) + means_).view((latent.shape[0], -1, 3))
+        new_obj = canonical_obj_pt_[None] + deltas
+        cost = cost_batch_pt(points_pt[None], torch.bmm(new_obj, rot.permute((0, 2, 1))) + center[:, None])
+
+        if object_size_reg is not None:
+          size = torch.max(torch.sqrt(torch.sum(torch.square(new_obj), dim=-1)), dim=-1)[0]
+          cost = cost + object_size_reg * size
+
+        if verbose:
+            print("cost:", cost)
+
+        cost.sum().backward()
+        opt.step()
+
+    with torch.no_grad():
+
+        deltas = (torch.matmul(latent, components) + means).reshape((latent.shape[0], -1, 3))
+        rot = yaw_to_rot_batch_pt(angle)
+        new_obj = canonical_obj_pt[None] + deltas
+        new_obj = torch.einsum("bnd,bdk->bnk", new_obj, rot.permute((0, 2, 1)))
+        new_obj = new_obj + center[:, None]
+        new_obj = new_obj.cpu().numpy()
+        new_obj = new_obj + global_means[None, None]
+
+        for i in range(len(latent)):
+          all_costs.append(cost[i].item())
+          all_new_objects.append(new_obj[i])
+          all_parameters.append((latent[i].cpu().numpy(), center[i].cpu().numpy() + global_means, rot[i].cpu().numpy()))
+
+    best_idx = np.argmin(all_costs)
+    return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def pose_warp_gd(
+  pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=10, 
+  lr: float=1e-2, n_steps: int=100, object_size_reg: Optional[float]=None, verbose: bool=False
+) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+
+    # TODO: Might be incomplete.
+    # find planar pose and warping parameters of a canonical object to match a target point cloud
+    start_angles = []
+    for i in range(n_angles):
+        angle = i * (2 * np.pi / n_angles)
+        start_angles.append(angle)
+
+    global_means = np.mean(points, axis=0)
+    points = points - global_means[None]
+
+    all_new_objects = []
+    all_costs = []
+    all_parameters = []
+    device = torch.device(device)
+
+    for trial_idx, start_pose in enumerate(start_angles):
+
+        latent = nn.Parameter(torch.zeros(pca.n_components, dtype=torch.float32, device=device), requires_grad=True)
+        center = nn.Parameter(torch.zeros(3, dtype=torch.float32, device=device), requires_grad=True)
+        pose = nn.Parameter(
+            torch.tensor([
+              [1., 0., 0.],
+              [0., 1., 0.]
+            ], dtype=torch.float32, device=device),
+            requires_grad=True
+        )
+        means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
+        components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
+        canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
+        points_pt = torch.tensor(points, dtype=torch.float32, device=device)
+
+        opt = optim.Adam([latent, center, pose], lr=lr)
+
+        for i in range(n_steps):
+
+            opt.zero_grad()
+
+            rot = orthogonalize(pose[None])[0]
+
+            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
+            new_obj = canonical_obj_pt + deltas
+            cost = cost_pt(points_pt, torch.matmul(rot, new_obj.T).T + center[None])
+
+            if object_size_reg is not None:
+              size = torch.max(torch.sqrt(torch.sum(torch.square(new_obj), dim=1)))
+              cost = cost + object_size_reg * size
+
+            if verbose:
+                print("cost:", cost)
+
+            cost.backward()
+            opt.step()
+
+        with torch.no_grad():
+
+            deltas = (torch.matmul(latent[None, :], components)[0] + means).reshape((-1, 3))
+            rot = orthogonalize(pose[None])[0]
+            new_obj = canonical_obj_pt + deltas
+            new_obj = torch.matmul(rot, new_obj.T).T
+            new_obj = new_obj + center[None]
+            new_obj = new_obj.cpu().numpy()
 
             # pcd = o3d.geometry.PointCloud()
             # pcd.points = o3d.utility.Vector3dVector(np.concatenate([points_pt.cpu().numpy(), new_obj], axis=0))
@@ -450,7 +613,83 @@ def planar_pose_warp_gd(
 
             all_costs.append(cost.item())
             all_new_objects.append(new_obj)
-            all_parameters.append((latent.cpu().numpy(), center.cpu().numpy() + global_means, angle.cpu().numpy()))
+            with torch.no_grad():
+              all_parameters.append((latent.cpu().numpy(), center.cpu().numpy() + global_means, rot.cpu().numpy()))
+
+    best_idx = np.argmin(all_costs)
+    return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def pose_warp_gd_batch(
+  pca: PCA, canonical_obj: NDArray, points: NDArray, device: str="cuda:0", n_angles: int=50, n_batches: int=3,
+  lr: float=1e-2, n_steps: int=100, object_size_reg: Optional[float]=None, verbose: bool=False,
+  num_samples: int=1000,
+) -> Tuple[NDArray, float, Tuple[NDArray, NDArray, NDArray]]:
+    
+    poses = random_ortho_rots_hemisphere(n_angles * n_batches)
+
+    global_means = np.mean(points, axis=0)
+    points = points - global_means[None]
+
+    all_new_objects = []
+    all_costs = []
+    all_parameters = []
+    device = torch.device(device)
+
+    for batch_idx in range(n_batches):
+
+      latent = nn.Parameter(torch.zeros((n_angles, pca.n_components), dtype=torch.float32, device=device), requires_grad=True)
+      center = nn.Parameter(torch.zeros((n_angles, 3), dtype=torch.float32, device=device), requires_grad=True)
+      pose = nn.Parameter(
+          torch.tensor(poses[batch_idx * n_angles: (batch_idx + 1) * n_angles], dtype=torch.float32, device=device),
+          requires_grad=True
+      )
+      means = torch.tensor(pca.mean_, dtype=torch.float32, device=device)
+      components = torch.tensor(pca.components_, dtype=torch.float32, device=device)
+      canonical_obj_pt = torch.tensor(canonical_obj, dtype=torch.float32, device=device)
+      points_pt = torch.tensor(points, dtype=torch.float32, device=device)
+
+      opt = optim.Adam([latent, center, pose], lr=lr)
+
+      for i in range(n_steps):
+
+          indices = np.random.randint(0, components.shape[1] // 3, num_samples)
+          means_ = means.view(-1, 3)[indices].view(-1)
+          components_ = components.view(components.shape[0], -1, 3)[:, indices].view(components.shape[0], -1)
+          canonical_obj_pt_ = canonical_obj_pt[indices]
+
+          opt.zero_grad()
+
+          rot = orthogonalize(pose)
+
+          deltas = (torch.matmul(latent, components_) + means_).view((latent.shape[0], -1, 3))
+          new_obj = canonical_obj_pt_[None] + deltas
+          cost = cost_batch_pt(points_pt[None], torch.bmm(new_obj, rot.permute((0, 2, 1))) + center[:, None])
+
+          if object_size_reg is not None:
+            size = torch.max(torch.sqrt(torch.sum(torch.square(new_obj), dim=-1)), dim=-1)[0]
+            cost = cost + object_size_reg * size
+
+          if verbose:
+              print("cost:", cost)
+
+          cost.sum().backward()
+          opt.step()
+
+      with torch.no_grad():
+
+          deltas = (torch.matmul(latent, components) + means).reshape((latent.shape[0], -1, 3))
+          rot = orthogonalize(pose)
+          new_obj = canonical_obj_pt[None] + deltas
+          new_obj = torch.einsum("bnd,bdk->bnk", new_obj, rot.permute((0, 2, 1)))
+          new_obj = new_obj + center[:, None]
+          new_obj = new_obj.cpu().numpy()
+          new_obj = new_obj + global_means[None, None]
+
+          for i in range(len(latent)):
+            all_costs.append(cost[i].item())
+            all_new_objects.append(new_obj[i])
+            all_parameters.append((latent[i].cpu().numpy(), center[i].cpu().numpy() + global_means, rot[i].cpu().numpy()))
 
     best_idx = np.argmin(all_costs)
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
@@ -489,9 +728,7 @@ def planar_pose_gd(canonical_obj: NDArray, points: NDArray, device: str="cuda:0"
         for i in range(n_steps):
 
             opt.zero_grad()
-
             rot = yaw_to_rot_pt(angle)
-
             cost = cost_pt(points_pt, torch.matmul(rot, canonical_obj_pt.T).T + center[None])
 
             if verbose:
@@ -511,7 +748,7 @@ def planar_pose_gd(canonical_obj: NDArray, points: NDArray, device: str="cuda:0"
 
             all_costs.append(cost.item())
             all_new_objects.append(new_obj)
-            all_parameters.append((center.cpu().numpy() + global_means, angle.cpu().numpy()))
+            all_parameters.append((center.cpu().numpy() + global_means, rot.cpu().numpy()))
 
     best_idx = np.argmin(all_costs)
     return all_new_objects[best_idx], all_costs[best_idx], all_parameters[best_idx]
@@ -649,18 +886,18 @@ def pos_quat_to_transform(pos: Union[Tuple[float, float, float], NDArray], quat:
   return T
 
 
-def pos_rot_to_transform(pos: Union[Tuple[float, float, float], NDArray], rot: NDArray) -> NDArray[np.float32]:
-
-  T = np.eye(4).astype(np.float32)
+def pos_rot_to_transform(pos: Union[Tuple[float, float, float], NDArray], rot: NDArray) -> NDArray[np.float64]:
+  assert rot.shape == (3, 3)
+  T = np.eye(4).astype(np.float64)
   T[:3, 3] = pos
   T[:3, :3] = rot
   return T
 
 
-def transform_to_pos_quat(T: NDArray) -> Tuple[NDArray[np.float32], NDArray[np.float32]]:
+def transform_to_pos_quat(T: NDArray) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
 
-  pos = T[:3, 3].astype(np.float32)
-  quat = Rotation.from_matrix(T[:3, :3]).as_quat().astype(np.float32)
+  pos = T[:3, 3].astype(np.float64)
+  quat = Rotation.from_matrix(T[:3, :3]).as_quat().astype(np.float64)
   return pos, quat
 
 
@@ -702,5 +939,36 @@ def canon_to_pc(canon: Dict[str, Any], params: Tuple[NDArray, NDArray, NDArray])
 def canon_to_transformed_pc(canon: Dict[str, Any], params: Tuple[NDArray, NDArray, NDArray]) -> NDArray:
 
   pc = canon_to_pc(canon, params)
-  T = pos_rot_to_transform(params[1], yaw_to_rot(params[2]))
+  T = pos_rot_to_transform(params[1], params[2])
   return transform_pointcloud_2(pc, T)
+
+
+def compute_relative_transform(from_T: NDArray, to_T: NDArray) -> NDArray:
+
+  return np.matmul(np.linalg.inv(from_T), to_T)
+
+
+def orthogonalize(x: torch.Tensor) -> torch.Tensor:
+    """
+    Produce an orthogonal frame from two vectors
+    x: [B, 2, 3]
+    """
+    #u = torch.zeros([x.shape[0],3,3], dtype=torch.float32, device=x.device)
+    u0 = x[:, 0] / torch.norm(x[:, 0], dim=1)[:, None]
+    u1 = x[:, 1] - (torch.sum(u0 * x[:, 1], dim=1))[:, None] * u0
+    u1 = u1 / torch.norm(u1, dim=1)[:, None]
+    u2 = torch.cross(u0, u1, dim=1)
+    return torch.stack([u0, u1, u2], dim=1)
+
+
+def random_ortho_rots_hemisphere(num: int) -> NDArray[np.float32]:
+   
+    v1 = np.random.normal(0, 1, (num * 10, 3)).astype(np.float32)
+    v2 = np.random.normal(0, 1, (num * 10, 3)).astype(np.float32)
+    ort = np.stack([v1, v2], axis=1)
+    ort_pt = torch.tensor(ort, device="cpu")
+    rots = orthogonalize(ort_pt).numpy()
+    z = np.array([0., 0., 1.], dtype=np.float32)
+    out = np.einsum("bnk,kl->bnl", rots, z[:, None])[:, :, 0]
+    mask = out[..., 2] >= 0
+    return ort[mask][:num]

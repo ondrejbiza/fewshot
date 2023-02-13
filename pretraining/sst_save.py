@@ -7,6 +7,7 @@ from scipy.spatial.transform import Rotation
 import trimesh
 from sst_utils import load_object_create_verts, pick_canonical, cpd_transform, cpd_transform_plot, warp_gen, \
     pca_transform, pca_reconstruct
+import utils
 
 
 def main(args):
@@ -42,6 +43,10 @@ def main(args):
             "canonical_mesh_faces": obj["faces"],
             "scale": args.scale
         }, f)
+
+    mesh = trimesh.base.Trimesh(vertices=obj["mesh_points"], faces=obj["faces"])
+    mesh.export("data/real_tree2.stl")
+    utils.convex_decomposition(mesh, "data/real_tree2.obj")
 
 
 parser = argparse.ArgumentParser()
