@@ -293,46 +293,6 @@ def main(args):
     interface = NDFInterface()
     interface.set_demo_info(pc_master_dict, cfg, args.n_demos)
 
-    if osp.exists(target_desc_fname):
-        log_info(f'Loading target descriptors from file:\n{target_desc_fname}')
-        target_descriptors_data = np.load(target_desc_fname)
-        parent_overall_target_desc = target_descriptors_data['parent_overall_target_desc']
-        child_overall_target_desc = target_descriptors_data['child_overall_target_desc']
-        parent_overall_target_desc = torch.from_numpy(parent_overall_target_desc).float().cuda()
-        child_overall_target_desc = torch.from_numpy(child_overall_target_desc).float().cuda()
-        parent_query_points = target_descriptors_data['parent_query_points']
-        child_query_points = copy.deepcopy(parent_query_points)
-
-        log_info(f'Making a copy of the target descriptors in eval folder')
-        shutil.copy(target_desc_fname, eval_save_dir)
-
-        parent_optimizer = OccNetOptimizer(
-            parent_model,
-            query_pts=parent_query_points,
-            query_pts_real_shape=parent_query_points,
-            opt_iterations=args.opt_iterations,
-            cfg=cfg.OPTIMIZER)
-
-        child_optimizer = OccNetOptimizer(
-            child_model,
-            query_pts=child_query_points,
-            query_pts_real_shape=child_query_points,
-            opt_iterations=args.opt_iterations,
-            cfg=cfg.OPTIMIZER)
-
-        parent_optimizer.setup_meshcat(mc_vis)
-        child_optimizer.setup_meshcat(mc_vis)
-
-    #########################################################################
-    # Set up the relational energy model
-
-    if args.relation_method == 'ebm' or args.refine_with_ebm:
-        rel_model = EBM().cuda()
-        rel_model_path = osp.join(path_util.get_rndf_model_weights(), 'relation_energy/cachedir', args.rel_model_path)
-        assert osp.exists(rel_model_path), f'Path to relation energy model: {rel_model_path} does not exist!'
-        rel_checkpoint = torch.load(rel_model_path, map_location=torch.device('cpu'))
-        rel_model.load_state_dict(rel_checkpoint['model_state_dict'])
-
     #####################################################################################
     # prepare the simuation environment
 
@@ -659,13 +619,9 @@ def main(args):
         child_pcd = pc_obs_info['pcd']['child']
 
         log_info(f'[INTERSECTION], Loading model weights for multi NDF inference')
-        parent_model.load_state_dict(torch.load(parent_model_path))
-        child_model.load_state_dict(torch.load(child_model_path))
+
         pause_mc_thread(True)
-        relative_trans = infer_relation_intersection(
-            mc_vis, parent_optimizer, child_optimizer,
-            parent_overall_target_desc, child_overall_target_desc,
-            parent_pcd, child_pcd, parent_query_points, child_query_points, opt_visualize=args.opt_visualize)
+        relative_trans = interface.infer_relpose(child_pcd, parent_pcd)
         pause_mc_thread(False)
 
         time.sleep(1.0)
@@ -684,6 +640,7 @@ def main(args):
 
         pb_client.set_step_sim(True)
         if pc_master_dict['parent']['load_pose_type'] == 'any_pose':
+            # TODO: ???????
             # get the relative transformation to make it upright
             upright_parent_pose_mat = copy.deepcopy(start_parent_pose_mat); upright_parent_pose_mat[:-1, :-1] = upright_parent_ori_mat
             relative_upright_pose_mat = np.matmul(upright_parent_pose_mat, np.linalg.inv(start_parent_pose_mat))
