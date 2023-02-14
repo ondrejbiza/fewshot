@@ -27,7 +27,6 @@ class NDFInterface:
             tree_pcd, _ = utils.farthest_point_sample(tree_pcd, 2000)
 
         # Perception.
-        # TODO: Add a switch for SE(2) perception.
         warp = ObjectWarpingSE3Batch(
             self.canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
             n_samples=1000, object_size_reg=0.1, scaling=True)
@@ -69,7 +68,6 @@ class NDFInterface:
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pu.set_pose(target_pb, (tree_param.position, tree_param.quat))
 
-        # TODO: Wiggle them out of collision, maybe.
         self.knns, self.deltas, self.target_indices = demo.save_place_nearby_points(
             source_pb, target_pb, self.canon_mug, mug_param, self.canon_tree, tree_param, 0.1)
 
@@ -83,10 +81,15 @@ class NDFInterface:
         if len(target_pcd) > 2000:
             target_pcd, _ = utils.farthest_point_sample(target_pcd, 2000)
 
-        warp = ObjectWarpingSE3Batch(
+        # TODO: Add a switch for SE(2) perception.
+        warp = ObjectWarpingSE2Batch(
             self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
             n_samples=1000, object_size_reg=0.1, scaling=True)
-        mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
+        mug_pcd_complete, _, mug_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        # warp = ObjectWarpingSE3Batch(
+        #     self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+        #     n_samples=1000, object_size_reg=0.1, scaling=True)
+        # mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
 
         warp = ObjectSE2Batch(
             self.canon_tree, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
@@ -113,5 +116,6 @@ class NDFInterface:
         trans_s_to_b = utils.pos_quat_to_transform(mug_param.position, mug_param.quat)
         trans_t_to_b = utils.pos_quat_to_transform(tree_param.position, tree_param.quat)
 
+        # TODO: Wiggle them out of collision, maybe.
         trans_s_to_t = trans_t_to_b @ trans_cs_to_ct @ np.linalg.inv(trans_s_to_b)
         return trans_s_to_t

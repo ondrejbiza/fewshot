@@ -154,7 +154,7 @@ class ObjectWarpingSE2Batch(ObjectWarpingSE3Batch):
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
         if self.scaling:
-            new_pcd = new_pcd * self.scale_param[:, None]
+            new_pcd = new_pcd * self.scale_param[:, None, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
