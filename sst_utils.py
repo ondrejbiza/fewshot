@@ -9,8 +9,10 @@ import trimesh
 import trimesh.voxel.creation as vcreate
 from trimesh import decomposition
 from trimesh.scene import scene
-from pycpd import DeformableRegistration
+#from pycpd import DeformableRegistration
+from cycpd import deformable_registration
 from sklearn.decomposition import PCA
+from src import viz_utils
 
 
 def load_object(obj_path):
@@ -177,14 +179,16 @@ def cpd_transform_plot(source, target):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     callback = partial(visualize, ax=ax)
-    reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
     reg.register(callback)
     #Returns the gaussian means and their weights - WG is the warp of source to target
     return reg.W, reg.G
 
 
 def cpd_transform(source, target):
-    reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
     reg.register()
     #Returns the gaussian means and their weights - WG is the warp of source to target
     return reg.W, reg.G
@@ -202,10 +206,10 @@ def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
     for target_idx, target in enumerate(targets):
         print("target {:d}".format(target_idx))
 
-        if visualize:
-            w, g = cpd_transform_plot(target, source)
-        else:
-            w, g = cpd_transform(target, source)
+        # if visualize:
+        #     w, g = cpd_transform_plot(target, source)
+        # else:
+        w, g = cpd_transform(target, source)
 
         plt.clf()
         plt.close()
@@ -213,6 +217,12 @@ def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
         warp = np.dot(g, w)
         warp = np.hstack(warp)
         warps.append(warp)
+
+        if visualize:
+            viz_utils.show_pcds_plotly({
+                "target": target,
+                "warp": source + warp.reshape(-1, 3),
+            }, center=True)
 
     return warps
 

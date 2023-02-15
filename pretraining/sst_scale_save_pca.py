@@ -7,6 +7,7 @@ from scipy.spatial.transform import Rotation
 import trimesh
 from sst_utils import load_object_create_verts, pick_canonical, cpd_transform, cpd_transform_plot, warp_gen, \
     pca_transform, pca_reconstruct, scale_object_circle
+from src import viz_utils
 
 
 def main(args):
@@ -22,7 +23,6 @@ def main(args):
             "5c48d471200d2bf16e8a121e6886e18d", "5d72df6bc7e93e6dd0cd466c08863ebd", "5fe74baba21bba7ca4eec1b19b3a18f8",
             "6aec84952a5ffcf33f60d03e1cb068dc"]
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
-        scale = 0.14
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
         num_surface_samples = 10000
     elif args.objects == "ndf_bowls":
@@ -35,7 +35,6 @@ def main(args):
             "5bb12905529c85359d3d767e1bc88d65", "7c43116dbe35797aea5000d9d3be7992"
         ]
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
-        scale = 0.14
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
         num_surface_samples = 10000
     elif args.objects == "ndf_bottles":
@@ -48,7 +47,6 @@ def main(args):
             "1ffd7113492d375593202bf99dddc268", "2a3e0c1cd0e9076cddf5870150a75bc"
         ]
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
-        scale = 0.14
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
         num_surface_samples = 10000
     elif args.objects == "boxes":
@@ -68,11 +66,30 @@ def main(args):
 
         # TODO: Figure out setting the default scale. Does that happen here or during inference?
         # Probably more general to do this during inference. Also easier to try several values.
-        obj = scale_object_circle(obj, base_scale=scale)
-        small_obj = scale_object_circle(small_obj, base_scale=scale)
+        obj = scale_object_circle(obj)
+        small_obj = scale_object_circle(small_obj)
 
         objs.append(obj)
         small_objs.append(small_obj)
+
+    if args.show:
+        print("Large PCs:")
+        tmp = []
+        for i, x in enumerate(objs):
+            tmp2 = np.copy(x["points"])
+            tmp2[:, 0] += i * 2.
+            tmp.append(tmp2)
+        tmp = np.concatenate(tmp, axis=0)
+        viz_utils.show_pcd_plotly(tmp, center=True)
+
+        print("Small PCs:")
+        tmp = []
+        for i, x in enumerate(small_objs):
+            tmp2 = np.copy(x["points"])
+            tmp2[:, 0] += i * 2.
+            tmp.append(tmp2)
+        tmp = np.concatenate(tmp, axis=0)
+        viz_utils.show_pcd_plotly(tmp, center=True)
 
     # We use large point clouds to figure out the canonical object.
     obj_points = [x["points"] for x in objs]
@@ -88,14 +105,7 @@ def main(args):
     print("Canonical obj index: {:d}.".format(canonical_idx))
 
     if args.show:
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        for i, obj in enumerate(obj_points):
-            if i == canonical_idx:
-                ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color=[1., 0., 0., 1.])
-            else:
-                ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color=[0.9, 0.9, 0.9, 0.5])
-        plt.show()
+        viz_utils.show_pcd_plotly(obj_points[canonical_idx], center=True)
 
     # We use small point clouds, except for the canonical object, to figure out the warps.
     tmp_obj_points = [x["points"] for x in small_objs]

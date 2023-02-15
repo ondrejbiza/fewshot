@@ -31,11 +31,12 @@ def show_pcd_plotly(pcd: NDArray, center: bool=False, axis_visible: bool=True):
     lmax = np.max(pcd)
 
     data = [go.Scatter3d(
-        x=pcd[:, 0], y=pcd[:, 1], z=pcd[:, 2], marker={"size": 10, "color": pcd[:, 2], "colorscale": "Plotly3"}, mode="markers", opacity=0.9)]
+        x=pcd[:, 0], y=pcd[:, 1], z=pcd[:, 2], marker={"size": 5, "color": pcd[:, 2], "colorscale": "Plotly3"}, mode="markers", opacity=1.)]
     layout = {
         "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
         "yaxis": {"visible": axis_visible, "range": [lmin, lmax]},
         "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "aspectratio": {"x": 1, "y": 1, "z": 1}
     }
 
     fig = go.Figure(data=data)
@@ -89,8 +90,8 @@ def show_pcds_plotly(pcds: Dict[str, NDArray], center: bool=False, axis_visible:
         colorscale = colorscales[idx % len(colorscales)]
         pl = go.Scatter3d(
             x=v[:, 0], y=v[:, 1], z=v[:, 2],
-            marker={"size": 10, "color": v[:, 2], "colorscale": colorscale},
-            mode="markers", opacity=0.9, name=key)
+            marker={"size": 5, "color": v[:, 2], "colorscale": colorscale},
+            mode="markers", opacity=1., name=key)
         data.append(pl)
 
     layout = {
