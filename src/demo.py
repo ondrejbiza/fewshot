@@ -9,7 +9,7 @@ from src import utils, viz_utils
 
 def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10,
                        show: bool=False) -> Tuple[NDArray, NDArray]:
-
+    """Anchor virtual points on an object using k-nearest-neighbors."""
     if show:
         viz_utils.show_pcds_pyplot({
             "obj": obj,
@@ -32,10 +32,10 @@ def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10,
     return knn_list, deltas_list
 
 
-
 def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.CanonObj,
                              source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonObj,
-                             target_obj_param: utils.ObjParam, delta: float) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:
+                             target_obj_param: utils.ObjParam, delta: float
+                             ) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:
     """Process demonstration by setting up warping of nearby points.
     
     We find points on the target object that are nearby the source object.
