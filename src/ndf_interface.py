@@ -12,45 +12,56 @@ class NDFInterface:
 
     def __init__(self):
 
-        self.canon_mug = utils.CanonObj.from_pickle("data/230201_ndf_mugs_large_pca_8_dim.npy")
-        self.canon_tree = utils.CanonObj.from_pickle("data/real_tree_pc.pkl")
+        self.canon_mug = utils.CanonObj.from_pickle("data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl")
+        self.canon_tree = utils.CanonObj.from_pickle("data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl")
 
     def set_demo_info(self, pc_master_dict, cfg, n_demos, show: bool=False):
-        matplotlib.use("WebAgg")
-        print(pc_master_dict["child"].keys())
+        demo_idx = 0
+
         # Get a single demonstration.
-        mug_pcd = pc_master_dict["child"]["demo_final_pcds"][0]
-        tree_pcd = pc_master_dict["parent"]["demo_start_pcds"][0]
+        mug_pcd = pc_master_dict["child"]["demo_start_pcds"][demo_idx]
+        mug_start = np.array(pc_master_dict["child"]["demo_start_poses"][demo_idx], dtype=np.float64)
+        mug_final = np.array(pc_master_dict["child"]["demo_final_poses"][demo_idx], dtype=np.float64)
+
+        mug_start_pos, mug_start_quat = mug_start[:3], mug_start[3:]
+        mug_final_pos, mug_final_quat = mug_final[:3], mug_final[3:]
+        mug_start_trans = utils.pos_quat_to_transform(mug_start_pos, mug_start_quat)
+        mug_final_trans = utils.pos_quat_to_transform(mug_final_pos, mug_final_quat)
+        mug_start_to_final = mug_final_trans @ np.linalg.inv(mug_start_trans)
+
+        tree_pcd = pc_master_dict["parent"]["demo_start_pcds"][demo_idx]
         if len(mug_pcd) > 2000:
             mug_pcd, _ = utils.farthest_point_sample(mug_pcd, 2000)
         if len(tree_pcd) > 2000:
             tree_pcd, _ = utils.farthest_point_sample(tree_pcd, 2000)
 
         # Perception.
-        warp = ObjectWarpingSE3Batch(
+        warp = ObjectWarpingSE2Batch(
             self.canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True)
-        mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=10, n_batches=15)
-        # See how tiny the canonical mug is:
-        # warp = ObjectSE3Batch(
-        #     canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-        #     n_samples=1000)
-        # mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
+            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
+        mug_pcd_complete, _, mug_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
-        warp = ObjectSE2Batch(
+        warp = ObjectWarpingSE2Batch(
             self.canon_tree, tree_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=None)
+            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
         tree_pcd_complete, _, tree_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         if show:
-            viz_utils.show_pcds_pyplot({
+            viz_utils.show_pcds_plotly({
                 "pcd": mug_pcd,
                 "warp": mug_pcd_complete
             }, center=False)
-            viz_utils.show_pcds_pyplot({
+            viz_utils.show_pcds_plotly({
                 "pcd": tree_pcd,
                 "warp": tree_pcd_complete
             }, center=False)
+
+        # Move object to final pose.
+        trans = utils.pos_quat_to_transform(mug_param.position, mug_param.quat)
+        trans = mug_start_to_final @ trans
+        pos, quat = utils.transform_to_pos_quat(trans)
+        mug_param.position = pos
+        mug_param.quat = quat
 
         # Save the mesh and its convex decomposition.
         mesh = self.canon_mug.to_mesh(mug_param)
@@ -74,34 +85,35 @@ class NDFInterface:
         pb.removeBody(source_pb)
         pb.removeBody(target_pb)
 
-    def infer_relpose(self, source_pcd, target_pcd, show: bool=False):
+    def infer_relpose(self, source_pcd, target_pcd, se3: bool=False, show: bool=False):
 
         if len(source_pcd) > 2000:
             source_pcd, _ = utils.farthest_point_sample(source_pcd, 2000)
         if len(target_pcd) > 2000:
             target_pcd, _ = utils.farthest_point_sample(target_pcd, 2000)
 
-        # TODO: Add a switch for SE(2) perception.
-        warp = ObjectWarpingSE2Batch(
-            self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True)
-        mug_pcd_complete, _, mug_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
-        # warp = ObjectWarpingSE3Batch(
-        #     self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-        #     n_samples=1000, object_size_reg=0.1, scaling=True)
-        # mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
+        if se3:
+            warp = ObjectWarpingSE3Batch(
+                self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+                n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
+            mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
+        else:
+            warp = ObjectWarpingSE2Batch(
+                self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+                n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
+            mug_pcd_complete, _, mug_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
-        warp = ObjectSE2Batch(
+        warp = ObjectWarpingSE2Batch(
             self.canon_tree, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=None)
+            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
         tree_pcd_complete, _, tree_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         if show:
-            viz_utils.show_pcds_pyplot({
+            viz_utils.show_pcds_plotly({
                 "pcd": source_pcd,
                 "warp": mug_pcd_complete
             }, center=False)
-            viz_utils.show_pcds_pyplot({
+            viz_utils.show_pcds_plotly({
                 "pcd": target_pcd,
                 "warp": tree_pcd_complete
             }, center=False)

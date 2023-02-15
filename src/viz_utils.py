@@ -42,7 +42,7 @@ def show_pcd_plotly(pcd: NDArray, center: bool=False, axis_visible: bool=True):
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout)
     fig.show()
-    input("Continue?")
+    # input("Continue?")
 
 
 def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool=False):
@@ -104,4 +104,4 @@ def show_pcds_plotly(pcds: Dict[str, NDArray], center: bool=False, axis_visible:
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout, showlegend=True)
     fig.show()
-    input("Continue?")
+    # input("Continue?")

@@ -49,8 +49,14 @@ def main(args):
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
         num_surface_samples = 10000
+    elif args.objects == "ndf_trees":
+        base_dir = "data/syn_racks_easy"
+        obj_ids = [f"syn_rack_{i}.obj" for i in range(10)]
+        obj_paths = [os.path.join(base_dir, obj_id) for obj_id in obj_ids]
+        rotation = None
+        num_surface_samples = 2000
     elif args.objects == "boxes":
-        obj_paths = ["data/boxes/train/{:d}.stl".format(i) for i in range(10)]
+        obj_paths = [f"data/boxes/train/{i}.stl" for i in range(10)]
         rotation = None
         num_surface_samples = 2000
     else:
@@ -64,8 +70,6 @@ def main(args):
         small_obj = load_object_create_verts(
             obj_path, scale=None, rotation=rotation, num_surface_samples=2000, sampling_method="surface")
 
-        # TODO: Figure out setting the default scale. Does that happen here or during inference?
-        # Probably more general to do this during inference. Also easier to try several values.
         obj = scale_object_circle(obj)
         small_obj = scale_object_circle(small_obj)
 
@@ -102,7 +106,7 @@ def main(args):
 
     print("Picking canonical object.")
     canonical_idx = pick_canonical(obj_points)
-    print("Canonical obj index: {:d}.".format(canonical_idx))
+    print(f"Canonical obj index: {canonical_idx}.")
 
     if args.show:
         viz_utils.show_pcd_plotly(obj_points[canonical_idx], center=True)
@@ -111,8 +115,8 @@ def main(args):
     tmp_obj_points = [x["points"] for x in small_objs]
     tmp_obj_points[canonical_idx] = obj_points[canonical_idx]
 
-    warps = warp_gen(canonical_idx, tmp_obj_points, scale_factor=args.scale, visualize=args.show)
-    components, pca = pca_transform(warps, n_dimensions=args.n_dimensions)
+    warps = warp_gen(canonical_idx, tmp_obj_points, scale_factor=args.scale, alpha=args.alpha, visualize=args.show)
+    _, pca = pca_transform(warps, n_dimensions=args.n_dimensions)
 
     with open(args.save_path, "wb") as f:
         pickle.dump({
@@ -130,4 +134,5 @@ parser.add_argument("objects")
 parser.add_argument("--scale", type=float, default=1.)
 parser.add_argument("--show", default=False, action="store_true")
 parser.add_argument("--n-dimensions", type=int, default=4)
+parser.add_argument("--alpha", type=float, default=2.0)
 main(parser.parse_args())

@@ -34,8 +34,10 @@ def main(args):
             canonical_mesh_faces = d["canonical_mesh_faces"]
 
     new_obj = warp_object(canonical_obj, pca, np.array([[0.] * pca.n_components]), args.scale)
-    smin, smax = -2., 2.
-    vmin, vmax = -0.3, 0.3
+    # smin, smax = -2., 2.
+    smin, smax = -4., 4.
+    # vmin, vmax = -0.3, 0.3
+    vmin, vmax = -1.2, 1.2
 
     fig = plt.figure()
 

@@ -284,6 +284,7 @@ def main(args):
     for pc in pcl:
         pc_master_dict[pc]['demo_ids'] = [dat['multi_object_ids'].item()[pc] for dat in demos]
         pc_master_dict[pc]['demo_start_poses'] = [dat['multi_obj_start_obj_pose'].item()[pc] for dat in demos]
+        pc_master_dict[pc]['demo_final_poses'] = [dat['multi_obj_final_obj_pose'].item()[pc] for dat in demos]
 
     #####################################################################################
     # prepare the target descriptors
@@ -620,8 +621,12 @@ def main(args):
 
         log_info(f'[INTERSECTION], Loading model weights for multi NDF inference')
 
+        se3 = False
+        if args.child_load_pose_type == "any_pose":
+            se3 = True
+
         pause_mc_thread(True)
-        relative_trans = interface.infer_relpose(child_pcd, parent_pcd)
+        relative_trans = interface.infer_relpose(child_pcd, parent_pcd, se3=se3)
         pause_mc_thread(False)
 
         time.sleep(1.0)
