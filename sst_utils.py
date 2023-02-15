@@ -186,15 +186,15 @@ def cpd_transform_plot(source, target):
     return reg.W, reg.G
 
 
-def cpd_transform(source, target):
+def cpd_transform(source, target, alpha: float=2.0):
     # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
-    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 }, alpha=alpha)
     reg.register()
     #Returns the gaussian means and their weights - WG is the warp of source to target
     return reg.W, reg.G
 
 
-def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
+def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visualize=False):
 
     source = objects[canonical_index] * scale_factor
     targets = []
@@ -209,7 +209,7 @@ def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
         # if visualize:
         #     w, g = cpd_transform_plot(target, source)
         # else:
-        w, g = cpd_transform(target, source)
+        w, g = cpd_transform(target, source, alpha=alpha)
 
         plt.clf()
         plt.close()
