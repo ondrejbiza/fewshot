@@ -1,9 +1,10 @@
+import numpy as np
 import matplotlib
 import pybullet as pb
 import torch
 
 from src.object_warping import ObjectWarpingSE2Batch, ObjectSE2Batch, ObjectWarpingSE3Batch, ObjectSE3Batch, warp_to_pcd_se2, warp_to_pcd_se3
-from src import utils, viz_utils
+from src import demo, utils, viz_utils
 from pybullet_planning.pybullet_tools import utils as pu
 
 
@@ -11,9 +12,10 @@ class NDFInterface:
 
     def __init__(self):
 
-        pass
+        self.canon_mug = utils.CanonObj.from_pickle("data/230201_ndf_mugs_large_pca_8_dim.npy")
+        self.canon_tree = utils.CanonObj.from_pickle("data/real_tree_pc.pkl")
 
-    def set_demo_info(self, pc_master_dict, cfg, n_demos):
+    def set_demo_info(self, pc_master_dict, cfg, n_demos, show: bool=False):
         matplotlib.use("WebAgg")
         print(pc_master_dict["child"].keys())
         # Get a single demonstration.
@@ -23,12 +25,10 @@ class NDFInterface:
             mug_pcd, _ = utils.farthest_point_sample(mug_pcd, 2000)
         if len(tree_pcd) > 2000:
             tree_pcd, _ = utils.farthest_point_sample(tree_pcd, 2000)
-        canon_mug = utils.CanonObj.from_pickle("data/230201_ndf_mugs_large_pca_8_dim.npy")
-        canon_tree =utils.CanonObj.from_pickle("data/real_tree_pc.pkl")
 
         # Perception.
         warp = ObjectWarpingSE3Batch(
-            canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            self.canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
             n_samples=1000, object_size_reg=0.1, scaling=True)
         mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=10, n_batches=15)
         # See how tiny the canonical mug is:
@@ -37,27 +37,27 @@ class NDFInterface:
         #     n_samples=1000)
         # mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
 
-        viz_utils.show_pcds_pyplot({
-            "pcd": mug_pcd,
-            "warp": mug_pcd_complete
-        }, center=False)
-
         warp = ObjectSE2Batch(
-            canon_tree, tree_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            self.canon_tree, tree_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
             n_samples=None)
         tree_pcd_complete, _, tree_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
-        viz_utils.show_pcds_pyplot({
-            "pcd": tree_pcd,
-            "warp": tree_pcd_complete
-        }, center=False)
+        if show:
+            viz_utils.show_pcds_pyplot({
+                "pcd": mug_pcd,
+                "warp": mug_pcd_complete
+            }, center=False)
+            viz_utils.show_pcds_pyplot({
+                "pcd": tree_pcd,
+                "warp": tree_pcd_complete
+            }, center=False)
 
         # Save the mesh and its convex decomposition.
-        mesh = canon_mug.to_mesh(mug_param)
+        mesh = self.canon_mug.to_mesh(mug_param)
         mesh.export("tmp_source.stl")
         utils.convex_decomposition(mesh, "tmp_source.obj")
 
-        mesh = canon_tree.to_mesh(tree_param)
+        mesh = self.canon_tree.to_mesh(tree_param)
         mesh.export("tmp_target.stl")
         utils.convex_decomposition(mesh, "tmp_target.obj")
 
@@ -68,9 +68,54 @@ class NDFInterface:
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pu.set_pose(target_pb, (tree_param.position, tree_param.quat))
 
-        while True:
-            pass
+        self.knns, self.deltas, self.target_indices = demo.save_place_nearby_points(
+            source_pb, target_pb, self.canon_mug, mug_param, self.canon_tree, tree_param, 0.1)
 
-    def optimize_transform_implicit(self, target_obj_pcd_obs, ee: bool):
+        pb.removeBody(source_pb)
+        pb.removeBody(target_pb)
 
-        pass
+    def infer_relpose(self, source_pcd, target_pcd, show: bool=False):
+
+        if len(source_pcd) > 2000:
+            source_pcd, _ = utils.farthest_point_sample(source_pcd, 2000)
+        if len(target_pcd) > 2000:
+            target_pcd, _ = utils.farthest_point_sample(target_pcd, 2000)
+
+        # TODO: Add a switch for SE(2) perception.
+        warp = ObjectWarpingSE2Batch(
+            self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            n_samples=1000, object_size_reg=0.1, scaling=True)
+        mug_pcd_complete, _, mug_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        # warp = ObjectWarpingSE3Batch(
+        #     self.canon_mug, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+        #     n_samples=1000, object_size_reg=0.1, scaling=True)
+        # mug_pcd_complete, _, mug_param = warp_to_pcd_se3(warp, n_angles=30, n_batches=5)
+
+        warp = ObjectSE2Batch(
+            self.canon_tree, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            n_samples=None)
+        tree_pcd_complete, _, tree_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+
+        if show:
+            viz_utils.show_pcds_pyplot({
+                "pcd": source_pcd,
+                "warp": mug_pcd_complete
+            }, center=False)
+            viz_utils.show_pcds_pyplot({
+                "pcd": target_pcd,
+                "warp": tree_pcd_complete
+            }, center=False)
+
+        anchors = self.canon_mug.to_pcd(mug_param)[self.knns]
+        targets_mug = np.mean(anchors + self.deltas, axis=1)
+        targets_tree = self.canon_tree.to_pcd(tree_param)[self.target_indices]
+        
+        # Canonical source obj to canonical target obj.
+        trans_cs_to_ct, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
+
+        trans_s_to_b = utils.pos_quat_to_transform(mug_param.position, mug_param.quat)
+        trans_t_to_b = utils.pos_quat_to_transform(tree_param.position, tree_param.quat)
+
+        # TODO: Wiggle them out of collision, maybe.
+        trans_s_to_t = trans_t_to_b @ trans_cs_to_ct @ np.linalg.inv(trans_s_to_b)
+        return trans_s_to_t
