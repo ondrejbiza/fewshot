@@ -126,11 +126,10 @@ class UR5:
         if not success:
             raise exceptions.ExecutionError()
 
-    def plan_and_execute_pose_target_2(self, tool0_controller_pos, tool0_controller_quat):
+    def plan_and_execute_pose_target_2(self, tool0_controller_pos, tool0_controller_quat, num_plans: int=10):
 
         self.rviz_pub.send_pose(tool0_controller_pos, tool0_controller_quat, "base")            
 
-        num_plans = 10
         plans = []
 
         # for j in range(3):

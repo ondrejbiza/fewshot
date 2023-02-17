@@ -64,7 +64,7 @@ def pick(
         ur5.gripper.open_gripper()
         ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
 
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre), num_plans=1)
 
     return T_m_to_g
 
@@ -108,7 +108,7 @@ def place(
     ur5.moveit_scene.detach_object("mug")
     ur5.moveit_scene.remove_object("mug")
 
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_to_b))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_to_b), num_plans=1)
 
 
 def main(args):
