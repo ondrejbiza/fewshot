@@ -1,31 +1,25 @@
-import time
-from typing import Tuple, Optional
 from dataclasses import dataclass
-from numpy.typing import NDArray
 import functools
-
+import time
 from threading import Lock
-import numpy as np
+from typing import Tuple, Optional
+
+from numpy.typing import NDArray
 import matplotlib.pyplot as plt
 import rospy
 import ros_numpy
-from sensor_msgs.msg import PointCloud2, Image
-from sensor_msgs import point_cloud2
+from sensor_msgs.msg import Image
 from skimage.transform import resize
-import tf as not_tensorflow
-import tf2_ros
-import utils
 
 from online_isec.tf_proxy import TFProxy
 
 
 @dataclass
 class ImageProxy:
-    # (realsense, azure, structure)
-    # image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", "/k4a/rgb_to_depth/image_raw", "/camera/ir/image")
-    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", "/k4a/rgb/image_rect_color", "/camera/ir/image")
-    heights: Tuple[int, ...] = (720, 720, 480)
-    widths: Tuple[int, ...] = (1280, 1280, 640)
+    # (realsense*3)
+    image_topics: Tuple[Optional[str], ...] = ("realsense_left/color/image_raw", "realsense_right/color/image_raw", "realsense_forward/color/image_raw")
+    heights: Tuple[int, ...] = (720, 720, 720)
+    widths: Tuple[int, ...] = (1280, 1280, 1280)
 
     def __post_init__(self):
 
@@ -55,22 +49,6 @@ class ImageProxy:
 
         for sub in self.image_subs:
             sub.unregister()
-
-
-@dataclass
-class RealsenseStructureImageProxy(ImageProxy):
-    # (realsense, structure)
-    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw", "/camera/ir/image")
-    heights: Tuple[int, ...] = (720, 480)
-    widths: Tuple[int, ...] = (1280, 640)
-
-
-@dataclass
-class RealsenseImageProxy(ImageProxy):
-    # (realsense,)
-    image_topics: Tuple[Optional[str], ...] = ("cam1/color/image_raw",)
-    heights: Tuple[int, ...] = (720,)
-    widths: Tuple[int, ...] = (1280,)
 
 
 if __name__ == "__main__":

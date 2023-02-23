@@ -1,3 +1,9 @@
+Realsense setup:
+
+Left serial number: 105322250285
+Right serial number: 108222250646
+Forward serial number: 105322250776
+
 Start:
 
 roslaunch ur_robot_driver ur5_bringup.launch robot_ip:=10.75.15.199 limited:=true headless_mode:=true
@@ -14,6 +20,7 @@ rostopic hz /k4a/depth_registered/points
 cd ~/catkin_ws/fewshot/online_isec/launch
 roslaunch openni2_launch openni2.launch
 roslaunch realsense.launch
+roslaunch azure.launch
 python add_sensor_frame.py 
 
 roslaunch ur5_robotiq_moveit_config move_group.launch
