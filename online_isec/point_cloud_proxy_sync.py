@@ -24,8 +24,8 @@ import exceptions
 @dataclass
 class PointCloudProxy:
     # (realsense, azure, structure)
-    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/k4a/depth_registered/points", "/camera/depth/points")
-    nans_in_pc: Tuple[bool, ...] = (False, True, True)
+    pc_topics: Tuple[str, ...] = ("/realsense_left/depth/color/points", "/realsense_right/depth/color/points", "/realsense_forward/depth/color/points")
+    nans_in_pc: Tuple[bool, ...] = (False, False, False)
 
     desk_center: Tuple[float, float] = (constants.DESK_CENTER[0], constants.DESK_CENTER[1])
     z_min: float = constants.DESK_CENTER[2]
@@ -112,13 +112,6 @@ class PointCloudProxy:
 
     def close(self):
         self.unregister()
-
-
-@dataclass
-class RealsenseStructurePointCloudProxy(PointCloudProxy):
-    # (realsense, structure)
-    pc_topics: Tuple[str, ...] = ("/cam1/depth/color/points", "/camera/depth/points")
-    nans_in_pc: Tuple[bool, ...] = (False, True)
 
 
 if __name__ == "__main__":

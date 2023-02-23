@@ -11,7 +11,7 @@ import time
 from online_isec import constants
 from online_isec import perception
 import online_isec.utils as isec_utils
-from online_isec.point_cloud_proxy_sync import RealsenseStructurePointCloudProxy
+from online_isec.point_cloud_proxy_sync import PointCloudProxy
 from online_isec.ur5 import UR5
 from online_isec.simulation import Simulation
 import utils
@@ -114,7 +114,7 @@ def place(
 def main(args):
 
     rospy.init_node("moveit_plan_pick_place_plan_approach")
-    pc_proxy = RealsenseStructurePointCloudProxy()
+    pc_proxy = PointCloudProxy()
 
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
