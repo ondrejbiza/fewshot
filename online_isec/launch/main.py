@@ -95,9 +95,10 @@ def main(args):
         print("Connecting to UR5 at {:s}.".format(args.ip))
         robot_log = open(ROBOT_LOG_PATH, "w")
         robot_p = subprocess.Popen(
-            ["roslaunch", "ur_robot_driver", "ur5_bringup.launch",
-            "robot_ip:={:s}".format(args.ip), "headless_mode:=true"],  # limited:=true if motion planning doesn't work
-            stdout=robot_log, stderr=subprocess.STDOUT
+            " ".join(["roslaunch", "ur_robot_driver", "ur5_bringup.launch",
+            "robot_ip:={:s}".format(args.ip), "headless_mode:=true",
+            "kinematics_config:=$(rospack find ur_calibration)/etc/ur5_isec_calibration.yaml"]),  # limited:=true if motion planning doesn't work
+            stdout=robot_log, stderr=subprocess.STDOUT, shell=True
         )
 
         i = 0
