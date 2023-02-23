@@ -6,6 +6,10 @@ venv_ndf/
 /data/ndf_objects/
 /tmp.stl
 /tmp.obj
+/tmp_source.stl
+/tmp_source.obj
+/tmp_target.stl
+/tmp_target.obj
 /visualization
 /debug_viz
 

@@ -1,4 +1,5 @@
-from typing import Optional, Tuple, Dict
+import copy as cp
+from typing import Any, Optional, Tuple, Dict
 from functools import partial
 import numpy as np
 from numpy.typing import NDArray
@@ -8,8 +9,10 @@ import trimesh
 import trimesh.voxel.creation as vcreate
 from trimesh import decomposition
 from trimesh.scene import scene
-from pycpd import DeformableRegistration
+#from pycpd import DeformableRegistration
+from cycpd import deformable_registration
 from sklearn.decomposition import PCA
+from src import viz_utils
 
 
 def load_object(obj_path):
@@ -47,6 +50,8 @@ def load_object_create_verts(
 
     out: Dict[str, Optional[NDArray]] = {
         "mesh_points": None,
+        "surface_points": None,
+        "volume_points": None,
         "faces": None,
         "points": None,
     }
@@ -54,20 +59,36 @@ def load_object_create_verts(
     if sampling_method == "volume":
         voxels = vcreate.voxelize(mesh, voxel_size)
         points = np.array(voxels.points, dtype=np.float32)
+
+        out["volume_points"] = points
+        out["points"] = points
     elif sampling_method == "hybrid":
         surf_points, _ = trimesh.sample.sample_surface_even(
             mesh, num_surface_samples
         )
-        surf_points = surf_points
         mesh_points = np.array(mesh.vertices)
+        # Crucial that the mesh points come first!
         points = np.concatenate([mesh_points, surf_points])
+
+        out["surface_points"] = surf_points
         out["mesh_points"] = mesh_points
         out["faces"] = mesh.faces
+        out["points"] = points
+    elif sampling_method == "surface":
+        surf_points, _ = trimesh.sample.sample_surface_even(
+            mesh, num_surface_samples
+        )
+
+        out["surface_points"] = surf_points
+        out["points"] = surf_points
     else:
         raise ValueError("Invalid point cloud sampling method.")
 
-    out["points"] = points
-    print("Num. points: {:d}".format(len(points)))
+    print("Num. points:")
+    for k, v in out.items():
+        if v is not None:
+            print(k, len(v))
+
     return out
 
 
@@ -147,9 +168,9 @@ def visualize(iteration, error, X, Y, ax):
     ax.scatter(Y[:,0],  Y[:,1], Y[:,2], color='blue', label='Target')
     ax.text2D(0.87, 0.92, 'Iteration: {:d}\nError: {:06.4f}'.format(iteration, error), horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize='x-large')
     ax.legend(loc='upper left', fontsize='x-large')
-    ax.set_xlim(-0.3, 0.3)
-    ax.set_ylim(-0.3, 0.3)
-    ax.set_zlim(-0.1, 0.1)
+    ax.set_xlim(-1.1, 1.1)
+    ax.set_ylim(-1.1, 1.1)
+    ax.set_zlim(-1.1, 1.1)
     plt.draw()
     plt.pause(0.001)
 
@@ -158,20 +179,22 @@ def cpd_transform_plot(source, target):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     callback = partial(visualize, ax=ax)
-    reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
     reg.register(callback)
     #Returns the gaussian means and their weights - WG is the warp of source to target
     return reg.W, reg.G
 
 
-def cpd_transform(source, target):
-    reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+def cpd_transform(source, target, alpha: float=2.0):
+    # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 }, alpha=alpha)
     reg.register()
     #Returns the gaussian means and their weights - WG is the warp of source to target
     return reg.W, reg.G
 
 
-def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
+def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visualize=False):
 
     source = objects[canonical_index] * scale_factor
     targets = []
@@ -183,26 +206,23 @@ def warp_gen(canonical_index, objects, scale_factor=1., visualize=False):
     for target_idx, target in enumerate(targets):
         print("target {:d}".format(target_idx))
 
-        if visualize:
-            w, g = cpd_transform_plot(target, source)
-        else:
-            w, g = cpd_transform(target, source)
+        # if visualize:
+        #     w, g = cpd_transform_plot(target, source)
+        # else:
+        w, g = cpd_transform(target, source, alpha=alpha)
 
         plt.clf()
         plt.close()
 
         warp = np.dot(g, w)
- 
-        # print("##", warp.shape)
-        # tmp = source + warp
-        # fig = plt.figure()
-        # ax = fig.add_subplot(111, projection="3d")
-        # ax.scatter(tmp[:, 0], tmp[:, 1], tmp[:, 2], c="red")
-        # ax.scatter(target[:, 0], target[:, 1], target[:, 2], c="green")
-        # plt.show()
-
         warp = np.hstack(warp)
         warps.append(warp)
+
+        if visualize:
+            viz_utils.show_pcds_plotly({
+                "target": target,
+                "warp": source + warp.reshape(-1, 3),
+            }, center=True)
 
     return warps
 
@@ -254,3 +274,18 @@ def convex_decomposition(load_path, save_path):
         decomposed_scene.add_geometry(convex_mesh, node_name="hull_{:d}".format(i))
 
     decomposed_scene.export(save_path, file_type="obj")
+
+
+def scale_object_circle(obj: Dict[str, Any], base_scale: float=1.) -> Dict[str, Any]:
+    obj = cp.deepcopy(obj)
+    pcd = obj["points"]
+
+    assert len(pcd.shape) == 2
+    length = np.sqrt(np.sum(np.square(pcd), axis=1))
+    max_length = np.max(length, axis=0)
+
+    for key in ["surface_points", "volume_points", "points"]:
+        if obj[key] is not None:
+            obj[key] = base_scale * (obj[key] / max_length)
+
+    return obj
