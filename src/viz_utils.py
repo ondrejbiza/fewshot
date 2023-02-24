@@ -105,3 +105,24 @@ def show_pcds_plotly(pcds: Dict[str, NDArray], center: bool=False, axis_visible:
     fig.update_layout(scene=layout, showlegend=True)
     fig.show()
     # input("Continue?")
+
+
+def draw_square(img: NDArray, x: int, y: int, square_size=20, copy=False, intensity: float=1.) -> NDArray:
+    """Draw square in image."""
+    size = square_size // 2
+    x_limits = [x - size, x + size]
+    y_limits = [y - size, y + size]
+    for i in range(len(x_limits)):
+        x_limits[i] = min(img.shape[0], max(0, x_limits[i]))
+    for i in range(len(y_limits)):
+        y_limits[i] = min(img.shape[1], max(0, y_limits[i]))
+
+    if copy:
+        img = np.array(img, dtype=img.dtype)
+
+    if img.dtype == np.uint8:
+        img[x_limits[0]: x_limits[1], y_limits[0]: y_limits[1]] = int(255 * intensity)
+    else:
+        img[x_limits[0]: x_limits[1], y_limits[0]: y_limits[1]] = intensity
+
+    return img

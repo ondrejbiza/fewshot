@@ -4,6 +4,10 @@ Left serial number: 105322250285
 Right serial number: 108222250646
 Forward serial number: 105322250776
 
+rosrun dynamic_reconfigure dynparam set /realsense_left/stereo_module emitter_enabled 1
+rosrun dynamic_reconfigure dynparam set /realsense_right/stereo_module emitter_enabled 1
+rosrun dynamic_reconfigure dynparam set /realsense_forward/stereo_module emitter_enabled 1
+
 Start:
 
 roslaunch ur_robot_driver ur5_bringup.launch robot_ip:=10.75.15.199 limited:=true headless_mode:=true

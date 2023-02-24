@@ -215,7 +215,7 @@ def main(args):
     thread.join()
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser("Collect a demonstration.")
 parser.add_argument("--show-perception", default=False, action="store_true")
 parser.add_argument("--pick-save-path", type=str, default="data/230201_real_pick_clone", help="Postfix added automatically.")
 parser.add_argument("--place-save-path", type=str, default="data/230201_real_place_clone", help="Postfix added automatically.")

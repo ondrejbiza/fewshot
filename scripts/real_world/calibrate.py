@@ -1,22 +1,16 @@
 import argparse
-from typing import Tuple
 import time
-import rospy
-import open3d as o3d
+
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
-import cv2
+import rospy
 from scipy.spatial.transform import Rotation
-import tf as not_tensorflow
-from sensor_msgs.msg import CameraInfo
 
-from online_isec.image_proxy import ImageProxy
-from online_isec import constants
-import utils
-import viz_utils
-from online_isec import utils as isec_utils
-from online_isec import constants
+from src import viz_utils
+import src.real_world.utils as rw_utils
+from src.real_world.image_proxy import ImageProxy
 
 
 def show_corners(gray_image: NDArray, corners: NDArray):
@@ -93,7 +87,7 @@ def main(args):
     objp[:, :2] = tmp.reshape(-1, 2)
 
     # Calculate extrinsic camera matrix.
-    camera_matrix, distortion_coeffs = isec_utils.get_camera_intrinsics_and_distortion(topic)
+    camera_matrix, distortion_coeffs = rw_utils.get_camera_intrinsics_and_distortion(topic)
     ret, rvec, tvec = cv2.solvePnP(objp, corners2, camera_matrix, distortion_coeffs)
 
     # Transform to matrix, invert, transform to translation and quaternions.
@@ -116,7 +110,7 @@ def main(args):
 
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser("Calibrate cameras using a 5x4 checkerboard.")
 parser.add_argument("camera", type=int, help="0=realsense_left, 1=realsense_right, 2=realsense_forward")
 parser.add_argument("-s", "--show", default=False, action="store_true")
 parser.add_argument("-t", "--transpose", default=False, action="store_true")
