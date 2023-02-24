@@ -5,8 +5,10 @@ import geometry_msgs.msg
 import numpy as np
 from numpy.typing import NDArray
 from sensor_msgs.msg import CameraInfo
+from scipy.spatial.transform import Rotation
 import rospy
 
+from src import utils
 from src.real_world.tf_proxy import TFProxy
 
 
@@ -16,6 +18,14 @@ def tool0_controller_base_to_flange_base_link(T: NDArray, tf_proxy: TFProxy) -> 
     T_f_to_g = tf_proxy.lookup_transform("flange", "tool0_controller")
 
     return T_b_to_bl @ T @ T_f_to_g
+
+
+def desk_obj_param_to_base_link_T(obj_pos: NDArray, obj_quat: NDArray, desk_center: NDArray,
+                                  tf_proxy: TFProxy) -> NDArray:
+
+    T_b_to_m = utils.pos_quat_to_transform(obj_pos + desk_center, obj_quat)
+    T_bl_to_b = np.linalg.inv(tf_proxy.lookup_transform("base_link", "base"))
+    return T_bl_to_b @ T_b_to_m
 
 
 def to_stamped_pose_message(pos: NDArray, quat: NDArray, frame_id: str) -> geometry_msgs.msg.PoseStamped:
@@ -69,3 +79,12 @@ def get_camera_intrinsics_and_distortion(topic: str) -> Tuple[NDArray, NDArray]:
             return out[1], out[2]
 
     raise RuntimeError("Could not get camera information.")
+
+
+def move_hand_back(pos: NDArray, quat: NDArray, delta: float) -> Tuple[NDArray, NDArray]:
+
+    rot = Rotation.from_quat(quat).as_matrix()
+    vec = np.array([0., 0., delta], dtype=np.float32)
+    vec = np.matmul(rot, vec)
+    pos = pos - vec
+    return pos, quat

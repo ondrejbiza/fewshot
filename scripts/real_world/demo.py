@@ -10,13 +10,10 @@ import threading
 import time
 from typing import Any, Dict, Optional, Tuple
 
-from online_isec import constants
-from online_isec import perception
-from online_isec.point_cloud_proxy_sync import RealsenseStructurePointCloudProxy
+from src import demo, utils
+from src.real_world import constants
 from src.real_world.ur5 import UR5
-import online_isec.utils as isec_utils
-from pybullet_planning.pybullet_tools import utils as pu
-import utils
+
 
 
 def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
@@ -34,35 +31,11 @@ def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
             T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
             T_m_to_b = np.matmul(T_g_to_b, data["T"])
             m_pos, m_quat = utils.transform_to_pos_quat(T_m_to_b)
-            pu.set_pose(mug, (m_pos, m_quat))
+            utils.pb_set_pose(mug, m_pos, m_quat)
 
         # Mark the gripper with a sphere.
-        pu.set_position(sphere, gripper_pos[0], gripper_pos[1], gripper_pos[2])
+        utils.pb_set_pose(sphere, gripper_pos, np.array([0., 0., 0., 1.]))
         time.sleep(0.1)
-
-
-def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10) -> Tuple[NDArray, NDArray]:
-
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111, projection="3d")
-    # ax.scatter(obj[:, 0], obj[:, 1], obj[:, 2], color="red", alpha=0.1)
-    # ax.scatter(vps[:, 0], vps[:, 1], vps[:, 2], color="green")
-    # plt.show()
-
-    dists = np.sum(np.square(obj[None] - vps[:, None]), axis=-1)
-    knn_list = []
-    deltas_list = []
-
-    for i in range(dists.shape[0]):
-        # Get K closest points, compute relative vectors.
-        knn = np.argpartition(dists[i], k)[:k]
-        deltas = vps[i: i + 1] - obj[knn]
-        knn_list.append(knn)
-        deltas_list.append(deltas)
-
-    knn_list = np.stack(knn_list)
-    deltas_list = np.stack(deltas_list)
-    return knn_list, deltas_list
 
 
 def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: Dict[str, Any],

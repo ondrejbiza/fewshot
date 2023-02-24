@@ -146,6 +146,7 @@ def main(args):
                 ["rostopic", "hz", list_name],
                 stdout=realsense_listen_log_list[-1], stderr=subprocess.STDOUT
             ))
+        time.sleep(2)
 
         for log_path, launch_name in zip(
                 [REALSENSE_LEFT_DRIVER_LOG_PATH, REALSENSE_RIGHT_DRIVER_LOG_PATH, REALSENSE_FORWARD_DRIVER_LOG_PATH],

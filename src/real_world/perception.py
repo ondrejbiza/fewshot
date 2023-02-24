@@ -4,9 +4,10 @@ from typing import Any, Dict, Optional, Tuple
 import numpy as np
 from numpy.typing import NDArray
 import open3d as o3d
+import torch
 
-from src import utils
-from src.object_warping import ObjectWarpingSE2Batch, ObjectWarpingSE3Batch, warp_to_pcd_se2, warp_to_pcd_se3
+from src import object_warping, utils, viz_utils
+import src.real_world.utils as rw_utils
 from src.real_world import constants
 from src.real_world.tf_proxy import TFProxy
 from src.real_world.moveit_scene import MoveItScene
@@ -96,14 +97,14 @@ def mug_tree_simple_perception(cloud: NDArray, max_pc_size: Optional[int]=2000) 
     cloud = center_workspace(cloud)
     cloud = mask_workspace(cloud)
 
-    mug_pc, tree_pc = find_mug_and_tree(cloud)
+    mug_pcd, tree_pcd = find_mug_and_tree(cloud)
     if max_pc_size is not None:
-        if len(mug_pc) > max_pc_size:
-            mug_pc, _ = utils.farthest_point_sample(mug_pc, max_pc_size)
-        if len(tree_pc) > max_pc_size:
-            tree_pc, _ = utils.farthest_point_sample(tree_pc, max_pc_size)
+        if len(mug_pcd) > max_pc_size:
+            mug_pcd, _ = utils.farthest_point_sample(mug_pcd, max_pc_size)
+        if len(tree_pcd) > max_pc_size:
+            tree_pcd, _ = utils.farthest_point_sample(tree_pcd, max_pc_size)
 
-    return mug_pc, tree_pc
+    return mug_pcd, tree_pcd
 
 
 def mug_tree_perception(
@@ -113,66 +114,91 @@ def mug_tree_perception(
     canon_mug_path: str="data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl",
     canon_tree_path: str="data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl",
     mug_save_decomposition: bool=False,
+    tree_save_decomposition: bool=False,
     add_mug_to_planning_scene: bool=False,
     add_tree_to_planning_scene: bool=False,
     rviz_pub: Optional[RVizPub]=None,
     ablate_no_mug_warping: bool=False,
     any_rotation: bool=False,
-    short_mug_platform: bool=False, tall_mug_platform: bool=False
-    ) -> Tuple[NDArray, Tuple[NDArray, NDArray, NDArray], NDArray, Tuple[NDArray, NDArray], Dict[Any, Any], Dict[Any, Any], NDArray, NDArray]:
+    short_mug_platform: bool=False,
+    tall_mug_platform: bool=False,
+    desk_center: Tuple[float, float, float]=constants.DESK_CENTER
+    ) -> Tuple[NDArray, utils.ObjParam, NDArray, utils.ObjParam, utils.CanonObj, utils.CanonObj, NDArray, NDArray]:
+
+    if ablate_no_mug_warping:
+        raise NotImplementedError()
+
+    dc = np.array(desk_center)
 
     cloud = center_workspace(cloud)
     cloud = mask_workspace(cloud)
 
-    mug_pc, tree_pc = find_mug_and_tree(cloud, short_mug_platform=short_mug_platform, tall_mug_plaform=tall_mug_platform)
+    mug_pcd, tree_pcd = find_mug_and_tree(cloud, short_mug_platform=short_mug_platform, tall_mug_plaform=tall_mug_platform)
     if max_pc_size is not None:
-        if len(mug_pc) > max_pc_size:
-            mug_pc, _ = utils.farthest_point_sample(mug_pc, max_pc_size)
-        if len(tree_pc) > max_pc_size:
-            tree_pc, _ = utils.farthest_point_sample(tree_pc, max_pc_size)
+        if len(mug_pcd) > max_pc_size:
+            mug_pcd, _ = utils.farthest_point_sample(mug_pcd, max_pc_size)
+        if len(tree_pcd) > max_pc_size:
+            tree_pcd, _ = utils.farthest_point_sample(tree_pcd, max_pc_size)
 
-    # load canonical objects
+    # Load canonical objects.
     canon_mug = utils.CanonObj.from_pickle(canon_mug_path)
     canon_tree = utils.CanonObj.from_pickle(canon_tree_path)
 
     perception_start = time.time()
-    if ablate_no_mug_warping:
-        mug_pc_complete, _, mug_param = utils.planar_pose_gd(canon_mug["canonical_obj"], mug_pc, n_angles=12)
-        n_dimensions = canon_mug["pca"].n_components
-        mug_param = (np.zeros(n_dimensions, dtype=np.float32), *mug_param)
-    elif any_rotation:
-        mug_pc_complete, _, mug_param = utils.pose_warp_gd_batch(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=60, n_batches=3)
-    else:
-        mug_pc_complete, _, mug_param = utils.planar_pose_warp_gd_batch(canon_mug["pca"], canon_mug["canonical_obj"], mug_pc, object_size_reg=0.1, n_angles=24)
 
-    tree_pc_complete, _, tree_param = utils.planar_pose_gd(canon_tree["canonical_obj"], tree_pc, n_angles=12)
-    viz_utils.show_scene({0: mug_pc_complete, 1: tree_pc_complete}, background=np.concatenate([mug_pc, tree_pc]))
+    if any_rotation:
+        warp = object_warping.ObjectWarpingSE3Batch(
+            canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
+        mug_pcd_complete, _, mug_param = object_warping.warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
+    else:
+        warp = object_warping.ObjectWarpingSE2Batch(
+            canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
+        mug_pcd_complete, _, mug_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+
+    warp = object_warping.ObjectWarpingSE2Batch(
+        canon_tree, tree_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+        n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
+    tree_pcd_complete, _, tree_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+
     print("Inference time: {:.1f}s.".format(time.time() - perception_start))
 
-    vertices = utils.canon_to_pc(canon_mug, mug_param)[:len(canon_mug["canonical_mesh_points"])]
-    mesh = trimesh.base.Trimesh(vertices=vertices, faces=canon_mug["canonical_mesh_faces"])
-    mesh.export("tmp.stl")
+    viz_utils.show_pcds_plotly({
+        "mug": mug_pcd,
+        "mug_complete": mug_pcd_complete,
+        "tree": tree_pcd,
+        "tree_complete": tree_pcd_complete,
+    })
+
+    mug_mesh = canon_mug.to_mesh(mug_param)
+    mug_mesh.export("tmp_source.stl")
     if mug_save_decomposition:
-        utils.convex_decomposition(mesh, "tmp.obj")
+        utils.convex_decomposition(mug_mesh, "tmp_source.obj")
+
+    tree_mesh = canon_tree.to_mesh(tree_param)
+    tree_mesh.export("tmp_target.stl")
+    if tree_save_decomposition:
+        utils.convex_decomposition(tree_mesh, "tmp_target.obj")
 
     if add_mug_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
-        pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], desk_center, tf_proxy))
-        moveit_scene.add_object("tmp.stl", "mug", pos, quat)
+        pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(mug_param.position, mug_param.quat, dc, tf_proxy))
+        moveit_scene.add_object("tmp_source.stl", "mug", pos, quat)
 
     if add_tree_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
-        pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
-        moveit_scene.add_object("data/real_tree2.stl", "tree", pos, quat)
+        pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(tree_param.position, tree_param.quat, dc, tf_proxy))
+        moveit_scene.add_object("tmp_target.stl", "tree", pos, quat)
 
     if rviz_pub is not None:
         # send STL meshes as Marker messages to rviz
         assert tf_proxy is not None, "Need tf_proxy to calculate poses."
 
-        pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(mug_param[1], mug_param[2], desk_center, tf_proxy))
-        rviz_pub.send_stl_message("tmp.stl", pos, quat)
+        pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(mug_param.position, mug_param.quat, dc, tf_proxy))
+        rviz_pub.send_stl_message("tmp_source.stl", pos, quat)
 
-        pos, quat = utils.transform_to_pos_quat(isec_utils.desk_obj_param_to_base_link_T(tree_param[0], tree_param[1], desk_center, tf_proxy))
-        rviz_pub.send_stl_message("data/real_tree2.stl", pos, quat)
+        pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(tree_param.position, tree_param.quat, dc, tf_proxy))
+        rviz_pub.send_stl_message("tmp_target.stl", pos, quat)
 
-    return mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree, mug_pc, tree_pc
+    return mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, mug_pcd, tree_pcd
