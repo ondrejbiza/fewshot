@@ -1,4 +1,5 @@
 import argparse
+import copy as cp
 import pickle
 import threading
 import time
@@ -73,6 +74,17 @@ def save_place_contact_points(
 
     T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
     T_g_pre_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_g_pre_to_b)
+
+    # The source object was perceived on the ground.
+    # Move it to where the robot hand is now.
+    source_param = cp.deepcopy(source_param)
+
+    T_src_to_b = np.matmul(T_g_to_b, T_src_to_g)
+    T_ws_to_b = rw_utils.workspace_to_base()
+    T_src_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_src_to_b)
+    src_pos, src_quat = utils.transform_to_pos_quat(T_src_to_ws)
+    source_param.position = src_pos
+    source_param.quat = src_quat
 
     knns, deltas, i_2 = demo.save_place_nearby_points(
         source_id, target_id, canon_source, source_param, canon_target, target_param, delta, draw_spheres=True)

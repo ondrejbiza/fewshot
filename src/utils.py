@@ -16,8 +16,8 @@ from src import exceptions
 class ObjParam:
     """Object shape and pose parameters.
     """
-    position: NDArray[np.float64]
-    quat: NDArray[np.float64]
+    position: NDArray[np.float64] = np.array([0., 0., 0.])
+    quat: NDArray[np.float64] = np.array([0., 0., 0., 1.])
     latent: Optional[NDArray[np.float32]] = None
     scale: float = 1.
 
@@ -33,6 +33,9 @@ class CanonObj:
     mesh_vertices: NDArray[np.float32]
     mesh_faces: NDArray[np.float32]
     pca: Optional[PCA] = None
+
+    def __post_init__(self):
+        self.n_components = self.pca.n_components
 
     def to_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
         if self.pca is not None:
