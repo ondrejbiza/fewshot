@@ -111,7 +111,7 @@ def place(
 
 def main(args):
 
-    rospy.init_node("moveit_plan_pick_place_plan_approach")
+    rospy.init_node("pick_place")
     pc_proxy = PointCloudProxy()
 
     ur5 = UR5(setup_planning=True)

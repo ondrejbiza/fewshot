@@ -396,6 +396,13 @@ def orthogonalize(x: torch.Tensor) -> torch.Tensor:
     return torch.stack([u0, u1, u2], dim=1)
 
 
+def cost_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+
+    diff = torch.sqrt(torch.sum(torch.square(source[:, None] - target[None, :]), dim=2))
+    c = diff[list(range(len(diff))), torch.argmin(diff, dim=1)]
+    return torch.mean(c)
+
+
 def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     # B x N x K
     diff = torch.sqrt(torch.sum(torch.square(source[:, :, None] - target[:, None, :]), dim=3))

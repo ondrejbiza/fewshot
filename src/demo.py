@@ -34,7 +34,8 @@ def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10,
 
 def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.CanonObj,
                              source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonObj,
-                             target_obj_param: utils.ObjParam, delta: float
+                             target_obj_param: utils.ObjParam, delta: float,
+                             draw_spheres: bool=False
                              ) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:
     """Process demonstration by setting up warping of nearby points.
     
@@ -43,6 +44,17 @@ def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.C
     to it using k-nearest-neighbors."""
     pb.performCollisionDetection()
     cols = pb.getClosestPoints(source, target, delta)
+
+    if draw_spheres:
+        # Add spheres at contact points to pybullet.
+        for col in cols:
+            pos_mug = col[5]
+            s = pb.loadURDF("data/sphere_red.urdf")
+            utils.pb_set_pose(s, pos_mug, np.array([0., 0., 0., 1.]))
+
+            pos_tree = col[6]
+            s = pb.loadURDF("data/sphere.urdf")
+            utils.pb_set_pose(s, pos_tree, np.array([0., 0., 0., 1.]))
 
     pos_source = [col[5] for col in cols]
     pos_target = [col[6] for col in cols]

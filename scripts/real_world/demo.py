@@ -1,22 +1,22 @@
 import argparse
-import numpy as np
-from numpy.typing import NDArray
-import matplotlib.pyplot as plt
 import pickle
-import pybullet as pb
-from scipy.spatial.transform import Rotation
-import rospy
 import threading
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
+
+import numpy as np
+from numpy.typing import NDArray
+import rospy
 
 from src import demo, utils
-from src.real_world import constants
+from src.real_world import constants, perception
+import src.real_world.utils as rw_utils
 from src.real_world.ur5 import UR5
+from src.real_world.point_cloud_proxy_sync import PointCloudProxy
+from src.real_world.simulation import Simulation
 
 
-
-def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
+def worker(ur5: UR5, sphere: int, source_id: int, data: Dict[str, Any]):
 
     while True:
 
@@ -29,27 +29,27 @@ def worker(ur5: UR5, sphere: int, mug: int, data: Dict[str, Any]):
         if data["T"] is not None:
             # Make the mug follow the gripper.
             T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
-            T_m_to_b = np.matmul(T_g_to_b, data["T"])
-            m_pos, m_quat = utils.transform_to_pos_quat(T_m_to_b)
-            utils.pb_set_pose(mug, m_pos, m_quat)
+            T_src_to_b = np.matmul(T_g_to_b, data["T"])
+            src_pos, src_quat = utils.transform_to_pos_quat(T_src_to_b)
+            utils.pb_set_pose(source_id, src_pos, src_quat)
 
         # Mark the gripper with a sphere.
         utils.pb_set_pose(sphere, gripper_pos, np.array([0., 0., 0., 1.]))
         time.sleep(0.1)
 
 
-def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: Dict[str, Any],
-                   mug_param: Tuple[NDArray, NDArray, NDArray], ur5: UR5, save_path: Optional[bool]=None):
+def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: utils.CanonObj,
+                   mug_param: utils.ObjParam, ur5: UR5, save_path: Optional[bool]=None):
 
     T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
-    T_m_to_b = utils.pos_rot_to_transform(mug_param[1] + constants.DESK_CENTER, utils.yaw_to_rot(mug_param[2]))
+    T_m_to_b = utils.pos_quat_to_transform(mug_param.position + constants.DESK_CENTER, mug_param.quat)
     T_g_to_m = np.matmul(np.linalg.inv(T_m_to_b), T_g_to_b)
 
     # Grasp in a canonical frame.
     g_to_m_pos, g_to_m_quat = utils.transform_to_pos_quat(T_g_to_m)
 
     # Warped object in a canonical frame.
-    mug_pc_complete = utils.canon_to_pc(canon_mug, mug_param)
+    mug_pc_complete = canon_mug.to_pcd(mug_param)
 
     # Index of the point on the canonical object closest to a point between the gripper fingers.
     dist = np.sqrt(np.sum(np.square(mug_pc_complete - g_to_m_pos), axis=1))
@@ -67,51 +67,15 @@ def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: Dict[str, Any],
 
 
 def save_place_contact_points(
-    tree_pc: NDArray, ur5: UR5, mug: int, tree: int, T_m_to_g: NDArray, T_g_pre_to_b: NDArray, canon_mug: Dict[str, Any], canon_tree: Dict[str, Any],
-    mug_param: Tuple[NDArray, NDArray, NDArray], tree_param: Tuple[NDArray, NDArray], delta: float=0.1,
-    save_path: Optional[str]=None):
-
-    # Find close points between the mug and the tree in pybullet.
-    pb.performCollisionDetection()
-    cols = pb.getClosestPoints(mug, tree, delta)
-
-    spheres_mug = []
-    spheres_tree = []
-    for col in cols:
-        pos_mug = col[5]
-        with pu.HideOutput():
-            s = pu.load_model("../data/sphere_red.urdf")
-            pu.set_pose(s, pu.Pose(pu.Point(*pos_mug)))
-        spheres_mug.append(s)
-
-        pos_tree = col[6]
-        with pu.HideOutput():
-            s = pu.load_model("../data/sphere.urdf")
-            pu.set_pose(s, pu.Pose(pu.Point(*pos_tree)))
-        spheres_tree.append(s)
-
-    pos_mug = [col[5] for col in cols]
-    pos_tree = [col[6] for col in cols]
-
-    pos_mug = np.stack(pos_mug, axis=0).astype(np.float32)
-    pos_tree = np.stack(pos_tree, axis=0).astype(np.float32)
+    target_pcd: NDArray, ur5: UR5, source_id: int, target_id: int, T_src_to_g: NDArray, T_g_pre_to_b: NDArray,
+    canon_source: utils.CanonObj, canon_target: utils.CanonObj, source_param: utils.ObjParam, target_param: utils.ObjParam,
+    delta: float=0.1, save_path: Optional[str]=None):
 
     T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
     T_g_pre_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_g_pre_to_b)
-    T_m_to_b = np.matmul(T_g_to_b, T_m_to_g)
-    T_ws_to_b = isec_utils.workspace_to_base()
-    T_m_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_m_to_b)
 
-    T_t_to_ws = utils.pos_rot_to_transform(tree_param[0], utils.yaw_to_rot(tree_param[1]))
-
-    mug_pc_origin = utils.canon_to_pc(canon_mug, mug_param)
-    pos_tree_tree_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_t_to_ws))
-    pos_tree_mug_coords = utils.transform_pointcloud_2(pos_tree, np.linalg.inv(T_m_to_ws))
-
-    knns, deltas = get_knn_and_deltas(mug_pc_origin, pos_tree_mug_coords)
-
-    dist_2 = np.sqrt(np.sum(np.square(canon_tree["canonical_obj"][:, None] - pos_tree_tree_coords[None]), axis=2))  # TODO: is this correct?
-    i_2 = np.argmin(dist_2, axis=0).transpose()
+    knns, deltas, i_2 = demo.save_place_nearby_points(
+        source_id, target_id, canon_source, source_param, canon_target, target_param, delta, draw_spheres=True)
 
     if save_path is not None:
         with open(save_path, "wb") as f:
@@ -121,55 +85,60 @@ def save_place_contact_points(
                 "target_indices": i_2,
                 "T_g_to_b": T_g_to_b,
                 "T_g_pre_to_g": T_g_pre_to_g,
-                "observed_pc": tree_pc,
+                "observed_pc": target_pcd,
             }, f)
 
 
 def main(args):
 
-    rospy.init_node("easy_perception")
-    pc_proxy = RealsenseStructurePointCloudProxy()
+    rospy.init_node("save_demo")
+    pc_proxy = PointCloudProxy()
 
     ur5 = UR5(setup_planning=True)
     # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
     ur5.gripper.open_gripper(position=70)
 
-    mug_pc_complete, mug_param, tree_pc_complete, tree_param, canon_mug, canon_tree, mug_pc, tree_pc = perception.mug_tree_perception(
-        pc_proxy, np.array(constants.DESK_CENTER), ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
-        mug_save_decomposition=False,
-    )
+    cloud = pc_proxy.get_all()
+    assert cloud is not None
+
+    sim = Simulation()
+
+    if args.task == "mug_tree":
+        out = perception.mug_tree_perception(
+            cloud, ur5.tf_proxy, ur5.moveit_scene,
+            add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
+            mug_save_decomposition=True, tree_save_decomposition=True
+        )
+    else:
+        raise NotImplementedError()
+
+    source_pcd_complete, source_param, target_pcd_complete, target_param, canon_source, canon_target, source_pcd, target_pcd = out
 
     # Setup simulation with what we see in the real world.
-    pu.connect(use_gui=True, show_sliders=False)
-    pu.set_default_camera(distance=2)
-    pu.disable_real_time()
-    pu.draw_global_system()
-
-    mug = pu.load_model("../tmp.urdf", pu.Pose(mug_param[1], pu.Euler(yaw=mug_param[2])))
-    tree = pu.load_model("../data/real_tree.urdf", pu.Pose(tree_param[0], pu.Euler(yaw=tree_param[1])), fixed_base=True)
-    point = pu.load_model("../data/sphere.urdf")
+    source_id = sim.add_object("tmp_source.urdf", source_param.position, source_param.quat)
+    target_id = sim.add_object("tmp_target.urdf", target_param.position, target_param.quat, fixed_base=True)
+    sphere_id = sim.add_object("data/sphere.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
 
     # Continuously update the gripper position in simulation.
     data = {
         "T": None,
         "stop": False,
     }
-    thread = threading.Thread(target=worker, args=(ur5, point, mug, data))
+    thread = threading.Thread(target=worker, args=(ur5, sphere_id, source_id, data))
     thread.start()
 
     input("Close gripper?")
     ur5.gripper.close_gripper()
-    save_pick_pose(mug_pc, canon_mug, mug_param, ur5, args.pick_save_path + ".pkl")
+    save_pick_pose(source_pcd, canon_source, source_param, ur5, args.pick_save_path + ".pkl")
 
     # Calculate mug to gripper transform. Transmit it to simulation.
     T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
-    T_ws_to_b = isec_utils.workspace_to_base()
+    T_ws_to_b = rw_utils.workspace_to_base()
     T_g_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_g_to_b)
 
-    T_m_to_ws = utils.pos_rot_to_transform(mug_param[1], utils.yaw_to_rot(mug_param[2]))
-    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_ws), T_m_to_ws)
-    data["T"] = T_m_to_g
+    T_src_to_ws = utils.pos_quat_to_transform(source_param.position, source_param.quat)
+    T_src_to_g = np.matmul(np.linalg.inv(T_g_to_ws), T_src_to_ws)
+    data["T"] = T_src_to_g
 
     # Save any number of waypoints.
     input("Save place waypoint?")
@@ -177,7 +146,8 @@ def main(args):
 
     input("Save place pose?")
     save_place_contact_points(
-        tree_pc, ur5, mug, tree, T_m_to_g, T_g_pre_to_b, canon_mug, canon_tree, mug_param, tree_param, save_path=args.place_save_path + ".pkl")
+        target_pcd, ur5, source_id, target_id, T_src_to_g, T_g_pre_to_b, canon_source, canon_target,
+        source_param, target_param, save_path=args.place_save_path + ".pkl")
 
     # Reset.
     # input("Open gripper?")
@@ -189,7 +159,7 @@ def main(args):
 
 
 parser = argparse.ArgumentParser("Collect a demonstration.")
-parser.add_argument("--show-perception", default=False, action="store_true")
-parser.add_argument("--pick-save-path", type=str, default="data/230201_real_pick_clone", help="Postfix added automatically.")
-parser.add_argument("--place-save-path", type=str, default="data/230201_real_place_clone", help="Postfix added automatically.")
+parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+parser.add_argument("pick_save_path", type=str, help="Postfix added automatically.")
+parser.add_argument("place_save_path", type=str, help="Postfix added automatically.")
 main(parser.parse_args())

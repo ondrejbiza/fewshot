@@ -9,6 +9,7 @@ from scipy.spatial.transform import Rotation
 import rospy
 
 from src import utils
+from src.real_world import constants
 from src.real_world.tf_proxy import TFProxy
 
 
@@ -88,3 +89,10 @@ def move_hand_back(pos: NDArray, quat: NDArray, delta: float) -> Tuple[NDArray, 
     vec = np.matmul(rot, vec)
     pos = pos - vec
     return pos, quat
+
+
+def workspace_to_base():
+
+    T = np.eye(4)
+    T[:3, 3] = constants.DESK_CENTER
+    return T
