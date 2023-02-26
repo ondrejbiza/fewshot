@@ -232,18 +232,27 @@ def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray
 
 
 def pb_set_pose(body: int, pos: NDArray, quat: NDArray, sim_id: Optional[int]=None):
-    pb.resetBasePositionAndOrientation(body, pos, quat, physicsClientId=sim_id)
+    if sim_id is not None:
+        pb.resetBasePositionAndOrientation(body, pos, quat, physicsClientId=sim_id)
+    else:
+        pb.resetBasePositionAndOrientation(body, pos, quat)
 
 
 def pb_get_pose(body, sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
-    pos, quat = pb.getBasePositionAndOrientation(body, physicsClientId=sim_id)
+    if sim_id is not None:
+        pos, quat = pb.getBasePositionAndOrientation(body, physicsClientId=sim_id)
+    else:
+        pos, quat = pb.getBasePositionAndOrientation(body)
     pos = np.array(pos, dtype=np.float64)
     quat = np.array(quat, dtype=np.float64)
     return pos, quat
 
 
 def pb_body_collision(body1: int, body2: int, sim_id: Optional[int]=None) -> bool:
-    results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0, physicsClientId=sim_id)
+    if sim_id is not None:
+        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0, physicsClientId=sim_id)
+    else:
+        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0)
     return len(results) != 0
 
 

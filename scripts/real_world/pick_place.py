@@ -150,11 +150,12 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+    parser.add_argument("pick_load_path", type=str, help="Postfix added automatically.")
+    parser.add_argument("place_load_path", type=str, help="Postfix added automatically.")
     parser.add_argument("-a", "--any-rotation", default=False, action="store_true")
     parser.add_argument("-t", "--tall-platform", default=False, action="store_true")
     parser.add_argument("-s", "--short-platform", default=False, action="store_true")
-    parser.add_argument("--pick-load-path", type=str, default="data/230201_real_pick_clone", help="Postfix added automatically.")
-    parser.add_argument("--place-load-path", type=str, default="data/230201_real_place_clone", help="Postfix added automatically.")
     parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
     parser.add_argument("--disable-mug-collisions-during-pick", default=False, action="store_true")
     main(parser.parse_args())
