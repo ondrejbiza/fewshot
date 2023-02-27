@@ -2,11 +2,9 @@ import argparse
 import os
 import pickle
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation
 import trimesh
-from sst_utils import load_object_create_verts, pick_canonical, cpd_transform, cpd_transform_plot, warp_gen, \
-    pca_transform, pca_reconstruct, scale_object_circle
+from sst_utils import load_object_create_verts, pick_canonical, warp_gen, pca_transform, scale_object_circle
 from src import viz_utils
 
 
@@ -70,8 +68,8 @@ def main(args):
         small_obj = load_object_create_verts(
             obj_path, scale=None, rotation=rotation, num_surface_samples=2000, sampling_method="surface")
 
-        obj = scale_object_circle(obj)
-        small_obj = scale_object_circle(small_obj)
+        obj = scale_object_circle(obj, base_scale=0.1)
+        small_obj = scale_object_circle(small_obj, base_scale=0.1)
 
         objs.append(obj)
         small_objs.append(small_obj)
