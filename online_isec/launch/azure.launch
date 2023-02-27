@@ -66,7 +66,7 @@ Licensed under the MIT License.
 
     <node pkg="nodelet" type="nodelet" name="k4a_ros_bridge" args="load Azure_Kinect_ROS_Driver/K4AROSBridgeNodelet manager --no-bond" respawn="true">
       <param name="depth_enabled" value="true" />
-      <param name="depth_mode" value="WFOV_UNBINNED" />
+      <param name="depth_mode" value="WFOV_2X2BINNED" />
       <!-- Set the depth camera mode, which affects FOV, depth range, and camera resolution. See Azure Kinect documentation for full details. Valid options: NFOV_UNBINNED, NFOV_2X2BINNED, WFOV_UNBINNED, WFOV_2X2BINNED, and PASSIVE_IR -->
       <param name="color_enabled" value="true" />
       <param name="color_resolution" value="720P" />

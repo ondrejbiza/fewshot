@@ -1,24 +1,21 @@
 from dataclasses import dataclass
-import time
+from typing import Tuple
+
 import numpy as np
 from numpy.typing import NDArray
-from scipy.spatial.transform import Rotation
-import rospy
-from typing import List, Tuple, Any
-from sensor_msgs.msg import JointState
-from std_msgs.msg import String
-from geometry_msgs.msg import Pose, Point, Quaternion
 from moveit_msgs.msg import DisplayTrajectory
 import moveit_commander
-from online_isec.robotiq_gripper import Gripper
-from online_isec.tf_proxy import TFProxy
-from online_isec import transformation
-import exceptions
-from online_isec import constants
-import utils
-import online_isec.utils as isec_utils
-from online_isec.rviz_pub import RVizPub
-from online_isec.moveit_scene import MoveItScene
+import rospy
+from sensor_msgs.msg import JointState
+from std_msgs.msg import String
+
+from src import exceptions, utils
+import src.real_world.constants as rw_constants
+import src.real_world.utils as rw_utils
+from src.real_world.moveit_scene import MoveItScene
+from src.real_world.robotiq_gripper import RobotiqGripper
+from src.real_world.rviz_pub import RVizPub
+from src.real_world.tf_proxy import TFProxy
 
 
 @dataclass
@@ -32,8 +29,8 @@ class UR5:
 
     home_joint_values: Tuple[float, ...] = (0.65601951, -1.76965791, 1.79728603, -1.60219127, -1.5338834, -0.785)
     desk_joint_values: Tuple[float, ...] = (-0.1835673491, -1.446624104, 1.77286005, -1.90146142, -1.532696072, 1.339956641)
-    joint_names_speedj: Tuple[str, ...] = ('shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 
-                                           'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint')
+    joint_names_speedj: Tuple[str, ...] = ("shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", 
+                                           "wrist_1_joint", "wrist_2_joint", "wrist_3_joint")
     
     setup_planning: bool = False
     move_group_name: str = "manipulator"
@@ -44,7 +41,7 @@ class UR5:
         self.tf_proxy = TFProxy()
         self.rviz_pub = RVizPub()
 
-        self.gripper = Gripper(True)
+        self.gripper = RobotiqGripper()
         if self.activate_gripper:
             self.gripper.reset()
             self.gripper.activate()
@@ -67,7 +64,7 @@ class UR5:
 
             self.moveit_scene.clear()
 
-            desk_center = utils.transform_pointcloud_2(np.array(constants.DESK_CENTER)[None], self.tf_proxy.lookup_transform("base", "base_link"))[0]
+            desk_center = utils.transform_pcd(np.array(rw_constants.DESK_CENTER)[None], self.tf_proxy.lookup_transform("base", "base_link"))[0]
             self.moveit_scene.add_box("table", desk_center, np.array([1., 0., 0., 0.]), np.array([2., 2., 0.001]))
 
             self.moveit_scene.add_box("robot_box", np.array([0., 0., -0.04]), np.array([1., 0., 0., 0.]), np.array([0.16, 0.5, 0.075]))
@@ -105,49 +102,18 @@ class UR5:
             if np.allclose(prev_joint_position, self.joint_values, atol=1e-3):
                 break
 
-    def plan_and_execute_pose_target(self, base_link_to_flange_pos, base_link_to_flange_rot):
-
-        assert self.setup_planning, "setup_planning has to be true."
-        pose_msg = self.to_pose_message(base_link_to_flange_pos, base_link_to_flange_rot)
-        self.moveit_move_group.set_max_velocity_scaling_factor(0.1)
-        self.moveit_move_group.set_max_acceleration_scaling_factor(0.1)
-        self.moveit_move_group.set_pose_target(pose_msg)
-
-        plan_raw = self.moveit_move_group.plan()
-        if not plan_raw[0]:
-            raise exceptions.PlanningError()
-
-        plan = plan_raw[1]
-        success = self.moveit_move_group.execute(plan, wait=True)
-        self.moveit_move_group.stop()
-        self.moveit_move_group.clear_pose_targets()
-        rospy.sleep(0.1)
-
-        if not success:
-            raise exceptions.ExecutionError()
-
-    def plan_and_execute_pose_target_2(self, tool0_controller_pos, tool0_controller_quat, num_plans: int=10):
+    def plan_and_execute_pose_target(self, tool0_controller_pos, tool0_controller_quat, num_plans: int=10):
 
         self.rviz_pub.send_pose(tool0_controller_pos, tool0_controller_quat, "base")            
 
         plans = []
 
-        # for j in range(3):
-
         T = utils.pos_quat_to_transform(tool0_controller_pos, tool0_controller_quat)
-
-        # if j == 1:
-        #     tmp = Rotation.from_euler("z", np.pi).as_matrix()
-        #     T[:3, :3] = np.matmul(tmp, T[:3, :3])
-        # elif j == 2:
-        #     tmp = Rotation.from_euler("z", -np.pi).as_matrix()
-        #     T[:3, :3] = np.matmul(tmp, T[:3, :3])
-
-        T = isec_utils.tool0_controller_base_to_flange_base_link(T, self.tf_proxy)
+        T = rw_utils.tool0_controller_base_to_flange_base_link(T, self.tf_proxy)
         base_link_to_flange_pos, base_link_to_flange_rot = utils.transform_to_pos_quat(T)
 
         assert self.setup_planning, "setup_planning has to be true."
-        pose_msg = self.to_pose_message(base_link_to_flange_pos, base_link_to_flange_rot)
+        pose_msg = rw_utils.to_pose_message(base_link_to_flange_pos, base_link_to_flange_rot)
         self.setup_planning_attempt(pose_msg)
 
         for i in range(num_plans):
@@ -240,30 +206,3 @@ class UR5:
 
         T = self.tf_proxy.lookup_transform("tool0_controller", "base")
         return utils.transform_to_pos_quat(T)
-
-    @classmethod
-    def to_pose_message(cls, pos: NDArray, quat: NDArray) -> Pose:
-
-        msg = Pose()
-        msg.position = cls.to_point_msg(pos.astype(np.float64))
-        msg.orientation = cls.to_quat_msg(quat.astype(np.float64))
-        return msg
-
-    @classmethod
-    def to_point_msg(cls, pos: NDArray[np.float64]) -> Point:
-
-        msg = Point()
-        msg.x = pos[0]
-        msg.y = pos[1]
-        msg.z = pos[2]
-        return msg
-
-    @classmethod
-    def to_quat_msg(cls, quat: NDArray[np.float64]) -> Quaternion:
-
-        msg = Quaternion()
-        msg.x = quat[0]
-        msg.y = quat[1]
-        msg.z = quat[2]
-        msg.w = quat[3]
-        return msg

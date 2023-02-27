@@ -95,7 +95,8 @@ def find_mug_and_tree(cloud: NDArray, tall_mug_plaform: bool=False, short_mug_pl
         mug = mug[mug[..., 2] > 0.14]
 
     if short_mug_platform:
-        mug = mug[mug[..., 2] > 0.02]
+        # mug = mug[mug[..., 2] > 0.02]
+        mug = mug[mug[..., 2] > 0.13]
 
     # Cut off the base of the tree.
     # No base.

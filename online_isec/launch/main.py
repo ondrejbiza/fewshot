@@ -6,14 +6,17 @@ import sys
 import time
 
 ROBOT_LOG_PATH = "logs/robot.txt"
-AZURE_LISTEN_LOG_PATH = "logs/azure_listen.txt"
-REALSENSE_LISTEN_LOG_PATH = "logs/realsense_listen.txt"
-STRUCTURE_LISTEN_LOG_PATH = "logs/structure_listen.txt"
+
+REALSENSE_LEFT_LISTEN_LOG_PATH = "logs/realsense_left_listen.txt"
+REALSENSE_RIGHT_LISTEN_LOG_PATH = "logs/realsense_right_listen.txt"
+REALSENSE_FORWARD_LISTEN_LOG_PATH = "logs/realsense_forward_listen.txt"
+
+REALSENSE_LEFT_DRIVER_LOG_PATH = "logs/realsense_left_driver.txt"
+REALSENSE_RIGHT_DRIVER_LOG_PATH = "logs/realsense_right_driver.txt"
+REALSENSE_FORWARD_DRIVER_LOG_PATH = "logs/realsense_forward_driver.txt"
+
 GRIPPER_LOG_PATH = "logs/gripper.txt"
 GRIPPER_PUB_LOG_PATH = "logs/gripper_pub.txt"
-STRUCTURE_DRIVER_LOG_PATH = "logs/structure_driver.txt"
-AZURE_DRIVER_LOG_PATH = "logs/azure_driver.txt"
-REALSENSE_DRIVER_LOG_PATH = "logs/realsense_driver.txt"
 ADD_SENSOR_FRAME_LOG_PATH = "logs/add_sensor_frame.txt"
 PLANNING_LOG_PATH = "logs/planning.txt"
 RVIZ_LOG_PATH = "logs/rviz.txt"
@@ -67,23 +70,10 @@ def main(args):
     gripper_pub_log = None
     gripper_pub_p = None
 
-    structure_listen_log = None
-    structure_listen_p = None
-
-    realsense_listen_log = None
-    realsense_listen_p = None
-
-    # azure_listen_log = None
-    # azure_listen_p = None
-
-    structure_driver_log = None
-    structure_driver_p = None
-
-    realsense_driver_log = None
-    realsense_driver_p = None
-
-    # azure_driver_log = None
-    # azure_driver_p = None
+    realsense_listen_log_list = []
+    realsense_listen_p_list = []
+    realsense_driver_log_list = []
+    realsense_driver_p_list = []
 
     add_sensor_frame_log = None
     add_sensor_frame_p = None
@@ -105,9 +95,10 @@ def main(args):
         print("Connecting to UR5 at {:s}.".format(args.ip))
         robot_log = open(ROBOT_LOG_PATH, "w")
         robot_p = subprocess.Popen(
-            ["roslaunch", "ur_robot_driver", "ur5_bringup.launch",
-            "robot_ip:={:s}".format(args.ip), "headless_mode:=true"],  # limited:=true if motion planning doesn't work
-            stdout=robot_log, stderr=subprocess.STDOUT
+            " ".join(["roslaunch", "ur_robot_driver", "ur5_bringup.launch",
+            "robot_ip:={:s}".format(args.ip), "headless_mode:=true",
+            "kinematics_config:=$(rospack find ur_calibration)/etc/ur5_isec_calibration.yaml"]),  # limited:=true if motion planning doesn't work
+            stdout=robot_log, stderr=subprocess.STDOUT, shell=True
         )
 
         i = 0
@@ -144,49 +135,29 @@ def main(args):
             stdout=gripper_pub_log, stderr=subprocess.STDOUT
         )
         print("Gripper connected.")
-        time.sleep(1)
 
         print("Connecting cameras.")
+        for log_path, list_name in zip(
+            [REALSENSE_LEFT_LISTEN_LOG_PATH, REALSENSE_RIGHT_LISTEN_LOG_PATH, REALSENSE_FORWARD_LISTEN_LOG_PATH],
+            ["/realsense_left/depth/color/points", "/realsense_right/depth/color/points", "/realsense_forward/depth/color/points"]
+        ):
+            realsense_listen_log_list.append(open(log_path, "w"))
+            realsense_listen_p_list.append(subprocess.Popen(
+                ["rostopic", "hz", list_name],
+                stdout=realsense_listen_log_list[-1], stderr=subprocess.STDOUT
+            ))
+        time.sleep(2)
 
-        structure_listen_log = open(STRUCTURE_LISTEN_LOG_PATH, "w")
-        structure_listen_p = subprocess.Popen(
-            ["rostopic", "hz", "/camera/depth/points"],
-            stdout=structure_listen_log, stderr=subprocess.STDOUT
-        )
-
-        realsense_listen_log = open(REALSENSE_LISTEN_LOG_PATH, "w")
-        realsense_listen_p = subprocess.Popen(
-            ["rostopic", "hz", "/cam1/depth/color/points"],
-            stdout=realsense_listen_log, stderr=subprocess.STDOUT
-        )
-
-        # azure_listen_log = open(AZURE_LISTEN_LOG_PATH, "w")
-        # azure_listen_p = subprocess.Popen(
-        #     ["rostopic", "hz", "/k4a/points2"],
-        #     stdout=azure_listen_log, stderr=azure_listen_log
-        # )
-        # time.sleep(1)
-
-        structure_driver_log = open(STRUCTURE_DRIVER_LOG_PATH, "w")
-        structure_driver_p = subprocess.Popen(
-            ["roslaunch", "openni2_launch", "openni2.launch"],
-            stdout=structure_driver_log, stderr=subprocess.STDOUT
-        )
-        time.sleep(5)
-
-        realsense_driver_log = open(REALSENSE_DRIVER_LOG_PATH, "w")
-        realsense_driver_p = subprocess.Popen(
-            ["roslaunch", "realsense.launch"],
-            stdout=realsense_driver_log, stderr=subprocess.STDOUT
-        )
-        time.sleep(5)
-
-        # azure_driver_log = open(AZURE_DRIVER_LOG_PATH, "w")
-        # azure_driver_p = subprocess.Popen(
-        #     ["roslaunch", "azure.launch"],
-        #     stdout=azure_driver_log, stderr=azure_driver_log
-        # )
-        # time.sleep(1)
+        for log_path, launch_name in zip(
+                [REALSENSE_LEFT_DRIVER_LOG_PATH, REALSENSE_RIGHT_DRIVER_LOG_PATH, REALSENSE_FORWARD_DRIVER_LOG_PATH],
+                ["realsense_left.launch", "realsense_right.launch", "realsense_forward.launch"]
+            ):
+            realsense_driver_log_list.append(open(log_path, "w"))
+            realsense_driver_p_list.append(subprocess.Popen(
+                ["roslaunch", launch_name],
+                stdout=realsense_driver_log_list[-1], stderr=subprocess.STDOUT
+            ))
+            time.sleep(5)
 
         add_sensor_frame_log = open(ADD_SENSOR_FRAME_LOG_PATH, "w")
         add_sensor_frame_p = subprocess.Popen(
@@ -238,42 +209,20 @@ def main(args):
         print("Gripper connection closed.")
 
         print("Closing camera connection.")
+        for x in realsense_listen_p_list:
+            close_process(x)
+        for x in realsense_listen_log_list:
+            close_log(x)
 
-        if structure_listen_p is not None:
-            close_process(structure_listen_p)
-        if structure_listen_log is not None:
-            close_log(structure_listen_log)
-
-        if realsense_listen_p is not None:
-            close_process(realsense_listen_p)
-        if realsense_listen_log is not None:
-            close_log(realsense_listen_log)
-
-        # if azure_listen_p is not None:
-        #     close_process(azure_listen_p)
-        # if azure_listen_log is not None:
-        #     close_log(azure_listen_log)
-
-        if structure_driver_p is not None:
-            close_process(structure_driver_p)
-        if structure_driver_log is not None:
-            close_log(structure_driver_log)
-
-        if realsense_driver_p is not None:
-            close_process(realsense_driver_p)
-        if realsense_driver_log is not None:
-            close_log(realsense_driver_log)
-
-        # if azure_driver_p is not None:
-        #     close_process(azure_driver_p)
-        # if azure_driver_log is not None:
-        #     close_log(azure_driver_log)
+        for x in realsense_driver_p_list:
+            close_process(x)
+        for x in realsense_driver_log_list:
+            close_log(x)
 
         if add_sensor_frame_p is not None:
             close_process(add_sensor_frame_p)
         if add_sensor_frame_log is not None:
             close_log(add_sensor_frame_log)
-
         print("Camera connection closed.")
 
         print("Closing planning.")

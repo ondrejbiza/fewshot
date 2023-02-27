@@ -968,7 +968,7 @@ def random_ortho_rots_hemisphere(num: int) -> NDArray[np.float32]:
     ort = np.stack([v1, v2], axis=1)
     ort_pt = torch.tensor(ort, device="cpu")
     rots = orthogonalize(ort_pt).numpy()
-    z = np.array([0., 0., 1.], dtype=np.float32)
+    z = np.array([0., 1., 0.], dtype=np.float32)
     out = np.einsum("bnk,kl->bnl", rots, z[:, None])[:, :, 0]
     mask = out[..., 2] >= 0
     return ort[mask][:num]

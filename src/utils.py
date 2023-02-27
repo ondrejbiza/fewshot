@@ -4,19 +4,22 @@ from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from numpy.typing import NDArray
+import pybullet as pb
 from scipy.spatial.transform import Rotation
 from sklearn.decomposition import PCA
 import trimesh
+
+from src import exceptions
 
 
 @dataclass
 class ObjParam:
     """Object shape and pose parameters.
     """
-    position: NDArray[np.float64]
-    quat: NDArray[np.float64]
+    position: NDArray[np.float64] = np.array([0., 0., 0.])
+    quat: NDArray[np.float64] = np.array([0., 0., 0., 1.])
     latent: Optional[NDArray[np.float32]] = None
-    scale: float = 1.
+    scale: NDArray = np.array([1., 1., 1.])
 
     def get_transform(self):
         return pos_quat_to_transform(self.position, self.quat)
@@ -31,12 +34,15 @@ class CanonObj:
     mesh_faces: NDArray[np.float32]
     pca: Optional[PCA] = None
 
+    def __post_init__(self):
+        self.n_components = self.pca.n_components
+
     def to_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
         if self.pca is not None:
             pcd = self.canonical_pcd + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
         else:
             pcd = np.copy(self.canonical_pcd)
-        return pcd * obj_param.scale
+        return pcd * obj_param.scale[None]
 
     def to_transformed_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
         pcd = self.to_pcd(obj_param)
@@ -226,3 +232,59 @@ def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray
     indices = centroids.astype(np.int32)
     point = point[indices]
     return point, indices
+
+
+def pb_set_pose(body: int, pos: NDArray, quat: NDArray, sim_id: Optional[int]=None):
+    if sim_id is not None:
+        pb.resetBasePositionAndOrientation(body, pos, quat, physicsClientId=sim_id)
+    else:
+        pb.resetBasePositionAndOrientation(body, pos, quat)
+
+
+def pb_get_pose(body, sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
+    if sim_id is not None:
+        pos, quat = pb.getBasePositionAndOrientation(body, physicsClientId=sim_id)
+    else:
+        pos, quat = pb.getBasePositionAndOrientation(body)
+    pos = np.array(pos, dtype=np.float64)
+    quat = np.array(quat, dtype=np.float64)
+    return pos, quat
+
+
+def pb_body_collision(body1: int, body2: int, sim_id: Optional[int]=None) -> bool:
+    if sim_id is not None:
+        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0, physicsClientId=sim_id)
+    else:
+        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0)
+    return len(results) != 0
+
+
+def wiggle(source_obj: int, target_obj: int, max_tries: int=100000, sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
+  """Wiggle the source object out of a collision with the target object.
+  
+  Important: this function will change the state of the world and we assume
+  the world was saved before and will be restored after.
+  """
+  i = 0
+  pos, quat = pb_get_pose(source_obj, sim_id=sim_id)
+  
+  pb.performCollisionDetection()
+  in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
+  if not in_collision:
+    return pos, quat
+  
+  while True:
+
+    new_pos = pos + np.random.normal(0, 0.01, 3)
+    pb_set_pose(source_obj, new_pos, quat, sim_id=sim_id)
+
+    pb.performCollisionDetection()
+    in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
+    if not in_collision:
+      break
+
+    i += 1
+    if i > max_tries:
+      raise exceptions.PlanningError("Could not wiggle object out of collision.")
+
+  return new_pos, quat

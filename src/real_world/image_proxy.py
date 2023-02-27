@@ -9,9 +9,8 @@ import matplotlib.pyplot as plt
 import rospy
 import ros_numpy
 from sensor_msgs.msg import Image
-from skimage.transform import resize
 
-from online_isec.tf_proxy import TFProxy
+from src.real_world.tf_proxy import TFProxy
 
 
 @dataclass

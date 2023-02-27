@@ -1,29 +1,23 @@
-from typing import Tuple, Optional
 from dataclasses import dataclass
-from numpy.typing import NDArray
 import functools
+from numpy.typing import NDArray
 import time
+from typing import Optional, Tuple
+import subprocess
 
-from threading import Lock
 import numpy as np
-import matplotlib.pyplot as plt
 import rospy
 import ros_numpy
-from sensor_msgs.msg import PointCloud2, Image
-from sensor_msgs import point_cloud2
-from skimage.transform import resize
-import tf as not_tensorflow
-import tf2_ros
-import utils
+from sensor_msgs.msg import PointCloud2
 
-from online_isec.tf_proxy import TFProxy
-from online_isec import constants
-import exceptions
+from src import exceptions, utils
+from src.real_world import constants
+from src.real_world.tf_proxy import TFProxy
 
 
 @dataclass
 class PointCloudProxy:
-    # (realsense, azure, structure)
+    # (realsense*3)
     pc_topics: Tuple[str, ...] = ("/realsense_left/depth/color/points", "/realsense_right/depth/color/points", "/realsense_forward/depth/color/points")
     nans_in_pc: Tuple[bool, ...] = (False, False, False)
 
@@ -79,7 +73,7 @@ class PointCloudProxy:
 
         if self.apply_transform:
             T = self.tf_proxy.lookup_transform(cloud_frame, "base", rospy.Time(0))
-            cloud[:, :3] = utils.transform_pointcloud_2(cloud[:, :3], T)
+            cloud[:, :3] = utils.transform_pcd(cloud[:, :3], T)
 
         self.clouds[camera_index] = cloud
 
@@ -87,24 +81,40 @@ class PointCloudProxy:
 
         self.clouds = [None for _ in range(len(self.pc_topics))]
         self.register()
+        time.sleep(2)
 
-        for _ in range(100):
-            time.sleep(0.1)
-            flag = True
-            for cloud in self.clouds:
-                if cloud is None:
-                    flag = False
-            if flag:
-                break
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_left/stereo_module", "emitter_enabled", "1"])
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_right/stereo_module", "emitter_enabled", "0"])
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_forward/stereo_module", "emitter_enabled", "0"])
 
-        self.unregister()
+        # clouds = []
+
+        # time.sleep(0.5)
+        # clouds.append(self.clouds[0])
+
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_right/stereo_module", "emitter_enabled", "1"])
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_left/stereo_module", "emitter_enabled", "0"])
+
+        # time.sleep(0.5)
+        # clouds.append(self.clouds[1])
+
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_forward/stereo_module", "emitter_enabled", "1"])
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_right/stereo_module", "emitter_enabled", "0"])
+
+        # time.sleep(0.5)
+        # clouds.append(self.clouds[2])
+
+        # subprocess.call(["rosrun", "dynamic_reconfigure", "dynparam", "set", "/realsense_forward/stereo_module", "emitter_enabled", "0"])
 
         clouds = []
         for cloud in self.clouds:
-            if cloud is None:
-                raise exceptions.PerceptionError("A subset of depths sensors doesn't work.")
             clouds.append(cloud)
+
+        for cloud in clouds:
+            assert cloud is not None
         clouds = np.concatenate(clouds)
+
+        self.unregister()
 
         self.clouds = [None for _ in range(len(self.pc_topics))]
 
@@ -114,26 +124,22 @@ class PointCloudProxy:
         self.unregister()
 
 
-if __name__ == "__main__":
-    import time
-    import open3d as o3d
+@dataclass
+class PointCloudProxyLeft(PointCloudProxy):
+    # (realsense*3)
+    pc_topics: Tuple[str, ...] = ("/realsense_left/depth/color/points",)
+    nans_in_pc: Tuple[bool, ...] = (False,)
 
-    # Show outputs of the proxy.
-    print("Setup proxy and wait a bit.")
-    rospy.init_node("point_cloud_proxy_example")
-    pc_proxy = PointCloudProxy()
 
-    cloud = pc_proxy.get_all()
+@dataclass
+class PointCloudProxyRight(PointCloudProxy):
+    # (realsense*3)
+    pc_topics: Tuple[str, ...] = ("/realsense_right/depth/color/points",)
+    nans_in_pc: Tuple[bool, ...] = (False,)
 
-    if cloud is None:
-        print("Something went wrong.")
-        exit(1)
 
-    print("PC size:", cloud.shape)
-
-    print("Showing point cloud.")
-    print("Points min,max:", cloud.min(), cloud.max())
-
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(utils.rotate_for_open3d(cloud))
-    o3d.visualization.draw_geometries([pcd])
+@dataclass
+class PointCloudProxyForward(PointCloudProxy):
+    # (realsense*3)
+    pc_topics: Tuple[str, ...] = ("/realsense_forward/depth/color/points",)
+    nans_in_pc: Tuple[bool, ...] = (False,)

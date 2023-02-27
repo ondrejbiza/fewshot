@@ -11,7 +11,7 @@ import time
 from online_isec import constants
 from online_isec import perception
 import online_isec.utils as isec_utils
-from online_isec.point_cloud_proxy_sync import RealsenseStructurePointCloudProxy
+from online_isec.point_cloud_proxy_sync import PointCloudProxy
 from online_isec.ur5 import UR5
 from online_isec.simulation import Simulation
 import utils
@@ -64,7 +64,7 @@ def pick(
         ur5.gripper.open_gripper()
         ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
 
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_pre), num_plans=1)
 
     return T_m_to_g
 
@@ -108,13 +108,13 @@ def place(
     ur5.moveit_scene.detach_object("mug")
     ur5.moveit_scene.remove_object("mug")
 
-    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_to_b))
+    ur5.plan_and_execute_pose_target_2(*utils.transform_to_pos_quat(T_g_to_b), num_plans=1)
 
 
 def main(args):
 
     rospy.init_node("moveit_plan_pick_place_plan_approach")
-    pc_proxy = RealsenseStructurePointCloudProxy()
+    pc_proxy = PointCloudProxy()
 
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
