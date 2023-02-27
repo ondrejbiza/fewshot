@@ -291,14 +291,14 @@ def main(args):
     # prepare the target descriptors
 
     if args.exp == "bowl_on_mug_upright_pose_new":
-        canon_source_path = "data/230213_ndf_bowls_scale_large_pca_8_dim_alp_2.pkl"
-        canon_target_path = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
+        canon_source_path = "data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_target_path = "data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl"
     elif args.exp == "mug_on_rack_upright_pose_new":
-        canon_source_path = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
-        canon_target_path = "data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl"
+        canon_source_path = "data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_target_path = "data/230227_ndf_trees_scale_large_pca_8_dim_alp_0_01.pkl"
     elif args.exp == "bottle_in_container_upright_pose_new":
-        canon_source_path = "data/230213_ndf_bottles_scale_large_pca_8_dim_alp_2.pkl"
-        canon_target_path = "data/230213_boxes_scale_large_pca_8_dim_alp_2.pkl"
+        canon_source_path = "data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_target_path = "data/230227_boxes_scale_large_pca_8_dim_alp_0_01.pkl"
     else:
         raise ValueError("Unknown experiment.")
 

@@ -141,6 +141,30 @@ class NDFInterface:
         trans_s_to_b = utils.pos_quat_to_transform(source_param.position, source_param.quat)
         trans_t_to_b = utils.pos_quat_to_transform(target_param.position, target_param.quat)
 
-        # TODO: Wiggle them out of collision, maybe.
+        # Save the mesh and its convex decomposition.
+        mesh = self.canon_source.to_mesh(source_param)
+        mesh.export("tmp_source.stl")
+        utils.convex_decomposition(mesh, "tmp_source.obj")
+
+        mesh = self.canon_target.to_mesh(target_param)
+        mesh.export("tmp_target.stl")
+        utils.convex_decomposition(mesh, "tmp_target.obj")
+
+        # Add predicted meshes to pybullet.
+        source_pb = pb.loadURDF("tmp_source.urdf", useFixedBase=True)
+        pb.resetBasePositionAndOrientation(source_pb, *utils.transform_to_pos_quat(trans_s_to_b))
+
+        target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
+        pb.resetBasePositionAndOrientation(target_pb, *utils.transform_to_pos_quat(trans_t_to_b))
+
+        # Wiggle the source object out of collision.
+        src_pos, src_quat = utils.wiggle(source_pb, target_pb)
+        trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
+
+        # Remove predicted meshes from pybullet.
+        pb.removeBody(source_pb)
+        pb.removeBody(target_pb)
+
+        # Compute relative transform.
         trans_s_to_t = trans_t_to_b @ trans_cs_to_ct @ np.linalg.inv(trans_s_to_b)
         return trans_s_to_t
