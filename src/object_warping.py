@@ -51,7 +51,7 @@ class ObjectWarpingSE3Batch:
 
         if self.scaling:
             self.scale_param = nn.Parameter(
-                torch.ones((n_angles,), dtype=torch.float32, device=self.device) * self.init_scale,
+                torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale,
                 requires_grad=True)
             params.append(self.scale_param)
 
@@ -98,7 +98,7 @@ class ObjectWarpingSE3Batch:
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
         if self.scaling:
-            new_pcd = new_pcd * self.scale_param[:, None, None]
+            new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -136,7 +136,7 @@ class ObjectWarpingSE3Batch:
                 position = position.astype(np.float64)
                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
                 latent = self.latent_param[i].cpu().numpy()
-                scale = self.scale_param[i].cpu().item()
+                scale = self.scale_param[i].cpu().numpy()
 
                 obj_param = utils.ObjParam(position, quat, latent, scale)
                 all_parameters.append(obj_param)
@@ -154,7 +154,7 @@ class ObjectWarpingSE2Batch(ObjectWarpingSE3Batch):
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
         if self.scaling:
-            new_pcd = new_pcd * self.scale_param[:, None, None]
+            new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -182,7 +182,7 @@ class ObjectWarpingSE2Batch(ObjectWarpingSE3Batch):
                 position = position.astype(np.float64)
                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
                 latent = self.latent_param[i].cpu().numpy()
-                scale = self.scale_param[i].cpu().item()
+                scale = self.scale_param[i].cpu().numpy()
 
                 obj_param = utils.ObjParam(position, quat, latent, scale)
                 all_parameters.append(obj_param)

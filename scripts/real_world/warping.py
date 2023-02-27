@@ -20,20 +20,9 @@ def main(args):
     assert cloud is not None
 
     if args.task == "mug_tree":
-        mug_pcd, tree_pcd = perception.mug_tree_simple_perception(cloud)
-
-        canon_mug = utils.CanonObj.from_pickle("data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl")
-        canon_tree = utils.CanonObj.from_pickle("data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl")
-        
-        warp = object_warping.ObjectWarpingSE2Batch(
-            canon_mug, mug_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
-        mug_pcd_complete, _, _ = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
-
-        warp = object_warping.ObjectWarpingSE2Batch(
-            canon_tree, tree_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=0.1)
-        tree_pcd_complete, _, _ = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, mug_pcd, tree_pcd = perception.mug_tree_perception(
+            cloud, any_rotation=args.any_rotation, short_mug_platform=args.short_platform, tall_mug_platform=args.tall_platform
+        )
 
         d = {
             "mug": mug_pcd,
@@ -48,4 +37,7 @@ def main(args):
 
 parser = argparse.ArgumentParser("Find objects for a particular task, create warps.")
 parser.add_argument("task", help="[mug_tree, bowl_on_mug, bottle_in_container]")
+parser.add_argument("-a", "--any-rotation", default=False, action="store_true")
+parser.add_argument("-t", "--tall-platform", default=False, action="store_true")
+parser.add_argument("-s", "--short-platform", default=False, action="store_true")
 main(parser.parse_args())

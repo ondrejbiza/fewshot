@@ -17,7 +17,7 @@ from src.real_world.simulation import Simulation
 
 def pick(
     mug_pcd_complete: NDArray, mug_param: utils.ObjParam,
-    ur5: UR5, load_path: str, safe_release: bool=False, add_mug_to_scene: bool=False) -> NDArray:
+    ur5: UR5, load_path: str, safe_release: bool=False) -> NDArray:
 
     with open(load_path, "rb") as f:
         data = pickle.load(f)
@@ -32,19 +32,22 @@ def pick(
     target_quat = Rotation.from_matrix(target_rot).as_quat()
 
     T = utils.pos_quat_to_transform(target_pos, target_quat)
-    T_pre = utils.pos_quat_to_transform(*rw_utils.move_hand_back(target_pos, target_quat, -0.075))
+    T_pre = utils.pos_quat_to_transform(*rw_utils.move_hand_back(target_pos, target_quat, -0.1))
     if safe_release:
         T_pre_safe = utils.pos_quat_to_transform(*rw_utils.move_hand_back(target_pos, target_quat, -0.01))
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
+
+    # Remove mug from planning scene.
+    ur5.moveit_scene.remove_object("mug")
+
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T))
     ur5.gripper.close_gripper()
 
-    if add_mug_to_scene:
-        # Add mug to the planning scene.
-        pos, quat = utils.transform_to_pos_quat(
-            rw_utils.desk_obj_param_to_base_link_T(mug_param.position, mug_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
-        ur5.moveit_scene.add_object("tmp.stl", "mug", pos, quat)
+    # Add mug back to the planning scene.
+    pos, quat = utils.transform_to_pos_quat(
+        rw_utils.desk_obj_param_to_base_link_T(mug_param.position, mug_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
+    ur5.moveit_scene.add_object("tmp_source.stl", "mug", pos, quat)
 
     # Lock mug to flange in the moveit scene.
     ur5.moveit_scene.attach_object("mug")
@@ -102,6 +105,7 @@ def place(
     T_g_to_b = np.matmul(T_new_m_to_b, np.linalg.inv(T_m_to_g))
     T_g_pre_to_b = np.matmul(T_g_to_b, T_g_pre_to_g)
 
+    # Remove mug from the planning scene.
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_g_pre_to_b))
     ur5.moveit_scene.detach_object("mug")
     ur5.moveit_scene.remove_object("mug")
@@ -125,13 +129,13 @@ def main(args):
 
     mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = perception.mug_tree_perception(
         cloud, ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=not args.disable_mug_collisions_during_pick, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
+        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
         mug_save_decomposition=True, tree_save_decomposition=True,
         ablate_no_mug_warping=args.ablate_no_mug_warping, any_rotation=args.any_rotation,
-        short_mug_platform=args.short_platform, tall_mug_platform=args.tall_platform
+        short_mug_platform=args.short_platform, tall_mug_platform=args.tall_platform, grow_source_object=True
     )
 
-    T_m_to_g = pick(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl", add_mug_to_scene=args.disable_mug_collisions_during_pick)
+    T_m_to_g = pick(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
@@ -157,5 +161,4 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--tall-platform", default=False, action="store_true")
     parser.add_argument("-s", "--short-platform", default=False, action="store_true")
     parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
-    parser.add_argument("--disable-mug-collisions-during-pick", default=False, action="store_true")
     main(parser.parse_args())

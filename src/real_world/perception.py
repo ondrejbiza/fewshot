@@ -1,3 +1,4 @@
+import copy as cp
 import time
 from typing import Any, Dict, Optional, Tuple
 
@@ -122,7 +123,8 @@ def mug_tree_perception(
     any_rotation: bool=False,
     short_mug_platform: bool=False,
     tall_mug_platform: bool=False,
-    desk_center: Tuple[float, float, float]=constants.DESK_CENTER
+    desk_center: Tuple[float, float, float]=constants.DESK_CENTER,
+    grow_source_object: bool=False, grow_target_object: bool=False
     ) -> Tuple[NDArray, utils.ObjParam, NDArray, utils.ObjParam, utils.CanonObj, utils.CanonObj, NDArray, NDArray]:
 
     if ablate_no_mug_warping:
@@ -171,12 +173,24 @@ def mug_tree_perception(
         "tree_complete": tree_pcd_complete,
     })
 
-    mug_mesh = canon_mug.to_mesh(mug_param)
+    if grow_source_object:
+        tmp = cp.deepcopy(mug_param)
+        tmp.scale *= 1.2
+        mug_mesh = canon_mug.to_mesh(tmp)
+    else:
+        mug_mesh = canon_mug.to_mesh(mug_param)
+
     mug_mesh.export("tmp_source.stl")
     if mug_save_decomposition:
         utils.convex_decomposition(mug_mesh, "tmp_source.obj")
 
-    tree_mesh = canon_tree.to_mesh(tree_param)
+    if grow_target_object:
+        tmp = cp.deepcopy(tree_param)
+        tmp.scale *= 1.25
+        tree_mesh = canon_tree.to_mesh(tmp)
+    else:
+        tree_mesh = canon_tree.to_mesh(tree_param)
+
     tree_mesh.export("tmp_target.stl")
     if tree_save_decomposition:
         utils.convex_decomposition(tree_mesh, "tmp_target.obj")
