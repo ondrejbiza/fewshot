@@ -106,6 +106,9 @@ def main(args):
 
     print("Picking canonical object.")
     canonical_idx = pick_canonical(obj_points)
+    if args.objects == "ndf_bottles":
+        # Some bottles have meshes with too many points, which makes warping too slow.
+        canonical_idx = 2
     print(f"Canonical obj index: {canonical_idx}.")
 
     if args.show:

@@ -32,6 +32,7 @@ from rndf_robot.utils.eval_gen_utils import constraint_obj_world, safeCollisionF
 
 from rndf_robot.eval.relation_tools.multi_ndf import infer_relation_intersection, create_target_descriptors
 
+from src.ndf_interface import NDFInterface
 
 NOISE_VALUE_LIST = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.16, 0.24, 0.32, 0.4]
 
@@ -289,9 +290,22 @@ def main(args):
     #####################################################################################
     # prepare the target descriptors
 
-    from src.ndf_interface import NDFInterface
+    if args.exp == "bowl_on_mug_upright_pose_new":
+        canon_source_path = "data/230213_ndf_bowls_scale_large_pca_8_dim_alp_2.pkl"
+        canon_target_path = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
+    elif args.exp == "mug_on_rack_upright_pose_new":
+        canon_source_path = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
+        canon_target_path = "data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl"
+    elif args.exp == "bottle_in_container_upright_pose_new":
+        canon_source_path = "data/230213_ndf_bottles_scale_large_pca_8_dim_alp_2.pkl"
+        canon_target_path = "data/230213_boxes_scale_large_pca_8_dim_alp_2.pkl"
+    else:
+        raise ValueError("Unknown experiment.")
 
-    interface = NDFInterface()
+    interface = NDFInterface(
+        canon_source_path=canon_source_path,
+        canon_target_path=canon_target_path
+    )
     interface.set_demo_info(pc_master_dict, cfg, args.n_demos)
 
     #####################################################################################
