@@ -1,7 +1,7 @@
 from typing import Tuple
 
 
-DESK_CENTER: Tuple[float, float, float] = (-0.527, -0.005, -0.07)
+DESK_CENTER: Tuple[float, float, float] = (-0.527, -0.005, -0.075)
 WORKSPACE_SIZE: float = 0.4
 HEIGHT_EPS: float = 0.005
 

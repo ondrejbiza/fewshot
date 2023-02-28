@@ -127,13 +127,17 @@ def main(args):
 
     sim = Simulation()
 
-    mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = perception.mug_tree_perception(
-        cloud, ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
-        mug_save_decomposition=True, tree_save_decomposition=True,
-        ablate_no_mug_warping=args.ablate_no_mug_warping, any_rotation=args.any_rotation,
-        short_mug_platform=args.short_platform, tall_mug_platform=args.tall_platform, grow_source_object=True
+    mug_pcd, tree_pcd = perception.mug_tree_segmentation(
+        cloud, short_platform=args.short_platform, tall_platform=args.tall_platform
     )
+
+    canon_mug = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
+    canon_tree = utils.CanonObj.from_pickle("data/230227_ndf_trees_scale_large_pca_8_dim_alp_0_01.pkl")
+
+    out = perception.warping(
+        mug_pcd, tree_pcd, canon_mug, canon_tree, any_rotation=args.any_rotation
+    )
+    mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = out
 
     T_m_to_g = pick(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
 
