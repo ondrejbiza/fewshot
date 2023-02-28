@@ -244,7 +244,8 @@ def warping(
     add_target_to_planning_scene: bool=False,
     rviz_pub: Optional[RVizPub]=None,
     ablate_no_warping: bool=False,
-    any_rotation: bool=False,
+    source_any_rotation: bool=False,
+    source_no_warping: bool=False,
     desk_center: Tuple[float, float, float]=constants.DESK_CENTER,
     grow_source_object: bool=False, grow_target_object: bool=False
     ) -> Tuple[NDArray, utils.ObjParam, NDArray, utils.ObjParam, utils.CanonObj, utils.CanonObj, NDArray, NDArray]:
@@ -255,20 +256,27 @@ def warping(
     dc = np.array(desk_center)
     perception_start = time.time()
 
-    if any_rotation:
+    if source_any_rotation:
+        assert not source_no_warping
         warp = object_warping.ObjectWarpingSE3Batch(
             canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1.)
+            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=canon_source.init_scale)
         source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
     else:
-        warp = object_warping.ObjectWarpingSE2Batch(
-            canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1.)
-        source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        if source_no_warping:
+            warp = object_warping.ObjectSE2Batch(
+                canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+                n_samples=1000, scaling=False, init_scale=canon_source.init_scale)
+            source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        else:
+            warp = object_warping.ObjectWarpingSE2Batch(
+                canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+                n_samples=1000, object_size_reg=0.01, scaling=True, init_scale=canon_source.init_scale)
+            source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
     warp = object_warping.ObjectWarpingSE2Batch(
         canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-        n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1.)
+        n_samples=1000, object_size_reg=0.01, scaling=True, init_scale=canon_target.init_scale)
     target_pcd_complete, _, target_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
     print("Inference time: {:.1f}s.".format(time.time() - perception_start))

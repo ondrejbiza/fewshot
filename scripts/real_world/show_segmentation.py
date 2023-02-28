@@ -1,8 +1,5 @@
 import argparse
-import time
 
-import numpy as np
-from numpy.typing import NDArray
 import rospy
 
 from src import viz_utils

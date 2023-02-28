@@ -38,9 +38,11 @@ class CanonObj:
         self.n_components = self.pca.n_components
 
     def to_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
-        if self.pca is not None:
+        if self.pca is not None and obj_param.latent is not None:
             pcd = self.canonical_pcd + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
         else:
+            if self.pca is not None:
+                print("WARNING: Skipping warping because we do not have a latent vector. We however have PCA.")
             pcd = np.copy(self.canonical_pcd)
         return pcd * obj_param.scale[None]
 
