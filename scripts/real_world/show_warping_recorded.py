@@ -20,7 +20,7 @@ def main(args):
             source_pcd, target_pcd = d["mug"], d["tree"]
 
             canon_mug = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-            canon_tree = utils.CanonObj.from_pickle("data/230227_ndf_trees_scale_large_pca_8_dim_alp_0_01.pkl")
+            canon_tree = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
 
             canon_mug.init_scale = 0.7
             canon_tree.init_scale = 1.
@@ -44,7 +44,7 @@ def main(args):
             source_pcd, target_pcd = d["bottle"], d["box"]
 
             canon_bottle = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
-            canon_box = utils.CanonObj.from_pickle("data/230227_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
+            canon_box = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
 
             canon_bottle.init_scale = 1.
             canon_box.init_scale = 1.
