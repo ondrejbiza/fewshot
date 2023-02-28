@@ -57,6 +57,10 @@ def main(args):
         obj_paths = [f"data/boxes/train/{i}.stl" for i in range(10)]
         rotation = None
         num_surface_samples = 2000
+    elif args.objects == "simple_trees":
+        obj_paths = [f"data/simple_trees/train/{i}.stl" for i in range(10)]
+        rotation = None
+        num_surface_samples = 2000
     else:
         raise ValueError("Unknown object class.")
 
