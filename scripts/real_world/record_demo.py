@@ -116,14 +116,38 @@ def main(args):
     sim = Simulation()
 
     if args.task == "mug_tree":
-        out = perception.mug_tree_perception(
-            cloud, ur5.tf_proxy, ur5.moveit_scene,
-            add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
-            mug_save_decomposition=True, tree_save_decomposition=True
-        )
-    else:
-        raise NotImplementedError()
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
 
+        canon_source.init_scale = 0.7
+        canon_target.init_scale = 1.
+
+        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud)
+    elif args.task == "bowl_on_mug":
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
+
+        canon_source.init_scale = 0.8
+        canon_target.init_scale = 0.7
+
+        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_1=True)
+    elif args.task == "bottle_in_box":
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
+
+        canon_source.init_scale = 1.
+        canon_target.init_scale = 1.
+
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud)
+    else:
+        raise ValueError("Unknown task.")
+
+    out = perception.warping(
+        source_pcd, target_pcd, canon_source, canon_target,
+        tf_proxy=ur5.tf_proxy, moveit_scene=ur5.moveit_scene, source_save_decomposition=True,
+        target_save_decomposition=True, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
+        rviz_pub=ur5.rviz_pub
+    )
     source_pcd_complete, source_param, target_pcd_complete, target_param, canon_source, canon_target, source_pcd, target_pcd = out
 
     # Setup simulation with what we see in the real world.
