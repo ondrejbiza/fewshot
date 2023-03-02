@@ -47,12 +47,12 @@ class ObjectWarpingSE3Batch:
         self.pose_param = nn.Parameter(
             torch.tensor(initial_poses, dtype=torch.float32, device=self.device),
             requires_grad=True)
+        self.scale_param = nn.Parameter(
+            torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale,
+            requires_grad=True)
+        
         params = [self.latent_param, self.center_param, self.pose_param]
-
         if self.scaling:
-            self.scale_param = nn.Parameter(
-                torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale,
-                requires_grad=True)
             params.append(self.scale_param)
 
         self.optim = optim.Adam(params, lr=self.lr)
@@ -97,8 +97,7 @@ class ObjectWarpingSE3Batch:
         deltas = torch.matmul(self.latent_param, components) + means
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
-        if self.scaling:
-            new_pcd = new_pcd * self.scale_param[:, None]
+        new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -153,8 +152,7 @@ class ObjectWarpingSE2Batch(ObjectWarpingSE3Batch):
         deltas = torch.matmul(self.latent_param, components) + means
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
         new_pcd = canonical_pcd[None] + deltas
-        if self.scaling:
-            new_pcd = new_pcd * self.scale_param[:, None]
+        new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -194,11 +192,14 @@ class ObjectSE3Batch:
     """Object pose gradient descent in SE3."""
 
     def __init__(self, canon_obj: utils.CanonObj, pcd: NDArray[np.float32],
-                 device: torch.device, lr: float, n_steps: int, n_samples: Optional[int]):
+                 device: torch.device, lr: float, n_steps: int, n_samples: Optional[int],
+                 scaling: bool=False, init_scale: float=1.0):
         self.device = device
         self.lr = lr
         self.n_steps = n_steps
         self.n_samples = n_samples
+        self.scaling = scaling
+        self.init_scale = init_scale
 
         self.global_means = np.mean(pcd, axis=0)
         pcd = pcd - self.global_means[None]
@@ -218,7 +219,15 @@ class ObjectSE3Batch:
         self.pose_param = nn.Parameter(
             torch.tensor(initial_poses, dtype=torch.float32, device=self.device),
             requires_grad=True)
-        self.optim = optim.Adam([self.center_param, self.pose_param], lr=self.lr)
+        self.scale_param = nn.Parameter(
+            torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale,
+            requires_grad=True)
+
+        params = [self.center_param, self.pose_param]
+        if self.scaling:
+            params.append(self.scale_param)
+
+        self.optim = optim.Adam(params, lr=self.lr)
 
         for _ in range(self.n_steps):
 
@@ -245,6 +254,7 @@ class ObjectSE3Batch:
         """Transform canonical object. Differentiable."""
         rotm = orthogonalize(self.pose_param)
         new_pcd = torch.repeat_interleave(canonical_pcd[None], len(self.pose_param), dim=0)
+        new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -275,7 +285,9 @@ class ObjectSE3Batch:
                 position = self.center_param[i].cpu().numpy() + self.global_means
                 position = position.astype(np.float64)
                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
-                obj_param = utils.ObjParam(position, quat, None)
+                scale = self.scale_param[i].cpu().numpy()
+
+                obj_param = utils.ObjParam(position, quat, None, scale)
 
                 all_parameters.append(obj_param)
 
@@ -289,6 +301,7 @@ class ObjectSE2Batch(ObjectSE3Batch):
         """Warp and transform canonical object. Differentiable."""
         rotm = yaw_to_rot_batch_pt(self.pose_param)
         new_pcd = torch.repeat_interleave(canonical_pcd[None], len(self.pose_param), dim=0)
+        new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         return new_pcd
 
@@ -314,8 +327,10 @@ class ObjectSE2Batch(ObjectSE3Batch):
                 position = self.center_param[i].cpu().numpy() + self.global_means
                 position = position.astype(np.float64)
                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
-                obj_param = utils.ObjParam(position, quat, None)
+                scale = self.scale_param[i].cpu().numpy()
 
+                obj_param = utils.ObjParam(position, quat, None, scale)
+   
                 all_parameters.append(obj_param)
 
         return all_costs, all_new_pcds, all_parameters

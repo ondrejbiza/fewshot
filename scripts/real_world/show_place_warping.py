@@ -1,9 +1,10 @@
 import argparse
+import pickle
+
 import numpy as np
 from numpy.typing import NDArray
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
-import pickle
 
 from src import utils
 

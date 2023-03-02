@@ -127,13 +127,40 @@ def main(args):
 
     sim = Simulation()
 
-    mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = perception.mug_tree_perception(
-        cloud, ur5.tf_proxy, ur5.moveit_scene,
-        add_mug_to_planning_scene=True, add_tree_to_planning_scene=True, rviz_pub=ur5.rviz_pub,
-        mug_save_decomposition=True, tree_save_decomposition=True,
-        ablate_no_mug_warping=args.ablate_no_mug_warping, any_rotation=args.any_rotation,
-        short_mug_platform=args.short_platform, tall_mug_platform=args.tall_platform, grow_source_object=True
+    if args.task == "mug_tree":
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
+
+        canon_source.init_scale = 0.7
+        canon_target.init_scale = 1.
+
+        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud)
+    elif args.task == "bowl_on_mug":
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
+
+        canon_source.init_scale = 0.8
+        canon_target.init_scale = 0.7
+
+        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_1=True)
+    elif args.task == "bottle_in_box":
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
+
+        canon_source.init_scale = 1.
+        canon_target.init_scale = 1.
+
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud)
+    else:
+        raise ValueError("Unknown task.")
+
+    out = perception.warping(
+        source_pcd, target_pcd, canon_source, canon_target, source_any_rotation=args.any_rotation,
+        tf_proxy=ur5.tf_proxy, moveit_scene=ur5.moveit_scene, source_save_decomposition=True,
+        target_save_decomposition=True, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
+        rviz_pub=ur5.rviz_pub, grow_source_object=True
     )
+    mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = out
 
     T_m_to_g = pick(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
 
