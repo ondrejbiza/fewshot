@@ -259,32 +259,31 @@ def pb_body_collision(body1: int, body2: int, sim_id: Optional[int]=None) -> boo
     return len(results) != 0
 
 
-def wiggle(source_obj: int, target_obj: int, max_tries: int=100000, sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
-  """Wiggle the source object out of a collision with the target object.
-  
-  Important: this function will change the state of the world and we assume
-  the world was saved before and will be restored after.
-  """
-  i = 0
-  pos, quat = pb_get_pose(source_obj, sim_id=sim_id)
-  
-  pb.performCollisionDetection()
-  in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
-  if not in_collision:
-    return pos, quat
-  
-  while True:
-
-    new_pos = pos + np.random.normal(0, 0.01, 3)
-    pb_set_pose(source_obj, new_pos, quat, sim_id=sim_id)
+def wiggle(source_obj: int, target_obj: int, max_tries: int=100000,
+           sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
+    """Wiggle the source object out of a collision with the target object.
+    
+    Important: this function will change the state of the world and we assume
+    the world was saved before and will be restored after.
+    """
+    i = 0
+    pos, quat = pb_get_pose(source_obj, sim_id=sim_id)
 
     pb.performCollisionDetection()
     in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
     if not in_collision:
-      break
+        return pos, quat
 
-    i += 1
-    if i > max_tries:
-      raise exceptions.PlanningError("Could not wiggle object out of collision.")
+    while True:
 
-  return new_pos, quat
+        new_pos = pos + np.random.normal(0, 0.01, 3)
+        pb_set_pose(source_obj, new_pos, quat, sim_id=sim_id)
+
+        pb.performCollisionDetection()
+        in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
+        if not in_collision:
+            return new_pos, quat
+
+        i += 1
+        if i > max_tries:
+            return pos, quat
