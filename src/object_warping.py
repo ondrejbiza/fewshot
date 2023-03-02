@@ -7,6 +7,8 @@ from torch import nn, optim
 
 from src import utils
 
+PARAM_1 = {"lr": 1e-2, "n_steps": 100, "n_samples": 1000, "object_size_reg": 0.01}
+
 
 class ObjectWarpingSE3Batch:
     """Object shape and pose warping in SE3."""
@@ -50,7 +52,7 @@ class ObjectWarpingSE3Batch:
         self.scale_param = nn.Parameter(
             torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale,
             requires_grad=True)
-        
+
         params = [self.latent_param, self.center_param, self.pose_param]
         if self.scaling:
             params.append(self.scale_param)

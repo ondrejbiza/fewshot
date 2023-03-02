@@ -260,7 +260,7 @@ def warping(
         assert not source_no_warping
         warp = object_warping.ObjectWarpingSE3Batch(
             canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=canon_source.init_scale)
+            n_samples=1000, object_size_reg=0.01, scaling=True, init_scale=canon_source.init_scale)
         source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
     else:
         if source_no_warping:

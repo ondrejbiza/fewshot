@@ -293,18 +293,26 @@ def main(args):
     if args.exp == "bowl_on_mug_upright_pose_new":
         canon_source_path = "data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl"
         canon_target_path = "data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_source_scale = 0.8
+        canon_target_scale = 0.7
     elif args.exp == "mug_on_rack_upright_pose_new":
         canon_source_path = "data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl"
-        canon_target_path = "data/230227_ndf_trees_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_target_path = "data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_source_scale = 0.7
+        canon_target_scale = 1.
     elif args.exp == "bottle_in_container_upright_pose_new":
         canon_source_path = "data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl"
-        canon_target_path = "data/230227_boxes_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_target_path = "data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl"
+        canon_source_scale = 1.
+        canon_target_scale = 1.
     else:
         raise ValueError("Unknown experiment.")
 
     interface = NDFInterface(
         canon_source_path=canon_source_path,
-        canon_target_path=canon_target_path
+        canon_target_path=canon_target_path,
+        canon_source_scale=canon_source_scale,
+        canon_target_scale=canon_target_scale
     )
     interface.set_demo_info(pc_master_dict, cfg, args.n_demos)
 

@@ -6,7 +6,7 @@ import pybullet as pb
 import torch
 
 from src import demo, utils, viz_utils
-from src.object_warping import ObjectWarpingSE2Batch, ObjectWarpingSE3Batch, warp_to_pcd_se2, warp_to_pcd_se3
+from src.object_warping import ObjectWarpingSE2Batch, ObjectWarpingSE3Batch, warp_to_pcd_se2, warp_to_pcd_se3, PARAM_1
 
 
 @dataclass
@@ -15,6 +15,8 @@ class NDFInterface:
 
     canon_source_path: str = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
     canon_target_path: str = "data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl"
+    canon_source_scale: float = 1.
+    canon_target_scale: float = 1.
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.1
 
@@ -48,13 +50,13 @@ class NDFInterface:
 
         # Perception.
         warp = ObjectWarpingSE2Batch(
-            self.canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1)
+            self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
+            scaling=True, init_scale=self.canon_source_scale)
         source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         warp = ObjectWarpingSE2Batch(
-            self.canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1)
+            self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
+            scaling=True, init_scale=self.canon_target_scale)
         target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         if show:
@@ -107,18 +109,18 @@ class NDFInterface:
 
         if se3:
             warp = ObjectWarpingSE3Batch(
-                self.canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-                n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1)
+                self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
+                scaling=True, init_scale=self.canon_source_scale)
             source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
         else:
             warp = ObjectWarpingSE2Batch(
-                self.canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-                n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1)
+                self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
+                scaling=True, init_scale=self.canon_source_scale)
             source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         warp = ObjectWarpingSE2Batch(
-            self.canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.1, scaling=True, init_scale=1)
+            self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
+            scaling=True, init_scale=self.canon_target_scale)
         target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         if show:
@@ -158,8 +160,8 @@ class NDFInterface:
         pb.resetBasePositionAndOrientation(target_pb, *utils.transform_to_pos_quat(trans_t_to_b))
 
         # Wiggle the source object out of collision.
-        src_pos, src_quat = utils.wiggle(source_pb, target_pb)
-        trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
+        # src_pos, src_quat = utils.wiggle(source_pb, target_pb)
+        # trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
 
         # Remove predicted meshes from pybullet.
         pb.removeBody(source_pb)
