@@ -24,7 +24,7 @@ class ObjParam:
     latent: Optional[NPF32] = None
     scale: NPF32 = np.array([1., 1., 1.], dtype=np.float32)
 
-    def get_transform(self):
+    def get_transform(self) -> NPF64:
         return pos_quat_to_transform(self.position, self.quat)
 
 
