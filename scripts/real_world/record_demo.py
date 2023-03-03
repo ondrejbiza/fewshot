@@ -17,7 +17,9 @@ from src.real_world.point_cloud_proxy_sync import PointCloudProxy
 from src.real_world.simulation import Simulation
 
 
-def worker(ur5: UR5, sphere: int, source_id: int, data: Dict[str, Any]):
+def worker(ur5: UR5, robotiq_id: int, source_id: int, data: Dict[str, Any]):
+
+    trans_robotiq_to_tool0 = rw_utils.robotiq_to_tool0()
 
     while True:
 
@@ -34,8 +36,16 @@ def worker(ur5: UR5, sphere: int, source_id: int, data: Dict[str, Any]):
             src_pos, src_quat = utils.transform_to_pos_quat(T_src_to_b)
             utils.pb_set_pose(source_id, src_pos, src_quat)
 
-        # Mark the gripper with a sphere.
-        utils.pb_set_pose(sphere, gripper_pos, np.array([0., 0., 0., 1.]))
+        gripper_pos, gripper_quat = ur5.get_tool0_to_base()
+        gripper_pos = gripper_pos - constants.DESK_CENTER
+        trans_t0_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
+        trans = trans_t0_to_b @ trans_robotiq_to_tool0
+        gripper_pos, gripper_quat = utils.transform_to_pos_quat(trans)
+        utils.pb_set_pose(robotiq_id, gripper_pos, gripper_quat)
+
+        fract = ur5.gripper.get_open_fraction()
+        utils.pb_set_joint_positions(robotiq_id, [0, 2, 4, 5, 6, 7], [fract, fract, fract, -fract, fract, -fract])
+
         time.sleep(0.1)
 
 
@@ -63,6 +73,26 @@ def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: utils.CanonObj,
                 "pos": g_to_m_pos,
                 "quat": g_to_m_quat,
                 "T_g_to_b": T_g_to_b,
+                "observed_pc": observed_pc,
+            }, f)
+
+
+def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, source_id: int,
+                             canon_source: utils.CanonObj, source_param: utils.ObjParam,
+                             save_path: Optional[bool]=None):
+
+    # Get robotiq transform.
+    pos, quat = utils.pb_get_pose(robotiq_id)
+    trans_robotiq_to_ws = utils.pos_quat_to_transform(pos, quat)
+
+    pos_robotiq_canon, index = demo.save_pick_contact_points(
+        robotiq_id, source_id, trans_robotiq_to_ws, canon_source, source_param)
+
+    if save_path:
+        with open(save_path, "wb") as f:
+            pickle.dump({
+                "index": index,
+                "pos_robotiq": pos_robotiq_canon,
                 "observed_pc": observed_pc,
             }, f)
 
@@ -153,19 +183,24 @@ def main(args):
     # Setup simulation with what we see in the real world.
     source_id = sim.add_object("tmp_source.urdf", source_param.position, source_param.quat)
     target_id = sim.add_object("tmp_target.urdf", target_param.position, target_param.quat, fixed_base=True)
-    sphere_id = sim.add_object("data/sphere.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
+    robotiq_id = sim.add_object("data/robotiq.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
 
     # Continuously update the gripper position in simulation.
     data = {
         "T": None,
         "stop": False,
     }
-    thread = threading.Thread(target=worker, args=(ur5, sphere_id, source_id, data))
+    thread = threading.Thread(target=worker, args=(ur5, robotiq_id, source_id, data))
     thread.start()
 
     input("Close gripper?")
     ur5.gripper.close_gripper()
-    save_pick_pose(source_pcd, canon_source, source_param, ur5, args.pick_save_path + ".pkl")
+    
+    if args.pick_contacts:
+        save_pick_contact_points(
+            source_pcd, robotiq_id, source_id, canon_source, source_param, args.pick_save_path + ".pkl")
+    else:
+        save_pick_pose(source_pcd, canon_source, source_param, ur5, args.pick_save_path + ".pkl")
 
     # Calculate mug to gripper transform. Transmit it to simulation.
     T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
@@ -198,4 +233,5 @@ parser = argparse.ArgumentParser("Collect a demonstration.")
 parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
 parser.add_argument("pick_save_path", type=str, help="Postfix added automatically.")
 parser.add_argument("place_save_path", type=str, help="Postfix added automatically.")
+parser.add_argument("--pick-contacts", default=False, action="store_true")
 main(parser.parse_args())

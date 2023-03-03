@@ -206,3 +206,8 @@ class UR5:
 
         T = self.tf_proxy.lookup_transform("tool0_controller", "base")
         return utils.transform_to_pos_quat(T)
+
+    def get_tool0_to_base(self) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+
+        T = self.tf_proxy.lookup_transform("tool0", "base")
+        return utils.transform_to_pos_quat(T)

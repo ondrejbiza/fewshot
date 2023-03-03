@@ -261,6 +261,12 @@ def pb_body_collision(body1: int, body2: int, sim_id: Optional[int]=None) -> boo
     return len(results) != 0
 
 
+def pb_set_joint_positions(body, joints: List[int], positions: List[float]):
+    assert len(joints) == len(positions)
+    for joint, position in zip(joints, positions):
+        pb.resetJointState(body, joint, targetValue=position, targetVelocity=0)
+
+
 def wiggle(source_obj: int, target_obj: int, max_tries: int=100000,
            sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
     """Wiggle the source object out of a collision with the target object.

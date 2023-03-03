@@ -96,3 +96,24 @@ def workspace_to_base():
     T = np.eye(4)
     T[:3, 3] = constants.DESK_CENTER
     return T
+
+
+def robotiq_coupler_to_tool0():
+
+    rc_to_tool0_pos = np.array([0., 0., 0.004])
+    rc_to_tool0_quat = Rotation.from_euler("xyz", [0., 0., -np.pi / 2]).as_quat()
+    return utils.pos_quat_to_transform(rc_to_tool0_pos, rc_to_tool0_quat)
+
+
+def robotiq_to_robotiq_coupler():
+
+    r_to_rc_pos = np.array([0., 0., 0.004])
+    r_to_rc_quat = Rotation.from_euler("xyz", [0., -np.pi / 2, np.pi]).as_quat()
+    return utils.pos_quat_to_transform(r_to_rc_pos, r_to_rc_quat)
+
+
+def robotiq_to_tool0():
+
+    trans_rc_to_tool0 = robotiq_coupler_to_tool0()
+    trans_r_to_rc = robotiq_to_robotiq_coupler()
+    return trans_rc_to_tool0 @ trans_r_to_rc

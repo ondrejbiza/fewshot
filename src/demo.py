@@ -7,6 +7,35 @@ import pybullet as pb
 from src import utils, viz_utils
 
 
+def save_pick_contact_points(robotiq_id: int, source_id: int, trans_robotiq_to_ws: NDArray,
+                             canon_source: utils.CanonObj, source_param: utils.ObjParam) -> Tuple[NDArray, NDArray[np.int32]]:
+
+    pb.performCollisionDetection()
+    cols = pb.getClosestPoints(robotiq_id, source_id, 0.01)
+
+    pos_robotiq = [col[5] for col in cols]
+    pos_source = [col[6] for col in cols]
+    print(len(pos_robotiq), len(pos_source))
+
+    assert len(pos_robotiq) > 0
+
+    pos_robotiq = np.stack(pos_robotiq, axis=0).astype(np.float32)
+    pos_source = np.stack(pos_source, axis=0).astype(np.float32)
+
+    # Contact points on the gripper in its base position.
+    pos_robotiq_canon = utils.transform_pcd(pos_robotiq, np.linalg.inv(trans_robotiq_to_ws))
+
+    # Contact point indices on the source object.
+    trans_source_to_ws = source_param.get_transform()
+    pos_source_canon = utils.transform_pcd(pos_source, np.linalg.inv(trans_source_to_ws))
+    source_pcd_complete = canon_source.to_pcd(source_param)
+
+    dist = np.sqrt(np.sum(np.square(source_pcd_complete[:, None] - pos_source_canon[None]), axis=2))
+    index = np.argmin(dist, axis=0).transpose()
+
+    return pos_robotiq_canon, index
+
+
 def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10,
                        show: bool=False) -> Tuple[NDArray, NDArray]:
     """Anchor virtual points on an object using k-nearest-neighbors."""
