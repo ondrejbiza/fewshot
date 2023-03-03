@@ -15,7 +15,7 @@ from src.real_world.ur5 import UR5
 from src.real_world.simulation import Simulation
 
 
-def pick(
+def pick_simple(
     mug_pcd_complete: NDArray, mug_param: utils.ObjParam,
     ur5: UR5, load_path: str, safe_release: bool=False) -> NDArray:
 
@@ -66,6 +66,57 @@ def pick(
         ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre), num_plans=1)
+
+    return T_m_to_g
+
+
+def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.ObjParam, load_path: str):
+
+    with open(load_path, "rb") as f:
+        d = pickle.load(f)
+    index = d["index"]
+    pos_robotiq = d["pos_robotiq"]
+
+    source_pcd_complete = canon_source.to_pcd(source_param)
+    source_points = source_pcd_complete[index]
+
+    # Pick pose in canonical frame..
+    trans, _, _ = utils.best_fit_transform(pos_robotiq, source_points)
+    # Pick pose in workspace frame.
+    trans_robotiq_to_ws = source_param.get_transform() @ trans
+
+    trans_tool0_to_ws = trans_robotiq_to_ws @ np.linalg.inv(rw_utils.robotiq_to_tool0())
+    trans_tool0_controller_to_tool0 = ur5.tf_proxy.lookup_transform("tool0_controller", "tool0")
+    trans_tool0_controller_to_ws = trans_tool0_to_ws @ trans_tool0_controller_to_tool0
+    trans_tool0_controller_to_b = rw_utils.workspace_to_base() @ trans_tool0_controller_to_ws
+
+    trans_g = trans_tool0_controller_to_b
+    trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), -0.1))
+
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g))
+
+    # Remove mug from planning scene.
+    ur5.moveit_scene.remove_object("mug")
+
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g))
+    ur5.gripper.close_gripper()
+
+    # Add mug back to the planning scene.
+    pos, quat = utils.transform_to_pos_quat(
+        rw_utils.desk_obj_param_to_base_link_T(source_param.position, source_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
+    ur5.moveit_scene.add_object("tmp_source.stl", "mug", pos, quat)
+
+    # Lock mug to flange in the moveit scene.
+    ur5.moveit_scene.attach_object("mug")
+
+    # Calcualte mug to gripper transform at the point when we grasp it.
+    # TODO: If the grasp moved the mug we wouldn't know.
+    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
+    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
+    T_m_to_b = utils.pos_quat_to_transform(source_param.position + constants.DESK_CENTER, source_param.quat)
+    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
+
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g), num_plans=1)
 
     return T_m_to_g
 
@@ -162,7 +213,10 @@ def main(args):
     )
     mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = out
 
-    T_m_to_g = pick(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
+    if args.pick_contacts:
+        T_m_to_g = pick_contacts(ur5, canon_mug, mug_param, args.pick_load_path + ".pkl")
+    else:
+        T_m_to_g = pick_simple(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
@@ -188,4 +242,5 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--tall-platform", default=False, action="store_true")
     parser.add_argument("-s", "--short-platform", default=False, action="store_true")
     parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
+    parser.add_argument("--pick-contacts", default=False, action="store_true")
     main(parser.parse_args())
