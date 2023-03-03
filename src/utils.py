@@ -11,15 +11,18 @@ import trimesh
 
 from src import exceptions
 
+NPF32 = NDArray[np.float32]
+NPF64 = NDArray[np.float64]
+
 
 @dataclass
 class ObjParam:
     """Object shape and pose parameters.
     """
-    position: NDArray[np.float64] = np.array([0., 0., 0.])
-    quat: NDArray[np.float64] = np.array([0., 0., 0., 1.])
-    latent: Optional[NDArray[np.float32]] = None
-    scale: NDArray = np.array([1., 1., 1.])
+    position: NPF64 = np.array([0., 0., 0.])
+    quat: NPF64 = np.array([0., 0., 0., 1.])
+    latent: Optional[NPF32] = None
+    scale: NPF32 = np.array([1., 1., 1.], dtype=np.float32)
 
     def get_transform(self):
         return pos_quat_to_transform(self.position, self.quat)
@@ -29,15 +32,15 @@ class ObjParam:
 class CanonObj:
     """Canonical object with shape warping.
     """
-    canonical_pcd: NDArray[np.float32]
-    mesh_vertices: NDArray[np.float32]
-    mesh_faces: NDArray[np.float32]
+    canonical_pcd: NPF32
+    mesh_vertices: NPF32
+    mesh_faces: NDArray[np.int32]
     pca: Optional[PCA] = None
 
     def __post_init__(self):
         self.n_components = self.pca.n_components
 
-    def to_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
+    def to_pcd(self, obj_param: ObjParam) -> NPF32:
         if self.pca is not None and obj_param.latent is not None:
             pcd = self.canonical_pcd + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
         else:
@@ -46,7 +49,7 @@ class CanonObj:
             pcd = np.copy(self.canonical_pcd)
         return pcd * obj_param.scale[None]
 
-    def to_transformed_pcd(self, obj_param: ObjParam) -> NDArray[np.float32]:
+    def to_transformed_pcd(self, obj_param: ObjParam) -> NPF32:
         pcd = self.to_pcd(obj_param)
         trans = pos_quat_to_transform(obj_param.position, obj_param.quat)
         return transform_pcd(pcd, trans)
@@ -75,7 +78,7 @@ class PickDemoSingleVertex:
     """Pick demonstrating with a single canonical object index.
     """
     target_index: int
-    target_quat: NDArray[np.float64]
+    target_quat: NPF64
 
 
 @dataclass
@@ -94,7 +97,7 @@ class PlaceDemoVirtualPoints:
     """Place demonstration with virtual points.
     """
     knns: NDArray[np.int32]
-    deltas: NDArray[np.float64]
+    deltas: NPF32
     target_indices: NDArray[np.int32]
 
     def check_consistent(self):
@@ -112,34 +115,32 @@ class PlaceDemoContactPoints:
         assert len(self.source_indices) == len(self.target_indices)
 
 
-def quat_to_rotm(quat: NDArray[np.float64]) -> NDArray[np.float64]:
+def quat_to_rotm(quat: NPF64) -> NPF64:
     return Rotation.from_quat(quat).as_matrix()
 
 
-def rotm_to_quat(rotm: NDArray[np.float64]) -> NDArray[np.float64]:
+def rotm_to_quat(rotm: NPF64) -> NPF64:
     return Rotation.from_matrix(rotm).as_quat()
 
 
 def pos_quat_to_transform(
-        pos: Union[Tuple[float, float, float], NDArray[np.float64]],
-        quat: Union[Tuple[float, float, float, float], NDArray[np.float64]]
-    ) -> NDArray[np.float64]:
+        pos: Union[Tuple[float, float, float], NPF64],
+        quat: Union[Tuple[float, float, float, float], NPF64]
+    ) -> NPF64:
     trans = np.eye(4).astype(np.float64)
     trans[:3, 3] = pos
     trans[:3, :3] = quat_to_rotm(np.array(quat))
     return trans
 
 
-def transform_to_pos_quat(
-    trans: NDArray[np.float64]) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+def transform_to_pos_quat(trans: NPF64) -> Tuple[NPF64, NPF64]:
     pos = trans[:3, 3]
     quat = rotm_to_quat(trans[:3, :3])
-    return pos, quat
+    # Just making sure.
+    return pos.astype(np.float64), quat.astype(np.float64)
 
 
-def transform_pcd(
-        pcd: NDArray[np.float32], trans: NDArray[np.float64], is_position: bool=True
-    ) -> NDArray[np.float32]:
+def transform_pcd(pcd: NPF32, trans: NPF64, is_position: bool=True) -> NPF32:
     n = pcd.shape[0]
     cloud = pcd.T
     augment = np.ones((1, n)) if is_position else np.zeros((1, n))
@@ -149,7 +150,7 @@ def transform_pcd(
     return cloud
 
 
-def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArray]:
+def best_fit_transform(A: NPF32, B: NPF32) -> Tuple[NPF64, NPF64, NPF64]:
     '''
     https://github.com/ClayFlannigan/icp/blob/master/icp.py
     Calculates the least-squares best-fit transform that maps corresponding points A to B in m spatial dimensions
@@ -186,11 +187,11 @@ def best_fit_transform(A: NDArray, B: NDArray) -> Tuple[NDArray, NDArray, NDArra
     t = centroid_B.T - np.dot(R,centroid_A.T)
 
     # homogeneous transformation
-    T = np.identity(m+1)
+    T = np.identity(m+1).astype(np.float64)
     T[:m, :m] = R
     T[:m, m] = t
 
-    return T, R, t
+    return T, R.astype(np.float64), t.astype(np.float64)
 
 
 def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=None) -> List[trimesh.base.Trimesh]:
@@ -210,7 +211,7 @@ def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=No
     return convex_meshes
 
 
-def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray]:
+def farthest_point_sample(point: NPF32, npoint: int) -> Tuple[NPF32, NDArray[np.int32]]:
     # https://github.com/yanx27/Pointnet_Pointnet2_pytorch
     """
     Input:
@@ -236,14 +237,14 @@ def farthest_point_sample(point: NDArray, npoint: int) -> Tuple[NDArray, NDArray
     return point, indices
 
 
-def pb_set_pose(body: int, pos: NDArray, quat: NDArray, sim_id: Optional[int]=None):
+def pb_set_pose(body: int, pos: NPF64, quat: NPF64, sim_id: Optional[int]=None):
     if sim_id is not None:
         pb.resetBasePositionAndOrientation(body, pos, quat, physicsClientId=sim_id)
     else:
         pb.resetBasePositionAndOrientation(body, pos, quat)
 
 
-def pb_get_pose(body, sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
+def pb_get_pose(body, sim_id: Optional[int]=None) -> Tuple[NPF64, NPF64]:
     if sim_id is not None:
         pos, quat = pb.getBasePositionAndOrientation(body, physicsClientId=sim_id)
     else:
@@ -268,7 +269,7 @@ def pb_set_joint_positions(body, joints: List[int], positions: List[float]):
 
 
 def wiggle(source_obj: int, target_obj: int, max_tries: int=100000,
-           sim_id: Optional[int]=None) -> Tuple[NDArray, NDArray]:
+           sim_id: Optional[int]=None) -> Tuple[NPF64, NPF64]:
     """Wiggle the source object out of a collision with the target object.
     
     Important: this function will change the state of the world and we assume

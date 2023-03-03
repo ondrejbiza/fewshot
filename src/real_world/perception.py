@@ -6,6 +6,7 @@ import numpy as np
 from numpy.typing import NDArray
 import open3d as o3d
 import torch
+from scipy.spatial import KDTree
 
 from src import object_warping, utils, viz_utils
 import src.real_world.utils as rw_utils
@@ -14,8 +15,11 @@ from src.real_world.tf_proxy import TFProxy
 from src.real_world.moveit_scene import MoveItScene
 from src.real_world.rviz_pub import RVizPub
 
+NPF32 = NDArray[np.float32]
+NPF64 = NDArray[np.float64]
 
-def center_workspace(cloud: NDArray, desk_center: Tuple[float, float, float]=constants.DESK_CENTER) -> NDArray:
+
+def center_workspace(cloud: NPF32, desk_center: Tuple[float, float, float]=constants.DESK_CENTER) -> NPF32:
 
     cloud = np.copy(cloud)
     cloud[..., 0] -= desk_center[0]
@@ -24,7 +28,7 @@ def center_workspace(cloud: NDArray, desk_center: Tuple[float, float, float]=con
     return cloud
 
 
-def mask_workspace(cloud: NDArray, size: float=constants.WORKSPACE_SIZE, height_eps: float=constants.HEIGHT_EPS) -> NDArray:
+def mask_workspace(cloud: NPF32, size: float=constants.WORKSPACE_SIZE, height_eps: float=constants.HEIGHT_EPS) -> NDArray:
 
     half_size = size / 2
 
@@ -35,7 +39,24 @@ def mask_workspace(cloud: NDArray, size: float=constants.WORKSPACE_SIZE, height_
     return cloud[mask]
 
 
-def find_mug_and_tree(cloud: NDArray, tall_mug_plaform: bool=False, short_mug_platform: bool=False) -> Tuple[NDArray, NDArray]:
+def subtract_platform(source_pcd: NPF32, platform_pcd: NPF32, delta: float=0.01) -> NPF32:
+    """Subtract platform point cloud from source object point cloud."""
+    # KDTrees for faster lookup.
+    tree_platform = KDTree(platform_pcd)
+    tree_source = KDTree(source_pcd)
+    mask_lists = tree_source.query_ball_tree(tree_platform, r=delta)
+    assert len(mask_lists) == len(source_pcd)
+
+    # Remove all points that are at most delta away from any point in the platform point cloud.
+    mask = np.ones(len(source_pcd), dtype=np.bool_)
+    for i in range(len(mask_lists)):
+        if len(mask_lists[i]) > 0:
+            mask[i] = False
+
+    return source_pcd[mask]
+
+
+def find_mug_and_tree(cloud: NPF32) -> Tuple[NPF32, NPF32]:
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
@@ -76,13 +97,6 @@ def find_mug_and_tree(cloud: NDArray, tall_mug_plaform: bool=False, short_mug_pl
         tree = pcs[1]
         mug = pcs[0]
 
-    if tall_mug_plaform:
-        mug = mug[mug[..., 2] > 0.14]
-
-    if short_mug_platform:
-        # mug = mug[mug[..., 2] > 0.02]
-        mug = mug[mug[..., 2] > 0.13]
-
     # Cut off the base of the tree.
     # No base.
     mask = tree[..., 2] >= 0.03
@@ -93,7 +107,7 @@ def find_mug_and_tree(cloud: NDArray, tall_mug_plaform: bool=False, short_mug_pl
     return mug, tree
 
 
-def find_bowl_and_mug(cloud: NDArray, platform_1: bool=False) -> Tuple[NDArray, NDArray]:
+def find_bowl_and_mug(cloud: NPF32) -> Tuple[NPF32, NPF32]:
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
@@ -137,13 +151,10 @@ def find_bowl_and_mug(cloud: NDArray, platform_1: bool=False) -> Tuple[NDArray, 
         bowl = pcs[1]
         mug = pcs[0]
 
-    if platform_1:
-        bowl = bowl[bowl[..., 2] > 0.07]
-
     return bowl, mug
 
 
-def find_bottle_and_box(cloud: NDArray, platform_1: bool=False) -> Tuple[NDArray, NDArray]:
+def find_bottle_and_box(cloud: NPF32) -> Tuple[NPF32, NPF32]:
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
@@ -187,13 +198,16 @@ def find_bottle_and_box(cloud: NDArray, platform_1: bool=False) -> Tuple[NDArray
     return bottle, box
 
 
-def mug_tree_segmentation(cloud: NDArray, short_platform: bool=False,
-                          tall_platform: bool=False, max_pc_size: Optional[int]=2000) -> Tuple[NDArray, NDArray]:
+def mug_tree_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
+                          platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:
 
     cloud = center_workspace(cloud)
     cloud = mask_workspace(cloud)
 
-    mug_pcd, tree_pcd = find_mug_and_tree(cloud, short_mug_platform=short_platform, tall_mug_plaform=tall_platform)
+    mug_pcd, tree_pcd = find_mug_and_tree(cloud)
+    if platform_pcd is not None:
+        mug_pcd = subtract_platform(mug_pcd, platform_pcd)
+
     if max_pc_size is not None:
         if len(mug_pcd) > max_pc_size:
             mug_pcd, _ = utils.farthest_point_sample(mug_pcd, max_pc_size)
@@ -203,12 +217,16 @@ def mug_tree_segmentation(cloud: NDArray, short_platform: bool=False,
     return mug_pcd, tree_pcd
 
 
-def bowl_mug_segmentation(cloud: NDArray, max_pc_size: Optional[int]=2000, platform_1: bool=False) -> Tuple[NDArray, NDArray]:
+def bowl_mug_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
+                          platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:
 
     cloud = center_workspace(cloud)
     cloud = mask_workspace(cloud)
 
-    bowl_pcd, mug_pcd = find_bowl_and_mug(cloud, platform_1=platform_1)
+    bowl_pcd, mug_pcd = find_bowl_and_mug(cloud)
+    if platform_pcd is not None:
+        bowl_pcd = subtract_platform(bowl_pcd, platform_pcd)
+
     if max_pc_size is not None:
         if len(bowl_pcd) > max_pc_size:
             bowl_pcd, _ = utils.farthest_point_sample(bowl_pcd, max_pc_size)
@@ -218,12 +236,16 @@ def bowl_mug_segmentation(cloud: NDArray, max_pc_size: Optional[int]=2000, platf
     return bowl_pcd, mug_pcd
 
 
-def bottle_box_segmentation(cloud: NDArray, max_pc_size: Optional[int]=2000) -> Tuple[NDArray, NDArray]:
+def bottle_box_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
+                            platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:
 
     cloud = center_workspace(cloud)
     cloud = mask_workspace(cloud)
 
     bottle_pcd, box_pcd = find_bottle_and_box(cloud)
+    if platform_pcd is not None:
+        bottle_pcd = subtract_platform(bottle_pcd, platform_pcd)
+
     if max_pc_size is not None:
         if len(bottle_pcd) > max_pc_size:
             bottle_pcd, _ = utils.farthest_point_sample(bottle_pcd, max_pc_size)
@@ -233,8 +255,15 @@ def bottle_box_segmentation(cloud: NDArray, max_pc_size: Optional[int]=2000) -> 
     return bottle_pcd, box_pcd
 
 
+def platform_segmentation(cloud: NPF32) -> NPF32:
+    """Segment platform from the table."""
+    cloud = center_workspace(cloud)
+    cloud = mask_workspace(cloud)
+    return cloud
+
+
 def warping(
-    source_pcd: NDArray, target_pcd: NDArray,
+    source_pcd: NPF32, target_pcd: NPF32,
     canon_source: utils.CanonObj, canon_target: utils.CanonObj,
     tf_proxy: Optional[TFProxy]=None,
     moveit_scene: Optional[MoveItScene]=None,
@@ -248,7 +277,7 @@ def warping(
     source_no_warping: bool=False,
     desk_center: Tuple[float, float, float]=constants.DESK_CENTER,
     grow_source_object: bool=False, grow_target_object: bool=False
-    ) -> Tuple[NDArray, utils.ObjParam, NDArray, utils.ObjParam, utils.CanonObj, utils.CanonObj, NDArray, NDArray]:
+    ) -> Tuple[NPF32, utils.ObjParam, NPF32, utils.ObjParam, utils.CanonObj, utils.CanonObj, NPF32, NPF32]:
 
     if ablate_no_warping:
         raise NotImplementedError()

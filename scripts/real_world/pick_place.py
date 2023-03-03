@@ -173,6 +173,13 @@ def main(args):
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
     ur5.gripper.open_gripper(position=70)
 
+    platform_pcd = None
+    if args.platform:
+        cloud = pc_proxy.get_all()
+        assert cloud is not None
+        platform_pcd = perception.platform_segmentation(cloud)
+        input("Platform captured. Continue? ")
+
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
@@ -185,7 +192,7 @@ def main(args):
         canon_source.init_scale = 0.7
         canon_target.init_scale = 1.
 
-        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud)
+        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
@@ -193,7 +200,7 @@ def main(args):
         canon_source.init_scale = 0.8
         canon_target.init_scale = 0.7
 
-        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_1=True)
+        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bottle_in_box":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
@@ -201,7 +208,7 @@ def main(args):
         canon_source.init_scale = 1.
         canon_target.init_scale = 1.
 
-        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud)
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
     else:
         raise ValueError("Unknown task.")
 
@@ -238,9 +245,13 @@ if __name__ == "__main__":
     parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
     parser.add_argument("pick_load_path", type=str, help="Postfix added automatically.")
     parser.add_argument("place_load_path", type=str, help="Postfix added automatically.")
-    parser.add_argument("-a", "--any-rotation", default=False, action="store_true")
-    parser.add_argument("-t", "--tall-platform", default=False, action="store_true")
-    parser.add_argument("-s", "--short-platform", default=False, action="store_true")
+
+    parser.add_argument("-a", "--any-rotation", default=False, action="store_true",
+                        help="Try to determine SE(3) object pose. Otherwise, determine a planar pose.")
+    parser.add_argument("-c", "--pick-contacts", default=False, action="store_true")
+    parser.add_argument("-p", "--platform", default=False, action="store_true",
+                        help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
+
     parser.add_argument("--ablate-no-mug-warping", default=False, action="store_true")
-    parser.add_argument("--pick-contacts", default=False, action="store_true")
+
     main(parser.parse_args())
