@@ -3,6 +3,7 @@
     <arg name="camera" value="realsense_right"/>
     <arg name="serial_no" value="108222250646" />
     <arg name="initial_reset" value="true" />
+    <arg name="json_file_path" value="$(find fewshot)/online_isec/launch/realsense_high_density.json"/>
 
     <arg name="clip_distance" value="1.0"/>
     <arg name="filters" value="pointcloud,temporal"/>

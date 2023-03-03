@@ -1,0 +1,9 @@
+<package format="2">
+  <name>fewshot</name>
+  <version>1.0.0</version>
+  <description>
+  Behavior cloning.
+  </description>
+  <maintainer email="biza.o@northeastern.edu">Ondrej Biza</maintainer>
+  <license>MIT</license>
+</package>
