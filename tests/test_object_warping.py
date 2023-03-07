@@ -30,3 +30,15 @@ class TestObjectWarping(unittest.TestCase):
             costs.append(object_warping.cost_pt(ss, tt).numpy())
         costs = np.array(costs)
         np.testing.assert_almost_equal(cost_batch, costs)
+
+    def test_orthogonalize_unit_rotation(self):
+
+        x = torch.tensor([[
+            [1.0, 0., 0.],
+            [0., 1.0, 0.]
+        ]])
+
+        y = object_warping.orthogonalize(x)[0].cpu().numpy()
+        ref = np.eye(3)
+
+        np.testing.assert_equal(y, ref)

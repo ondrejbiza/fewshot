@@ -7,7 +7,7 @@ from numpy.typing import NDArray
 import rospy
 from scipy.spatial.transform import Rotation
 
-from src import utils
+from src import utils, viz_utils
 from src.real_world import constants, perception
 import src.real_world.utils as rw_utils
 from src.real_world.point_cloud_proxy_sync import PointCloudProxy
@@ -224,6 +224,61 @@ def main(args):
         T_m_to_g = pick_contacts(ur5, canon_mug, mug_param, args.pick_load_path + ".pkl")
     else:
         T_m_to_g = pick_simple(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
+
+    # Take an in-hand image.
+    if args.platform:
+        input("Platform removed?")
+
+    cloud = pc_proxy.get_all()
+    assert cloud is not None
+    in_hand = perception.in_hand_segmentation(cloud)
+
+    trans_ws_to_b = rw_utils.workspace_to_base()
+    trans_b_to_tool0_c = ur5.tf_proxy.lookup_transform("base", "tool0_controller")
+    trans_tool0_c_to_gt = rw_utils.tool0_controller_to_gripper_top()
+
+    trans = trans_tool0_c_to_gt @ trans_b_to_tool0_c @ trans_ws_to_b
+    in_hand = utils.transform_pcd(in_hand, trans)
+    in_hand = in_hand[in_hand[:, 2] <= 0.]
+    in_hand = utils.transform_pcd(in_hand, np.linalg.inv(trans))
+
+    robotiq_id = sim.add_object("data/robotiq.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
+
+    # Place the robotiq gripper in sim.
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_t0_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_t0_to_b
+    trans_robotiq_to_tool0 = rw_utils.robotiq_to_tool0()
+    trans_robotiq_to_ws = trans_t0_to_ws @ trans_robotiq_to_tool0
+    utils.pb_set_pose(robotiq_id, *utils.transform_to_pos_quat(trans_robotiq_to_ws))
+
+    # Mirror the joint state of the gripper.
+    fract = ur5.gripper.get_open_fraction()
+    utils.pb_set_joint_positions(robotiq_id, [0, 2, 4, 5, 6, 7], [fract, fract, fract, -fract, fract, -fract])
+
+    sphere_id = sim.add_object("data/sphere.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
+
+    if len(in_hand) > 4000:
+        in_hand, _ = utils.farthest_point_sample(in_hand, 4000)
+
+    viz_utils.show_pcd_plotly(in_hand)
+
+    mask = np.ones(in_hand.shape[0], dtype=np.bool_)
+    
+    for idx, point in enumerate(in_hand):
+        utils.pb_set_pose(sphere_id, point, np.array([0., 0., 0., 1.]))
+        if utils.pb_body_collision(sphere_id, robotiq_id, margin=0.01):
+            mask[idx] = False
+
+    in_hand = in_hand[mask]
+
+    viz_utils.show_pcd_plotly(in_hand)
+
+    if len(in_hand) > 2000:
+        in_hand, _ = utils.farthest_point_sample(in_hand, 2000)
+
+    pos, quat = ur5.get_end_effector_pose()
+    pos = pos - constants.DESK_CENTER
+    trans_g_to_ws = utils.pos_quat_to_transform(pos, quat)
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 

@@ -102,22 +102,29 @@ def workspace_to_base() -> NPF64:
     return T
 
 
-def robotiq_coupler_to_tool0() -> NPF64:
+def tool0_controller_to_gripper_top() -> NPF64:
+    """Move from the middle of the fingers towards the top of the gripper."""
+    T = np.eye(4).astype(np.float64)
+    T[2, 3] = -0.08  # 8 cm up
+    return T
 
+
+def robotiq_coupler_to_tool0() -> NPF64:
+    """This is specifically for the robotiq gripper URDF."""
     rc_to_tool0_pos = np.array([0., 0., 0.004])
     rc_to_tool0_quat = Rotation.from_euler("xyz", [0., 0., -np.pi / 2]).as_quat()
     return utils.pos_quat_to_transform(rc_to_tool0_pos, rc_to_tool0_quat)
 
 
 def robotiq_to_robotiq_coupler() -> NPF64:
-
+    """This is specifically for the robotiq gripper URDF."""
     r_to_rc_pos = np.array([0., 0., 0.004])
     r_to_rc_quat = Rotation.from_euler("xyz", [0., -np.pi / 2, np.pi]).as_quat()
     return utils.pos_quat_to_transform(r_to_rc_pos, r_to_rc_quat)
 
 
 def robotiq_to_tool0() -> NPF64:
-
+    """This is specifically for the robotiq gripper URDF."""
     trans_rc_to_tool0 = robotiq_coupler_to_tool0()
     trans_r_to_rc = robotiq_to_robotiq_coupler()
     return trans_rc_to_tool0 @ trans_r_to_rc

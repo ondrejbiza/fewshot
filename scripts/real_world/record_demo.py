@@ -100,7 +100,7 @@ def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, 
 def save_place_contact_points(
     target_pcd: NDArray, ur5: UR5, source_id: int, target_id: int, T_src_to_g: NDArray, T_g_pre_to_b: NDArray,
     canon_source: utils.CanonObj, canon_target: utils.CanonObj, source_param: utils.ObjParam, target_param: utils.ObjParam,
-    delta: float=0.1, save_path: Optional[str]=None):
+    delta: float=0.01, save_path: Optional[str]=None):
 
     T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
     T_g_pre_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_g_pre_to_b)

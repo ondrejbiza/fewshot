@@ -262,6 +262,44 @@ def platform_segmentation(cloud: NPF32) -> NPF32:
     return cloud
 
 
+def in_hand_segmentation(cloud: NPF32) -> NPF32:
+    """Find a point cloud that corresponds to the hand and object in hand."""
+    cloud = center_workspace(cloud)
+    cloud = mask_workspace(cloud)
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(cloud)
+
+    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+
+    print("PC lengths (ignoring PCs above the ground).")
+    pcs = []
+    for label in np.unique(labels):
+        if label == -1:
+            # Background label?
+            continue
+        
+        pc = cloud[labels == label]
+        print(len(pc))
+
+        pcs.append(pc)
+
+    if len(pcs) == 1:
+        # Only one object.
+        return pcs[0]
+    else:
+        sizes = [len(pc) for pc in pcs]
+        sort = list(reversed(np.argsort(sizes)))
+        # Pick the two largest objects.
+        pcs = [pcs[sort[0]], pcs[sort[1]]]
+
+        # Object in hand should be above the ground. The other should be on the ground.
+        if np.min(pcs[0][..., 2]) > np.min(pcs[1][..., 2]):
+            return pcs[0]
+        else:
+            return pcs[1]
+
+
 def warping(
     source_pcd: NPF32, target_pcd: NPF32,
     canon_source: utils.CanonObj, canon_target: utils.CanonObj,
