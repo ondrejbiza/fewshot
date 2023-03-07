@@ -38,7 +38,8 @@ class CanonObj:
     pca: Optional[PCA] = None
 
     def __post_init__(self):
-        self.n_components = self.pca.n_components
+        if self.pca is not None:
+            self.n_components = self.pca.n_components
 
     def to_pcd(self, obj_param: ObjParam) -> NPF32:
         if self.pca is not None and obj_param.latent is not None:
