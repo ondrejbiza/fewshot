@@ -13,7 +13,7 @@ from src import demo, utils, viz_utils
 from src.real_world import perception
 import src.real_world.utils as rw_utils
 from src.real_world.ur5 import UR5
-from src.real_world.point_cloud_proxy_sync import PointCloudProxy
+from src.real_world.point_cloud_proxy import PointCloudProxy
 from src.real_world.simulation import Simulation
 
 

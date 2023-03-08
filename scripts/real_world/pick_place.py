@@ -10,7 +10,7 @@ import torch
 from src import object_warping, utils, viz_utils
 from src.real_world import constants, perception
 import src.real_world.utils as rw_utils
-from src.real_world.point_cloud_proxy_sync import PointCloudProxy
+from src.real_world.point_cloud_proxy import PointCloudProxy
 from src.real_world.ur5 import UR5
 from src.real_world.simulation import Simulation
 
@@ -203,9 +203,9 @@ def main(args):
     source_pcd_complete, source_param, target_pcd_complete, target_param = out
 
     if args.pick_contacts:
-        trans_source_to_t0 = pick_contacts(ur5, canon_source, source_param, args.pick_load_path + ".pkl")
+        trans_source_to_t0 = pick_contacts(ur5, canon_source, source_param, args.pick_load_path)
     else:
-        trans_source_to_t0 = pick_simple(source_pcd_complete, source_param, ur5, args.pick_load_path + ".pkl")
+        trans_source_to_t0 = pick_simple(source_pcd_complete, source_param, ur5, args.pick_load_path)
 
     # Take an in-hand image.
     if args.platform:
@@ -236,8 +236,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
-    parser.add_argument("pick_load_path", type=str, help="Postfix added automatically.")
-    parser.add_argument("place_load_path", type=str, help="Postfix added automatically.")
+    parser.add_argument("pick_load_path", type=str)
+    parser.add_argument("place_load_path", type=str)
 
     parser.add_argument("-a", "--any-rotation", default=False, action="store_true",
                         help="Try to determine SE(3) object pose. Otherwise, determine a planar pose.")

@@ -4,7 +4,7 @@ import rospy
 
 from src import utils
 from src.real_world import perception
-from src.real_world.point_cloud_proxy_sync import PointCloudProxy
+from src.real_world.point_cloud_proxy import PointCloudProxy
 
 
 def main(args):

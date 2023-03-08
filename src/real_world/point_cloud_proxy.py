@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 import functools
 from numpy.typing import NDArray
-import time
-from typing import Optional, Tuple
-import subprocess
+from typing import Optional, Tuple, List
 
 import numpy as np
 import rospy
@@ -17,7 +15,7 @@ from src.real_world.tf_proxy import TFProxy
 
 @dataclass
 class PointCloudProxy:
-    # (realsense*3)
+
     pc_topics: Tuple[str, ...] = ("/realsense_left/depth/color/points", "/realsense_right/depth/color/points", "/realsense_forward/depth/color/points")
     nans_in_pc: Tuple[bool, ...] = (False, False, False)
 
@@ -32,31 +30,30 @@ class PointCloudProxy:
 
         self.tf_proxy = TFProxy()
 
-        self.clouds = [None for _ in range(len(self.pc_topics))]
+        self.msgs: List[Optional[PointCloud2]] = [None for _ in range(len(self.pc_topics))]
         self.pc_subs = []
+        self.register()
 
     def register(self):
-
+        """Register ros subscribers."""
         for i in range(len(self.pc_topics)):
-            # Get point clouds.
             self.pc_subs.append(rospy.Subscriber(self.pc_topics[i], PointCloud2, functools.partial(
-                self.pc_callback, camera_index=i, nans_in_pc=self.nans_in_pc[i]
+                self.pc_callback, camera_index=i
             ), queue_size=1))
 
-        time.sleep(0.5)
-
     def unregister(self):
-
+        """Unregister ros subscribers."""
         for sub in self.pc_subs:
             sub.unregister()
 
-        # No idea if a callback is still running while I unregister ...
-        time.sleep(0.5)
-
         self.pc_subs = []
 
-    def pc_callback(self, msg: PointCloud2, camera_index: int, nans_in_pc: bool):
+    def pc_callback(self, msg: PointCloud2, camera_index: int):
+        """Do not process each message to save compute."""
+        self.msgs[camera_index] = msg
 
+    def process_pc(self, msg: PointCloud2, nans_in_pc: bool):
+        """Process a message on demand."""
         cloud_frame = msg.header.frame_id
         cloud = ros_numpy.point_cloud2.pointcloud2_to_xyz_array(msg, remove_nans=True)
 
@@ -75,31 +72,17 @@ class PointCloudProxy:
             T = self.tf_proxy.lookup_transform(cloud_frame, "base", rospy.Time(0))
             cloud[:, :3] = utils.transform_pcd(cloud[:, :3], T)
 
-        self.clouds[camera_index] = cloud
+        return cloud
 
     def get_all(self) -> Optional[NDArray]:
-
-        s = time.time()
-
-        self.clouds = [None for _ in range(len(self.pc_topics))]
-        self.register()
-        time.sleep(2)
-
+        """Get a combined point cloud from all cameras."""
         clouds = []
-        for cloud in self.clouds:
-            clouds.append(cloud)
+        for idx, msg in enumerate(self.msgs):
+            if msg is None:
+                raise exceptions.PerceptionError()
+            clouds.append(self.process_pc(msg, self.nans_in_pc[idx]))
 
-        for cloud in clouds:
-            assert cloud is not None
-        clouds = np.concatenate(clouds)
-
-        self.unregister()
-
-        self.clouds = [None for _ in range(len(self.pc_topics))]
-
-        print("proxy time", time.time() - s)
-
-        return clouds
+        return np.concatenate(clouds)
 
     def close(self):
         self.unregister()
@@ -107,20 +90,17 @@ class PointCloudProxy:
 
 @dataclass
 class PointCloudProxyLeft(PointCloudProxy):
-    # (realsense*3)
     pc_topics: Tuple[str, ...] = ("/realsense_left/depth/color/points",)
     nans_in_pc: Tuple[bool, ...] = (False,)
 
 
 @dataclass
 class PointCloudProxyRight(PointCloudProxy):
-    # (realsense*3)
     pc_topics: Tuple[str, ...] = ("/realsense_right/depth/color/points",)
     nans_in_pc: Tuple[bool, ...] = (False,)
 
 
 @dataclass
 class PointCloudProxyForward(PointCloudProxy):
-    # (realsense*3)
     pc_topics: Tuple[str, ...] = ("/realsense_forward/depth/color/points",)
     nans_in_pc: Tuple[bool, ...] = (False,)
