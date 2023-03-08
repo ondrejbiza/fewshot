@@ -45,37 +45,41 @@ def worker(ur5: UR5, robotiq_id: int, source_id: int, data: Dict[str, Any]):
 
 
 def save_pick_pose(observed_pc: NDArray[np.float32], canon_source: utils.CanonObj,
-                   source_param: utils.ObjParam, ur5: UR5, save_path: Optional[bool]=None):
+                   source_param: utils.ObjParam, ur5: UR5, trans_pre_t0_to_t0: NDArray[np.float32],
+                   save_path: Optional[bool]=None):
 
     trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_t0_tip_to_b = trans_t0_to_b @ rw_utils.tool0_tip_to_tool0()
+
     trans_source_to_ws = source_param.get_transform()
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
-    trans_t0_to_source = np.matmul(np.linalg.inv(trans_source_to_b), trans_t0_to_b)
+    trans_t0_tip_to_source = np.matmul(np.linalg.inv(trans_source_to_b), trans_t0_tip_to_b)
 
     # Grasp in a canonical frame.
-    grasp_pos, grasp_quat = utils.transform_to_pos_quat(trans_t0_to_source)
+    tip_pos, tip_quat = utils.transform_to_pos_quat(trans_t0_tip_to_source)
 
     # Warped object in a canonical frame.
     source_pc_canon = canon_source.to_pcd(source_param)
 
     # Index of the point on the canonical object closest to a point between the gripper fingers.
-    dist = np.sqrt(np.sum(np.square(source_pc_canon - grasp_pos), axis=1))
+    dist = np.sqrt(np.sum(np.square(source_pc_canon - tip_pos), axis=1))
     index = np.argmin(dist)
 
     if save_path:
         with open(save_path, "wb") as f:
             pickle.dump({
                 "index": index,
-                "pos": grasp_pos,
-                "quat": grasp_quat,
+                "pos": tip_pos,
+                "quat": tip_quat,
                 "trans_t0_to_b": trans_t0_to_b,
+                "trans_pre_t0_to_t0": trans_pre_t0_to_t0,
                 "observed_pc": observed_pc,
             }, f)
 
 
 def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, source_id: int,
                              canon_source: utils.CanonObj, source_param: utils.ObjParam,
-                             save_path: Optional[bool]=None):
+                             trans_pre_t0_to_t0: NDArray[np.float32], save_path: Optional[bool]=None):
 
     # Get robotiq transform.
     pos, quat = utils.pb_get_pose(robotiq_id)
@@ -90,6 +94,7 @@ def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, 
                 "index": index,
                 "pos_robotiq": pos_robotiq_canon,
                 "observed_pc": observed_pc,
+                "trans_pre_t0_to_t0": trans_pre_t0_to_t0
             }, f)
 
 
@@ -190,6 +195,9 @@ def main(args):
     thread = threading.Thread(target=worker, args=(ur5, robotiq_id, source_id, data))
     thread.start()
 
+    input("Save place waypoint?")
+    trans_pre_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+
     input("Close gripper?")
     ur5.gripper.close_gripper()
 
@@ -199,6 +207,8 @@ def main(args):
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
     data["trans_source_to_t0"] = trans_source_to_t0
+
+    trans_pre_t0_to_t0 = np.matmul(np.linalg.inv(trans_t0_to_b), trans_pre_t0_to_b)
 
     input("Take in-hand image?")
 
@@ -218,11 +228,10 @@ def main(args):
 
     if args.pick_contacts:
         save_pick_contact_points(
-            source_pcd, robotiq_id, source_id, canon_source, source_param, args.pick_save_path)
+            source_pcd, robotiq_id, source_id, canon_source, source_param, trans_pre_t0_to_t0, args.pick_save_path)
     else:
-        save_pick_pose(source_pcd, canon_source, source_param, ur5, args.pick_save_path)
+        save_pick_pose(source_pcd, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
 
-    # Save any number of waypoints.
     input("Save place waypoint?")
     trans_pre_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
 

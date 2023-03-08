@@ -5,8 +5,9 @@ from typing import Any, Dict, Optional, Tuple
 import numpy as np
 from numpy.typing import NDArray
 import open3d as o3d
-import torch
 from scipy.spatial import KDTree
+from sklearn.cluster import DBSCAN
+import torch
 
 from src import object_warping, utils, viz_utils
 import src.real_world.utils as rw_utils
@@ -63,7 +64,8 @@ def find_mug_and_tree(cloud: NPF32) -> Tuple[NPF32, NPF32]:
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
 
-    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+    labels = DBSCAN(eps=0.03, min_samples=10).fit_predict(cloud)
+    # labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
 
     print("PC lengths (ignoring PCs above the ground).")
     pcs = []
@@ -114,7 +116,8 @@ def find_bowl_and_mug(cloud: NPF32) -> Tuple[NPF32, NPF32]:
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
 
-    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+    labels = DBSCAN(eps=0.03, min_samples=10).fit_predict(cloud)
+    # labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
 
     print("PC lengths (ignoring PCs above the ground).")
     pcs = []
@@ -161,7 +164,8 @@ def find_bottle_and_box(cloud: NPF32) -> Tuple[NPF32, NPF32]:
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
 
-    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+    labels = DBSCAN(eps=0.03, min_samples=10).fit_predict(cloud)
+    # labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
 
     print("PC lengths (ignoring PCs above the ground).")
     pcs = []
@@ -272,7 +276,8 @@ def in_hand_segmentation(cloud: NPF32) -> NPF32:
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(cloud)
 
-    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+    labels = DBSCAN(eps=0.03, min_samples=10).fit_predict(cloud)
+    # labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
 
     print("PC lengths (ignoring PCs above the ground).")
     pcs = []
@@ -442,6 +447,7 @@ def reestimate_tool0_to_source(cloud: NPF32, ur5: UR5, robotiq_id: int, sim: Sim
         utils.pb_set_pose(sphere_id, point, np.array([0., 0., 0., 1.]))
         if utils.pb_body_collision(sphere_id, robotiq_id, margin=0.01):
             mask[idx] = False
+    sim.remove_object(sphere_id)
 
     in_hand = in_hand[mask]
 

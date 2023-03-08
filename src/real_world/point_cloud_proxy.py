@@ -74,12 +74,12 @@ class PointCloudProxy:
 
         return cloud
 
-    def get_all(self) -> Optional[NDArray]:
+    def get_all(self) -> NDArray:
         """Get a combined point cloud from all cameras."""
         clouds = []
         for idx, msg in enumerate(self.msgs):
             if msg is None:
-                raise exceptions.PerceptionError()
+                raise exceptions.PerceptionError(f"Camera {idx} isn't working.")
             clouds.append(self.process_pc(msg, self.nans_in_pc[idx]))
 
         return np.concatenate(clouds)

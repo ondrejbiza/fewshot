@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from numpy.typing import NDArray
 import rospy
-import torch
+import pybullet as pb
 
 from src import object_warping, utils, viz_utils
 from src.real_world import constants, perception
@@ -33,14 +33,16 @@ def pick_simple(source_pcd_complete: NDArray, source_param: utils.ObjParam,
     trans_t0_tip_to_b = utils.pos_quat_to_transform(t0_tip_pos_in_base, t0_tip_quat)
     trans_t0_to_b = trans_t0_tip_to_b @ np.linalg.inv(rw_utils.tool0_tip_to_tool0())
 
-    trans_pre_t0_to_b = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_t0_to_b), -0.0))
+    trans_post_t0_to_b = np.copy(trans_t0_to_b)
+    trans_post_t0_to_b[2, 3] += 0.1
+    trans_pre_t0_to_b = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_t0_to_b), 0.1))
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b))
 
     # Remove source object from planning scene.
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=1)
     ur5.gripper.close_gripper()
 
     # Add source object back to the planning scene.
@@ -57,7 +59,7 @@ def pick_simple(source_pcd_complete: NDArray, source_param: utils.ObjParam,
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=1)
 
     return trans_source_to_t0
 
@@ -81,23 +83,17 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_t0_to_b = rw_utils.workspace_to_base() @ trans_t0_to_ws
 
     trans_g = trans_t0_to_b
-    trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), -0.1))
+    trans_post_g = np.copy(trans_g)
+    trans_post_g[2, 3] += 0.1
+    trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), 0.1))
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g))
 
     # Remove mug from planning scene.
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g), num_plans=1)
     ur5.gripper.close_gripper()
-
-    # Add mug back to the planning scene.
-    pos, quat = utils.transform_to_pos_quat(
-        rw_utils.desk_obj_param_to_base_link_T(source_param.position, source_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
-    ur5.moveit_scene.add_object("tmp_source.stl", "source", pos, quat)
-
-    # Lock mug to flange in the moveit scene.
-    ur5.moveit_scene.attach_object("source")
 
     # Calcualte mug to gripper transform at the point when we grasp it.
     trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
@@ -105,7 +101,7 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_g), num_plans=1)
 
     return trans_source_to_t0
 
@@ -121,7 +117,7 @@ def place(
     knns = place_data["knns"]
     deltas = place_data["deltas"]
     target_indices = place_data["target_indices"]
-    T_g_pre_to_g = place_data["T_g_pre_to_g"]
+    trans_pre_t0_to_t0 = place_data["trans_pre_t0_to_t0"]
 
     source_orig = canon_source.to_pcd(source_param)
     target_orig = canon_target.to_pcd(target_param)
@@ -141,15 +137,15 @@ def place(
     # new_m_pos, new_m_quat = sim.wiggle(mug_id, tree_id)
     # T_new_m_to_b = utils.pos_quat_to_transform(new_m_pos, new_m_quat)
 
-    trans_g_to_b = np.matmul(trans_new_source_to_b, np.linalg.inv(trans_source_to_t0))
-    trans_g_pre_to_b = np.matmul(trans_g_to_b, T_g_pre_to_g)
+    trans_t0_to_b = np.matmul(trans_new_source_to_b, np.linalg.inv(trans_source_to_t0))
+    trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
 
     # Remove mug from the planning scene.
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g_pre_to_b))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b))
     ur5.moveit_scene.detach_object("source")
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g_to_b), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=1)
 
 
 def main(args):
@@ -169,7 +165,6 @@ def main(args):
         input("Platform captured. Continue? ")
 
     cloud = pc_proxy.get_all()
-    assert cloud is not None
 
     sim = Simulation()
 
@@ -212,24 +207,34 @@ def main(args):
         input("Platform removed?")
 
     cloud = pc_proxy.get_all()
-    assert cloud is not None
 
     robotiq_id = sim.add_object("data/robotiq.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
     source_param, source_pcd_complete, trans_source_to_t0, in_hand_pcd = perception.reestimate_tool0_to_source(
         cloud, ur5, robotiq_id, sim, canon_source, source_param, trans_source_to_t0)
+    sim.remove_object(robotiq_id)
+
+    viz_utils.show_pcds_plotly({
+        "pcd": in_hand_pcd,
+        "completed": source_pcd_complete
+    })
+
+    # # Add mug back to the planning scene.
+    pos, quat = utils.transform_to_pos_quat(
+        rw_utils.desk_obj_param_to_base_link_T(source_param.position, source_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
+    ur5.moveit_scene.add_object("tmp_source.stl", "source", pos, quat)
+
+    # # Lock mug to flange in the moveit scene.
+    ur5.moveit_scene.attach_object("source")
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    load_path = args.place_load_path + ".pkl"
+    load_path = args.place_load_path
     if not os.path.isfile(load_path):
         print("Place clone file not found.")
     else:
         place(ur5, canon_source, canon_target, source_param, target_param, trans_source_to_t0, sim, load_path)
 
-    # input("Release?")
     ur5.gripper.open_gripper()
-
-    # input("Reset?")
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 

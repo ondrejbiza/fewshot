@@ -44,6 +44,11 @@ class Simulation:
         self.objects.append(obj_id)
         return obj_id
 
+    def remove_object(self, obj_id: int):
+        assert obj_id in self.objects
+        pb.removeBody(obj_id)
+        self.objects.remove(obj_id)
+
     def set_pose(self, obj_id: int, obj_pos: NDArray, obj_quat: NDArray):
         utils.pb_set_pose(obj_id, obj_pos, obj_quat, sim_id=self.sim_id)
 

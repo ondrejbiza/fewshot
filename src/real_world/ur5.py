@@ -104,7 +104,9 @@ class UR5:
 
     def plan_and_execute_pose_target(self, tool0_pos, tool0_quat, num_plans: int=10):
 
-        self.rviz_pub.send_pose(tool0_pos, tool0_quat, "base")            
+        tmp_pos, tmp_quat = utils.transform_to_pos_quat(
+            utils.pos_quat_to_transform(tool0_pos, tool0_quat) @ rw_utils.tool0_tip_to_tool0())
+        self.rviz_pub.send_pose(tmp_pos, tmp_quat, "base")            
 
         plans = []
 
