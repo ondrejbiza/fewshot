@@ -9,8 +9,8 @@ import numpy as np
 from numpy.typing import NDArray
 import rospy
 
-from src import demo, utils
-from src.real_world import constants, perception
+from src import demo, utils, viz_utils
+from src.real_world import perception
 import src.real_world.utils as rw_utils
 from src.real_world.ur5 import UR5
 from src.real_world.point_cloud_proxy_sync import PointCloudProxy
@@ -26,22 +26,17 @@ def worker(ur5: UR5, robotiq_id: int, source_id: int, data: Dict[str, Any]):
         if data["stop"]:
             break
 
-        gripper_pos, gripper_quat = ur5.get_end_effector_pose()
-        gripper_pos = gripper_pos - constants.DESK_CENTER
+        trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+        trans_t0_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_t0_to_b
 
-        if data["T"] is not None:
+        if data["trans_source_to_t0"] is not None:
             # Make the mug follow the gripper.
-            T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
-            T_src_to_b = np.matmul(T_g_to_b, data["T"])
-            src_pos, src_quat = utils.transform_to_pos_quat(T_src_to_b)
-            utils.pb_set_pose(source_id, src_pos, src_quat)
+            trans_source_to_ws = np.matmul(trans_t0_to_ws, data["trans_source_to_t0"])
+            utils.pb_set_pose(source_id, *utils.transform_to_pos_quat(trans_source_to_ws))
 
-        gripper_pos, gripper_quat = ur5.get_tool0_to_base()
-        gripper_pos = gripper_pos - constants.DESK_CENTER
-        trans_t0_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_quat)
-        trans = trans_t0_to_b @ trans_robotiq_to_tool0
-        gripper_pos, gripper_quat = utils.transform_to_pos_quat(trans)
-        utils.pb_set_pose(robotiq_id, gripper_pos, gripper_quat)
+        trans_robotiq_to_ws = trans_t0_to_ws @ trans_robotiq_to_tool0
+        robotiq_pos, robotiq_quat = utils.transform_to_pos_quat(trans_robotiq_to_ws)
+        utils.pb_set_pose(robotiq_id, robotiq_pos, robotiq_quat)
 
         fract = ur5.gripper.get_open_fraction()
         utils.pb_set_joint_positions(robotiq_id, [0, 2, 4, 5, 6, 7], [fract, fract, fract, -fract, fract, -fract])
@@ -49,30 +44,31 @@ def worker(ur5: UR5, robotiq_id: int, source_id: int, data: Dict[str, Any]):
         time.sleep(0.1)
 
 
-def save_pick_pose(observed_pc: NDArray[np.float32], canon_mug: utils.CanonObj,
-                   mug_param: utils.ObjParam, ur5: UR5, save_path: Optional[bool]=None):
+def save_pick_pose(observed_pc: NDArray[np.float32], canon_source: utils.CanonObj,
+                   source_param: utils.ObjParam, ur5: UR5, save_path: Optional[bool]=None):
 
-    T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
-    T_m_to_b = utils.pos_quat_to_transform(mug_param.position + constants.DESK_CENTER, mug_param.quat)
-    T_g_to_m = np.matmul(np.linalg.inv(T_m_to_b), T_g_to_b)
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_source_to_ws = source_param.get_transform()
+    trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
+    trans_t0_to_source = np.matmul(np.linalg.inv(trans_source_to_b), trans_t0_to_b)
 
     # Grasp in a canonical frame.
-    g_to_m_pos, g_to_m_quat = utils.transform_to_pos_quat(T_g_to_m)
+    grasp_pos, grasp_quat = utils.transform_to_pos_quat(trans_t0_to_source)
 
     # Warped object in a canonical frame.
-    mug_pc_complete = canon_mug.to_pcd(mug_param)
+    source_pc_canon = canon_source.to_pcd(source_param)
 
     # Index of the point on the canonical object closest to a point between the gripper fingers.
-    dist = np.sqrt(np.sum(np.square(mug_pc_complete - g_to_m_pos), axis=1))
+    dist = np.sqrt(np.sum(np.square(source_pc_canon - grasp_pos), axis=1))
     index = np.argmin(dist)
 
     if save_path:
         with open(save_path, "wb") as f:
             pickle.dump({
                 "index": index,
-                "pos": g_to_m_pos,
-                "quat": g_to_m_quat,
-                "T_g_to_b": T_g_to_b,
+                "pos": grasp_pos,
+                "quat": grasp_quat,
+                "trans_t0_to_b": trans_t0_to_b,
                 "observed_pc": observed_pc,
             }, f)
 
@@ -98,21 +94,20 @@ def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, 
 
 
 def save_place_contact_points(
-    target_pcd: NDArray, ur5: UR5, source_id: int, target_id: int, T_src_to_g: NDArray, T_g_pre_to_b: NDArray,
+    target_pcd: NDArray, ur5: UR5, source_id: int, target_id: int, trans_source_to_t0: NDArray, trans_pre_t0_to_b: NDArray,
     canon_source: utils.CanonObj, canon_target: utils.CanonObj, source_param: utils.ObjParam, target_param: utils.ObjParam,
-    delta: float=0.1, save_path: Optional[str]=None):
+    delta: float=0.01, save_path: Optional[str]=None):
 
-    T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
-    T_g_pre_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_g_pre_to_b)
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_pre_t0_to_t0 = np.matmul(np.linalg.inv(trans_t0_to_b), trans_pre_t0_to_b)
 
     # The source object was perceived on the ground.
     # Move it to where the robot hand is now.
     source_param = cp.deepcopy(source_param)
 
-    T_src_to_b = np.matmul(T_g_to_b, T_src_to_g)
-    T_ws_to_b = rw_utils.workspace_to_base()
-    T_src_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_src_to_b)
-    src_pos, src_quat = utils.transform_to_pos_quat(T_src_to_ws)
+    trans_source_to_b = np.matmul(trans_t0_to_b, trans_source_to_t0)
+    trans_source_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_source_to_b
+    src_pos, src_quat = utils.transform_to_pos_quat(trans_source_to_ws)
     source_param.position = src_pos
     source_param.quat = src_quat
 
@@ -125,8 +120,8 @@ def save_place_contact_points(
                 "knns": knns,
                 "deltas": deltas,
                 "target_indices": i_2,
-                "T_g_to_b": T_g_to_b,
-                "T_g_pre_to_g": T_g_pre_to_g,
+                "trans_t0_to_b": trans_t0_to_b,
+                "trans_pre_t0_to_t0": trans_pre_t0_to_t0,
                 "observed_pc": target_pcd,
             }, f)
 
@@ -140,6 +135,13 @@ def main(args):
     # ur5.plan_and_execute_joints_target(ur5.home_joint_values)
     ur5.gripper.open_gripper(position=70)
 
+    platform_pcd = None
+    if args.platform:
+        cloud = pc_proxy.get_all()
+        assert cloud is not None
+        platform_pcd = perception.platform_segmentation(cloud)
+        input("Platform captured. Continue? ")
+
     cloud = pc_proxy.get_all()
     assert cloud is not None
 
@@ -148,37 +150,32 @@ def main(args):
     if args.task == "mug_tree":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
-
         canon_source.init_scale = 0.7
         canon_target.init_scale = 1.
-
-        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud)
+        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-
         canon_source.init_scale = 0.8
         canon_target.init_scale = 0.7
-
-        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_1=True)
+        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bottle_in_box":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
-
         canon_source.init_scale = 1.
         canon_target.init_scale = 1.
-
-        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud)
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
     else:
         raise ValueError("Unknown task.")
 
+    # Initial perception.
     out = perception.warping(
         source_pcd, target_pcd, canon_source, canon_target,
         tf_proxy=ur5.tf_proxy, moveit_scene=ur5.moveit_scene, source_save_decomposition=True,
         target_save_decomposition=True, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
         rviz_pub=ur5.rviz_pub
     )
-    source_pcd_complete, source_param, target_pcd_complete, target_param, canon_source, canon_target, source_pcd, target_pcd = out
+    source_pcd_complete, source_param, target_pcd_complete, target_param = out
 
     # Setup simulation with what we see in the real world.
     source_id = sim.add_object("tmp_source.urdf", source_param.position, source_param.quat)
@@ -187,7 +184,7 @@ def main(args):
 
     # Continuously update the gripper position in simulation.
     data = {
-        "T": None,
+        "trans_source_to_t0": None,
         "stop": False,
     }
     thread = threading.Thread(target=worker, args=(ur5, robotiq_id, source_id, data))
@@ -195,30 +192,44 @@ def main(args):
 
     input("Close gripper?")
     ur5.gripper.close_gripper()
-    
+
+    # Compute relation between the gripper and the object.
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_source_to_ws = source_param.get_transform()
+    trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
+    trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
+    data["trans_source_to_t0"] = trans_source_to_t0
+
+    input("Take in-hand image?")
+
+    # Refine gripper-object transform using a second point cloud.
+    # The object might have moved as the gripper fingers closed.
+    cloud = pc_proxy.get_all()
+    assert cloud is not None
+
+    source_param, source_pcd_complete, trans_source_to_t0, in_hand_pcd = perception.reestimate_tool0_to_source(
+        cloud, ur5, robotiq_id, sim, canon_source, source_param, trans_source_to_t0)
+    data["trans_source_to_t0"] = trans_source_to_t0
+
+    viz_utils.show_pcds_plotly({
+        "pcd": in_hand_pcd,
+        "completed": source_pcd_complete
+    })
+
     if args.pick_contacts:
         save_pick_contact_points(
-            source_pcd, robotiq_id, source_id, canon_source, source_param, args.pick_save_path + ".pkl")
+            source_pcd, robotiq_id, source_id, canon_source, source_param, args.pick_save_path)
     else:
-        save_pick_pose(source_pcd, canon_source, source_param, ur5, args.pick_save_path + ".pkl")
-
-    # Calculate mug to gripper transform. Transmit it to simulation.
-    T_g_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
-    T_ws_to_b = rw_utils.workspace_to_base()
-    T_g_to_ws = np.matmul(np.linalg.inv(T_ws_to_b), T_g_to_b)
-
-    T_src_to_ws = utils.pos_quat_to_transform(source_param.position, source_param.quat)
-    T_src_to_g = np.matmul(np.linalg.inv(T_g_to_ws), T_src_to_ws)
-    data["T"] = T_src_to_g
+        save_pick_pose(source_pcd, canon_source, source_param, ur5, args.pick_save_path)
 
     # Save any number of waypoints.
     input("Save place waypoint?")
-    T_g_pre_to_b = utils.pos_quat_to_transform(*ur5.get_end_effector_pose())
+    trans_pre_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
 
     input("Save place pose?")
     save_place_contact_points(
-        target_pcd, ur5, source_id, target_id, T_src_to_g, T_g_pre_to_b, canon_source, canon_target,
-        source_param, target_param, save_path=args.place_save_path + ".pkl")
+        target_pcd, ur5, source_id, target_id, trans_source_to_t0, trans_pre_t0_to_b, canon_source, canon_target,
+        source_param, target_param, save_path=args.place_save_path)
 
     # Reset.
     # input("Open gripper?")
@@ -229,9 +240,12 @@ def main(args):
     thread.join()
 
 
-parser = argparse.ArgumentParser("Collect a demonstration.")
-parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
-parser.add_argument("pick_save_path", type=str, help="Postfix added automatically.")
-parser.add_argument("place_save_path", type=str, help="Postfix added automatically.")
-parser.add_argument("--pick-contacts", default=False, action="store_true")
-main(parser.parse_args())
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser("Collect a demonstration.")
+    parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+    parser.add_argument("pick_save_path", type=str)
+    parser.add_argument("place_save_path", type=str)
+    parser.add_argument("-c", "--pick-contacts", default=False, action="store_true")
+    parser.add_argument("-p", "--platform", default=False, action="store_true",
+                        help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
+    main(parser.parse_args())

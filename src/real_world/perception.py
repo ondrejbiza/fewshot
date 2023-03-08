@@ -14,6 +14,8 @@ from src.real_world import constants
 from src.real_world.tf_proxy import TFProxy
 from src.real_world.moveit_scene import MoveItScene
 from src.real_world.rviz_pub import RVizPub
+from src.real_world.ur5 import UR5
+from src.real_world.simulation import Simulation
 
 NPF32 = NDArray[np.float32]
 NPF64 = NDArray[np.float64]
@@ -262,6 +264,44 @@ def platform_segmentation(cloud: NPF32) -> NPF32:
     return cloud
 
 
+def in_hand_segmentation(cloud: NPF32) -> NPF32:
+    """Find a point cloud that corresponds to the hand and object in hand."""
+    cloud = center_workspace(cloud)
+    cloud = mask_workspace(cloud)
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(cloud)
+
+    labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+
+    print("PC lengths (ignoring PCs above the ground).")
+    pcs = []
+    for label in np.unique(labels):
+        if label == -1:
+            # Background label?
+            continue
+        
+        pc = cloud[labels == label]
+        print(len(pc))
+
+        pcs.append(pc)
+
+    if len(pcs) == 1:
+        # Only one object.
+        return pcs[0]
+    else:
+        sizes = [len(pc) for pc in pcs]
+        sort = list(reversed(np.argsort(sizes)))
+        # Pick the two largest objects.
+        pcs = [pcs[sort[0]], pcs[sort[1]]]
+
+        # Object in hand should be above the ground. The other should be on the ground.
+        if np.min(pcs[0][..., 2]) > np.min(pcs[1][..., 2]):
+            return pcs[0]
+        else:
+            return pcs[1]
+
+
 def warping(
     source_pcd: NPF32, target_pcd: NPF32,
     canon_source: utils.CanonObj, canon_target: utils.CanonObj,
@@ -277,7 +317,7 @@ def warping(
     source_no_warping: bool=False,
     desk_center: Tuple[float, float, float]=constants.DESK_CENTER,
     grow_source_object: bool=False, grow_target_object: bool=False
-    ) -> Tuple[NPF32, utils.ObjParam, NPF32, utils.ObjParam, utils.CanonObj, utils.CanonObj, NPF32, NPF32]:
+    ) -> Tuple[NPF32, utils.ObjParam, NPF32, utils.ObjParam]:
 
     if ablate_no_warping:
         raise NotImplementedError()
@@ -289,23 +329,24 @@ def warping(
         assert not source_no_warping
         warp = object_warping.ObjectWarpingSE3Batch(
             canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-            n_samples=1000, object_size_reg=0.01, scaling=True, init_scale=canon_source.init_scale)
+            n_samples=1000, object_size_reg=0.01, init_scale=canon_source.init_scale)
         source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
     else:
         if source_no_warping:
             warp = object_warping.ObjectSE2Batch(
                 canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-                n_samples=1000, scaling=False, init_scale=canon_source.init_scale)
-            source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+                n_samples=1000, init_scale=canon_source.init_scale)
+            source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(
+                warp, n_angles=12, n_batches=1, inference_kwargs={"train_scales": False})
         else:
             warp = object_warping.ObjectWarpingSE2Batch(
                 canon_source, source_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-                n_samples=1000, object_size_reg=0.01, scaling=True, init_scale=canon_source.init_scale)
+                n_samples=1000, object_size_reg=0.01, init_scale=canon_source.init_scale)
             source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
     warp = object_warping.ObjectWarpingSE2Batch(
         canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-        n_samples=1000, object_size_reg=0.01, scaling=True, init_scale=canon_target.init_scale)
+        n_samples=1000, object_size_reg=0.01, init_scale=canon_target.init_scale)
     target_pcd_complete, _, target_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
     print("Inference time: {:.1f}s.".format(time.time() - perception_start))
@@ -320,34 +361,34 @@ def warping(
     if grow_source_object:
         tmp = cp.deepcopy(source_param)
         tmp.scale *= 1.2
-        mug_mesh = canon_source.to_mesh(tmp)
+        source_mesh = canon_source.to_mesh(tmp)
     else:
-        mug_mesh = canon_source.to_mesh(source_param)
+        source_mesh = canon_source.to_mesh(source_param)
 
-    mug_mesh.export("tmp_source.stl")
+    source_mesh.export("tmp_source.stl")
     if source_save_decomposition:
-        utils.convex_decomposition(mug_mesh, "tmp_source.obj")
+        utils.convex_decomposition(source_mesh, "tmp_source.obj")
 
     if grow_target_object:
         tmp = cp.deepcopy(target_param)
         tmp.scale *= 1.25
-        tree_mesh = canon_target.to_mesh(tmp)
+        target_mesh = canon_target.to_mesh(tmp)
     else:
-        tree_mesh = canon_target.to_mesh(target_param)
+        target_mesh = canon_target.to_mesh(target_param)
 
-    tree_mesh.export("tmp_target.stl")
+    target_mesh.export("tmp_target.stl")
     if target_save_decomposition:
-        utils.convex_decomposition(tree_mesh, "tmp_target.obj")
+        utils.convex_decomposition(target_mesh, "tmp_target.obj")
 
     if add_source_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(source_param.position, source_param.quat, dc, tf_proxy))
-        moveit_scene.add_object("tmp_source.stl", "mug", pos, quat)
+        moveit_scene.add_object("tmp_source.stl", "source", pos, quat)
 
     if add_target_to_planning_scene:
         assert moveit_scene is not None and tf_proxy is not None, "Need moveit_scene and tf_proxy to add an object to the planning scene."
         pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(target_param.position, target_param.quat, dc, tf_proxy))
-        moveit_scene.add_object("tmp_target.stl", "tree", pos, quat)
+        moveit_scene.add_object("tmp_target.stl", "target", pos, quat)
 
     if rviz_pub is not None:
         # send STL meshes as Marker messages to rviz
@@ -359,4 +400,74 @@ def warping(
         pos, quat = utils.transform_to_pos_quat(rw_utils.desk_obj_param_to_base_link_T(target_param.position, target_param.quat, dc, tf_proxy))
         rviz_pub.send_stl_message("tmp_target.stl", pos, quat)
 
-    return source_pcd_complete, source_param, target_pcd_complete, target_param, canon_source, canon_target, source_pcd, target_pcd
+    return source_pcd_complete, source_param, target_pcd_complete, target_param
+
+
+def reestimate_tool0_to_source(cloud: NPF32, ur5: UR5, robotiq_id: int, sim: Simulation,
+                               canon_source: utils.CanonObj, source_param: utils.ObjParam,
+                               trans_source_to_t0: NPF64) -> Tuple[utils.ObjParam, NPF32, NPF64, NPF32]:
+
+    in_hand = in_hand_segmentation(cloud)
+
+    trans_ws_to_b = rw_utils.workspace_to_base()
+    trans_b_to_t0 = np.linalg.inv(utils.pos_quat_to_transform(*ur5.get_tool0_to_base()))
+    trans_t0_to_t0_top = np.linalg.inv(rw_utils.tool0_top_to_tool0())
+
+    trans = trans_t0_to_t0_top @ trans_b_to_t0 @ trans_ws_to_b
+    in_hand = utils.transform_pcd(in_hand, trans)
+
+    in_hand = in_hand[in_hand[:, 2] >= 0.]
+    in_hand = utils.transform_pcd(in_hand, np.linalg.inv(trans))
+
+    # Place the robotiq gripper in sim.
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_t0_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_t0_to_b
+    trans_robotiq_to_tool0 = rw_utils.robotiq_to_tool0()
+    trans_robotiq_to_ws = trans_t0_to_ws @ trans_robotiq_to_tool0
+    utils.pb_set_pose(robotiq_id, *utils.transform_to_pos_quat(trans_robotiq_to_ws))
+
+    # Mirror the joint state of the gripper.
+    fract = ur5.gripper.get_open_fraction()
+    utils.pb_set_joint_positions(robotiq_id, [0, 2, 4, 5, 6, 7], [fract, fract, fract, -fract, fract, -fract])
+
+    # Figure out which points in the point cloud belong to the gripper.
+    sphere_id = sim.add_object("data/sphere.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
+
+    if len(in_hand) > 4000:
+        in_hand, _ = utils.farthest_point_sample(in_hand, 4000)
+
+    mask = np.ones(in_hand.shape[0], dtype=np.bool_)
+    
+    for idx, point in enumerate(in_hand):
+        utils.pb_set_pose(sphere_id, point, np.array([0., 0., 0., 1.]))
+        if utils.pb_body_collision(sphere_id, robotiq_id, margin=0.01):
+            mask[idx] = False
+
+    in_hand = in_hand[mask]
+
+    if len(in_hand) > 2000:
+        in_hand, _ = utils.farthest_point_sample(in_hand, 2000)
+
+    ow = object_warping.ObjectWarpingSE3Batch(
+        canon_source, in_hand, torch.device("cuda:0"), lr=1e-2, n_steps=100, n_samples=1000, init_scale=canon_source.init_scale)
+    assert source_param.latent is not None
+
+    # Where we think the source object is.
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_source_to_b = trans_t0_to_b @ trans_source_to_t0
+    trans_source_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_source_to_b
+    pos, quat = utils.transform_to_pos_quat(trans_source_to_ws)
+
+    print("Before:", pos, quat)
+    out = ow.inference(
+        utils.quat_to_rotm(quat)[None], pos[None], source_param.latent[None],
+        source_param.scale[None], train_latents=False, train_scales=False
+    )
+    source_pcd_complete, source_param = out[1][0], out[2][0]
+    print("After:", source_param.position, source_param.quat)
+
+    trans_source_to_ws = source_param.get_transform()
+    trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
+    trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
+
+    return source_param, source_pcd_complete, trans_source_to_t0, in_hand

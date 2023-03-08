@@ -38,7 +38,8 @@ class CanonObj:
     pca: Optional[PCA] = None
 
     def __post_init__(self):
-        self.n_components = self.pca.n_components
+        if self.pca is not None:
+            self.n_components = self.pca.n_components
 
     def to_pcd(self, obj_param: ObjParam) -> NPF32:
         if self.pca is not None and obj_param.latent is not None:
@@ -254,11 +255,11 @@ def pb_get_pose(body, sim_id: Optional[int]=None) -> Tuple[NPF64, NPF64]:
     return pos, quat
 
 
-def pb_body_collision(body1: int, body2: int, sim_id: Optional[int]=None) -> bool:
+def pb_body_collision(body1: int, body2: int, sim_id: Optional[int]=None, margin: float=0.) -> bool:
     if sim_id is not None:
-        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0, physicsClientId=sim_id)
+        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=margin, physicsClientId=sim_id)
     else:
-        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=0.0)
+        results = pb.getClosestPoints(bodyA=body1, bodyB=body2, distance=margin)
     return len(results) != 0
 
 

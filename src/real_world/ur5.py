@@ -102,14 +102,14 @@ class UR5:
             if np.allclose(prev_joint_position, self.joint_values, atol=1e-3):
                 break
 
-    def plan_and_execute_pose_target(self, tool0_controller_pos, tool0_controller_quat, num_plans: int=10):
+    def plan_and_execute_pose_target(self, tool0_pos, tool0_quat, num_plans: int=10):
 
-        self.rviz_pub.send_pose(tool0_controller_pos, tool0_controller_quat, "base")            
+        self.rviz_pub.send_pose(tool0_pos, tool0_quat, "base")            
 
         plans = []
 
-        T = utils.pos_quat_to_transform(tool0_controller_pos, tool0_controller_quat)
-        T = rw_utils.tool0_controller_base_to_flange_base_link(T, self.tf_proxy)
+        T = utils.pos_quat_to_transform(tool0_pos, tool0_quat)
+        T = rw_utils.tool0_base_to_flange_base_link(T, self.tf_proxy)
         base_link_to_flange_pos, base_link_to_flange_rot = utils.transform_to_pos_quat(T)
 
         assert self.setup_planning, "setup_planning has to be true."
@@ -206,6 +206,13 @@ class UR5:
 
         T = self.tf_proxy.lookup_transform("tool0_controller", "base")
         return utils.transform_to_pos_quat(T)
+
+    def get_end_effector_pose_2(self) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+        """Move from tool0 to the tip manually. tool0_controller is miscalibrated."""
+        trans_t0_to_b = self.tf_proxy.lookup_transform("tool0", "base")
+        trans_t0_tip_to_b = trans_t0_to_b @ rw_utils.tool0_tip_to_tool0()
+        return utils.transform_to_pos_quat(trans_t0_tip_to_b)
+
 
     def get_tool0_to_base(self) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
 
