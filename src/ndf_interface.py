@@ -18,7 +18,7 @@ class NDFInterface:
     canon_source_scale: float = 1.
     canon_target_scale: float = 1.
     pcd_subsample_points: Optional[int] = 2000
-    nearby_points_delta: float = 0.1
+    nearby_points_delta: float = 0.01
 
     def __post_init__(self):
 
@@ -160,8 +160,8 @@ class NDFInterface:
         pb.resetBasePositionAndOrientation(target_pb, *utils.transform_to_pos_quat(trans_t_to_b))
 
         # Wiggle the source object out of collision.
-        # src_pos, src_quat = utils.wiggle(source_pb, target_pb)
-        # trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
+        src_pos, src_quat = utils.wiggle(source_pb, target_pb)
+        trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
 
         # Remove predicted meshes from pybullet.
         pb.removeBody(source_pb)

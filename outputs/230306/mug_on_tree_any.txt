@@ -1,0 +1,464 @@
+pybullet build time: Feb 10 2023 21:14:49
+[33m[WARNING][0m[2023-03-06 15:36:40]: [33mStarting meshcat at zmq_url: tcp://127.0.0.1:6000[0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32mLoad in OpenGL![0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32mConfig file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults[0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a'][0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2'][0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366'][0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj'][0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32m['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj'][0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32mTest ids (parent): syn_rack_81, syn_rack_82, syn_rack_83, syn_rack_84, syn_rack_85, syn_rack_86, syn_rack_87, syn_rack_88, syn_rack_89, syn_rack_9, syn_rack_90, syn_rack_91, syn_rack_92, syn_rack_93, syn_rack_94, syn_rack_95, syn_rack_96, syn_rack_97, syn_rack_98, syn_rack_99[0m
+[32m[INFO][0m[2023-03-06 15:36:40]: [32mTest ids (child): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a[0m
+argv[0]=
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+Loaded EGL 1.5 after reload.
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3080 Ti/PCIe/SSE2
+GL_VERSION=4.6.0 NVIDIA 525.78.01
+GL_SHADING_LANGUAGE_VERSION=4.60 NVIDIA
+Version = 4.6.0 NVIDIA 525.78.01
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3080 Ti/PCIe/SSE2
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/sklearn/base.py:299: UserWarning: Trying to unpickle estimator PCA from version 1.0.2 when using version 1.2.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+[32m[INFO][0m[2023-03-06 15:36:49]: [32mParent ID: syn_rack_92, Child ID: f09e51579600cfbb88b651d2e4ea0846[0m
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+[32m[INFO][0m[2023-03-06 15:36:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:37:20]: [32mIteration: 0, Place Success: 0.000, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: f09e51579600cfbb88b651d2e4ea0846[0m
+[32m[INFO][0m[2023-03-06 15:37:20]: [32mParent ID: syn_rack_82, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 15:37:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:37:51]: [32mIteration: 1, Place Success: 0.500, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 15:37:51]: [32mParent ID: syn_rack_96, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:37:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:38:22]: [32mIteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:38:22]: [32mParent ID: syn_rack_92, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 15:38:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:38:52]: [32mIteration: 3, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_92, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 15:38:52]: [32mParent ID: syn_rack_95, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 15:38:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:39:23]: [32mIteration: 4, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 15:39:23]: [32mParent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:39:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:39:53]: [32mIteration: 5, Place Success: 0.667, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:39:53]: [32mParent ID: syn_rack_96, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:39:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:40:23]: [32mIteration: 6, Place Success: 0.714, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:40:23]: [32mParent ID: syn_rack_9, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:40:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:40:53]: [32mIteration: 7, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:40:53]: [32mParent ID: syn_rack_84, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:40:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:41:24]: [32mIteration: 8, Place Success: 0.778, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:41:24]: [32mParent ID: syn_rack_89, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:41:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:41:54]: [32mIteration: 9, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:41:54]: [32mParent ID: syn_rack_99, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:41:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:42:25]: [32mIteration: 10, Place Success: 0.818, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_99, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:42:25]: [32mParent ID: syn_rack_9, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:42:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:42:55]: [32mIteration: 11, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:42:55]: [32mParent ID: syn_rack_83, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 15:42:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:43:26]: [32mIteration: 12, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 15:43:26]: [32mParent ID: syn_rack_90, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:43:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:43:57]: [32mIteration: 13, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:43:57]: [32mParent ID: syn_rack_97, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:44:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:44:28]: [32mIteration: 14, Place Success: 0.867, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:44:29]: [32mParent ID: syn_rack_91, Child ID: f09e51579600cfbb88b651d2e4ea0846[0m
+[32m[INFO][0m[2023-03-06 15:44:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:44:59]: [32mIteration: 15, Place Success: 0.812, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_91, child_id: f09e51579600cfbb88b651d2e4ea0846[0m
+[32m[INFO][0m[2023-03-06 15:44:59]: [32mParent ID: syn_rack_90, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:45:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:45:30]: [32mIteration: 16, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:45:30]: [32mParent ID: syn_rack_87, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:45:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:46:00]: [32mIteration: 17, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:46:00]: [32mParent ID: syn_rack_95, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:46:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:46:31]: [32mIteration: 18, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:46:31]: [32mParent ID: syn_rack_96, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 15:46:34]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:47:02]: [32mIteration: 19, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 15:47:02]: [32mParent ID: syn_rack_82, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:47:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:47:32]: [32mIteration: 20, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:47:32]: [32mParent ID: syn_rack_81, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:47:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:48:03]: [32mIteration: 21, Place Success: 0.864, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:48:03]: [32mParent ID: syn_rack_92, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:48:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:48:34]: [32mIteration: 22, Place Success: 0.826, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:48:34]: [32mParent ID: syn_rack_81, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:48:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:49:05]: [32mIteration: 23, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:49:05]: [32mParent ID: syn_rack_95, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 15:49:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:49:35]: [32mIteration: 24, Place Success: 0.840, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 15:49:35]: [32mParent ID: syn_rack_88, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:49:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:50:06]: [32mIteration: 25, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:50:06]: [32mParent ID: syn_rack_90, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:50:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:50:37]: [32mIteration: 26, Place Success: 0.815, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_90, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:50:37]: [32mParent ID: syn_rack_83, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:50:40]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:51:08]: [32mIteration: 27, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:51:08]: [32mParent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:51:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:51:38]: [32mIteration: 28, Place Success: 0.793, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:51:38]: [32mParent ID: syn_rack_88, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:51:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:52:09]: [32mIteration: 29, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:52:09]: [32mParent ID: syn_rack_97, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:52:12]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:52:40]: [32mIteration: 30, Place Success: 0.806, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:52:40]: [32mParent ID: syn_rack_83, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:52:43]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:53:11]: [32mIteration: 31, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:53:11]: [32mParent ID: syn_rack_90, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:53:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:53:41]: [32mIteration: 32, Place Success: 0.818, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:53:41]: [32mParent ID: syn_rack_95, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:53:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:54:12]: [32mIteration: 33, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 15:54:12]: [32mParent ID: syn_rack_9, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:54:15]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:54:42]: [32mIteration: 34, Place Success: 0.829, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:54:42]: [32mParent ID: syn_rack_9, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:54:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:55:13]: [32mIteration: 35, Place Success: 0.806, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_9, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 15:55:13]: [32mParent ID: syn_rack_84, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:55:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:55:44]: [32mIteration: 36, Place Success: 0.811, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:55:44]: [32mParent ID: syn_rack_90, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:55:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:56:14]: [32mIteration: 37, Place Success: 0.816, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 15:56:14]: [32mParent ID: syn_rack_87, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:56:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:56:44]: [32mIteration: 38, Place Success: 0.795, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_87, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:56:44]: [32mParent ID: syn_rack_97, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:56:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:57:15]: [32mIteration: 39, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:57:15]: [32mParent ID: syn_rack_9, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:57:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:57:46]: [32mIteration: 40, Place Success: 0.805, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 15:57:46]: [32mParent ID: syn_rack_83, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:57:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:58:17]: [32mIteration: 41, Place Success: 0.810, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 15:58:17]: [32mParent ID: syn_rack_92, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 15:58:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:58:48]: [32mIteration: 42, Place Success: 0.791, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 15:58:48]: [32mParent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:58:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:59:19]: [32mIteration: 43, Place Success: 0.773, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 15:59:19]: [32mParent ID: syn_rack_9, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:59:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 15:59:49]: [32mIteration: 44, Place Success: 0.778, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:59:49]: [32mParent ID: syn_rack_87, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 15:59:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:00:19]: [32mIteration: 45, Place Success: 0.783, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:00:19]: [32mParent ID: syn_rack_82, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:00:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:00:49]: [32mIteration: 46, Place Success: 0.787, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:00:49]: [32mParent ID: syn_rack_89, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:00:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:01:20]: [32mIteration: 47, Place Success: 0.792, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:01:20]: [32mParent ID: syn_rack_83, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:01:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:01:51]: [32mIteration: 48, Place Success: 0.796, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:01:51]: [32mParent ID: syn_rack_85, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:01:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:02:22]: [32mIteration: 49, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_85, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:02:22]: [32mParent ID: syn_rack_82, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:02:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:02:53]: [32mIteration: 50, Place Success: 0.804, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:02:53]: [32mParent ID: syn_rack_97, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:02:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:03:24]: [32mIteration: 51, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:03:24]: [32mParent ID: syn_rack_92, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:03:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:03:55]: [32mIteration: 52, Place Success: 0.792, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:03:55]: [32mParent ID: syn_rack_96, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 16:03:58]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:04:25]: [32mIteration: 53, Place Success: 0.796, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 16:04:25]: [32mParent ID: syn_rack_96, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:04:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:04:56]: [32mIteration: 54, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:04:56]: [32mParent ID: syn_rack_87, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:04:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:05:27]: [32mIteration: 55, Place Success: 0.786, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_87, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:05:27]: [32mParent ID: syn_rack_98, Child ID: f09e51579600cfbb88b651d2e4ea0846[0m
+[32m[INFO][0m[2023-03-06 16:05:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:05:57]: [32mIteration: 56, Place Success: 0.772, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_98, child_id: f09e51579600cfbb88b651d2e4ea0846[0m
+[32m[INFO][0m[2023-03-06 16:05:57]: [32mParent ID: syn_rack_98, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 16:06:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:06:28]: [32mIteration: 57, Place Success: 0.776, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 16:06:28]: [32mParent ID: syn_rack_94, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:06:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:06:59]: [32mIteration: 58, Place Success: 0.780, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_94, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:06:59]: [32mParent ID: syn_rack_91, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:07:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:07:29]: [32mIteration: 59, Place Success: 0.783, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:07:29]: [32mParent ID: syn_rack_90, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:07:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:08:00]: [32mIteration: 60, Place Success: 0.787, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:08:00]: [32mParent ID: syn_rack_84, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:08:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:08:31]: [32mIteration: 61, Place Success: 0.790, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:08:31]: [32mParent ID: syn_rack_98, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:08:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:09:02]: [32mIteration: 62, Place Success: 0.794, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:09:02]: [32mParent ID: syn_rack_90, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:09:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:09:33]: [32mIteration: 63, Place Success: 0.781, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_90, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:09:33]: [32mParent ID: syn_rack_88, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:09:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:10:03]: [32mIteration: 64, Place Success: 0.785, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:10:03]: [32mParent ID: syn_rack_89, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:10:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:10:34]: [32mIteration: 65, Place Success: 0.788, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:10:34]: [32mParent ID: syn_rack_88, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:10:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:11:04]: [32mIteration: 66, Place Success: 0.791, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:11:04]: [32mParent ID: syn_rack_86, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:11:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:11:34]: [32mIteration: 67, Place Success: 0.794, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_86, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:11:34]: [32mParent ID: syn_rack_93, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:11:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:12:05]: [32mIteration: 68, Place Success: 0.797, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:12:05]: [32mParent ID: syn_rack_84, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:12:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:12:35]: [32mIteration: 69, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:12:35]: [32mParent ID: syn_rack_88, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:12:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:13:05]: [32mIteration: 70, Place Success: 0.803, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:13:05]: [32mParent ID: syn_rack_98, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:13:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:13:36]: [32mIteration: 71, Place Success: 0.806, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:13:36]: [32mParent ID: syn_rack_97, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:13:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:14:06]: [32mIteration: 72, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:14:06]: [32mParent ID: syn_rack_83, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:14:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:14:36]: [32mIteration: 73, Place Success: 0.811, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:14:36]: [32mParent ID: syn_rack_84, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:14:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:15:07]: [32mIteration: 74, Place Success: 0.813, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:15:07]: [32mParent ID: syn_rack_87, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:15:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:15:37]: [32mIteration: 75, Place Success: 0.816, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:15:37]: [32mParent ID: syn_rack_98, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:15:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:16:08]: [32mIteration: 76, Place Success: 0.818, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:16:08]: [32mParent ID: syn_rack_92, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:16:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:16:39]: [32mIteration: 77, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_92, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:16:39]: [32mParent ID: syn_rack_91, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:16:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:17:10]: [32mIteration: 78, Place Success: 0.823, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:17:10]: [32mParent ID: syn_rack_82, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:17:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:17:41]: [32mIteration: 79, Place Success: 0.825, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:17:41]: [32mParent ID: syn_rack_81, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:17:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:18:11]: [32mIteration: 80, Place Success: 0.827, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:18:11]: [32mParent ID: syn_rack_86, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:18:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:18:42]: [32mIteration: 81, Place Success: 0.817, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_86, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:18:42]: [32mParent ID: syn_rack_84, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:18:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:19:13]: [32mIteration: 82, Place Success: 0.819, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+[32m[INFO][0m[2023-03-06 16:19:13]: [32mParent ID: syn_rack_87, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:19:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:19:43]: [32mIteration: 83, Place Success: 0.810, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_87, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:19:43]: [32mParent ID: syn_rack_82, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:19:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:20:14]: [32mIteration: 84, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:20:14]: [32mParent ID: syn_rack_81, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 16:20:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:20:45]: [32mIteration: 85, Place Success: 0.814, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 16:20:45]: [32mParent ID: syn_rack_93, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:20:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:21:15]: [32mIteration: 86, Place Success: 0.816, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:21:15]: [32mParent ID: syn_rack_84, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 16:21:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:21:46]: [32mIteration: 87, Place Success: 0.818, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+[32m[INFO][0m[2023-03-06 16:21:46]: [32mParent ID: syn_rack_83, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:21:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:22:17]: [32mIteration: 88, Place Success: 0.820, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:22:17]: [32mParent ID: syn_rack_83, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:22:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:22:48]: [32mIteration: 89, Place Success: 0.822, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+[32m[INFO][0m[2023-03-06 16:22:48]: [32mParent ID: syn_rack_9, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:22:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:23:19]: [32mIteration: 90, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:23:19]: [32mParent ID: syn_rack_93, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:23:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:23:49]: [32mIteration: 91, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+[32m[INFO][0m[2023-03-06 16:23:49]: [32mParent ID: syn_rack_82, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 16:23:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:24:20]: [32mIteration: 92, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f1e439307b834015770a0ff1161fa15a[0m
+[32m[INFO][0m[2023-03-06 16:24:20]: [32mParent ID: syn_rack_94, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:24:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:24:50]: [32mIteration: 93, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_94, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:24:50]: [32mParent ID: syn_rack_99, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:24:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:25:21]: [32mIteration: 94, Place Success: 0.832, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_99, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+[32m[INFO][0m[2023-03-06 16:25:21]: [32mParent ID: syn_rack_92, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:25:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:25:52]: [32mIteration: 95, Place Success: 0.823, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+[32m[INFO][0m[2023-03-06 16:25:52]: [32mParent ID: syn_rack_89, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:25:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:26:22]: [32mIteration: 96, Place Success: 0.825, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+[32m[INFO][0m[2023-03-06 16:26:22]: [32mParent ID: syn_rack_95, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:26:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:26:53]: [32mIteration: 97, Place Success: 0.827, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+[32m[INFO][0m[2023-03-06 16:26:53]: [32mParent ID: syn_rack_86, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:26:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:27:23]: [32mIteration: 98, Place Success: 0.818, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_86, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+[32m[INFO][0m[2023-03-06 16:27:23]: [32mParent ID: syn_rack_87, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+[32m[INFO][0m[2023-03-06 16:27:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-03-06 16:27:53]: [32mIteration: 99, Place Success: 0.820, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+You can open the visualizer by visiting the following URL:
+http://127.0.0.1:7000/static/
+PosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+Destroy EGL OpenGL window.
+PosixSharedMemory::releaseSharedMemory detached shared memory
