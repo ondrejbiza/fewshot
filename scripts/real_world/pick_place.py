@@ -5,9 +5,9 @@ import pickle
 import numpy as np
 from numpy.typing import NDArray
 import rospy
-from scipy.spatial.transform import Rotation
+import torch
 
-from src import utils, viz_utils
+from src import object_warping, utils, viz_utils
 from src.real_world import constants, perception
 import src.real_world.utils as rw_utils
 from src.real_world.point_cloud_proxy_sync import PointCloudProxy
@@ -15,59 +15,51 @@ from src.real_world.ur5 import UR5
 from src.real_world.simulation import Simulation
 
 
-def pick_simple(
-    mug_pcd_complete: NDArray, mug_param: utils.ObjParam,
-    ur5: UR5, load_path: str, safe_release: bool=False) -> NDArray:
-
+def pick_simple(source_pcd_complete: NDArray, source_param: utils.ObjParam, 
+                ur5: UR5, load_path: str) -> NDArray:
+    """Pick object by following a single vertex position and a pre-recorded pose."""
     with open(load_path, "rb") as f:
         data = pickle.load(f)
-        index, target_quat = data["index"], data["quat"]
-        target_pos = mug_pcd_complete[index]
+        index, t0_tip_quat = data["index"], data["quat"]
+        t0_tip_pos_in_ws = source_pcd_complete[index]
 
-    target_pos = target_pos + constants.DESK_CENTER
-    target_rot = np.matmul(
-        Rotation.from_quat(mug_param.quat).as_matrix(),
-        Rotation.from_quat(target_quat).as_matrix()
+    t0_tip_pos_in_base = t0_tip_pos_in_ws + constants.DESK_CENTER
+    t0_tip_rot = np.matmul(
+        utils.quat_to_rotm(source_param.quat),
+        utils.quat_to_rotm(t0_tip_quat)
     )
-    target_quat = Rotation.from_matrix(target_rot).as_quat()
+    t0_tip_quat = utils.rotm_to_quat(t0_tip_rot)
 
-    T = utils.pos_quat_to_transform(target_pos, target_quat)
-    T_pre = utils.pos_quat_to_transform(*rw_utils.move_hand_back(target_pos, target_quat, -0.1))
-    if safe_release:
-        T_pre_safe = utils.pos_quat_to_transform(*rw_utils.move_hand_back(target_pos, target_quat, -0.01))
+    trans_t0_tip_to_b = utils.pos_quat_to_transform(t0_tip_pos_in_base, t0_tip_quat)
+    trans_t0_to_b = trans_t0_tip_to_b @ np.linalg.inv(rw_utils.tool0_tip_to_tool0())
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
+    trans_pre_t0_to_b = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_t0_to_b), -0.0))
 
-    # Remove mug from planning scene.
-    ur5.moveit_scene.remove_object("mug")
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b))
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T))
+    # Remove source object from planning scene.
+    ur5.moveit_scene.remove_object("source")
+
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b))
     ur5.gripper.close_gripper()
 
-    # Add mug back to the planning scene.
+    # Add source object back to the planning scene.
     pos, quat = utils.transform_to_pos_quat(
-        rw_utils.desk_obj_param_to_base_link_T(mug_param.position, mug_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
-    ur5.moveit_scene.add_object("tmp_source.stl", "mug", pos, quat)
+        rw_utils.desk_obj_param_to_base_link_T(source_param.position, source_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
+    ur5.moveit_scene.add_object("tmp_source.stl", "source", pos, quat)
 
-    # Lock mug to flange in the moveit scene.
-    ur5.moveit_scene.attach_object("mug")
+    # Lock source object to flange in the moveit scene.
+    ur5.moveit_scene.attach_object("source")
 
-    # Calcualte mug to gripper transform at the point when we grasp it.
-    # TODO: If the grasp moved the mug we wouldn't know.
-    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
-    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
-    T_m_to_b = utils.pos_quat_to_transform(mug_param.position + constants.DESK_CENTER, mug_param.quat)
-    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
+    # Calculate source object to gripper transform at the point when we grasp it.
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_source_to_ws = source_param.get_transform()
+    trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
+    trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    if safe_release:
-        ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre_safe))
-        rospy.sleep(1)
-        ur5.gripper.open_gripper()
-        ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=1)
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_pre), num_plans=1)
-
-    return T_m_to_g
+    return trans_source_to_t0
 
 
 def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.ObjParam, load_path: str):
@@ -85,18 +77,16 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     # Pick pose in workspace frame.
     trans_robotiq_to_ws = source_param.get_transform() @ trans
 
-    trans_tool0_to_ws = trans_robotiq_to_ws @ np.linalg.inv(rw_utils.robotiq_to_tool0())
-    trans_tool0_controller_to_tool0 = ur5.tf_proxy.lookup_transform("tool0_controller", "tool0")
-    trans_tool0_controller_to_ws = trans_tool0_to_ws @ trans_tool0_controller_to_tool0
-    trans_tool0_controller_to_b = rw_utils.workspace_to_base() @ trans_tool0_controller_to_ws
+    trans_t0_to_ws = trans_robotiq_to_ws @ np.linalg.inv(rw_utils.robotiq_to_tool0())
+    trans_t0_to_b = rw_utils.workspace_to_base() @ trans_t0_to_ws
 
-    trans_g = trans_tool0_controller_to_b
+    trans_g = trans_t0_to_b
     trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), -0.1))
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g))
 
     # Remove mug from planning scene.
-    ur5.moveit_scene.remove_object("mug")
+    ur5.moveit_scene.remove_object("source")
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g))
     ur5.gripper.close_gripper()
@@ -104,27 +94,26 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     # Add mug back to the planning scene.
     pos, quat = utils.transform_to_pos_quat(
         rw_utils.desk_obj_param_to_base_link_T(source_param.position, source_param.quat, np.array(constants.DESK_CENTER), ur5.tf_proxy))
-    ur5.moveit_scene.add_object("tmp_source.stl", "mug", pos, quat)
+    ur5.moveit_scene.add_object("tmp_source.stl", "source", pos, quat)
 
     # Lock mug to flange in the moveit scene.
-    ur5.moveit_scene.attach_object("mug")
+    ur5.moveit_scene.attach_object("source")
 
     # Calcualte mug to gripper transform at the point when we grasp it.
-    # TODO: If the grasp moved the mug we wouldn't know.
-    gripper_pos, gripper_rot = ur5.get_end_effector_pose()
-    T_g_to_b = utils.pos_quat_to_transform(gripper_pos, gripper_rot)
-    T_m_to_b = utils.pos_quat_to_transform(source_param.position + constants.DESK_CENTER, source_param.quat)
-    T_m_to_g = np.matmul(np.linalg.inv(T_g_to_b), T_m_to_b)
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_source_to_ws = source_param.get_transform()
+    trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
+    trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g), num_plans=1)
 
-    return T_m_to_g
+    return trans_source_to_t0
 
 
 def place(
-    ur5: UR5, canon_mug: utils.CanonObj, canon_tree: utils.CanonObj,
-    mug_param: utils.ObjParam, tree_param: utils.ObjParam,
-    T_m_to_g: NDArray, sim: Simulation, load_path: str):
+    ur5: UR5, canon_source: utils.CanonObj, canon_target: utils.CanonObj,
+    source_param: utils.ObjParam, target_param: utils.ObjParam,
+    trans_source_to_t0: NDArray, sim: Simulation, load_path: str):
 
     with open(load_path, "rb") as f:
         place_data = pickle.load(f)
@@ -134,34 +123,33 @@ def place(
     target_indices = place_data["target_indices"]
     T_g_pre_to_g = place_data["T_g_pre_to_g"]
 
-    mug_orig = canon_mug.to_pcd(mug_param)
-    tree_orig = canon_tree.to_pcd(tree_param)
+    source_orig = canon_source.to_pcd(source_param)
+    target_orig = canon_target.to_pcd(target_param)
 
-    anchors = mug_orig[knns]
-    targets_mug = np.mean(anchors + deltas, axis=1)
+    anchors = source_orig[knns]
+    contacts_source = np.mean(anchors + deltas, axis=1)
+    contacts_target = target_orig[target_indices]
 
-    targets_tree = tree_orig[target_indices]
-
-    T_new_m_to_t, _, _ = utils.best_fit_transform(targets_mug, targets_tree)
-    T_t_to_b = utils.pos_quat_to_transform(tree_param.position + constants.DESK_CENTER, tree_param.quat)
-    T_new_m_to_b = np.matmul(T_t_to_b, T_new_m_to_t)
+    trans_new_source_to_target, _, _ = utils.best_fit_transform(contacts_source, contacts_target)
+    trans_target_to_b = utils.pos_quat_to_transform(target_param.position + constants.DESK_CENTER, target_param.quat)
+    trans_new_source_to_b = np.matmul(trans_target_to_b, trans_new_source_to_target)
 
     # Wiggle mug out of potential collision.
-    sim.remove_all_objects()
-    mug_id = sim.add_object("tmp_source.urdf", *utils.transform_to_pos_quat(T_new_m_to_b))
-    tree_id = sim.add_object("tmp_target.urdf", *utils.transform_to_pos_quat(T_t_to_b), fixed_base=True)
+    # sim.remove_all_objects()
+    # source_id = sim.add_object("tmp_source.urdf", *utils.transform_to_pos_quat(trans_new_source_to_b))
+    # target_id = sim.add_object("tmp_target.urdf", *utils.transform_to_pos_quat(trans_target_to_b), fixed_base=True)
     # new_m_pos, new_m_quat = sim.wiggle(mug_id, tree_id)
     # T_new_m_to_b = utils.pos_quat_to_transform(new_m_pos, new_m_quat)
 
-    T_g_to_b = np.matmul(T_new_m_to_b, np.linalg.inv(T_m_to_g))
-    T_g_pre_to_b = np.matmul(T_g_to_b, T_g_pre_to_g)
+    trans_g_to_b = np.matmul(trans_new_source_to_b, np.linalg.inv(trans_source_to_t0))
+    trans_g_pre_to_b = np.matmul(trans_g_to_b, T_g_pre_to_g)
 
     # Remove mug from the planning scene.
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_g_pre_to_b))
-    ur5.moveit_scene.detach_object("mug")
-    ur5.moveit_scene.remove_object("mug")
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g_pre_to_b))
+    ur5.moveit_scene.detach_object("source")
+    ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(T_g_to_b), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g_to_b), num_plans=1)
 
 
 def main(args):
@@ -188,26 +176,20 @@ def main(args):
     if args.task == "mug_tree":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
-
         canon_source.init_scale = 0.7
         canon_target.init_scale = 1.
-
         source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-
         canon_source.init_scale = 0.8
         canon_target.init_scale = 0.7
-
         source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bottle_in_box":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
-
         canon_source.init_scale = 1.
         canon_target.init_scale = 1.
-
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
     else:
         raise ValueError("Unknown task.")
@@ -218,12 +200,12 @@ def main(args):
         target_save_decomposition=True, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
         rviz_pub=ur5.rviz_pub, grow_source_object=True
     )
-    mug_pcd_complete, mug_param, tree_pcd_complete, tree_param, canon_mug, canon_tree, _, _ = out
+    source_pcd_complete, source_param, target_pcd_complete, target_param = out
 
     if args.pick_contacts:
-        T_m_to_g = pick_contacts(ur5, canon_mug, mug_param, args.pick_load_path + ".pkl")
+        trans_source_to_t0 = pick_contacts(ur5, canon_source, source_param, args.pick_load_path + ".pkl")
     else:
-        T_m_to_g = pick_simple(mug_pcd_complete, mug_param, ur5, args.pick_load_path + ".pkl")
+        trans_source_to_t0 = pick_simple(source_pcd_complete, source_param, ur5, args.pick_load_path + ".pkl")
 
     # Take an in-hand image.
     if args.platform:
@@ -231,54 +213,10 @@ def main(args):
 
     cloud = pc_proxy.get_all()
     assert cloud is not None
-    in_hand = perception.in_hand_segmentation(cloud)
-
-    trans_ws_to_b = rw_utils.workspace_to_base()
-    trans_b_to_tool0_c = ur5.tf_proxy.lookup_transform("base", "tool0_controller")
-    trans_tool0_c_to_gt = rw_utils.tool0_controller_to_gripper_top()
-
-    trans = trans_tool0_c_to_gt @ trans_b_to_tool0_c @ trans_ws_to_b
-    in_hand = utils.transform_pcd(in_hand, trans)
-    in_hand = in_hand[in_hand[:, 2] <= 0.]
-    in_hand = utils.transform_pcd(in_hand, np.linalg.inv(trans))
 
     robotiq_id = sim.add_object("data/robotiq.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
-
-    # Place the robotiq gripper in sim.
-    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
-    trans_t0_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_t0_to_b
-    trans_robotiq_to_tool0 = rw_utils.robotiq_to_tool0()
-    trans_robotiq_to_ws = trans_t0_to_ws @ trans_robotiq_to_tool0
-    utils.pb_set_pose(robotiq_id, *utils.transform_to_pos_quat(trans_robotiq_to_ws))
-
-    # Mirror the joint state of the gripper.
-    fract = ur5.gripper.get_open_fraction()
-    utils.pb_set_joint_positions(robotiq_id, [0, 2, 4, 5, 6, 7], [fract, fract, fract, -fract, fract, -fract])
-
-    sphere_id = sim.add_object("data/sphere.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
-
-    if len(in_hand) > 4000:
-        in_hand, _ = utils.farthest_point_sample(in_hand, 4000)
-
-    viz_utils.show_pcd_plotly(in_hand)
-
-    mask = np.ones(in_hand.shape[0], dtype=np.bool_)
-    
-    for idx, point in enumerate(in_hand):
-        utils.pb_set_pose(sphere_id, point, np.array([0., 0., 0., 1.]))
-        if utils.pb_body_collision(sphere_id, robotiq_id, margin=0.01):
-            mask[idx] = False
-
-    in_hand = in_hand[mask]
-
-    viz_utils.show_pcd_plotly(in_hand)
-
-    if len(in_hand) > 2000:
-        in_hand, _ = utils.farthest_point_sample(in_hand, 2000)
-
-    pos, quat = ur5.get_end_effector_pose()
-    pos = pos - constants.DESK_CENTER
-    trans_g_to_ws = utils.pos_quat_to_transform(pos, quat)
+    source_param, source_pcd_complete, trans_source_to_t0, in_hand_pcd = perception.reestimate_tool0_to_source(
+        cloud, ur5, robotiq_id, sim, canon_source, source_param, trans_source_to_t0)
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
@@ -286,7 +224,7 @@ def main(args):
     if not os.path.isfile(load_path):
         print("Place clone file not found.")
     else:
-        place(ur5, canon_mug, canon_tree, mug_param, tree_param, T_m_to_g, sim, load_path)
+        place(ur5, canon_source, canon_target, source_param, target_param, trans_source_to_t0, sim, load_path)
 
     # input("Release?")
     ur5.gripper.open_gripper()

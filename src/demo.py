@@ -15,7 +15,7 @@ def save_pick_contact_points(robotiq_id: int, source_id: int, trans_robotiq_to_w
 
     pos_robotiq = [col[5] for col in cols]
     pos_source = [col[6] for col in cols]
-    print(len(pos_robotiq), len(pos_source))
+    print("# contact points:", len(pos_robotiq))
 
     assert len(pos_robotiq) > 0
 

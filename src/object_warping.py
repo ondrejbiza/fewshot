@@ -522,7 +522,7 @@ def warp_to_pcd_se3_hemisphere(object_warping: Union[ObjectWarpingSE3Batch, Obje
 
 
 def warp_to_pcd_se2(object_warping: Union[ObjectWarpingSE2Batch, ObjectSE2Batch], n_angles: int=50,
-                    n_batches: int=3) -> Tuple[NDArray, float, utils.ObjParam]:
+                    n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
 
     start_angles = []
     for i in range(n_angles * n_batches):
@@ -535,7 +535,7 @@ def warp_to_pcd_se2(object_warping: Union[ObjectWarpingSE2Batch, ObjectSE2Batch]
     for batch_idx in range(n_batches):
 
         start_angles_batch = start_angles[batch_idx * n_angles: (batch_idx + 1) * n_angles]
-        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(start_angles_batch)
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(start_angles_batch, **inference_kwargs)
         all_costs += batch_costs
         all_new_pcds += batch_new_pcds
         all_parameters += batch_parameters

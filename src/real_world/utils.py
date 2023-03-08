@@ -16,10 +16,10 @@ NPF32 = NDArray[np.float32]
 NPF64 = NDArray[np.float64]
 
 
-def tool0_controller_base_to_flange_base_link(T: NPF64, tf_proxy: TFProxy) -> NPF64:
+def tool0_base_to_flange_base_link(T: NPF64, tf_proxy: TFProxy) -> NPF64:
 
     T_b_to_bl = tf_proxy.lookup_transform("base", "base_link")
-    T_f_to_g = tf_proxy.lookup_transform("flange", "tool0_controller")
+    T_f_to_g = tf_proxy.lookup_transform("flange", "tool0")
 
     return T_b_to_bl @ T @ T_f_to_g
 
@@ -102,8 +102,23 @@ def workspace_to_base() -> NPF64:
     return T
 
 
+def tool0_tip_to_tool0() -> NPF64:
+    """Move from the wrist to the finger tip."""
+    T = np.eye(4).astype(np.float64)
+    T[2, 3] = 0.17  # Set by hand.
+    return T
+
+
+def tool0_top_to_tool0() -> NPF64:
+    """Move from the wrist to the top of the space between the two fingers."""
+    T = np.eye(4).astype(np.float64)
+    T[2, 3] = 0.10  # Set by hand.
+    return T
+
+
 def tool0_controller_to_gripper_top() -> NPF64:
     """Move from the middle of the fingers towards the top of the gripper."""
+    assert False, "tool0_controller is miscalibrated."
     T = np.eye(4).astype(np.float64)
     T[2, 3] = -0.08  # 8 cm up
     return T
@@ -111,14 +126,14 @@ def tool0_controller_to_gripper_top() -> NPF64:
 
 def robotiq_coupler_to_tool0() -> NPF64:
     """This is specifically for the robotiq gripper URDF."""
-    rc_to_tool0_pos = np.array([0., 0., 0.004])
+    rc_to_tool0_pos = np.array([0., 0., 0.004])  # From some URDF.
     rc_to_tool0_quat = Rotation.from_euler("xyz", [0., 0., -np.pi / 2]).as_quat()
     return utils.pos_quat_to_transform(rc_to_tool0_pos, rc_to_tool0_quat)
 
 
 def robotiq_to_robotiq_coupler() -> NPF64:
     """This is specifically for the robotiq gripper URDF."""
-    r_to_rc_pos = np.array([0., 0., 0.004])
+    r_to_rc_pos = np.array([0., 0., 0.008])  # 0.004 from URDF, offset set by hand.
     r_to_rc_quat = Rotation.from_euler("xyz", [0., -np.pi / 2, np.pi]).as_quat()
     return utils.pos_quat_to_transform(r_to_rc_pos, r_to_rc_quat)
 
