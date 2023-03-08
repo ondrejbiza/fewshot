@@ -14,14 +14,18 @@ from src.real_world.point_cloud_proxy import PointCloudProxy
 from src.real_world.ur5 import UR5
 from src.real_world.simulation import Simulation
 
+EASY_MOTION_TRIES = 1
+HARD_MOTION_TRIES = 5
+
 
 def pick_simple(source_pcd_complete: NDArray, source_param: utils.ObjParam, 
-                ur5: UR5, load_path: str) -> NDArray:
+                ur5: UR5, post_pick_delta: float, load_path: str) -> NDArray:
     """Pick object by following a single vertex position and a pre-recorded pose."""
     with open(load_path, "rb") as f:
         data = pickle.load(f)
-        index, t0_tip_quat = data["index"], data["quat"]
-        t0_tip_pos_in_ws = source_pcd_complete[index]
+    index, t0_tip_quat = data["index"], data["quat"]
+    t0_tip_pos_in_ws = source_pcd_complete[index]
+    trans_pre_t0_to_t0 = data["trans_pre_t0_to_t0"]
 
     t0_tip_pos_in_base = t0_tip_pos_in_ws + constants.DESK_CENTER
     t0_tip_rot = np.matmul(
@@ -34,15 +38,16 @@ def pick_simple(source_pcd_complete: NDArray, source_param: utils.ObjParam,
     trans_t0_to_b = trans_t0_tip_to_b @ np.linalg.inv(rw_utils.tool0_tip_to_tool0())
 
     trans_post_t0_to_b = np.copy(trans_t0_to_b)
-    trans_post_t0_to_b[2, 3] += 0.1
-    trans_pre_t0_to_b = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_t0_to_b), 0.1))
+    trans_post_t0_to_b[2, 3] += post_pick_delta
+    trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
+    # trans_pre_t0_to_b = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_t0_to_b), 0.1))
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
 
     # Remove source object from planning scene.
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
     ur5.gripper.close_gripper()
 
     # Add source object back to the planning scene.
@@ -59,17 +64,18 @@ def pick_simple(source_pcd_complete: NDArray, source_param: utils.ObjParam,
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=EASY_MOTION_TRIES)
 
     return trans_source_to_t0
 
 
-def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.ObjParam, load_path: str):
+def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.ObjParam, post_pick_delta: float, load_path: str):
 
     with open(load_path, "rb") as f:
         d = pickle.load(f)
     index = d["index"]
     pos_robotiq = d["pos_robotiq"]
+    trans_pre_t0_to_t0 = d["trans_pre_t0_to_t0"]
 
     source_pcd_complete = canon_source.to_pcd(source_param)
     source_points = source_pcd_complete[index]
@@ -84,15 +90,16 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
 
     trans_g = trans_t0_to_b
     trans_post_g = np.copy(trans_g)
-    trans_post_g[2, 3] += 0.1
-    trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), 0.1))
+    trans_post_g[2, 3] += post_pick_delta
+    trans_pre_g = np.matmul(trans_g, trans_pre_t0_to_t0)
+    # trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), 0.1))
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g), num_plans=HARD_MOTION_TRIES)
 
     # Remove mug from planning scene.
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g), num_plans=EASY_MOTION_TRIES)
     ur5.gripper.close_gripper()
 
     # Calcualte mug to gripper transform at the point when we grasp it.
@@ -101,7 +108,7 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_g), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_g), num_plans=EASY_MOTION_TRIES)
 
     return trans_source_to_t0
 
@@ -141,11 +148,11 @@ def place(
     trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
 
     # Remove mug from the planning scene.
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b))
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
     ur5.moveit_scene.detach_object("source")
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=1)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
 
 
 def main(args):
@@ -197,10 +204,14 @@ def main(args):
     )
     source_pcd_complete, source_param, target_pcd_complete, target_param = out
 
+    post_pick_delta = 0.1
+    if args.platform:
+        post_pick_delta = 0.01
+
     if args.pick_contacts:
-        trans_source_to_t0 = pick_contacts(ur5, canon_source, source_param, args.pick_load_path)
+        trans_source_to_t0 = pick_contacts(ur5, canon_source, source_param, post_pick_delta, args.pick_load_path)
     else:
-        trans_source_to_t0 = pick_simple(source_pcd_complete, source_param, ur5, args.pick_load_path)
+        trans_source_to_t0 = pick_simple(source_pcd_complete, source_param, ur5, post_pick_delta, args.pick_load_path)
 
     # Take an in-hand image.
     if args.platform:
