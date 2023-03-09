@@ -9,15 +9,15 @@ import matplotlib.pyplot as plt
 import rospy
 import ros_numpy
 from sensor_msgs.msg import Image
-from skimage.transform import resize
 
-from online_isec.tf_proxy import TFProxy
+from src import exceptions
+from src.real_world.tf_proxy import TFProxy
 
 
 @dataclass
-class ImageProxy:
+class DepthProxy:
     # (realsense*3)
-    image_topics: Tuple[Optional[str], ...] = ("realsense_left/color/image_raw", "realsense_right/color/image_raw", "realsense_forward/color/image_raw")
+    image_topics: Tuple[Optional[str], ...] = ("realsense_left/depth/image_rect_raw", "realsense_right/depth/image_rect_raw", "realsense_forward/depth/image_rect_raw")
     heights: Tuple[int, ...] = (720, 720, 720)
     widths: Tuple[int, ...] = (1280, 1280, 1280)
 
@@ -40,9 +40,11 @@ class ImageProxy:
         with self.locks[camera_index]:
             self.images[camera_index] = image
 
-    def get(self, camera_index: int) -> Optional[NDArray]:
+    def get(self, camera_index: int) -> NDArray:
 
         with self.locks[camera_index]:
+            if self.images[camera_index] is None:
+                raise exceptions.PerceptionError(f"Camera {camera_index} isn't working.")
             return self.images[camera_index]
 
     def close(self):
@@ -56,10 +58,10 @@ if __name__ == "__main__":
     # Show outputs of the proxy.
     print("Setup proxy and wait a bit.")
     rospy.init_node("image_proxy_example")
-    pc_proxy = ImageProxy()
+    pc_proxy = DepthProxy()
     time.sleep(2)
 
-    camera_index = 2
+    camera_index = 0
     image = pc_proxy.get(camera_index)
 
     if image is None:

@@ -74,6 +74,13 @@ class PointCloudProxy:
 
         return cloud
 
+    def get(self, camera_index: int) -> NDArray:
+        """Get a point cloud from a cameras."""
+        msg = self.msgs[camera_index]
+        if msg is None:
+            raise exceptions.PerceptionError(f"Camera {camera_index} isn't working.")
+        return self.process_pc(msg, self.nans_in_pc[camera_index])
+
     def get_all(self) -> NDArray:
         """Get a combined point cloud from all cameras."""
         clouds = []

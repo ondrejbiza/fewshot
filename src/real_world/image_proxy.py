@@ -10,6 +10,7 @@ import rospy
 import ros_numpy
 from sensor_msgs.msg import Image
 
+from src import exceptions
 from src.real_world.tf_proxy import TFProxy
 
 
@@ -39,9 +40,11 @@ class ImageProxy:
         with self.locks[camera_index]:
             self.images[camera_index] = image
 
-    def get(self, camera_index: int) -> Optional[NDArray]:
+    def get(self, camera_index: int) -> NDArray:
 
         with self.locks[camera_index]:
+            if self.images[camera_index] is None:
+                raise exceptions.PerceptionError(f"Camera {camera_index} isn't working.")
             return self.images[camera_index]
 
     def close(self):

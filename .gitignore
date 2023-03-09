@@ -4,6 +4,7 @@
 venv/
 venv_ndf/
 /data/ndf_objects/
+/data/ignore
 /tmp.stl
 /tmp.obj
 /tmp_source.stl
