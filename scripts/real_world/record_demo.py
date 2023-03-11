@@ -104,7 +104,10 @@ def save_place_contact_points(
     delta: float=0.01, save_path: Optional[str]=None):
 
     trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
-    trans_pre_t0_to_t0 = np.matmul(np.linalg.inv(trans_t0_to_b), trans_pre_t0_to_b)
+    trans_source_to_b = trans_t0_to_b @ trans_source_to_t0
+
+    trans_pre_source_to_b = trans_pre_t0_to_b @ trans_source_to_t0
+    trans_pre_source_to_source = np.matmul(np.linalg.inv(trans_source_to_b), trans_pre_source_to_b)
 
     # The source object was perceived on the ground.
     # Move it to where the robot hand is now.
@@ -126,7 +129,8 @@ def save_place_contact_points(
                 "deltas": deltas,
                 "target_indices": i_2,
                 "trans_t0_to_b": trans_t0_to_b,
-                "trans_pre_t0_to_t0": trans_pre_t0_to_t0,
+                "trans_pre_t0_to_b": trans_pre_t0_to_b,
+                "trans_pre_source_to_source": trans_pre_source_to_source,
                 "observed_pc": target_pcd,
             }, f)
 

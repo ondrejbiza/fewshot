@@ -193,8 +193,12 @@ def find_bottle_and_box(cloud: NPF32) -> Tuple[NPF32, NPF32]:
     assert len(pcs[0]) > 10, "Too small PC."
     assert len(pcs[1]) > 10, "Too small PC."
 
-    # Bottle is taller than box.
-    if np.max(pcs[0][..., 2]) > np.max(pcs[1][..., 2]):
+    # Bowl is wider than mug.
+    var1 = np.mean(np.sum(np.square(pcs[0][:, :2] - np.mean(pcs[0][:, :2], axis=0, keepdims=True)), axis=-1))
+    var2 = np.mean(np.sum(np.square(pcs[1][:, :2] - np.mean(pcs[1][:, :2], axis=0, keepdims=True)), axis=-1))
+
+    # Box is wider than bottle.
+    if var2 > var1:
         bottle = pcs[0]
         box = pcs[1]
     else:

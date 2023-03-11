@@ -88,18 +88,26 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_t0_to_ws = trans_robotiq_to_ws @ np.linalg.inv(rw_utils.robotiq_to_tool0())
     trans_t0_to_b = rw_utils.workspace_to_base() @ trans_t0_to_ws
 
-    trans_g = trans_t0_to_b
-    trans_post_g = np.copy(trans_g)
-    trans_post_g[2, 3] += post_pick_delta
-    trans_pre_g = np.matmul(trans_g, trans_pre_t0_to_t0)
-    # trans_pre_g = utils.pos_quat_to_transform(*rw_utils.move_hand_back(*utils.transform_to_pos_quat(trans_g), 0.1))
+    # Either lift the hand 25 cm above the workspace,
+    # or two cm from the current position if its higher than 25 cm.
+    trans_t0_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_t0_to_b
+    trans_post_t0_to_ws = np.copy(trans_t0_to_ws)
+    eps = 0.02  # 2 cm margin
+    level = 0.35
+    if trans_post_t0_to_ws[2, 3] <= level - eps:
+        trans_post_t0_to_ws[2, 3] = level
+    else:
+        trans_post_t0_to_ws[2, 3] += eps
+    trans_post_t0_to_b = rw_utils.workspace_to_base() @ trans_post_t0_to_ws
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_g), num_plans=HARD_MOTION_TRIES)
+    trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
+
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
 
     # Remove mug from planning scene.
     ur5.moveit_scene.remove_object("source")
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_g), num_plans=EASY_MOTION_TRIES)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
     ur5.gripper.close_gripper()
 
     # Calcualte mug to gripper transform at the point when we grasp it.
@@ -108,7 +116,7 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_g), num_plans=EASY_MOTION_TRIES)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=EASY_MOTION_TRIES)
 
     return trans_source_to_t0
 
@@ -124,7 +132,7 @@ def place(
     knns = place_data["knns"]
     deltas = place_data["deltas"]
     target_indices = place_data["target_indices"]
-    trans_pre_t0_to_t0 = place_data["trans_pre_t0_to_t0"]
+    trans_pre_source_to_source = place_data["trans_pre_source_to_source"]
 
     source_orig = canon_source.to_pcd(source_param)
     target_orig = canon_target.to_pcd(target_param)
@@ -144,8 +152,13 @@ def place(
     # new_m_pos, new_m_quat = sim.wiggle(mug_id, tree_id)
     # T_new_m_to_b = utils.pos_quat_to_transform(new_m_pos, new_m_quat)
 
+    trans_pre_new_source_to_b = trans_new_source_to_b @ trans_pre_source_to_source
+
     trans_t0_to_b = np.matmul(trans_new_source_to_b, np.linalg.inv(trans_source_to_t0))
-    trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
+    trans_pre_t0_to_b = np.matmul(trans_pre_new_source_to_b, np.linalg.inv(trans_source_to_t0))
+
+    # I believe this is the wrong approach to do the pre-place pose:
+    # trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
 
     # Remove mug from the planning scene.
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
@@ -153,6 +166,9 @@ def place(
     ur5.moveit_scene.remove_object("source")
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
+    ur5.gripper.open_gripper()
+
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=EASY_MOTION_TRIES)
 
 
 def main(args):
@@ -162,7 +178,7 @@ def main(args):
 
     ur5 = UR5(setup_planning=True)
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
-    ur5.gripper.open_gripper(position=70)
+    ur5.gripper.open_gripper(position=20)
 
     platform_pcd = None
     if args.platform:
@@ -206,7 +222,7 @@ def main(args):
 
     post_pick_delta = 0.1
     if args.platform:
-        post_pick_delta = 0.01
+        post_pick_delta = 0.1
 
     if args.pick_contacts:
         trans_source_to_t0 = pick_contacts(ur5, canon_source, source_param, post_pick_delta, args.pick_load_path)
@@ -245,7 +261,6 @@ def main(args):
     else:
         place(ur5, canon_source, canon_target, source_param, target_param, trans_source_to_t0, sim, load_path)
 
-    ur5.gripper.open_gripper()
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 

@@ -44,15 +44,20 @@ def warp(mug_pc, tree_pc, knns, deltas, target_indices):
 def main(args):
 
     if args.task == "mug_tree":
-        canon_source = utils.CanonObj.from_pickle("data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl")
-        source_scale = 0.2
-        target_scale = 0.5
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
+        source_scale = 0.7
+        target_scale = 1.
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
         canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
         source_scale = 0.8
         target_scale = 0.7
+    elif args.task == "bottle_in_box":
+        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
+        canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
+        source_scale = 1.
+        target_scale = 1.
     else:
         raise NotImplementedError()
 
