@@ -132,6 +132,8 @@ def save_place_contact_points(
                 "trans_pre_t0_to_b": trans_pre_t0_to_b,
                 "trans_pre_source_to_source": trans_pre_source_to_source,
                 "observed_pc": target_pcd,
+                "source_param": source_param,
+                "target_param": target_param
             }, f)
 
 
