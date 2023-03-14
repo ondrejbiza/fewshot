@@ -203,6 +203,8 @@ def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visual
             targets.append(obj * scale_factor)
 
     warps = []
+    costs = []
+
     for target_idx, target in enumerate(targets):
         print("target {:d}".format(target_idx))
 
@@ -216,6 +218,10 @@ def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visual
 
         warp = np.dot(g, w)
         warp = np.hstack(warp)
+
+        tmp = source + warp.reshape(-1, 3)
+        costs.append(cost_batch(tmp, target))
+
         warps.append(warp)
 
         if visualize:
@@ -224,7 +230,7 @@ def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visual
                 "warp": source + warp.reshape(-1, 3),
             }, center=True)
 
-    return warps
+    return warps, costs
 
 
 def pca_transform(distances, n_dimensions=4):

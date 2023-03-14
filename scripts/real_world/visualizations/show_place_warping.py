@@ -1,12 +1,13 @@
 import argparse
+import os
 import pickle
 
 import numpy as np
 from numpy.typing import NDArray
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
+from matplotlib.widgets import Button, Slider
 
-from src import utils
+from src import utils, viz_utils
 
 
 def show_tree_indices(ax, tree_pc: NDArray, indices: NDArray[np.int32], vmin: float, vmax: float):
@@ -72,12 +73,12 @@ def main(args):
     smin, smax = -2., 2.
     vmin, vmax = -0.3, 0.3
 
-    print("Showing target closest points:")
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
+    # print("Showing target closest points:")
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection="3d")
     target_pcd = canon_target.to_pcd(utils.ObjParam(latent=[0.] * canon_target.n_components, scale=np.ones(3) * target_scale))
-    show_tree_indices(ax, target_pcd, target_indices, vmin, vmax)
-    plt.show()
+    # show_tree_indices(ax, target_pcd, target_indices, vmin, vmax)
+    # plt.show()
 
     print("Showing placement pose warping:")
     fig = plt.figure()
@@ -86,7 +87,7 @@ def main(args):
 
     slider_axes = []
     z = 0.
-    for _ in range(canon_source.n_components):
+    for _ in range(canon_source.n_components + 1):
         slider_axes.append(fig.add_axes([0.25, z, 0.65, 0.03]))
         z += 0.05
     # we start at the bottom and move up
@@ -95,14 +96,25 @@ def main(args):
     sliders = []
     for i in range(canon_source.n_components):
         sliders.append(Slider(slider_axes[i], "D{:d}".format(i), smin, smax, valinit=0))
+    button = Button(slider_axes[canon_source.n_components], "Save pcd")
 
     def sliders_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
         source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=np.ones(3) * source_scale))
         update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices), target_pcd, vmin, vmax)
 
+    def button_on_changed(val):
+        latents = np.array([[s.val for s in sliders]])
+        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=np.ones(3) * source_scale))
+        dir_path = "data/warping_figure_2"
+        if not os.path.isdir(dir_path):
+            os.makedirs(dir_path)
+        viz_utils.save_o3d_pcd(warp(source_pcd, target_pcd, knns, deltas, target_indices), os.path.join(dir_path, "source.pcd"))
+        viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_path, "target.pcd"))
+
     for s in sliders:
         s.on_changed(sliders_on_changed)
+    button.on_clicked(button_on_changed)
 
     plt.show()
 
