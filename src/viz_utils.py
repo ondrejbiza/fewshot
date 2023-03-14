@@ -4,6 +4,7 @@ from typing import Dict
 import numpy as np
 from numpy.typing import NDArray
 import matplotlib.pyplot as plt
+import open3d as o3d
 import plotly.graph_objects as go
 
 
@@ -126,3 +127,10 @@ def draw_square(img: NDArray, x: int, y: int, square_size=20, copy=False, intens
         img[x_limits[0]: x_limits[1], y_limits[0]: y_limits[1]] = intensity
 
     return img
+
+
+def save_o3d_pcd(pcd: NDArray[np.float32], save_path: str):
+   
+    pcd_o3d = o3d.geometry.PointCloud()
+    pcd_o3d.points = o3d.utility.Vector3dVector(pcd)
+    o3d.io.write_point_cloud(save_path, pcd_o3d)
