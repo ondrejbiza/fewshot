@@ -1,4 +1,5 @@
 import argparse
+import os
 import pickle
 import numpy as np
 from numpy.typing import NDArray
@@ -6,6 +7,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 import trimesh
+from src import viz_utils
 
 
 def warp_object(canonical_obj: NDArray, pca: PCA, latents: NDArray, scale_factor: float):
@@ -44,7 +46,7 @@ def main(args):
 
     slider_axes = []
     z = 0.
-    for _ in range(pca.n_components + 1):
+    for _ in range(pca.n_components + 2):
         slider_axes.append(fig.add_axes([0.25, z, 0.65, 0.03]))
         z += 0.05
     # we start at the bottom and move up
@@ -56,6 +58,7 @@ def main(args):
     button = None
     if canonical_mesh_points is not None:
         button = Button(slider_axes[pca.n_components], "Show mesh")
+    button2 = Button(slider_axes[pca.n_components + 1], "Save pcd")
 
     def sliders_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
@@ -70,10 +73,24 @@ def main(args):
         )
         mesh_reconstruction.show(smooth=False)
 
+    def button2_on_changed(val):
+        latents = np.array([[s.val for s in sliders]])
+        new_obj = warp_object(canonical_obj, pca, latents, args.scale)
+
+        dir_path = "data/warping_figure_3"
+        if not os.path.isdir(dir_path):
+            os.makedirs(dir_path)
+        for i in range(1, 1000):
+            file_path = os.path.join(dir_path, f"{i}.pcd")
+            if not os.path.isfile(file_path):
+                break
+        viz_utils.save_o3d_pcd(new_obj, file_path)   
+
     for s in sliders:
         s.on_changed(sliders_on_changed)
     if button is not None:
         button.on_clicked(button_on_changed)
+    button2.on_clicked(button2_on_changed)
 
     plt.show()
 

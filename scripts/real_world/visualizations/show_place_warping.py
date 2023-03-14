@@ -68,15 +68,17 @@ def main(args):
     knns = place_data["knns"]
     deltas = place_data["deltas"]
     target_indices = place_data["target_indices"]
+    source_param = place_data["source_param"]
+    target_param = place_data["target_param"]
 
-    source_pcd = canon_source.to_pcd(utils.ObjParam(latent=[0.] * canon_source.n_components, scale=np.ones(3) * source_scale))
+    source_pcd = canon_source.to_pcd(utils.ObjParam(latent=source_param.latent, scale=source_param.scale))
     smin, smax = -2., 2.
     vmin, vmax = -0.3, 0.3
 
     # print("Showing target closest points:")
     # fig = plt.figure()
     # ax = fig.add_subplot(111, projection="3d")
-    target_pcd = canon_target.to_pcd(utils.ObjParam(latent=[0.] * canon_target.n_components, scale=np.ones(3) * target_scale))
+    target_pcd = canon_target.to_pcd(utils.ObjParam(latent=target_param.latent, scale=target_param.scale))
     # show_tree_indices(ax, target_pcd, target_indices, vmin, vmax)
     # plt.show()
 
@@ -95,22 +97,27 @@ def main(args):
 
     sliders = []
     for i in range(canon_source.n_components):
-        sliders.append(Slider(slider_axes[i], "D{:d}".format(i), smin, smax, valinit=0))
+        sliders.append(Slider(slider_axes[i], "D{:d}".format(i), smin, smax, valinit=source_param.latent[i]))
     button = Button(slider_axes[canon_source.n_components], "Save pcd")
 
     def sliders_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
-        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=np.ones(3) * source_scale))
+        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=source_param.scale))
         update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices), target_pcd, vmin, vmax)
 
     def button_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
-        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=np.ones(3) * source_scale))
+        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=source_param.scale))
         dir_path = "data/warping_figure_2"
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
-        viz_utils.save_o3d_pcd(warp(source_pcd, target_pcd, knns, deltas, target_indices), os.path.join(dir_path, "source.pcd"))
-        viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_path, "target.pcd"))
+        i = 1
+        for i in range(1, 1000):
+            file_path = os.path.join(dir_path, f"source_{i}.pcd")
+            if not os.path.isfile(file_path):
+                break
+        viz_utils.save_o3d_pcd(warp(source_pcd, target_pcd, knns, deltas, target_indices), os.path.join(dir_path, f"source_{i}.pcd"))
+        viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_path, f"target_{i}.pcd"))
 
     for s in sliders:
         s.on_changed(sliders_on_changed)
