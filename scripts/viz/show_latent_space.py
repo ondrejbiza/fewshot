@@ -1,12 +1,14 @@
 import argparse
 import os
 import pickle
+
 import numpy as np
 from numpy.typing import NDArray
-from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
+from sklearn.decomposition import PCA
 import trimesh
+
 from src import viz_utils
 
 

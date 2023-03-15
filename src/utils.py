@@ -2,14 +2,17 @@ from dataclasses import dataclass
 import pickle
 from typing import List, Optional, Tuple, Union
 
+from cycpd import deformable_registration
 import numpy as np
 from numpy.typing import NDArray
 import pybullet as pb
 from scipy.spatial.transform import Rotation
 from sklearn.decomposition import PCA
 import trimesh
+import trimesh.voxel.creation as vcreate
+import torch
 
-from src import exceptions
+from src import exceptions, viz_utils
 
 NPF32 = NDArray[np.float32]
 NPF64 = NDArray[np.float64]
@@ -297,3 +300,158 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000,
         i += 1
         if i > max_tries:
             return pos, quat
+
+
+def trimesh_load_object(obj_path: str) -> trimesh.Trimesh:
+    return trimesh.load(obj_path)
+
+
+def trimesh_transform(mesh: trimesh.Trimesh, center: bool=True, 
+                      scale: Optional[float]=None, rotation: Optional[NDArray]=None):
+    
+    # Automatically center. Also possibly rotate and scale.
+    translation_matrix = np.eye(4)
+    scaling_matrix = np.eye(4)
+    rotation_matrix = np.eye(4)
+
+    if center:
+        t = mesh.centroid
+        translation_matrix[:3, 3] = -t
+
+    if scale is not None:
+        scaling_matrix[0, 0] *= scale
+        scaling_matrix[1, 1] *= scale
+        scaling_matrix[2, 2] *= scale
+
+    if rotation is not None:
+        rotation_matrix[:3, :3] = rotation
+
+    transform = np.matmul(scaling_matrix, np.matmul(rotation_matrix, translation_matrix))
+    mesh.apply_transform(transform)
+
+
+def trimesh_create_verts_volume(mesh: trimesh.Trimesh, voxel_size: float=0.015) -> NDArray[np.float32]:
+    voxels = vcreate.voxelize(mesh, voxel_size)
+    return np.array(voxels.points, dtype=np.float32)
+
+
+def trimesh_create_verts_surface(mesh: trimesh.Trimesh, num_surface_samples: Optional[int]=1500) -> NDArray[np.float32]:
+    surf_points, _ = trimesh.sample.sample_surface_even(
+        mesh, num_surface_samples
+    )
+    return np.array(surf_points, dtype=np.float32)
+
+
+def trimesh_get_vertices_and_faces(mesh: trimesh.Trimesh) -> Tuple[NDArray[np.float32], NDArray[np.int32]]:
+    vertices = np.array(mesh.vertices, dtype=np.float32)
+    faces = np.array(mesh.faces, dtype=np.int32)
+    return vertices, faces
+
+
+def scale_points_circle(points: List[NDArray[np.float32]], base_scale: float=1.) -> List[NDArray[np.float32]]:
+    points_cat = np.concatenate(points)
+    assert len(points_cat.shape) == 2
+
+    length = np.sqrt(np.sum(np.square(points_cat), axis=1))
+    max_length = np.max(length, axis=0)
+
+    new_points = []
+    for p in points:
+        new_points.append(base_scale * (p / max_length))
+
+    return new_points
+
+
+def cpd_transform(source, target, alpha: float=2.0) -> Tuple[NDArray, NDArray]:
+    # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    source, target = source.astype(np.float64), target.astype(np.float64)
+    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 }, alpha=alpha)
+    reg.register()
+    #Returns the gaussian means and their weights - WG is the warp of source to target
+    return reg.W, reg.G
+
+
+def sst_cost_batch(source: NDArray, target: NDArray) -> float:
+
+    idx = np.sum(np.abs(source[None, :] - target[:, None]), axis=2).argmin(axis=0)
+    return np.mean(np.linalg.norm(source - target[idx], axis=1))  # TODO: test averaging instead of sum
+
+
+def sst_cost_batch_pt(source, target):
+
+    # for each vertex in source, find the closest vertex in target
+    # we don't need to propagate the gradient here
+    source_d, target_d = source.detach(), target.detach()
+    indices = (source_d[:, :, None] - target_d[:, None, :]).square().sum(dim=3).argmin(dim=2)
+
+    # go from [B, indices_in_target, 3] to [B, indices_in_source, 3] using target[batch_indices, indices]
+    batch_indices = torch.arange(0, indices.size(0), device=indices.device)[:, None].repeat(1, indices.size(1))
+    c = torch.sqrt(torch.sum(torch.square(source - target[batch_indices, indices]), dim=2))
+    return torch.mean(c, dim=1)
+
+    # simple version, about 2x slower
+    # bigtensor = source[:, :, None] - target[:, None, :]
+    # diff = torch.sqrt(torch.sum(torch.square(bigtensor), dim=3))
+    # c = torch.min(diff, dim=2)[0]
+    # return torch.mean(c, dim=1)
+
+
+def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visualize=False):
+
+    source = objects[canonical_index] * scale_factor
+    targets = []
+    for obj_idx, obj in enumerate(objects):
+        if obj_idx != canonical_index:
+            targets.append(obj * scale_factor)
+
+    warps = []
+    costs = []
+
+    for target_idx, target in enumerate(targets):
+        print("target {:d}".format(target_idx))
+
+        w, g = cpd_transform(target, source, alpha=alpha)
+
+        warp = np.dot(g, w)
+        warp = np.hstack(warp)
+
+        tmp = source + warp.reshape(-1, 3)
+        costs.append(sst_cost_batch(tmp, target))
+
+        warps.append(warp)
+
+        if visualize:
+            viz_utils.show_pcds_plotly({
+                "target": target,
+                "warp": source + warp.reshape(-1, 3),
+            }, center=True)
+
+    return warps, costs
+
+
+def sst_pick_canonical(known_pts: List[NDArray[np.float32]]) -> int:
+
+    # GPU acceleration makes this at least 100 times faster.
+    known_pts = [torch.tensor(x, device="cuda:0", dtype=torch.float32) for x in known_pts]
+
+    overall_costs = []
+    for i in range(len(known_pts)):
+        print(i)
+        cost_per_target = []
+        for j in range(len(known_pts)):
+            if i != j:
+                with torch.no_grad():
+                    cost = sst_cost_batch_pt(known_pts[i][None], known_pts[j][None]).cpu()
+
+                cost_per_target.append(cost.item())
+
+        overall_costs.append(np.mean(cost_per_target))
+    print("overall costs: {:s}".format(str(overall_costs)))
+    return np.argmin(overall_costs)
+
+
+def pca_transform(distances, n_dimensions=4):
+
+    pca = PCA(n_components=n_dimensions)
+    p_components = pca.fit_transform(np.array(distances))
+    return p_components, pca
