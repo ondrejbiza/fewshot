@@ -51,12 +51,12 @@ class NDFInterface:
         # Perception.
         warp = ObjectWarpingSE2Batch(
             self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
-            scaling=True, init_scale=self.canon_source_scale)
+            init_scale=self.canon_source_scale)
         source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         warp = ObjectWarpingSE2Batch(
             self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
-            scaling=True, init_scale=self.canon_target_scale)
+            init_scale=self.canon_target_scale)
         target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         if show:
@@ -110,17 +110,17 @@ class NDFInterface:
         if se3:
             warp = ObjectWarpingSE3Batch(
                 self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
-                scaling=True, init_scale=self.canon_source_scale)
+                init_scale=self.canon_source_scale)
             source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
         else:
             warp = ObjectWarpingSE2Batch(
                 self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
-                scaling=True, init_scale=self.canon_source_scale)
+                init_scale=self.canon_source_scale)
             source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         warp = ObjectWarpingSE2Batch(
             self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
-            scaling=True, init_scale=self.canon_target_scale)
+            init_scale=self.canon_target_scale)
         target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
         if show:
