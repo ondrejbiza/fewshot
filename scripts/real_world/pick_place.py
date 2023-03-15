@@ -116,7 +116,7 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_source_to_b = rw_utils.workspace_to_base() @ trans_source_to_ws
     trans_source_to_t0 = np.linalg.inv(trans_t0_to_b) @ trans_source_to_b
 
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=EASY_MOTION_TRIES)
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=HARD_MOTION_TRIES)
 
     return trans_source_to_t0
 
