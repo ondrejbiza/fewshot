@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 import rospy
 
 from src import demo, utils, viz_utils
-from src.real_world import perception
+from src.real_world import constants, perception
 import src.real_world.utils as rw_utils
 from src.real_world.ur5 import UR5
 from src.real_world.point_cloud_proxy import PointCloudProxy
@@ -79,10 +79,8 @@ def save_pick_pose(observed_pc: NDArray[np.float32], canon_source: utils.CanonOb
 
 def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, source_id: int,
                              canon_source: utils.CanonObj, source_param: utils.ObjParam,
-                             ur5: UR5, trans_pre_t0_to_t0: NDArray[np.float32],
+                             trans_t0_to_b: NDArray[np.float64], trans_pre_t0_to_t0: NDArray[np.float64],
                              save_path: Optional[bool]=None):
-
-    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
 
     # Get robotiq transform.
     pos, quat = utils.pb_get_pose(robotiq_id)
@@ -164,22 +162,22 @@ def main(args):
     sim = Simulation()
 
     if args.task == "mug_tree":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_source.init_scale = 0.7
-        canon_target.init_scale = 1.
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.SIMPLE_TREES_PCA_PATH)
+        canon_source.init_scale = constants.NDF_MUGS_INIT_SCALE
+        canon_target.init_scale = constants.SIMPLE_TREES_INIT_SCALE
         source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bowl_on_mug":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_source.init_scale = 0.8
-        canon_target.init_scale = 0.7
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BOWLS_INIT_SCALE
+        canon_target.init_scale = constants.NDF_MUGS_INIT_SCALE
         source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_pcd=platform_pcd)
     elif args.task == "bottle_in_box":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_source.init_scale = 1.
-        canon_target.init_scale = 1.
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BOTTLES_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.BOXES_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BOTTLES_INIT_SCALE
+        canon_target.init_scale = constants.BOXES_INIT_SCALE
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
     else:
         raise ValueError("Unknown task.")
@@ -237,9 +235,10 @@ def main(args):
         "completed": source_pcd_complete
     })
 
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
     if args.pick_contacts:
         save_pick_contact_points(
-            source_pcd, robotiq_id, source_id, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
+            in_hand_pcd, robotiq_id, source_id, canon_source, source_param, trans_t0_to_b, trans_pre_t0_to_t0, args.pick_save_path)
     else:
         save_pick_pose(source_pcd, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
 

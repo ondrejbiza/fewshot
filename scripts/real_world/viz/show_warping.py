@@ -4,7 +4,7 @@ import time
 import rospy
 
 from src import utils
-from src.real_world import perception
+from src.real_world import constants, perception
 from src.real_world.point_cloud_proxy import PointCloudProxy
 
 
@@ -19,10 +19,10 @@ def main(args):
     if args.task == "mug_tree":
         mug_pcd, tree_pcd = perception.mug_tree_segmentation(cloud)
 
-        canon_mug = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_tree = utils.CanonObj.from_pickle("data/230227_ndf_trees_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_mug.init_scale = 0.7
-        canon_tree.init_scale = 1.
+        canon_mug = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_tree = utils.CanonObj.from_pickle(constants.SIMPLE_TREES_PCA_PATH)
+        canon_mug.init_scale = constants.NDF_MUGS_INIT_SCALE
+        canon_tree.init_scale = constants.SIMPLE_TREES_INIT_SCALE
 
         perception.warping(
             mug_pcd, tree_pcd, canon_mug, canon_tree, source_any_rotation=args.any_rotation
@@ -30,10 +30,10 @@ def main(args):
     elif args.task == "bowl_on_mug":
         bowl_pcd, mug_pcd = perception.bowl_mug_segmentation(cloud)
 
-        canon_bowl = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_mug = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_bowl.init_scale = 0.8
-        canon_mug.init_scale = 0.7
+        canon_bowl = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
+        canon_mug = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_bowl.init_scale = constants.NDF_BOWLS_INIT_SCALE
+        canon_mug.init_scale = constants.NDF_MUGS_INIT_SCALE
 
         perception.warping(
             bowl_pcd, mug_pcd, canon_bowl, canon_mug, source_any_rotation=args.any_rotation
@@ -41,10 +41,10 @@ def main(args):
     elif args.task == "bottle_in_box":
         bottle_pcd, box_pcd = perception.bottle_box_segmentation(cloud)
 
-        canon_bottle = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_box = utils.CanonObj.from_pickle("data/230227_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_bottle.init_scale = 1.
-        canon_box.init_scale = 1.
+        canon_bottle = utils.CanonObj.from_pickle(constants.NDF_BOTTLES_PCA_PATH)
+        canon_box = utils.CanonObj.from_pickle(constants.BOXES_PCA_PATH)
+        canon_bottle.init_scale = constants.NDF_BOTTLES_INIT_SCALE
+        canon_box.init_scale = constants.BOXES_INIT_SCALE
 
         perception.warping(
             bottle_pcd, box_pcd, canon_bottle, canon_box, source_any_rotation=args.any_rotation

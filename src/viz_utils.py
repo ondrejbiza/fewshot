@@ -134,3 +134,24 @@ def save_o3d_pcd(pcd: NDArray[np.float32], save_path: str):
     pcd_o3d = o3d.geometry.PointCloud()
     pcd_o3d.points = o3d.utility.Vector3dVector(pcd)
     o3d.io.write_point_cloud(save_path, pcd_o3d)
+
+
+def draw_arrow(ax, orig, delta, color):
+
+    ax.quiver(
+        orig[0], orig[1], orig[2], # <-- starting point of vector
+        delta[0], delta[1], delta[2], # <-- directions of vector
+        color=color, alpha=0.8, lw=3,
+    )
+
+
+def show_pose(ax, T):
+
+    orig = T[:3, 3]
+    rot = T[:3, :3]
+    x_arrow = np.matmul(rot, np.array([0.05, 0., 0.]))
+    y_arrow = np.matmul(rot, np.array([0., 0.05, 0.]))
+    z_arrow = np.matmul(rot, np.array([0., 0., 0.05]))
+    draw_arrow(ax, orig, x_arrow, "red")
+    draw_arrow(ax, orig, y_arrow, "green")
+    draw_arrow(ax, orig, z_arrow, "blue")

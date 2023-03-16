@@ -19,30 +19,10 @@ from src.real_world import constants, perception
 import src.real_world.utils as rw_utils
 from src.real_world.point_cloud_proxy import PointCloudProxy
 from src.real_world.ur5 import UR5
+from src.real_world.simulation import Simulation
 
 EASY_MOTION_TRIES = 1
 HARD_MOTION_TRIES = 5
-
-
-def draw_arrow(ax, orig, delta, color):
-
-    ax.quiver(
-        orig[0], orig[1], orig[2], # <-- starting point of vector
-        delta[0], delta[1], delta[2], # <-- directions of vector
-        color=color, alpha=0.8, lw=3,
-    )
-
-
-def show_pose(ax, T):
-
-    orig = T[:3, 3]
-    rot = T[:3, :3]
-    x_arrow = np.matmul(rot, np.array([0.05, 0., 0.]))
-    y_arrow = np.matmul(rot, np.array([0., 0.05, 0.]))
-    z_arrow = np.matmul(rot, np.array([0., 0., 0.05]))
-    draw_arrow(ax, orig, x_arrow, "red")
-    draw_arrow(ax, orig, y_arrow, "green")
-    draw_arrow(ax, orig, z_arrow, "blue")
 
 
 def pick(
@@ -58,9 +38,10 @@ def pick(
         trans_t0_to_b = x["trans_t0_to_b"]
         trans_pre_t0_to_t0 = x["trans_pre_t0_to_t0"]
 
-        trans_t0_to_ws = np.matmul(np.linalg.inv(trans_ws_to_b), trans_t0_to_b)
+    trans_t0_to_ws = np.matmul(np.linalg.inv(trans_ws_to_b), trans_t0_to_b)
+    trans_t0_tip_to_ws = trans_t0_to_ws @ rw_utils.tool0_tip_to_tool0()
 
-    pos, _ = utils.transform_to_pos_quat(trans_t0_to_ws)
+    pos, _ = utils.transform_to_pos_quat(trans_t0_tip_to_ws)
     pick_reference_points = np.random.normal(pos, sigma, size=(num_samples, 3))
 
     if show:
@@ -83,15 +64,17 @@ def pick(
     tmp = util.pose_stamped2list(util.pose_from_matrix(transforms_list[best_idx]))
     trans_rel = utils.pos_quat_to_transform(tmp[:3], tmp[3:])
 
-    trans_pick_t0_to_ws = trans_rel @ trans_t0_to_ws
+    trans_pick_t0_tip_to_ws = trans_rel @ trans_t0_tip_to_ws
+    trans_pick_t0_to_ws = trans_pick_t0_tip_to_ws @ np.linalg.inv(rw_utils.tool0_tip_to_tool0())
+
     trans_pre_pick_t0_to_ws = trans_pick_t0_to_ws @ trans_pre_t0_to_t0
 
     if show:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         ax.scatter(observed_source_pcd[:, 0], observed_source_pcd[:, 1], observed_source_pcd[:, 2], alpha=0.5, c="blue")
-        show_pose(ax, trans_pick_t0_to_ws)
-        show_pose(ax, trans_pre_pick_t0_to_ws)
+        viz_utils.show_pose(ax, trans_pick_t0_to_ws)
+        viz_utils.show_pose(ax, trans_pre_pick_t0_to_ws)
         ax.set_xlim(-0.2, 0.2)
         ax.set_ylim(-0.2, 0.2)
         ax.set_zlim(0.0, 0.4)
@@ -160,8 +143,8 @@ def place(
         tmp = utils.transform_pcd(observed_source_pcd, trans_rel)
         ax.scatter(tmp[:, 0], tmp[:, 1], tmp[:, 2], alpha=0.5, c="blue")
         ax.scatter(demo_target_pcd[:, 0], demo_target_pcd[:, 1], demo_target_pcd[:, 2], alpha=0.5, c="brown")
-        show_pose(ax, trans_new_place_t0_to_ws)
-        show_pose(ax, trans_new_pre_place_t0_to_ws)
+        viz_utils.show_pose(ax, trans_new_place_t0_to_ws)
+        viz_utils.show_pose(ax, trans_new_pre_place_t0_to_ws)
         ax.set_xlim(-0.2, 0.2)
         ax.set_ylim(-0.2, 0.2)
         ax.set_zlim(0.0, 0.4)
@@ -188,14 +171,16 @@ def main(args):
 
     cloud = pc_proxy.get_all()
 
+    sim = Simulation()
+
     num_points = 1500  # Maximum NDFs can handle.
 
     if args.task == "mug_tree":
-        source_pcd, target_pcd = perception.mug_tree_segmentation(pc_proxy, num_points, platform_pcd=platform_pcd)
+        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, num_points, platform_pcd=platform_pcd)
     elif args.task == "bowl_on_mug":
-        source_pcd, target_pcd = perception.bowl_mug_segmentation(pc_proxy, num_points, platform_pcd=platform_pcd)
+        source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, num_points, platform_pcd=platform_pcd)
     elif args.task == "bottle_in_box":
-        source_pcd, target_pcd = perception.bottle_box_segmentation(pc_proxy, num_points, platform_pcd=platform_pcd)
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, num_points, platform_pcd=platform_pcd)
     else:
         raise ValueError("Unknown task.")
 
@@ -209,7 +194,11 @@ def main(args):
 
     trans_ws_to_b = rw_utils.workspace_to_base()
 
-    trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws = pick(model, source_pcd, args.pick_load_paths, num_samples, sigma, opt_iterations)
+    trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws = pick(
+        model, source_pcd, args.pick_load_paths, num_samples, sigma, opt_iterations, show=True)
+
+    trans_post_t0_to_ws = rw_utils.get_post_pick_pose(trans_pick_t0_to_ws)
+    trans_post_t0_to_b = rw_utils.workspace_to_base() @ trans_post_t0_to_ws
 
     trans_pick_t0_to_b = np.matmul(trans_ws_to_b, trans_pick_t0_to_ws)
     trans_pre_pick_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_pick_t0_to_ws)
@@ -217,10 +206,24 @@ def main(args):
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_pick_t0_to_b), num_plans=HARD_MOTION_TRIES)
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pick_t0_to_b), num_plans=EASY_MOTION_TRIES)
     ur5.gripper.close_gripper()
-    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_pick_t0_to_b), num_plans=HARD_MOTION_TRIES)  # TODO: Post-pick pose and in-hand image.
+    ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_post_t0_to_b), num_plans=HARD_MOTION_TRIES)
+
+    # Get a new point cloud with the mug in hand. Remove all points that belong to the hand.
+    cloud = pc_proxy.get_all()
+    robotiq_id = sim.add_object("data/robotiq.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
+    in_hand = perception.in_hand_segmentation(cloud)
+    in_hand = perception.clean_up_in_hand_image(in_hand, ur5, robotiq_id, sim, num_points=2000)
+    sim.remove_object(robotiq_id)
+
+    # Get a new pose of the hand that corresponds to the point cloud we took above.
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    trans_t0_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_t0_to_b
+
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
-    trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(trans_pick_t0_to_ws, model, source_pcd, args.pick_load_path, args.place_load_path, num_samples, sigma, opt_iterations)
+    trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(
+        trans_t0_to_ws, model, in_hand, args.pick_load_paths, args.place_load_paths,
+        num_samples, sigma, opt_iterations, show=True)
 
     trans_place_t0_to_b = np.matmul(trans_ws_to_b, trans_place_t0_to_ws)
     trans_pre_place_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_place_t0_to_ws)
