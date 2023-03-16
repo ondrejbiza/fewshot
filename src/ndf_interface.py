@@ -19,6 +19,7 @@ class NDFInterface:
     canon_target_scale: float = 1.
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.01
+    wiggle: bool = True
 
     def __post_init__(self):
 
@@ -92,6 +93,10 @@ class NDFInterface:
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pb.resetBasePositionAndOrientation(target_pb, target_param.position, target_param.quat)
 
+        if self.wiggle:
+            # Wiggle the source object out of collision.
+            utils.wiggle(source_pb, target_pb)
+
         self.knns, self.deltas, self.target_indices = demo.save_place_nearby_points(
             source_pb, target_pb, self.canon_source, source_param, self.canon_target,
             target_param, self.nearby_points_delta)
@@ -159,9 +164,10 @@ class NDFInterface:
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pb.resetBasePositionAndOrientation(target_pb, *utils.transform_to_pos_quat(trans_t_to_b))
 
-        # Wiggle the source object out of collision.
-        src_pos, src_quat = utils.wiggle(source_pb, target_pb)
-        trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
+        if self.wiggle:
+            # Wiggle the source object out of collision.
+            src_pos, src_quat = utils.wiggle(source_pb, target_pb)
+            trans_s_to_b = utils.pos_quat_to_transform(src_pos, src_quat)
 
         # Remove predicted meshes from pybullet.
         pb.removeBody(source_pb)

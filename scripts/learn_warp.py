@@ -147,8 +147,9 @@ def main(args):
 parser = argparse.ArgumentParser()
 parser.add_argument("save_path")
 parser.add_argument("objects")
-parser.add_argument("--n-dimensions", type=int, default=4)
-parser.add_argument("--alpha", type=float, default=2.0)
+parser.add_argument("--n-dimensions", type=int, default=8, help="Number of PCA dimensions.")
+parser.add_argument("--alpha", type=float, default=0.01,
+                    help="Strength of coherence regularization. The lower, the more warping we do.")
 parser.add_argument("--pick-canon-warp", default=False, action="store_true",
                     help="Perform object warping when we pick the canonical object.")
 parser.add_argument("--show", default=False, action="store_true")
