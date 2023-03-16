@@ -79,7 +79,10 @@ def save_pick_pose(observed_pc: NDArray[np.float32], canon_source: utils.CanonOb
 
 def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, source_id: int,
                              canon_source: utils.CanonObj, source_param: utils.ObjParam,
-                             trans_pre_t0_to_t0: NDArray[np.float32], save_path: Optional[bool]=None):
+                             ur5: UR5, trans_pre_t0_to_t0: NDArray[np.float32],
+                             save_path: Optional[bool]=None):
+
+    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
 
     # Get robotiq transform.
     pos, quat = utils.pb_get_pose(robotiq_id)
@@ -93,8 +96,9 @@ def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, 
             pickle.dump({
                 "index": index,
                 "pos_robotiq": pos_robotiq_canon,
+                "trans_t0_to_b": trans_t0_to_b,
+                "trans_pre_t0_to_t0": trans_pre_t0_to_t0,
                 "observed_pc": observed_pc,
-                "trans_pre_t0_to_t0": trans_pre_t0_to_t0
             }, f)
 
 
@@ -128,6 +132,7 @@ def save_place_contact_points(
                 "knns": knns,
                 "deltas": deltas,
                 "target_indices": i_2,
+                "trans_source_to_t0": trans_source_to_t0,
                 "trans_t0_to_b": trans_t0_to_b,
                 "trans_pre_t0_to_b": trans_pre_t0_to_b,
                 "trans_pre_source_to_source": trans_pre_source_to_source,
@@ -234,7 +239,7 @@ def main(args):
 
     if args.pick_contacts:
         save_pick_contact_points(
-            source_pcd, robotiq_id, source_id, canon_source, source_param, trans_pre_t0_to_t0, args.pick_save_path)
+            source_pcd, robotiq_id, source_id, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
     else:
         save_pick_pose(source_pcd, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
 
