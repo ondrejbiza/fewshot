@@ -132,7 +132,7 @@ def main(args):
     tmp_obj_points = cp.copy(small_surface_points)
     tmp_obj_points[canonical_idx] = hybrid_points[canonical_idx]
 
-    warps = utils.warp_gen(canonical_idx, tmp_obj_points, alpha=args.alpha, visualize=args.show)
+    warps, _ = utils.warp_gen(canonical_idx, tmp_obj_points, alpha=args.alpha, visualize=args.show)
     _, pca = utils.pca_transform(warps, n_dimensions=args.n_dimensions)
 
     with open(args.save_path, "wb") as f:
