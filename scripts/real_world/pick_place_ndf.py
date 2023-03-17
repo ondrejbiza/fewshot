@@ -31,34 +31,45 @@ def pick(
 
     trans_ws_to_b = rw_utils.workspace_to_base()
 
-    assert len(pick_load_paths) == 1, "Multiple demonstrations not yet implemented."
+    # Take pre-pick pose from the first demonstration.
     with open(pick_load_paths[0], "rb") as f:
         x = pickle.load(f)
-        demo_source_pcd = x["observed_pc"]
-        trans_t0_to_b = x["trans_t0_to_b"]
         trans_pre_t0_to_t0 = x["trans_pre_t0_to_t0"]
 
-    trans_t0_to_ws = np.matmul(np.linalg.inv(trans_ws_to_b), trans_t0_to_b)
-    trans_t0_tip_to_ws = trans_t0_to_ws @ rw_utils.tool0_tip_to_tool0()
+    # Process all demonstrations.
+    demos_list = []
 
-    pos, _ = utils.transform_to_pos_quat(trans_t0_tip_to_ws)
-    pick_reference_points = np.random.normal(pos, sigma, size=(num_samples, 3))
+    # TODO: Take pick_reference_points and trans_t0_tip_to_ws from the first demonstration.
+    # TODO: Move this to a separate function.
+    for i in range(len(pick_load_paths)):
+        with open(pick_load_paths[i], "rb") as f:
+            x = pickle.load(f)
+            demo_source_pcd = x["observed_pc"]
+            trans_t0_to_b = x["trans_t0_to_b"]
 
-    if show:
-        viz_utils.show_pcds_plotly({
-            "demo_source_pcd": demo_source_pcd,
-            "pick_reference_points": pick_reference_points
+        trans_t0_to_ws = np.matmul(np.linalg.inv(trans_ws_to_b), trans_t0_to_b)
+        trans_t0_tip_to_ws = trans_t0_to_ws @ rw_utils.tool0_tip_to_tool0()
+
+        pos, _ = utils.transform_to_pos_quat(trans_t0_tip_to_ws)
+        pick_reference_points = np.random.normal(pos, sigma, size=(num_samples, 3))
+
+        demos_list.append({
+            "demo_obj_pts": demo_source_pcd,
+            "demo_query_pts": pick_reference_points,
         })
+
+        if show:
+            viz_utils.show_pcds_plotly({
+                "demo_source_pcd": demo_source_pcd,
+                "pick_reference_points": pick_reference_points
+            })
 
     grasp_optimizer = OccNetOptimizer(
         model,
         query_pts=pick_reference_points,  # TODO: what is this?
-        # query_pts_real_shape=optimizer_gripper_pts_rs,  # TODO: what is this?
-        opt_iterations=opt_iterations)
-    grasp_optimizer.set_demo_info([{
-        "demo_obj_pts": demo_source_pcd,
-        "demo_query_pts": pick_reference_points,
-    }])
+        opt_iterations=opt_iterations
+    )
+    grasp_optimizer.set_demo_info(demos_list)
 
     transforms_list, best_idx = grasp_optimizer.optimize_transform_implicit(observed_source_pcd, ee=True)
     tmp = util.pose_stamped2list(util.pose_from_matrix(transforms_list[best_idx]))
@@ -237,8 +248,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
-    parser.add_argument("pick_load_paths", type=str, nargs="+")
-    parser.add_argument("place_load_paths", type=str, nargs="+")
+    parser.add_argument("-a", "--pick-load-paths", type=str, nargs="+")
+    parser.add_argument("-b", "--place-load-paths", type=str, nargs="+")
 
     parser.add_argument("-p", "--platform", default=False, action="store_true",
                         help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
