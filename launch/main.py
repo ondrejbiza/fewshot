@@ -157,7 +157,7 @@ def main(args):
                 ["roslaunch", launch_name],
                 stdout=realsense_driver_log_list[-1], stderr=subprocess.STDOUT
             ))
-            time.sleep(5)
+            time.sleep(10)
 
         add_sensor_frame_log = open(ADD_SENSOR_FRAME_LOG_PATH, "w")
         add_sensor_frame_p = subprocess.Popen(

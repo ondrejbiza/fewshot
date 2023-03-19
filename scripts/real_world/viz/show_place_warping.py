@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, Slider
 
 from src import utils, viz_utils
+from src.real_world import constants
 
 
 def show_tree_indices(ax, tree_pc: NDArray, indices: NDArray[np.int32], vmin: float, vmax: float):
@@ -45,20 +46,20 @@ def warp(mug_pc, tree_pc, knns, deltas, target_indices):
 def main(args):
 
     if args.task == "mug_tree":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230228_simple_trees_scale_large_pca_8_dim_alp_0_01.pkl")
-        source_scale = 0.7
-        target_scale = 1.
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.SIMPLE_TREES_PCA_PATH)
+        source_scale = constants.NDF_MUGS_INIT_SCALE
+        target_scale = constants.SIMPLE_TREES_INIT_SCALE
     elif args.task == "bowl_on_mug":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        source_scale = 0.8
-        target_scale = 0.7
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        source_scale = constants.NDF_BOWLS_INIT_SCALE
+        target_scale = constants.NDF_MUGS_INIT_SCALE
     elif args.task == "bottle_in_box":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bottles_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_target = utils.CanonObj.from_pickle("data/230228_boxes_scale_large_pca_8_dim_alp_0_01.pkl")
-        source_scale = 1.
-        target_scale = 1.
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BOTTLES_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.BOXES_PCA_PATH)
+        source_scale = constants.NDF_BOTTLES_INIT_SCALE
+        target_scale = constants.BOXES_INIT_SCALE
     else:
         raise NotImplementedError()
 

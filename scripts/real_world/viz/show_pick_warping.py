@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, Slider
 
 from src import utils, viz_utils
+from src.real_world import constants
 
 
 def update_axis(ax, source_obj: NDArray, robotiq_points: NDArray, vmin: float, vmax: float):
@@ -26,11 +27,11 @@ def main(args):
     vmin, vmax = -0.3, 0.3
 
     if args.task == "mug_tree":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_mugs_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_source.init_scale = 0.7
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_source.init_scale = constants.NDF_MUGS_INIT_SCALE
     elif args.task == "bowl_on_mug":
-        canon_source = utils.CanonObj.from_pickle("data/230227_ndf_bowls_scale_large_pca_8_dim_alp_0_01.pkl")
-        canon_source.init_scale = 0.8
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BOWLS_INIT_SCALE
     else:
         raise NotImplementedError()
 

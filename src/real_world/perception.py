@@ -412,11 +412,8 @@ def warping(
     return source_pcd_complete, source_param, target_pcd_complete, target_param
 
 
-def reestimate_tool0_to_source(cloud: NPF32, ur5: UR5, robotiq_id: int, sim: Simulation,
-                               canon_source: utils.CanonObj, source_param: utils.ObjParam,
-                               trans_source_to_t0: NPF64) -> Tuple[utils.ObjParam, NPF32, NPF64, NPF32]:
-
-    in_hand = in_hand_segmentation(cloud)
+def clean_up_in_hand_image(in_hand: NDArray[np.float32], ur5: UR5, robotiq_id: int,
+                           sim: Simulation, num_points=2000) -> NDArray[np.float32]:
 
     trans_ws_to_b = rw_utils.workspace_to_base()
     trans_b_to_t0 = np.linalg.inv(utils.pos_quat_to_transform(*ur5.get_tool0_to_base()))
@@ -442,8 +439,8 @@ def reestimate_tool0_to_source(cloud: NPF32, ur5: UR5, robotiq_id: int, sim: Sim
     # Figure out which points in the point cloud belong to the gripper.
     sphere_id = sim.add_object("data/sphere.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
 
-    if len(in_hand) > 4000:
-        in_hand, _ = utils.farthest_point_sample(in_hand, 4000)
+    if len(in_hand) > num_points * 2:
+        in_hand, _ = utils.farthest_point_sample(in_hand, num_points * 2)
 
     mask = np.ones(in_hand.shape[0], dtype=np.bool_)
     
@@ -455,8 +452,18 @@ def reestimate_tool0_to_source(cloud: NPF32, ur5: UR5, robotiq_id: int, sim: Sim
 
     in_hand = in_hand[mask]
 
-    if len(in_hand) > 2000:
-        in_hand, _ = utils.farthest_point_sample(in_hand, 2000)
+    if len(in_hand) > num_points:
+        in_hand, _ = utils.farthest_point_sample(in_hand, num_points)
+
+    return in_hand
+
+
+def reestimate_tool0_to_source(cloud: NPF32, ur5: UR5, robotiq_id: int, sim: Simulation,
+                               canon_source: utils.CanonObj, source_param: utils.ObjParam,
+                               trans_source_to_t0: NPF64) -> Tuple[utils.ObjParam, NPF32, NPF64, NPF32]:
+
+    in_hand = in_hand_segmentation(cloud)
+    in_hand = clean_up_in_hand_image(in_hand, ur5, robotiq_id, sim, num_points=2000)
 
     ow = object_warping.ObjectWarpingSE3Batch(
         canon_source, in_hand, torch.device("cuda:0"), lr=1e-2, n_steps=100, n_samples=1000, init_scale=canon_source.init_scale)

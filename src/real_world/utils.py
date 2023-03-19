@@ -143,3 +143,15 @@ def robotiq_to_tool0() -> NPF64:
     trans_rc_to_tool0 = robotiq_coupler_to_tool0()
     trans_r_to_rc = robotiq_to_robotiq_coupler()
     return trans_rc_to_tool0 @ trans_r_to_rc
+
+
+def get_post_pick_pose(trans_t0_to_ws: NPF64) -> NPF64:
+
+    trans_post_t0_to_ws = np.copy(trans_t0_to_ws)
+    eps = 0.02  # 2 cm margin
+    level = 0.35
+    if trans_post_t0_to_ws[2, 3] <= level - eps:
+        trans_post_t0_to_ws[2, 3] = level
+    else:
+        trans_post_t0_to_ws[2, 3] += eps
+    return trans_post_t0_to_ws
