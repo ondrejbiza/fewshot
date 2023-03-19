@@ -93,9 +93,9 @@ class NDFInterface:
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pb.resetBasePositionAndOrientation(target_pb, target_param.position, target_param.quat)
 
-        if self.wiggle:
-            # Wiggle the source object out of collision.
-            utils.wiggle(source_pb, target_pb)
+        # if self.wiggle:
+        #     # Wiggle the source object out of collision.
+        #     utils.wiggle(source_pb, target_pb)
 
         self.knns, self.deltas, self.target_indices = demo.save_place_nearby_points(
             source_pb, target_pb, self.canon_source, source_param, self.canon_target,
