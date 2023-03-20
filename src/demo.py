@@ -11,7 +11,7 @@ def save_pick_contact_points(robotiq_id: int, source_id: int, trans_robotiq_to_w
                              canon_source: utils.CanonObj, source_param: utils.ObjParam) -> Tuple[NDArray, NDArray[np.int32]]:
 
     pb.performCollisionDetection()
-    cols = pb.getClosestPoints(robotiq_id, source_id, 0.01)
+    cols = pb.getClosestPoints(robotiq_id, source_id, 0.0)
 
     pos_robotiq = [col[5] for col in cols]
     pos_source = [col[6] for col in cols]
