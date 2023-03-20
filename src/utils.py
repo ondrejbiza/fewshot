@@ -64,6 +64,12 @@ class CanonObj:
         vertices = pcd[:len(self.mesh_vertices)]
         return trimesh.base.Trimesh(vertices, self.mesh_faces)
 
+    def to_transformed_mesh(self, obj_param: ObjParam) -> trimesh.base.Trimesh:
+        pcd = self.to_transformed_pcd(obj_param)
+        # The vertices are assumed to be at the start of the canonical_pcd.
+        vertices = pcd[:len(self.mesh_vertices)]
+        return trimesh.base.Trimesh(vertices, self.mesh_faces)
+
     @staticmethod
     def from_pickle(load_path: str) -> "CanonObj":
         with open(load_path, "rb") as f:

@@ -40,7 +40,7 @@ def warp(mug_pc, tree_pc, knns, deltas, target_indices):
 
     vp_to_p2, _, _ = utils.best_fit_transform(targets, points_2)
     new_mug_pc = utils.transform_pcd(mug_pc, vp_to_p2)
-    return new_mug_pc
+    return new_mug_pc, vp_to_p2
 
 
 def main(args):
@@ -79,14 +79,16 @@ def main(args):
     # print("Showing target closest points:")
     # fig = plt.figure()
     # ax = fig.add_subplot(111, projection="3d")
-    target_pcd = canon_target.to_pcd(utils.ObjParam(latent=target_param.latent, scale=target_param.scale))
+    target_param = utils.ObjParam(latent=target_param.latent, scale=target_param.scale)
+    target_pcd = canon_target.to_pcd(target_param)
+    target_mesh = canon_target.to_mesh(target_param)
     # show_tree_indices(ax, target_pcd, target_indices, vmin, vmax)
     # plt.show()
 
     print("Showing placement pose warping:")
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
-    update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices), target_pcd, vmin, vmax)
+    update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices)[0], target_pcd, vmin, vmax)
 
     slider_axes = []
     z = 0.
@@ -104,12 +106,29 @@ def main(args):
     def sliders_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
         source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=source_param.scale))
-        update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices), target_pcd, vmin, vmax)
+        update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices)[0], target_pcd, vmin, vmax)
 
     def button_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
-        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=source_param.scale))
-        dir_path = "data/warping_figure_2"
+
+        tmp_source_param = utils.ObjParam(latent=latents, scale=source_param.scale)
+        source_pcd = canon_source.to_pcd(tmp_source_param)
+
+        anchors = source_pcd[knns]
+        targets = np.mean(anchors + deltas, axis=1)
+
+        points_2 = target_pcd[target_indices]
+
+        trans, _, _ = utils.best_fit_transform(targets, points_2)
+        source_pcd = utils.transform_pcd(source_pcd, trans)
+        targets_trans = utils.transform_pcd(targets, trans)
+
+        pos, quat = utils.transform_to_pos_quat(trans)
+        tmp_source_param.position = pos
+        tmp_source_param.quat = quat
+        source_mesh = canon_source.to_transformed_mesh(tmp_source_param)
+
+        dir_path = "data/warping_figure_7"
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
         i = 1
@@ -117,8 +136,13 @@ def main(args):
             file_path = os.path.join(dir_path, f"source_{i}.pcd")
             if not os.path.isfile(file_path):
                 break
-        viz_utils.save_o3d_pcd(warp(source_pcd, target_pcd, knns, deltas, target_indices), os.path.join(dir_path, f"source_{i}.pcd"))
+
+        source_mesh.export(os.path.join(dir_path, f"source_{i}.stl"))
+        target_mesh.export(os.path.join(dir_path, f"target_{i}.stl"))
+        viz_utils.save_o3d_pcd(warp(source_pcd, target_pcd, knns, deltas, target_indices)[0], os.path.join(dir_path, f"source_{i}.pcd"))
         viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_path, f"target_{i}.pcd"))
+        viz_utils.save_o3d_pcd(points_2, os.path.join(dir_path, f"points_target_{i}.pcd"))
+        viz_utils.save_o3d_pcd(targets_trans, os.path.join(dir_path, f"points_source_{i}.pcd"))
 
     for s in sliders:
         s.on_changed(sliders_on_changed)

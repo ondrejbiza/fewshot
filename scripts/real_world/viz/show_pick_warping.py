@@ -72,10 +72,18 @@ def main(args):
 
     def button_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
-        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=np.ones(3) * canon_source.init_scale))
+        obj_param = utils.ObjParam(latent=latents, scale=np.ones(3) * canon_source.init_scale)
+
+        source_pcd = canon_source.to_pcd(obj_param)
         pos = source_pcd[index]
         trans, _, _ = utils.best_fit_transform(pos, pos_robotiq)
         source_pcd = utils.transform_pcd(source_pcd, trans)
+        pos_trans = utils.transform_pcd(pos, trans)
+
+        pos, quat = utils.transform_to_pos_quat(trans)
+        obj_param.position = pos
+        obj_param.quat = quat
+        mesh = canon_source.to_transformed_mesh(obj_param)
 
         dir_path = "data/warping_figure_4"
         if not os.path.isdir(dir_path):
@@ -85,7 +93,11 @@ def main(args):
             file_path = os.path.join(dir_path, f"{i}.pcd")
             if not os.path.isfile(file_path):
                 break
-        viz_utils.save_o3d_pcd(source_pcd, file_path)
+
+        mesh.export(os.path.join(dir_path, f"{i}.stl"))
+        viz_utils.save_o3d_pcd(source_pcd, os.path.join(dir_path, f"{i}.pcd"))
+        viz_utils.save_o3d_pcd(pos_robotiq, os.path.join(dir_path, f"points_robotiq_{i}.pcd"))
+        viz_utils.save_o3d_pcd(pos_trans, os.path.join(dir_path, f"points_source_{i}.pcd"))
 
     for s in sliders:
         s.on_changed(sliders_on_changed)
