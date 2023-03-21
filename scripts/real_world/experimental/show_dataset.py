@@ -34,6 +34,15 @@ def main(args):
         plt.imshow(data[i]["depths"][2] / np.max(data[i]["depths"][2]))
         plt.show()
 
+        # Showing ordered point cloud.
+        # pcd = data[i]["clouds"][0]
+        # pcd = pcd.reshape(720, 1280, 3)
+        # plt.subplot(1, 2, 1)
+        # plt.imshow(data[i]["images"][0])
+        # plt.subplot(1, 2, 2)
+        # plt.imshow(pcd[:, :, 0])
+        # plt.show()
+
 
 parser = argparse.ArgumentParser("Find objects for a particular task.")
 parser.add_argument("save_file")

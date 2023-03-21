@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import functools
 from numpy.typing import NDArray
+import time
 from typing import Optional, Tuple, List
 
 import numpy as np
@@ -57,6 +58,7 @@ class PointCloudProxy:
         cloud_frame = msg.header.frame_id
         cloud = ros_numpy.point_cloud2.pointcloud2_to_xyz_array(msg, remove_nans=True)
 
+        # Comment out if you want an ordered PC.
         if nans_in_pc:
             # Mask out NANs and keep the mask so that we can go from image to PC.
             # TODO: I added ..., 3 here, double check if there are NaNs in colors.
@@ -65,7 +67,6 @@ class PointCloudProxy:
             # If empty pixels are not NaN they should be (0, 0, 0).
             # Note the corresponding RGB values will not be NaN.
             mask = np.logical_not((cloud[..., :3] == 0).all(axis=1))
-
         cloud = cloud[mask]
 
         if self.apply_transform:
@@ -111,3 +112,20 @@ class PointCloudProxyRight(PointCloudProxy):
 class PointCloudProxyForward(PointCloudProxy):
     pc_topics: Tuple[str, ...] = ("/realsense_forward/depth/color/points",)
     nans_in_pc: Tuple[bool, ...] = (False,)
+
+
+if __name__ == "__main__":
+    rospy.init_node("point_cloud_proxy")
+    pc_proxy = PointCloudProxy()
+    time.sleep(2)
+    pcd = pc_proxy.get(0)
+    pcd = pcd.reshape(720, 1280, 3)
+
+    import matplotlib.pyplot as plt
+    plt.subplot(1, 3, 1)
+    plt.imshow(pcd[:, :, 0])
+    plt.subplot(1, 3, 2)
+    plt.imshow(pcd[:, :, 1])
+    plt.subplot(1, 3, 3)
+    plt.imshow(pcd[:, :, 2])
+    plt.show()

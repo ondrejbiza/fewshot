@@ -8,6 +8,7 @@
     <arg name="clip_distance" value="1.0"/>
     <arg name="filters" value="pointcloud,temporal"/>
     <arg name="align_depth" value="true"/>
+    <!-- <arg name="ordered_pc" value="true"/> -->
 
     <arg name="color_width" value="1280" />
     <arg name="color_height" value="720" />
