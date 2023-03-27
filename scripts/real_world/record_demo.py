@@ -1,5 +1,6 @@
 import argparse
 import copy as cp
+import os
 import pickle
 import threading
 import time
@@ -181,6 +182,13 @@ def main(args):
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
     else:
         raise ValueError("Unknown task.")
+
+    # Save partial point clouds.
+    dir_name = "warping_figure_8"
+    if not os.path.isdir(dir_name):
+        os.makedirs(dir_name)
+    viz_utils.save_o3d_pcd(source_pcd, os.path.join(dir_name, "source_pcd.pcd"))
+    viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_name, "target_pcd.pcd"))
 
     # Initial perception.
     out = perception.warping(
