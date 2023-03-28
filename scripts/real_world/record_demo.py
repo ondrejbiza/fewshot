@@ -184,11 +184,11 @@ def main(args):
         raise ValueError("Unknown task.")
 
     # Save partial point clouds.
-    dir_name = "warping_figure_8"
-    if not os.path.isdir(dir_name):
-        os.makedirs(dir_name)
-    viz_utils.save_o3d_pcd(source_pcd, os.path.join(dir_name, "source_pcd.pcd"))
-    viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_name, "target_pcd.pcd"))
+    # dir_name = "warping_figure_8"
+    # if not os.path.isdir(dir_name):
+    #     os.makedirs(dir_name)
+    # viz_utils.save_o3d_pcd(source_pcd, os.path.join(dir_name, "source_pcd.pcd"))
+    # viz_utils.save_o3d_pcd(target_pcd, os.path.join(dir_name, "target_pcd.pcd"))
 
     # Initial perception.
     out = perception.warping(
@@ -212,7 +212,7 @@ def main(args):
     thread = threading.Thread(target=worker, args=(ur5, robotiq_id, source_id, data))
     thread.start()
 
-    input("Save place waypoint?")
+    input("Save pick waypoint?")
     trans_pre_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
 
     input("Close gripper?")
