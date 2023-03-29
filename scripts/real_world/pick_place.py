@@ -208,8 +208,8 @@ def main(args):
 
     out = perception.warping(
         source_pcd, target_pcd, canon_source, canon_target, source_any_rotation=args.any_rotation,
-        tf_proxy=ur5.tf_proxy, moveit_scene=ur5.moveit_scene, source_save_decomposition=True,
-        target_save_decomposition=True, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
+        tf_proxy=ur5.tf_proxy, moveit_scene=ur5.moveit_scene, source_save_decomposition=False,
+        target_save_decomposition=False, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
         rviz_pub=ur5.rviz_pub, grow_source_object=True
     )
     source_pcd_complete, source_param, target_pcd_complete, target_param = out
