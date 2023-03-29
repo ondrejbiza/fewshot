@@ -33,9 +33,13 @@ def main(args):
         d = pickle.load(f)
         pca = d["pca"]
         canonical_obj = d["canonical_obj"]
+        print("canonical_obj shape", canonical_obj.shape)
+
         if "canonical_mesh_points" in d and d["canonical_mesh_points"] is not None:
             canonical_mesh_points = d["canonical_mesh_points"]
             canonical_mesh_faces = d["canonical_mesh_faces"]
+            print("canonical_mesh_points shape", canonical_mesh_points.shape)
+            print("canonical_mesh_faces shape", canonical_mesh_faces.shape)
 
     new_obj = warp_object(canonical_obj, pca, np.array([[0.] * pca.n_components]), args.scale)
     smin, smax = -2., 2.
