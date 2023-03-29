@@ -44,7 +44,7 @@ def main(args):
             "1cf98e5b6fff5471c8724d5673a063a6", "1d4480abe9aa45ce51a99c0e19a8a54",
             "1df41477bce9915e362078f6fc3b29f5", "1e5abf0465d97d826118a17db9de8c0",
             "1ef68777bfdb7d6ba7a07ee616e34cd7", "1ffd7113492d375593202bf99dddc268",
-            "2a3e0c1cd0e9076cddf5870150a75bc", "2a9817a43c5b3983bb13793251b29587"
+            "2a3e0c1cd0e9076cddf5870150a75bc", "2bbd2b37776088354e23e9314af9ae57"
         ]
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
