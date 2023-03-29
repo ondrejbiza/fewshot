@@ -110,3 +110,44 @@ def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.C
     i_2 = np.argmin(dist_2, axis=0).transpose()
 
     return knns, deltas, i_2
+
+
+def save_place_nearby_points_v2(source: int, target: int, canon_source_obj: utils.CanonObj,
+                                source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonObj,
+                                target_obj_param: utils.ObjParam, delta: float,
+                                draw_spheres: bool=False
+                                ) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:
+
+    source_pcd = canon_source_obj.to_transformed_pcd(source_obj_param)
+    target_pcd = canon_target_obj.to_transformed_pcd(target_obj_param)
+
+    dist = np.sqrt(np.sum(np.square(source_pcd[:, None] - target_pcd[None]), axis=-1))
+    print("@@", np.min(dist))
+    indices = np.where(dist <= delta)
+    pos_source = source_pcd[indices[0]]
+    pos_target = target_pcd[indices[1]]
+
+    assert len(pos_source) > 0, "No nearby points in demonstration."
+    print("# nearby points:", len(pos_source))
+    if len(pos_source) < 10:
+        print("WARNING: Too few nearby points.")
+
+    max_pairs = 100
+    if len(pos_source) > max_pairs:
+        pos_source, indices2 = utils.farthest_point_sample(pos_source, max_pairs)
+        pos_target = pos_target[indices2]
+
+    # Points on target in canonical target object coordinates.
+    pos_target_target_coords = utils.transform_pcd(pos_target, np.linalg.inv(target_obj_param.get_transform()))
+    # Points on target in canonical source object coordinates.
+    pos_target_source_coords = utils.transform_pcd(pos_target, np.linalg.inv(source_obj_param.get_transform()))
+
+    full_source_pcd = canon_source_obj.to_pcd(source_obj_param)
+    full_target_pcd = canon_target_obj.to_pcd(target_obj_param)
+
+    knns, deltas = get_knn_and_deltas(full_source_pcd, pos_target_source_coords)
+
+    dist_2 = np.sqrt(np.sum(np.square(full_target_pcd[:, None] - pos_target_target_coords[None]), axis=2))
+    i_2 = np.argmin(dist_2, axis=0).transpose()
+
+    return knns, deltas, i_2

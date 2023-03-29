@@ -69,6 +69,7 @@ def main(args):
     knns = place_data["knns"]
     deltas = place_data["deltas"]
     target_indices = place_data["target_indices"]
+    print("# target_indices:", len(target_indices))
     source_param = place_data["source_param"]
     target_param = place_data["target_param"]
 

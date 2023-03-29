@@ -104,7 +104,7 @@ def save_pick_contact_points(observed_pc: NDArray[np.float32], robotiq_id: int, 
 def save_place_contact_points(
     target_pcd: NDArray, ur5: UR5, source_id: int, target_id: int, trans_source_to_t0: NDArray, trans_pre_t0_to_b: NDArray,
     canon_source: utils.CanonObj, canon_target: utils.CanonObj, source_param: utils.ObjParam, target_param: utils.ObjParam,
-    delta: float=0.01, save_path: Optional[str]=None):
+    delta: float=0.03, save_path: Optional[str]=None):
 
     trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
     trans_source_to_b = trans_t0_to_b @ trans_source_to_t0
@@ -122,7 +122,7 @@ def save_place_contact_points(
     source_param.position = src_pos
     source_param.quat = src_quat
 
-    knns, deltas, i_2 = demo.save_place_nearby_points(
+    knns, deltas, i_2 = demo.save_place_nearby_points_v2(
         source_id, target_id, canon_source, source_param, canon_target, target_param, delta, draw_spheres=True)
 
     if save_path is not None:
