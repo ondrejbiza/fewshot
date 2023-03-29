@@ -58,17 +58,17 @@ class CanonObj:
         trans = pos_quat_to_transform(obj_param.position, obj_param.quat)
         return transform_pcd(pcd, trans)
 
-    def to_mesh(self, obj_param: ObjParam) -> trimesh.base.Trimesh:
+    def to_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
         pcd = self.to_pcd(obj_param)
         # The vertices are assumed to be at the start of the canonical_pcd.
         vertices = pcd[:len(self.mesh_vertices)]
-        return trimesh.base.Trimesh(vertices, self.mesh_faces)
+        return trimesh.Trimesh(vertices, self.mesh_faces)
 
-    def to_transformed_mesh(self, obj_param: ObjParam) -> trimesh.base.Trimesh:
+    def to_transformed_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
         pcd = self.to_transformed_pcd(obj_param)
         # The vertices are assumed to be at the start of the canonical_pcd.
         vertices = pcd[:len(self.mesh_vertices)]
-        return trimesh.base.Trimesh(vertices, self.mesh_faces)
+        return trimesh.Trimesh(vertices, self.mesh_faces)
 
     @staticmethod
     def from_pickle(load_path: str) -> "CanonObj":
@@ -211,7 +211,7 @@ def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=No
         alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
         convexhullApproximation=1, oclDeviceID=0
     )
-
+    print("# convex meshes:", len(convex_meshes))
     if save_path is not None:
         decomposed_scene = trimesh.scene.Scene()
         for i, convex_mesh in enumerate(convex_meshes):
