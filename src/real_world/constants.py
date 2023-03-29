@@ -10,7 +10,7 @@ NDF_BRANCH_POSITION = (-0.034, 0.094, 0.2167)
 NDF_MUGS_PCA_PATH = "data/230315_ndf_mugs_scale_pca_8_dim_alp_0_01.pkl"
 NDF_TREES_PCA_PATH = "data/230315_ndf_trees_scale_pca_8_dim_alp_0_01.pkl"
 NDF_BOWLS_PCA_PATH = "data/230315_ndf_bowls_scale_pca_8_dim_alp_0_01.pkl"
-NDF_BOTTLES_PCA_PATH = "data/230315_ndf_bottles_scale_pca_8_dim_alp_0_01.pkl"
+NDF_BOTTLES_PCA_PATH = "data/230328_ndf_bottles_scale_pca_8_dim_alp_0_01.pkl"
 SIMPLE_TREES_PCA_PATH = "data/230315_simple_trees_scale_pca_8_dim_alp_0_01.pkl"
 BOXES_PCA_PATH = "data/230315_boxes_scale_pca_8_dim_alp_0_01.pkl"
 
