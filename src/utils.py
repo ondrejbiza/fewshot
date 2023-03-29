@@ -211,7 +211,10 @@ def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=No
         alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
         convexhullApproximation=1, oclDeviceID=0
     )
-    print("# convex meshes:", len(convex_meshes))
+    # Bug / undocumented feature in Trimesh :<
+    if not isinstance(convex_meshes, list):
+        convex_meshes = [convex_meshes]
+
     if save_path is not None:
         decomposed_scene = trimesh.scene.Scene()
         for i, convex_mesh in enumerate(convex_meshes):
