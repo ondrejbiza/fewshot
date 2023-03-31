@@ -14,7 +14,7 @@ from src.real_world.point_cloud_proxy import PointCloudProxy
 from src.real_world.ur5 import UR5
 from src.real_world.simulation import Simulation
 
-EASY_MOTION_TRIES = 1
+EASY_MOTION_TRIES = 3
 HARD_MOTION_TRIES = 5
 
 
@@ -154,10 +154,11 @@ def place(
     # I believe this is the wrong approach to do the pre-place pose:
     # trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
 
-    # Remove mug from the planning scene.
+    # Remove mug and tree from the planning scene.
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
     ur5.moveit_scene.detach_object("source")
     ur5.moveit_scene.remove_object("source")
+    ur5.moveit_scene.remove_object("target")
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
     ur5.gripper.open_gripper()

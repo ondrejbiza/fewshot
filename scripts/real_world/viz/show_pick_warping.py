@@ -32,6 +32,9 @@ def main(args):
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
         canon_source.init_scale = constants.NDF_BOWLS_INIT_SCALE
+    elif args.task == "bottle_in_box":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BOTTLES_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BOTTLES_INIT_SCALE
     else:
         raise NotImplementedError()
 
