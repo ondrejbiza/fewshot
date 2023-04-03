@@ -68,6 +68,7 @@ class UR5:
             self.moveit_scene.add_box("table", desk_center, np.array([1., 0., 0., 0.]), np.array([2., 2., 0.001]))
 
             self.moveit_scene.add_box("robot_box", np.array([0., 0., -0.04]), np.array([1., 0., 0., 0.]), np.array([0.16, 0.5, 0.075]))
+            self.moveit_scene.add_box("robot_vise", np.array([0., -0.18, -0.04]), np.array([1., 0., 0., 0.]), np.array([0.16, 0.05, 0.15]))
 
             tmp = np.copy(desk_center)
             tmp[1] -= 0.17 + 0.2 + 0.2
