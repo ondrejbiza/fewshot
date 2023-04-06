@@ -20,7 +20,7 @@ from src.real_world.point_cloud_proxy import PointCloudProxy
 from src.real_world.ur5 import UR5
 from src.real_world.simulation import Simulation
 
-EASY_MOTION_TRIES = 1
+EASY_MOTION_TRIES = 3
 HARD_MOTION_TRIES = 5
 
 
@@ -248,7 +248,7 @@ def main(args):
 
     trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws = pick(
         model, source_pcd, args.pick_load_paths, num_samples,
-        sigma, opt_iterations, show=False)
+        sigma, opt_iterations, show=args.show)
 
     trans_post_t0_to_ws = rw_utils.get_post_pick_pose(trans_pick_t0_to_ws)
     trans_post_t0_to_b = rw_utils.workspace_to_base() @ trans_post_t0_to_ws
@@ -265,6 +265,10 @@ def main(args):
         in_hand = source_pcd
         trans_t0_to_ws = trans_pick_t0_to_ws
     else:
+        # Take an in-hand image.
+        if args.platform:
+            input("Platform removed?")
+
         # Get a new point cloud with the mug in hand. Remove all points that belong to the hand.
         cloud = pc_proxy.get_all()
         robotiq_id = sim.add_object("data/robotiq.urdf", np.array([0., 0., 0.]), np.array([0., 0., 0., 1.]))
@@ -280,7 +284,7 @@ def main(args):
 
     trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(
         trans_t0_to_ws, model, in_hand, args.pick_load_paths, args.place_load_paths,
-        num_samples, sigma, opt_iterations, show=False)
+        num_samples, sigma, opt_iterations, show=args.show)
 
     trans_place_t0_to_b = np.matmul(trans_ws_to_b, trans_place_t0_to_ws)
     trans_pre_place_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_place_t0_to_ws)
@@ -300,5 +304,6 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--platform", default=False, action="store_true",
                         help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
     parser.add_argument("-n", "--no-in-hand", default=False, action="store_true")
+    parser.add_argument("--show", default=False, action="store_true")
 
     main(parser.parse_args())
