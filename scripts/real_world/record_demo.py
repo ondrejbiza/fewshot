@@ -273,7 +273,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Collect a demonstration.")
-    parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+    parser.add_argument("task", type=str, help=constants.TASKS_DESCRIPTION)
     parser.add_argument("pick_save_path", type=str)
     parser.add_argument("place_save_path", type=str)
     parser.add_argument("-c", "--pick-contacts", default=False, action="store_true")

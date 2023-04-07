@@ -5,7 +5,7 @@ import pickle
 import rospy
 
 from src import viz_utils
-from src.real_world import perception
+from src.real_world import constants, perception
 from src.real_world.point_cloud_proxy import PointCloudProxy
 
 
@@ -44,6 +44,6 @@ def main(args):
 
 
 parser = argparse.ArgumentParser("Find objects for a particular task.")
-parser.add_argument("task", help="[mug_tree, bowl_on_mug, bottle_in_box]")
+parser.add_argument("task", help=constants.TASKS_DESCRIPTION)
 parser.add_argument("save_folder")
 main(parser.parse_args())

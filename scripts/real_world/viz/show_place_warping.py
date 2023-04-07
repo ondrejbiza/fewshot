@@ -153,6 +153,6 @@ def main(args):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+parser.add_argument("task", type=str, help=constants.TASKS_DESCRIPTION)
 parser.add_argument("load_path")
 main(parser.parse_args())

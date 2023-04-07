@@ -5,9 +5,8 @@ import pickle
 import numpy as np
 from numpy.typing import NDArray
 import rospy
-import pybullet as pb
 
-from src import object_warping, utils, viz_utils
+from src import utils, viz_utils
 from src.real_world import constants, perception
 import src.real_world.utils as rw_utils
 from src.real_world.point_cloud_proxy import PointCloudProxy
@@ -261,7 +260,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+    parser.add_argument("task", type=str, help=constants.TASKS_DESCRIPTION)
     parser.add_argument("pick_load_path", type=str)
     parser.add_argument("place_load_path", type=str)
 

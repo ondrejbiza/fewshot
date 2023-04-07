@@ -72,7 +72,8 @@ def ndf_prepare_pick_demos(pick_load_paths: List[str], num_samples: int, sigma: 
 
 
 def ndf_prepare_place_demos(pick_load_paths: List[str], place_load_paths: List[str],
-                            num_samples: int, sigma: float, show: bool=False
+                            num_samples: int, sigma: float, reference_point: Tuple[float, ...],
+                            show: bool=False
                             ) -> Tuple[NDArray[np.float64], NDArray[np.float32],
                                        NDArray[np.float32], List[Dict[str, Any]]]:
 
@@ -108,7 +109,7 @@ def ndf_prepare_place_demos(pick_load_paths: List[str], place_load_paths: List[s
         trans_rel = trans_place_t0_to_ws @ np.linalg.inv(trans_pick_t0_to_ws)
         demo_source_pcd_on_target = utils.transform_pcd(demo_source_pcd, trans_rel)
 
-        place_reference_points = np.random.normal(constants.NDF_BRANCH_POSITION, sigma, size=(num_samples, 3))
+        place_reference_points = np.random.normal(reference_point, sigma, size=(num_samples, 3))
 
         demos_list.append({
             "demo_obj_pts": demo_source_pcd_on_target,
@@ -169,11 +170,11 @@ def pick(model, observed_source_pcd: NDArray, pick_load_paths: List[str],
 
 def place(trans_new_pick_t0_to_ws: NDArray, model, observed_source_pcd: NDArray,
           pick_load_paths: List[str], place_load_paths: List[str], num_samples: int,
-          sigma: float, opt_iterations: int, show: bool=False
+          sigma: float, opt_iterations: int, reference_point: Tuple[float, ...], show: bool=False
           ) -> Tuple[NDArray, NDArray]:
 
     trans_place_pre_t0_to_t0, place_reference_points, demo_target_pcd, demos_list = ndf_prepare_place_demos(
-        pick_load_paths, place_load_paths, num_samples, sigma, show)
+        pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show)
 
     place_optimizer = OccNetOptimizer(
         model,
@@ -229,10 +230,13 @@ def main(args):
 
     if args.task == "mug_tree":
         source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, num_points, platform_pcd=platform_pcd)
+        reference_point = constants.NDF_BRANCH_POSITION
     elif args.task == "bowl_on_mug":
         source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, num_points, platform_pcd=platform_pcd)
+        reference_point = constants.NDF_MUG_POSITION
     elif args.task == "bottle_in_box":
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, num_points, platform_pcd=platform_pcd)
+        reference_point = constants.NDF_BOX_POSITION
     else:
         raise ValueError("Unknown task.")
 
@@ -284,7 +288,7 @@ def main(args):
 
     trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(
         trans_t0_to_ws, model, in_hand, args.pick_load_paths, args.place_load_paths,
-        num_samples, sigma, opt_iterations, show=args.show)
+        num_samples, sigma, opt_iterations, reference_point, show=args.show)
 
     trans_place_t0_to_b = np.matmul(trans_ws_to_b, trans_place_t0_to_ws)
     trans_pre_place_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_place_t0_to_ws)
@@ -297,7 +301,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+    parser.add_argument("task", type=str, help=constants.TASKS_DESCRIPTION)
     parser.add_argument("-a", "--pick-load-paths", type=str, nargs="+")
     parser.add_argument("-b", "--place-load-paths", type=str, nargs="+")
 
