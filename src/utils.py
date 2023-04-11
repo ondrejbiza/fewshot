@@ -150,6 +150,13 @@ def transform_to_pos_quat(trans: NPF64) -> Tuple[NPF64, NPF64]:
     return pos.astype(np.float64), quat.astype(np.float64)
 
 
+def transform_to_pos_rot(trans: NPF64) -> Tuple[NPF64, NPF64]:
+    pos = trans[:3, 3]
+    rot = trans[:3, :3]
+    # Just making sure.
+    return pos.astype(np.float64), rot.astype(np.float64)
+
+
 def transform_pcd(pcd: NPF32, trans: NPF64, is_position: bool=True) -> NPF32:
     n = pcd.shape[0]
     cloud = pcd.T
@@ -464,3 +471,40 @@ def pca_transform(distances, n_dimensions=4):
     pca = PCA(n_components=n_dimensions)
     p_components = pca.fit_transform(np.array(distances))
     return p_components, pca
+
+
+def rotation_distance(A, B):
+    # Compute the relative rotation matrix
+    R = np.dot(A, B.T)
+
+    # Calculate the trace of the matrix
+    trace = np.trace(R)
+
+    # Clamp the trace value to the valid range [-1, 3] to avoid numerical errors
+    trace = np.clip(trace, -1, 3)
+
+    # Calculate the angle of rotation in radians
+    angle = np.arccos((trace - 1) / 2)
+
+    # Return the distance as a float
+    return float(angle)
+
+
+def pose_distance(trans1, trans2):
+
+    pos1, rot1 = transform_to_pos_rot(trans1)
+    pos2, rot2 = transform_to_pos_rot(trans2)
+
+    # Compute the position (translation) distance
+    position_distance = np.linalg.norm(pos1 - pos2)
+
+    # Compute the orientation (rotation) distance using the rotation_distance function
+    orientation_distance = rotation_distance(rot1, rot2)
+
+    # Combine the position and orientation distances into a single metric (optional)
+    # You can use different weights depending on the importance of position and orientation in your application
+    position_weight = 1
+    orientation_weight = 1
+    total_distance = position_weight * position_distance + orientation_weight * orientation_distance
+
+    return position_distance, orientation_distance, total_distance
