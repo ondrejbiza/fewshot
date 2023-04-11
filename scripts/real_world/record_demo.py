@@ -227,28 +227,32 @@ def main(args):
 
     trans_pre_t0_to_t0 = np.matmul(np.linalg.inv(trans_t0_to_b), trans_pre_t0_to_b)
 
-    input("Take in-hand image?")
+    if not args.no_in_hand:
+        input("Take in-hand image?")
 
-    # Refine gripper-object transform using a second point cloud.
-    # The object might have moved as the gripper fingers closed.
-    cloud = pc_proxy.get_all()
-    assert cloud is not None
+        # Refine gripper-object transform using a second point cloud.
+        # The object might have moved as the gripper fingers closed.
+        cloud = pc_proxy.get_all()
+        assert cloud is not None
 
-    source_param, source_pcd_complete, trans_source_to_t0, in_hand_pcd = perception.reestimate_tool0_to_source(
-        cloud, ur5, robotiq_id, sim, canon_source, source_param, trans_source_to_t0)
-    data["trans_source_to_t0"] = trans_source_to_t0
+        source_param, source_pcd_complete, trans_source_to_t0, in_hand_pcd = perception.reestimate_tool0_to_source(
+            cloud, ur5, robotiq_id, sim, canon_source, source_param, trans_source_to_t0)
+        data["trans_source_to_t0"] = trans_source_to_t0
 
-    viz_utils.show_pcds_plotly({
-        "pcd": in_hand_pcd,
-        "completed": source_pcd_complete
-    })
+        viz_utils.show_pcds_plotly({
+            "pcd": in_hand_pcd,
+            "completed": source_pcd_complete
+        })
 
-    trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+        trans_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
+    else:
+        in_hand_pcd = source_pcd
+
     if args.pick_contacts:
         save_pick_contact_points(
             in_hand_pcd, robotiq_id, source_id, canon_source, source_param, trans_t0_to_b, trans_pre_t0_to_t0, args.pick_save_path)
     else:
-        save_pick_pose(source_pcd, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
+        save_pick_pose(in_hand_pcd, canon_source, source_param, ur5, trans_pre_t0_to_t0, args.pick_save_path)
 
     input("Save place waypoint?")
     trans_pre_t0_to_b = utils.pos_quat_to_transform(*ur5.get_tool0_to_base())
@@ -269,10 +273,11 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Collect a demonstration.")
-    parser.add_argument("task", type=str, help="[mug_tree, bowl_on_mug, bottle_in_box]")
+    parser.add_argument("task", type=str, help=constants.TASKS_DESCRIPTION)
     parser.add_argument("pick_save_path", type=str)
     parser.add_argument("place_save_path", type=str)
     parser.add_argument("-c", "--pick-contacts", default=False, action="store_true")
     parser.add_argument("-p", "--platform", default=False, action="store_true",
                         help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
+    parser.add_argument("-n", "--no-in-hand", default=False, action="store_true")
     main(parser.parse_args())

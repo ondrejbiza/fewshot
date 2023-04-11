@@ -54,6 +54,6 @@ def main(args):
 
 
 parser = argparse.ArgumentParser("Find objects for a particular task, create warps.")
-parser.add_argument("task", help="[mug_tree, bowl_on_mug, bottle_in_box]")
+parser.add_argument("task", help=constants.TASKS_DESCRIPTION)
 parser.add_argument("-a", "--any-rotation", default=False, action="store_true")
 main(parser.parse_args())

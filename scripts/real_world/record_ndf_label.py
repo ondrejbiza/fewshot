@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 from numpy.typing import NDArray
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button
+from matplotlib.widgets import Slider
 
 from src import viz_utils
 import src.real_world.utils as rw_utils

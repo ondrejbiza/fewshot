@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 import rospy
 import torch
 
-import ndf_robot.model.vnn_occupancy_net_pointnet_dgcnn as vnn_occupancy_network
-from ndf_robot.opt.optimizer import OccNetOptimizer
-from ndf_robot.utils import path_util, util
+import rndf_robot.model.vnn_occupancy_net_pointnet_dgcnn as vnn_occupancy_network
+from rndf_robot.opt.optimizer import OccNetOptimizer
+from rndf_robot.eval.relation_tools.multi_ndf import infer_relation_intersection, create_target_descriptors
 
 from src import utils, viz_utils
 from src.real_world import constants, perception
@@ -22,11 +22,23 @@ from src.real_world.simulation import Simulation
 
 EASY_MOTION_TRIES = 3
 HARD_MOTION_TRIES = 5
+TARGET_DESCRIPTOR_NAME = "tmp_target_descriptor.npy"
 
 
-def ndf_prepare_pick_demos(pick_load_paths: List[str], num_samples: int, sigma: float, show: bool=False
-                           ) -> Tuple[NDArray[np.float64], NDArray[np.float64],
-                                      NDArray[np.float32], List[Dict[str, Any]]]:
+def get_rndf_src():
+    return os.environ['RNDF_SOURCE_DIR']
+
+
+def get_rndf_model_weights():
+    return os.path.join(get_rndf_src(), 'model_weights')
+
+
+def rndf_prepare_pick_demos(task: str, parent_model: str, child_model: str, pick_load_paths: List[str],
+                            num_samples: int, sigma: float, show: bool=False
+                            ) -> Tuple[NDArray[np.float64], NDArray[np.float64],
+                                       NDArray[np.float32], List[Dict[str, Any]]]:
+
+    # TODO: check if redo TARGET_DESCRIPTOR_NAME
 
     assert len(pick_load_paths) > 0
 
@@ -67,6 +79,34 @@ def ndf_prepare_pick_demos(pick_load_paths: List[str], num_samples: int, sigma: 
                 "demo_source_pcd": demo_source_pcd,
                 "pick_reference_points": pick_reference_points
             })
+
+    # I should do this for the placement. For picking, I can use the same code as for NDF.
+    # hmmm
+    if task == "bottle_in_box":
+        use_keypoint_offset = True
+        keypoint_offset_params = {"offset": 0.025, "type": "bottom"}
+        pc_reference = "child"
+    else:
+        use_keypoint_offset = False 
+        keypoint_offset_params = None
+        pc_reference = "parent"
+
+    class MockObject(object):
+        pass
+
+    cfg = MockObject()
+    cfg.OPTIMIZER = MockObject()
+    cfg.OPTIMIZER.SHAPE_PCD_PTS_N = 1500
+    cfg.OPTIMIZER.QUERY_PCD_PTS_N = 500
+
+    create_target_descriptors(
+        parent_model, child_model, pc_master_dict, TARGET_DESCRIPTOR_NAME, 
+        cfg, query_scale=0.025, scale_pcds=False, 
+        target_rounds=3, pc_reference=pc_reference,
+        skip_alignment=False, n_demos="all", manual_target_idx=0, 
+        add_noise=False, interaction_pt_noise_std=0.0001,
+        use_keypoint_offset=use_keypoint_offset, keypoint_offset_params=keypoint_offset_params,
+        visualize=True, mc_vis=False)
 
     return first_trans_t0_tip_to_ws, first_trans_pre_t0_to_t0, first_pick_reference_points, demos_list
 
@@ -231,24 +271,37 @@ def main(args):
     if args.task == "mug_tree":
         source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, num_points, platform_pcd=platform_pcd)
         reference_point = constants.NDF_BRANCH_POSITION
+        child_weights_path = "ndf_vnn/rndf_weights/ndf_mug2.pth"
+        parent_weights_path = "ndf_vnn/rndf_weights/ndf_rack.pth"
     elif args.task == "bowl_on_mug":
         source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, num_points, platform_pcd=platform_pcd)
         reference_point = constants.NDF_MUG_POSITION
+        child_weights_path = "ndf_vnn/rndf_weights/ndf_mug.pth"
+        parent_weights_path = "ndf_vnn/rndf_weights/ndf_bowl.pth"
     elif args.task == "bottle_in_box":
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, num_points, platform_pcd=platform_pcd)
         reference_point = constants.NDF_BOX_POSITION
+        child_weights_path = "ndf_vnn/rndf_weights/ndf_container.pth"
+        parent_weights_path = "ndf_vnn/rndf_weights/ndf_bottle.pth"
     else:
         raise ValueError("Unknown task.")
 
-    model_path = os.path.join(path_util.get_ndf_model_weights(), "multi_category_weights.pth")  
-    model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
-    model.load_state_dict(torch.load(model_path))
+    child_weights_path = os.path.join(get_rndf_model_weights(), child_weights_path)
+    parent_weights_path = os.path.join(get_rndf_model_weights(), parent_weights_path)
+
+    parent_model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
+    child_model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
+
+    parent_model.load_state_dict(torch.load(child_weights_path))
+    child_model.load_state_dict(torch.load(parent_weights_path))
 
     num_samples = 500
     sigma = 0.02
     opt_iterations = 500
 
     trans_ws_to_b = rw_utils.workspace_to_base()
+
+    # Prepare relational descriptors.
 
     trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws = pick(
         model, source_pcd, args.pick_load_paths, num_samples,
