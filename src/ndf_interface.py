@@ -26,11 +26,8 @@ class NDFInterface:
         self.canon_source = utils.CanonObj.from_pickle(self.canon_source_path)
         self.canon_target = utils.CanonObj.from_pickle(self.canon_target_path)
 
-    def set_demo_info(self, pc_master_dict, cfg, n_demos, show: bool=False):
-        """Process a demonstration.
-        
-        Currently we only use the first demonstration."""
-        demo_idx = 0
+    def set_demo_info(self, pc_master_dict, demo_idx: int=0, calculate_cost: bool=False, show: bool=False):
+        """Process a demonstration."""
 
         # Get a single demonstration.
         source_pcd = pc_master_dict["child"]["demo_start_pcds"][demo_idx]
@@ -93,10 +90,6 @@ class NDFInterface:
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pb.resetBasePositionAndOrientation(target_pb, target_param.position, target_param.quat)
 
-        # if self.wiggle:
-        #     # Wiggle the source object out of collision.
-        #     utils.wiggle(source_pb, target_pb)
-
         self.knns, self.deltas, self.target_indices = demo.save_place_nearby_points_v2(
             source_pb, target_pb, self.canon_source, source_param, self.canon_target,
             target_param, self.nearby_points_delta)
@@ -104,6 +97,11 @@ class NDFInterface:
         # Remove predicted meshes from pybullet.
         pb.removeBody(source_pb)
         pb.removeBody(target_pb)
+
+        if calculate_cost:
+            # Make a prediction based on the training sample and calculate the distance between it and the ground-truth.
+            trans_predicted = self.infer_relpose(source_pcd, target_pcd)
+            return utils.pose_distance(trans_predicted, source_start_to_final)
 
     def infer_relpose(self, source_pcd, target_pcd, se3: bool=False, show: bool=False):
         """Make prediction about the final pose of the source object."""

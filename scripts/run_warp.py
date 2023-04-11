@@ -269,6 +269,7 @@ def main(args):
     # pc_master_dict['child']['scale_default'] = 0.3
 
     # put the data in our pc master
+    max_demos = len(demos)
     pc_master_dict['parent']['demo_start_pcds'] = []
     pc_master_dict['parent']['demo_final_pcds'] = []
     pc_master_dict['child']['demo_start_pcds'] = []
@@ -314,7 +315,19 @@ def main(args):
         canon_source_scale=canon_source_scale,
         canon_target_scale=canon_target_scale
     )
-    interface.set_demo_info(pc_master_dict, cfg, args.n_demos)
+
+    n_demos = max_demos if args.n_demos == 0 else args.n_demos
+
+    demo_idx = 0
+    if args.demo_selection:
+        costs = []
+        for i in range(n_demos):
+            cost = interface.set_demo_info(pc_master_dict, demo_idx=i, calculate_cost=True)
+            costs.append(cost)
+        print("costs:", costs)
+        demo_idx = int(np.argmin(costs))
+
+    interface.set_demo_info(pc_master_dict, demo_idx=demo_idx)
 
     #####################################################################################
     # prepare the simuation environment
@@ -895,6 +908,9 @@ if __name__ == "__main__":
 
     parser.add_argument('--add_noise', action='store_true')
     parser.add_argument('--noise_idx', type=int, default=0)
+
+    # custom
+    parser.add_argument('--demo_selection', default=False, action='store_true')
 
     args = parser.parse_args()
 
