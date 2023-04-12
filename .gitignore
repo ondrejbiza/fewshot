@@ -13,7 +13,7 @@ venv_ndf/
 /tmp_target.obj
 /visualization
 /debug_viz
-tmp_target_descriptor.npy
+tmp_target_descriptor.npz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

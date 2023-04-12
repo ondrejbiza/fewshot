@@ -24,7 +24,7 @@ from src.real_world.simulation import Simulation
 
 EASY_MOTION_TRIES = 3
 HARD_MOTION_TRIES = 5
-TARGET_DESCRIPTOR_NAME = "tmp_target_descriptor.npy"
+TARGET_DESCRIPTOR_NAME = "tmp_target_descriptor.npz"
 
 
 class MockObject(object):
@@ -155,8 +155,9 @@ def rndf_create_target_descriptors(task: str, parent_model: str, child_model: st
                                    reference_point: Tuple[float, ...], show: bool=False
                                    ):
 
-    # TODO: check if redo TARGET_DESCRIPTOR_NAME
+    # TODO: check if redo TARGET_DESCRIPTOR_NAME.
 
+    # TODO: run demo prep outside of this function.
     first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd, pc_demo_dict = ndf_prepare_place_demos(
         pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
     )
@@ -179,15 +180,14 @@ def rndf_create_target_descriptors(task: str, parent_model: str, child_model: st
 
     create_target_descriptors(
         parent_model, child_model, pc_demo_dict, TARGET_DESCRIPTOR_NAME, 
-        cfg, query_scale=0.025, scale_pcds=False, 
+        cfg, query_scale=sigma, scale_pcds=False, 
         target_rounds=3, pc_reference=pc_reference,
         skip_alignment=False, n_demos="all", manual_target_idx=0, 
         add_noise=False, interaction_pt_noise_std=0.0001,
         use_keypoint_offset=use_keypoint_offset, keypoint_offset_params=keypoint_offset_params,
-        visualize=True, mc_vis=False)
+        visualize=False, mc_vis=None)
 
     return first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd
-
 
 
 def pick(model, observed_source_pcd: NDArray, pick_load_paths: List[str],
@@ -235,12 +235,17 @@ def pick(model, observed_source_pcd: NDArray, pick_load_paths: List[str],
 
 def place(task: str, trans_new_pick_t0_to_ws: NDArray, child_model, parent_model, observed_source_pcd: NDArray,
           observed_target_pcd: NDArray, pick_load_paths: List[str], place_load_paths: List[str], num_samples: int,
-          sigma: float, opt_iterations: int, reference_point: Tuple[float, ...], show: bool=False
+          sigma: float, opt_iterations: int, reference_point: Tuple[float, ...], new_descriptor: bool=True, show: bool=False
           ) -> Tuple[NDArray, NDArray]:
 
-    first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd = rndf_create_target_descriptors(
-        task, parent_model, child_model, pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
-    )
+    if new_descriptor:
+        first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd = rndf_create_target_descriptors(
+            task, parent_model, child_model, pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
+        )
+    else:
+        first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd, pc_demo_dict = ndf_prepare_place_demos(
+            pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
+        )
 
     target_descriptors_data = np.load(TARGET_DESCRIPTOR_NAME)
     parent_overall_target_desc = target_descriptors_data['parent_overall_target_desc']
@@ -341,12 +346,15 @@ def main(args):
     parent_model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
     child_model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
 
-    parent_model.load_state_dict(torch.load(child_weights_path))
-    child_model.load_state_dict(torch.load(parent_weights_path))
+    parent_model.load_state_dict(torch.load(parent_weights_path))
+    child_model.load_state_dict(torch.load(child_weights_path))
 
-    num_samples = 500
-    sigma = 0.02
-    opt_iterations = 500
+    num_samples = 500  # same for NDF and R-NDF
+    if args.task == "mug_tree":
+        sigma = 0.035  # R-NDF uses task-specific parameters
+    else:
+        sigma = 0.025  # R-NDF setting
+    opt_iterations = 650  # R-NDF setting
 
     trans_ws_to_b = rw_utils.workspace_to_base()
 
@@ -390,7 +398,7 @@ def main(args):
 
     trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(
         args.task, trans_t0_to_ws, child_model, parent_model, in_hand, target_pcd, args.pick_load_paths, args.place_load_paths,
-        num_samples, sigma, opt_iterations, reference_point, show=args.show)
+        num_samples, sigma, opt_iterations, reference_point, new_descriptor=args.new_descriptor, show=args.show)
 
     trans_place_t0_to_b = np.matmul(trans_ws_to_b, trans_place_t0_to_ws)
     trans_pre_place_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_place_t0_to_ws)
@@ -410,6 +418,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--platform", default=False, action="store_true",
                         help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
     parser.add_argument("-n", "--no-in-hand", default=False, action="store_true")
+    parser.add_argument("-d", "--new-descriptor", default=False, action="store_true")
     parser.add_argument("--show", default=False, action="store_true")
 
     main(parser.parse_args())

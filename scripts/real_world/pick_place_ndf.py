@@ -244,9 +244,9 @@ def main(args):
     model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
     model.load_state_dict(torch.load(model_path))
 
-    num_samples = 500
-    sigma = 0.02
-    opt_iterations = 500
+    num_samples = 500  # same for NDF and R-NDF
+    sigma = 0.025  # R-NDF setting (not sure about NDF)
+    opt_iterations = 500  # NDF setting
 
     trans_ws_to_b = rw_utils.workspace_to_base()
 

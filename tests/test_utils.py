@@ -66,3 +66,189 @@ class TestUtils(unittest.TestCase):
         tmp = utils.transform_pcd(pcd_T, np.linalg.inv(T))
 
         np.testing.assert_almost_equal(pcd, tmp)
+
+
+class TestRotationDistance(unittest.TestCase):
+
+    def test_identity(self):
+        A = np.eye(3)
+        B = np.eye(3)
+        expected = 0.0
+        self.assertAlmostEqual(utils.rotation_distance(A, B), expected, places=5)
+
+    def test_90_degree_rotation(self):
+        A = np.eye(3)
+        B = np.array([[0, -1, 0],
+                      [1,  0, 0],
+                      [0,  0, 1]])
+        expected = np.pi / 2
+        self.assertAlmostEqual(utils.rotation_distance(A, B), expected, places=5)
+
+    def test_180_degree_rotation(self):
+        A = np.eye(3)
+        B = np.array([[-1,  0,  0],
+                      [ 0, -1,  0],
+                      [ 0,  0,  1]])
+        expected = np.pi
+        self.assertAlmostEqual(utils.rotation_distance(A, B), expected, places=5)
+
+    def test_numerical_stability(self):
+        A = np.eye(3)
+        B = np.array([[ 1,  0,  0],
+                      [ 0, -1,  0],
+                      [ 0,  0, -1]])
+        expected = np.pi
+        self.assertAlmostEqual(utils.rotation_distance(A, B), expected, places=5)
+
+
+class TestPoseDistance(unittest.TestCase):
+
+    def test_same_pose(self):
+        trans1 = np.eye(4)
+        trans2 = np.eye(4)
+        expected = (0.0, 0.0, 0.0)
+        result = utils.pose_distance(trans1, trans2)
+        for i in range(3):
+            self.assertAlmostEqual(result[i], expected[i], places=5)
+
+    def test_translation_only(self):
+        trans1 = np.eye(4)
+        trans2 = np.eye(4)
+        trans2[:3, 3] = np.array([2, 0, 0])
+        expected = (2.0, 0.0, 2.0)
+        result = utils.pose_distance(trans1, trans2)
+        for i in range(3):
+            self.assertAlmostEqual(result[i], expected[i], places=5)
+
+    def test_rotation_only(self):
+        trans1 = np.eye(4)
+        trans2 = np.eye(4)
+        trans2[:3, :3] = np.array([[0, -1, 0],
+                                   [1,  0, 0],
+                                   [0,  0, 1]])
+        expected = (0.0, np.pi / 2, np.pi / 2)
+        result = utils.pose_distance(trans1, trans2)
+        for i in range(3):
+            self.assertAlmostEqual(result[i], expected[i], places=5)
+
+    def test_combined_translation_and_rotation(self):
+        trans1 = np.eye(4)
+        trans2 = np.eye(4)
+        trans2[:3, 3] = np.array([2, 0, 0])
+        trans2[:3, :3] = np.array([[0, -1, 0],
+                                   [1,  0, 0],
+                                   [0,  0, 1]])
+        expected = (2.0, np.pi / 2, 2.0 + np.pi / 2)
+        result = utils.pose_distance(trans1, trans2)
+        for i in range(3):
+            self.assertAlmostEqual(result[i], expected[i], places=5)
+
+
+class TestFarthestPointSample(unittest.TestCase):
+
+    def setUp(self):
+        np.random.seed(42)
+
+    def test_same_number_of_points(self):
+        point = np.array([[0, 0, 0],
+                          [1, 0, 0],
+                          [0, 1, 0],
+                          [0, 0, 1]])
+        npoint = 4
+        expected_point = np.array([[0, 1, 0],
+                                   [1, 0, 0],
+                                   [0, 0, 1],
+                                   [0, 0, 0]])
+        expected_indices = np.array([2, 1, 3, 0], dtype=np.int32)
+        result_point, result_indices = utils.farthest_point_sample(point, npoint)
+        np.testing.assert_array_almost_equal(result_point, expected_point, decimal=5)
+        np.testing.assert_array_equal(result_indices, expected_indices)
+
+    def test_half_number_of_points(self):
+        point = np.array([[0, 0, 0],
+                          [1, 0, 0],
+                          [0, 1, 0],
+                          [0, 0, 1]])
+        npoint = 2
+        expected_point = np.array([[0, 1, 0],
+                                   [1, 0, 0]])
+        expected_indices = np.array([2, 1], dtype=np.int32)
+        result_point, result_indices = utils.farthest_point_sample(point, npoint)
+        np.testing.assert_array_almost_equal(result_point, expected_point, decimal=5)
+        np.testing.assert_array_equal(result_indices, expected_indices)
+
+    def test_more_points_than_input(self):
+        point = np.array([[0, 0, 0],
+                          [1, 0, 0],
+                          [0, 1, 0],
+                          [0, 0, 1]])
+        npoint = 6
+        with self.assertRaises(ValueError):
+            utils.farthest_point_sample(point, npoint)
+
+    def test_single_point(self):
+        point = np.array([[0, 0, 0],
+                          [1, 0, 0],
+                          [0, 1, 0],
+                          [0, 0, 1]])
+        npoint = 1
+        expected_indices = np.array([2], dtype=np.int32)
+        _, result_indices = utils.farthest_point_sample(point, npoint)
+        np.testing.assert_array_equal(result_indices, expected_indices)
+
+
+class TestBestFitTransform(unittest.TestCase):
+
+    def test_identity_transform(self):
+        A = np.array([[0, 0, 0],
+                      [1, 0, 0],
+                      [0, 1, 0],
+                      [0, 0, 1]], dtype=np.float32)
+        B = A.copy()
+        expected_T = np.eye(4, dtype=np.float64)
+        expected_R = np.eye(3, dtype=np.float64)
+        expected_t = np.zeros((3,), dtype=np.float64)
+
+        result_T, result_R, result_t = utils.best_fit_transform(A, B)
+        np.testing.assert_array_almost_equal(result_T, expected_T, decimal=5)
+        np.testing.assert_array_almost_equal(result_R, expected_R, decimal=5)
+        np.testing.assert_array_almost_equal(result_t, expected_t, decimal=5)
+
+    def test_translation(self):
+        A = np.array([[0, 0, 0],
+                      [1, 0, 0],
+                      [0, 1, 0],
+                      [0, 0, 1]], dtype=np.float32)
+        B = A + np.array([2, 3, 4], dtype=np.float32)
+        expected_T = np.array([[1, 0, 0, 2],
+                               [0, 1, 0, 3],
+                               [0, 0, 1, 4],
+                               [0, 0, 0, 1]], dtype=np.float64)
+        expected_R = np.eye(3, dtype=np.float64)
+        expected_t = np.array([2, 3, 4], dtype=np.float64)
+
+        result_T, result_R, result_t = utils.best_fit_transform(A, B)
+        np.testing.assert_array_almost_equal(result_T, expected_T, decimal=5)
+        np.testing.assert_array_almost_equal(result_R, expected_R, decimal=5)
+        np.testing.assert_array_almost_equal(result_t, expected_t, decimal=5)
+
+    def test_rotation(self):
+        A = np.array([[0, 0, 0],
+                      [1, 0, 0],
+                      [0, 1, 0],
+                      [0, 0, 1]], dtype=np.float32)
+        B = np.array([[ 0,  0,  0],
+                      [ 0,  1,  0],
+                      [-1,  0,  0],
+                      [ 0,  0,  1]], dtype=np.float32)
+        expected_T = np.array([[ 0, -1,  0,  0],
+                               [ 1,  0,  0,  0],
+                               [ 0,  0,  1,  0],
+                               [ 0,  0,  0,  1]], dtype=np.float64)
+        expected_R = expected_T[:3, :3]
+        expected_t = np.zeros((3,), dtype=np.float64)
+
+        result_T, result_R, result_t = utils.best_fit_transform(A, B)
+        np.testing.assert_array_almost_equal(result_T, expected_T, decimal=5)
+        np.testing.assert_array_almost_equal(result_R, expected_R, decimal=5)
+        np.testing.assert_array_almost_equal(result_t, expected_t, decimal=5)

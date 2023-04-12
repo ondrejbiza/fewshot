@@ -240,6 +240,9 @@ def farthest_point_sample(point: NPF32, npoint: int) -> Tuple[NPF32, NDArray[np.
     Return:
         centroids: sampled pointcloud index, [npoint, D]
     """
+    if npoint > len(point):
+        raise ValueError("Cannot sample more point then we have in the point cloud.")
+
     N, D = point.shape
     xyz = point[:, :3]
     centroids = np.zeros((npoint,))
