@@ -1,4 +1,5 @@
 import argparse
+import copy
 import os
 import pickle
 from typing import Any, Dict, List, Tuple
@@ -12,6 +13,7 @@ import torch
 import rndf_robot.model.vnn_occupancy_net_pointnet_dgcnn as vnn_occupancy_network
 from rndf_robot.opt.optimizer import OccNetOptimizer
 from rndf_robot.eval.relation_tools.multi_ndf import infer_relation_intersection, create_target_descriptors
+from rndf_robot.utils import util, path_util
 
 from src import utils, viz_utils
 from src.real_world import constants, perception
@@ -22,7 +24,11 @@ from src.real_world.simulation import Simulation
 
 EASY_MOTION_TRIES = 3
 HARD_MOTION_TRIES = 5
-TARGET_DESCRIPTOR_NAME = "tmp_target_descriptor.npy"
+TARGET_DESCRIPTOR_NAME = "tmp_target_descriptor.npz"
+
+
+class MockObject(object):
+    pass
 
 
 def get_rndf_src():
@@ -33,12 +39,9 @@ def get_rndf_model_weights():
     return os.path.join(get_rndf_src(), 'model_weights')
 
 
-def rndf_prepare_pick_demos(task: str, parent_model: str, child_model: str, pick_load_paths: List[str],
-                            num_samples: int, sigma: float, show: bool=False
-                            ) -> Tuple[NDArray[np.float64], NDArray[np.float64],
-                                       NDArray[np.float32], List[Dict[str, Any]]]:
-
-    # TODO: check if redo TARGET_DESCRIPTOR_NAME
+def ndf_prepare_pick_demos(pick_load_paths: List[str], num_samples: int, sigma: float, show: bool=False
+                           ) -> Tuple[NDArray[np.float64], NDArray[np.float64],
+                                      NDArray[np.float32], List[Dict[str, Any]]]:
 
     assert len(pick_load_paths) > 0
 
@@ -80,34 +83,6 @@ def rndf_prepare_pick_demos(task: str, parent_model: str, child_model: str, pick
                 "pick_reference_points": pick_reference_points
             })
 
-    # I should do this for the placement. For picking, I can use the same code as for NDF.
-    # hmmm
-    if task == "bottle_in_box":
-        use_keypoint_offset = True
-        keypoint_offset_params = {"offset": 0.025, "type": "bottom"}
-        pc_reference = "child"
-    else:
-        use_keypoint_offset = False 
-        keypoint_offset_params = None
-        pc_reference = "parent"
-
-    class MockObject(object):
-        pass
-
-    cfg = MockObject()
-    cfg.OPTIMIZER = MockObject()
-    cfg.OPTIMIZER.SHAPE_PCD_PTS_N = 1500
-    cfg.OPTIMIZER.QUERY_PCD_PTS_N = 500
-
-    create_target_descriptors(
-        parent_model, child_model, pc_master_dict, TARGET_DESCRIPTOR_NAME, 
-        cfg, query_scale=0.025, scale_pcds=False, 
-        target_rounds=3, pc_reference=pc_reference,
-        skip_alignment=False, n_demos="all", manual_target_idx=0, 
-        add_noise=False, interaction_pt_noise_std=0.0001,
-        use_keypoint_offset=use_keypoint_offset, keypoint_offset_params=keypoint_offset_params,
-        visualize=True, mc_vis=False)
-
     return first_trans_t0_tip_to_ws, first_trans_pre_t0_to_t0, first_pick_reference_points, demos_list
 
 
@@ -124,7 +99,14 @@ def ndf_prepare_place_demos(pick_load_paths: List[str], place_load_paths: List[s
     first_trans_place_pre_t0_to_t0 = None
     first_demo_target_pcd = None
 
-    demos_list = []
+    pc_demo_dict = {
+        "parent": {
+            "demo_final_pcds": []
+        },
+        "child": {
+            "demo_final_pcds": []
+        }
+    }
 
     for i in range(len(pick_load_paths)):
 
@@ -149,12 +131,10 @@ def ndf_prepare_place_demos(pick_load_paths: List[str], place_load_paths: List[s
         trans_rel = trans_place_t0_to_ws @ np.linalg.inv(trans_pick_t0_to_ws)
         demo_source_pcd_on_target = utils.transform_pcd(demo_source_pcd, trans_rel)
 
-        place_reference_points = np.random.normal(reference_point, sigma, size=(num_samples, 3))
+        pc_demo_dict["child"]["demo_final_pcds"].append(demo_source_pcd_on_target)
+        pc_demo_dict["parent"]["demo_final_pcds"].append(demo_target_pcd)
 
-        demos_list.append({
-            "demo_obj_pts": demo_source_pcd_on_target,
-            "demo_query_pts": place_reference_points,
-        })
+        place_reference_points = np.random.normal(reference_point, sigma, size=(num_samples, 3))
 
         if i == 0:
             first_place_reference_points = place_reference_points
@@ -165,10 +145,49 @@ def ndf_prepare_place_demos(pick_load_paths: List[str], place_load_paths: List[s
             viz_utils.show_pcds_plotly({
                 "source_pcd": demo_source_pcd_on_target,
                 "target_pcd": demo_target_pcd,
-                "place_reference_points": place_reference_points,
             })
 
-    return first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd, demos_list
+    return first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd, pc_demo_dict
+
+
+def rndf_create_target_descriptors(task: str, parent_model: str, child_model: str, pick_load_paths: List[str],
+                                   place_load_paths: List[str], num_samples: int, sigma: float,
+                                   reference_point: Tuple[float, ...], show: bool=False
+                                   ):
+
+    # TODO: check if redo TARGET_DESCRIPTOR_NAME.
+
+    # TODO: run demo prep outside of this function.
+    first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd, pc_demo_dict = ndf_prepare_place_demos(
+        pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
+    )
+
+    # I should do this for the placement. For picking, I can use the same code as for NDF.
+    # hmmm
+    if task == "bottle_in_box":
+        use_keypoint_offset = True
+        keypoint_offset_params = {"offset": 0.025, "type": "bottom"}
+        pc_reference = "child"
+    else:
+        use_keypoint_offset = False 
+        keypoint_offset_params = None
+        pc_reference = "parent"
+
+    cfg = MockObject()
+    cfg.OPTIMIZER = MockObject()
+    cfg.OPTIMIZER.SHAPE_PCD_PTS_N = 1500
+    cfg.OPTIMIZER.QUERY_PCD_PTS_N = 500
+
+    create_target_descriptors(
+        parent_model, child_model, pc_demo_dict, TARGET_DESCRIPTOR_NAME, 
+        cfg, query_scale=sigma, scale_pcds=False, 
+        target_rounds=3, pc_reference=pc_reference,
+        skip_alignment=False, n_demos="all", manual_target_idx=0, 
+        add_noise=False, interaction_pt_noise_std=0.0001,
+        use_keypoint_offset=use_keypoint_offset, keypoint_offset_params=keypoint_offset_params,
+        visualize=False, mc_vis=None)
+
+    return first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd
 
 
 def pick(model, observed_source_pcd: NDArray, pick_load_paths: List[str],
@@ -178,10 +197,16 @@ def pick(model, observed_source_pcd: NDArray, pick_load_paths: List[str],
     trans_t0_tip_to_ws, trans_pre_t0_to_t0, pick_reference_points, demos_list = ndf_prepare_pick_demos(
         pick_load_paths, num_samples, sigma, show=show)
 
+    cfg = MockObject()
+    cfg.OPTIMIZER = MockObject()
+    cfg.OPTIMIZER.SHAPE_PCD_PTS_N = 1500
+    cfg.OPTIMIZER.QUERY_PCD_PTS_N = 500
+
     grasp_optimizer = OccNetOptimizer(
         model,
         query_pts=pick_reference_points,
-        opt_iterations=opt_iterations
+        opt_iterations=opt_iterations,
+        cfg=cfg.OPTIMIZER
     )
     grasp_optimizer.set_demo_info(demos_list)
 
@@ -208,34 +233,63 @@ def pick(model, observed_source_pcd: NDArray, pick_load_paths: List[str],
     return trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws
 
 
-def place(trans_new_pick_t0_to_ws: NDArray, model, observed_source_pcd: NDArray,
-          pick_load_paths: List[str], place_load_paths: List[str], num_samples: int,
-          sigma: float, opt_iterations: int, reference_point: Tuple[float, ...], show: bool=False
+def place(task: str, trans_new_pick_t0_to_ws: NDArray, child_model, parent_model, observed_source_pcd: NDArray,
+          observed_target_pcd: NDArray, pick_load_paths: List[str], place_load_paths: List[str], num_samples: int,
+          sigma: float, opt_iterations: int, reference_point: Tuple[float, ...], new_descriptor: bool=True, show: bool=False
           ) -> Tuple[NDArray, NDArray]:
 
-    trans_place_pre_t0_to_t0, place_reference_points, demo_target_pcd, demos_list = ndf_prepare_place_demos(
-        pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show)
+    if new_descriptor:
+        first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd = rndf_create_target_descriptors(
+            task, parent_model, child_model, pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
+        )
+    else:
+        first_trans_place_pre_t0_to_t0, first_place_reference_points, first_demo_target_pcd, pc_demo_dict = ndf_prepare_place_demos(
+            pick_load_paths, place_load_paths, num_samples, sigma, reference_point, show
+        )
 
-    place_optimizer = OccNetOptimizer(
-        model,
-        query_pts=place_reference_points,  # TODO: what is this?
-        # query_pts_real_shape=optimizer_gripper_pts_rs,  # TODO: what is this?
-        opt_iterations=opt_iterations)
-    place_optimizer.set_demo_info(demos_list)
+    target_descriptors_data = np.load(TARGET_DESCRIPTOR_NAME)
+    parent_overall_target_desc = target_descriptors_data['parent_overall_target_desc']
+    child_overall_target_desc = target_descriptors_data['child_overall_target_desc']
+    parent_overall_target_desc = torch.from_numpy(parent_overall_target_desc).float().cuda()
+    child_overall_target_desc = torch.from_numpy(child_overall_target_desc).float().cuda()
+    parent_query_points = target_descriptors_data['parent_query_points']
+    child_query_points = copy.deepcopy(parent_query_points)
 
-    tmp, best_idx = place_optimizer.optimize_transform_implicit(observed_source_pcd, ee=False)
-    tmp = util.pose_stamped2list(util.pose_from_matrix(tmp[best_idx]))
-    trans_rel = utils.pos_quat_to_transform(tmp[:3], tmp[3:])
+    cfg = MockObject()
+    cfg.OPTIMIZER = MockObject()
+    cfg.OPTIMIZER.SHAPE_PCD_PTS_N = 1500
+    cfg.OPTIMIZER.QUERY_PCD_PTS_N = 500
+
+    parent_optimizer = OccNetOptimizer(
+        parent_model,
+        query_pts=parent_query_points,
+        query_pts_real_shape=parent_query_points,
+        opt_iterations=opt_iterations,
+        cfg=cfg.OPTIMIZER)
+
+    child_optimizer = OccNetOptimizer(
+        child_model,
+        query_pts=child_query_points,
+        query_pts_real_shape=child_query_points,
+        opt_iterations=opt_iterations,
+        cfg=cfg.OPTIMIZER)
+
+    trans_rel = infer_relation_intersection(
+        None, parent_optimizer, child_optimizer, 
+        parent_overall_target_desc, child_overall_target_desc, 
+        observed_target_pcd, observed_source_pcd, parent_query_points, child_query_points, opt_visualize=False
+    )
+    print(trans_rel.shape)
 
     trans_new_place_t0_to_ws = trans_rel @ trans_new_pick_t0_to_ws
-    trans_new_pre_place_t0_to_ws = trans_new_place_t0_to_ws @ trans_place_pre_t0_to_t0
+    trans_new_pre_place_t0_to_ws = trans_new_place_t0_to_ws @ first_trans_place_pre_t0_to_t0
 
     if show:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         tmp = utils.transform_pcd(observed_source_pcd, trans_rel)
         ax.scatter(tmp[:, 0], tmp[:, 1], tmp[:, 2], alpha=0.5, c="blue")
-        ax.scatter(demo_target_pcd[:, 0], demo_target_pcd[:, 1], demo_target_pcd[:, 2], alpha=0.5, c="brown")
+        ax.scatter(observed_target_pcd[:, 0], observed_target_pcd[:, 1], observed_target_pcd[:, 2], alpha=0.5, c="brown")
         viz_utils.show_pose(ax, trans_new_place_t0_to_ws)
         viz_utils.show_pose(ax, trans_new_pre_place_t0_to_ws)
         ax.set_xlim(-0.2, 0.2)
@@ -292,19 +346,22 @@ def main(args):
     parent_model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
     child_model = vnn_occupancy_network.VNNOccNet(latent_dim=256, model_type="pointnet", return_features=True, sigmoid=True).cuda()
 
-    parent_model.load_state_dict(torch.load(child_weights_path))
-    child_model.load_state_dict(torch.load(parent_weights_path))
+    parent_model.load_state_dict(torch.load(parent_weights_path))
+    child_model.load_state_dict(torch.load(child_weights_path))
 
-    num_samples = 500
-    sigma = 0.02
-    opt_iterations = 500
+    num_samples = 500  # same for NDF and R-NDF
+    if args.task == "mug_tree":
+        sigma = 0.035  # R-NDF uses task-specific parameters
+    else:
+        sigma = 0.025  # R-NDF setting
+    opt_iterations = 650  # R-NDF setting
 
     trans_ws_to_b = rw_utils.workspace_to_base()
 
     # Prepare relational descriptors.
 
     trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws = pick(
-        model, source_pcd, args.pick_load_paths, num_samples,
+        child_model, source_pcd, args.pick_load_paths, num_samples,
         sigma, opt_iterations, show=args.show)
 
     trans_post_t0_to_ws = rw_utils.get_post_pick_pose(trans_pick_t0_to_ws)
@@ -340,8 +397,8 @@ def main(args):
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
     trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(
-        trans_t0_to_ws, model, in_hand, args.pick_load_paths, args.place_load_paths,
-        num_samples, sigma, opt_iterations, reference_point, show=args.show)
+        args.task, trans_t0_to_ws, child_model, parent_model, in_hand, target_pcd, args.pick_load_paths, args.place_load_paths,
+        num_samples, sigma, opt_iterations, reference_point, new_descriptor=args.new_descriptor, show=args.show)
 
     trans_place_t0_to_b = np.matmul(trans_ws_to_b, trans_place_t0_to_ws)
     trans_pre_place_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_place_t0_to_ws)
@@ -361,6 +418,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--platform", default=False, action="store_true",
                         help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
     parser.add_argument("-n", "--no-in-hand", default=False, action="store_true")
+    parser.add_argument("-d", "--new-descriptor", default=False, action="store_true")
     parser.add_argument("--show", default=False, action="store_true")
 
     main(parser.parse_args())
