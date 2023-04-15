@@ -1,0 +1,719 @@
+pybullet build time: Feb 13 2023 14:30:59
+[33m[WARNING][0m[2023-04-11 14:51:48]: [33mStarting meshcat at zmq_url: tcp://127.0.0.1:6000[0m
+WARNING - 2023-04-11 14:51:48,706 - ai_logger - Starting meshcat at zmq_url: tcp://127.0.0.1:6000
+argv[0]=
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+[32m[INFO][0m[2023-04-11 14:51:48]: [32mLoad in OpenGL![0m
+INFO - 2023-04-11 14:51:48,713 - ai_logger - Load in OpenGL!
+[32m[INFO][0m[2023-04-11 14:51:48]: [32mConfig file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults[0m
+INFO - 2023-04-11 14:51:48,751 - ai_logger - Config file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-11 14:51:48,783 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a'][0m
+INFO - 2023-04-11 14:51:48,783 - ai_logger - ['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a']
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-11 14:51:48,784 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2'][0m
+INFO - 2023-04-11 14:51:48,784 - ai_logger - ['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2']
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-11 14:51:48,785 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366'][0m
+INFO - 2023-04-11 14:51:48,785 - ai_logger - ['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366']
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-11 14:51:48,785 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj'][0m
+INFO - 2023-04-11 14:51:48,785 - ai_logger - ['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj']
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-11 14:51:48,786 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-11 14:51:48]: [32m['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj'][0m
+INFO - 2023-04-11 14:51:48,786 - ai_logger - ['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj']
+[32m[INFO][0m[2023-04-11 14:51:48]: [32mTest ids (parent): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-11 14:51:48,786 - ai_logger - Test ids (parent): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-11 14:51:48]: [32mTest ids (child): e30e5cbc54a62b023c143af07c12991a, e3d4d57aea714a88669ff09d7001bab6, e3e57a94be495771f54e1b6f41fdd78a, e4c871d1d5e3c49844b2fa2cac0778f5, e816066ac8281e2ecf70f9641eb97702, ea473a79fd2c98e5789eafad9d8a9394, ed220bdfa852f00ba2c59a4d90e63212, eff9864bfb9920b521374fbf1ea544c, f09d5d7ed64b6585eb6db0b349a2b804, f0fdca5f5c7a06252dbdfbe028032489, f2cb15fb793e7fa244057c222118625, f2ef5e5b49f2bb8340dfb1e6c8f5a333, f44387d8cb8d2e4ebaedc225f2279ecf, fa23aa60ec51c8e4c40fe5637f0a27e1, fa61e604661d4aa66658ecd96794a1cd, faa200741fa93abb47ec7417da5d353d, fc77ad0828db2caa533e44d90297dd6e, ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 14:51:48,787 - ai_logger - Test ids (child): e30e5cbc54a62b023c143af07c12991a, e3d4d57aea714a88669ff09d7001bab6, e3e57a94be495771f54e1b6f41fdd78a, e4c871d1d5e3c49844b2fa2cac0778f5, e816066ac8281e2ecf70f9641eb97702, ea473a79fd2c98e5789eafad9d8a9394, ed220bdfa852f00ba2c59a4d90e63212, eff9864bfb9920b521374fbf1ea544c, f09d5d7ed64b6585eb6db0b349a2b804, f0fdca5f5c7a06252dbdfbe028032489, f2cb15fb793e7fa244057c222118625, f2ef5e5b49f2bb8340dfb1e6c8f5a333, f44387d8cb8d2e4ebaedc225f2279ecf, fa23aa60ec51c8e4c40fe5637f0a27e1, fa61e604661d4aa66658ecd96794a1cd, faa200741fa93abb47ec7417da5d353d, fc77ad0828db2caa533e44d90297dd6e, ff7c33db3598df342d88c45db31bc366
+MotionThreadFunc thread started
+Loaded EGL 1.5 after reload.
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+GL_VERSION=4.6.0 NVIDIA 515.86.01
+GL_SHADING_LANGUAGE_VERSION=4.60 NVIDIA
+Version = 4.6.0 NVIDIA 515.86.01
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/sklearn/base.py:299: UserWarning: Trying to unpickle estimator PCA from version 1.0.2 when using version 1.2.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+[32m[INFO][0m[2023-04-11 15:03:18]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 15:03:18,125 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+[32m[INFO][0m[2023-04-11 15:03:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:03:21,420 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:04:06]: [32mIteration: 0, Place Success: 1.000, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 15:04:06,781 - ai_logger - Iteration: 0, Place Success: 1.000, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 15:04:06]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:04:06,792 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:04:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:04:09,928 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:04:51]: [32mIteration: 1, Place Success: 0.500, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:04:51,481 - ai_logger - Iteration: 1, Place Success: 0.500, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:04:51]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:04:51,494 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:04:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:04:54,632 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:05:35]: [32mIteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:05:35,485 - ai_logger - Iteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:05:35]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-11 15:05:35,496 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-11 15:05:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:05:38,624 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:06:15]: [32mIteration: 3, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-11 15:06:15,016 - ai_logger - Iteration: 3, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-11 15:06:15]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-11 15:06:15,028 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-11 15:06:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:06:18,240 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:07:07]: [32mIteration: 4, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-11 15:07:07,270 - ai_logger - Iteration: 4, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-11 15:07:07]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:07:07,283 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:07:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:07:10,409 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:07:45]: [32mIteration: 5, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:07:45,356 - ai_logger - Iteration: 5, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:07:45]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:07:45,368 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:07:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:07:48,500 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:08:34]: [32mIteration: 6, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:08:34,813 - ai_logger - Iteration: 6, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:08:34]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:08:34,825 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:08:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:08:37,949 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:09:25]: [32mIteration: 7, Place Success: 0.875, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:09:25,817 - ai_logger - Iteration: 7, Place Success: 0.875, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:09:25]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:09:25,829 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:09:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:09:28,963 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:10:12]: [32mIteration: 8, Place Success: 0.778, touching_surf: True, fell_off_upside_down: False, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:10:12,837 - ai_logger - Iteration: 8, Place Success: 0.778, touching_surf: True, fell_off_upside_down: False, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:10:12]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:10:12,850 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:10:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:10:16,055 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:11:02]: [32mIteration: 9, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:11:02,077 - ai_logger - Iteration: 9, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:11:02]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:11:02,089 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:11:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:11:05,302 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:11:44]: [32mIteration: 10, Place Success: 0.727, touching_surf: False, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:11:44,600 - ai_logger - Iteration: 10, Place Success: 0.727, touching_surf: False, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:11:44]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:11:44,611 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:11:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:11:47,819 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:12:31]: [32mIteration: 11, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:12:31,573 - ai_logger - Iteration: 11, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:12:31]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:12:31,585 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:12:34]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:12:34,706 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:13:21]: [32mIteration: 12, Place Success: 0.769, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:13:21,701 - ai_logger - Iteration: 12, Place Success: 0.769, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:13:21]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:13:21,712 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:13:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:13:24,907 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:14:11]: [32mIteration: 13, Place Success: 0.786, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:14:11,450 - ai_logger - Iteration: 13, Place Success: 0.786, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:14:11]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-11 15:14:11,462 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-11 15:14:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:14:14,670 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:15:05]: [32mIteration: 14, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-11 15:15:05,601 - ai_logger - Iteration: 14, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-11 15:15:05]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:15:05,613 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:15:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:15:08,743 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:15:54]: [32mIteration: 15, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:15:54,637 - ai_logger - Iteration: 15, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:15:54]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:15:54,649 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:15:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:15:57,773 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:16:32]: [32mIteration: 16, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:16:32,654 - ai_logger - Iteration: 16, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:16:32]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:16:32,666 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:16:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:16:35,796 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:17:18]: [32mIteration: 17, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:17:18,607 - ai_logger - Iteration: 17, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:17:18]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:17:18,619 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:17:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:17:21,747 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:18:08]: [32mIteration: 18, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:18:08,392 - ai_logger - Iteration: 18, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:18:08]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 15:18:08,404 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 15:18:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:18:11,529 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:18:54]: [32mIteration: 19, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 15:18:54,617 - ai_logger - Iteration: 19, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 15:18:54]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 15:18:54,630 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 15:18:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:18:57,868 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:19:40]: [32mIteration: 20, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 15:19:40,472 - ai_logger - Iteration: 20, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 15:19:40]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 15:19:40,484 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 15:19:43]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:19:43,620 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:20:28]: [32mIteration: 21, Place Success: 0.864, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 15:20:28,477 - ai_logger - Iteration: 21, Place Success: 0.864, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 15:20:28]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 15:20:28,490 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 15:20:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:20:31,618 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:21:15]: [32mIteration: 22, Place Success: 0.870, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 15:21:15,404 - ai_logger - Iteration: 22, Place Success: 0.870, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 15:21:15]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:21:15,416 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:21:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:21:18,548 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:21:59]: [32mIteration: 23, Place Success: 0.875, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:21:59,242 - ai_logger - Iteration: 23, Place Success: 0.875, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:21:59]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:21:59,255 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:22:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:22:02,381 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:22:41]: [32mIteration: 24, Place Success: 0.840, touching_surf: False, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:22:41,947 - ai_logger - Iteration: 24, Place Success: 0.840, touching_surf: False, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:22:41]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:22:41,962 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:22:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:22:45,082 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:23:32]: [32mIteration: 25, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:23:32,365 - ai_logger - Iteration: 25, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:23:32]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:23:32,377 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:23:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:23:35,496 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:24:19]: [32mIteration: 26, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:24:19,153 - ai_logger - Iteration: 26, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:24:19]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:24:19,167 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:24:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:24:22,289 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:25:00]: [32mIteration: 27, Place Success: 0.821, touching_surf: False, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:25:00,890 - ai_logger - Iteration: 27, Place Success: 0.821, touching_surf: False, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:25:00]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:25:00,901 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:25:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:25:04,102 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:25:52]: [32mIteration: 28, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:25:52,892 - ai_logger - Iteration: 28, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:25:52]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-11 15:25:52,904 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-11 15:25:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:25:56,035 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:26:43]: [32mIteration: 29, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-11 15:26:43,329 - ai_logger - Iteration: 29, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-11 15:26:43]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:26:43,340 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:26:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:26:46,468 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:27:34]: [32mIteration: 30, Place Success: 0.839, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:27:34,684 - ai_logger - Iteration: 30, Place Success: 0.839, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:27:34]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:27:34,698 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:27:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:27:37,877 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:28:26]: [32mIteration: 31, Place Success: 0.844, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:28:26,005 - ai_logger - Iteration: 31, Place Success: 0.844, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:28:26]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:28:26,017 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:28:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:28:29,194 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:29:11]: [32mIteration: 32, Place Success: 0.848, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:29:11,506 - ai_logger - Iteration: 32, Place Success: 0.848, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:29:11]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:29:11,519 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:29:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:29:14,639 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:30:04]: [32mIteration: 33, Place Success: 0.853, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:30:04,725 - ai_logger - Iteration: 33, Place Success: 0.853, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:30:04]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:30:04,737 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:30:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:30:07,867 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:30:50]: [32mIteration: 34, Place Success: 0.829, touching_surf: True, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:30:50,034 - ai_logger - Iteration: 34, Place Success: 0.829, touching_surf: True, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:30:50]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:30:50,047 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:30:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:30:53,172 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:31:42]: [32mIteration: 35, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:31:42,920 - ai_logger - Iteration: 35, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:31:42]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:31:42,932 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:31:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:31:46,164 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:32:25]: [32mIteration: 36, Place Success: 0.838, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:32:25,331 - ai_logger - Iteration: 36, Place Success: 0.838, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:32:25]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:32:25,343 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:32:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:32:28,563 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:33:16]: [32mIteration: 37, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:33:16,487 - ai_logger - Iteration: 37, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:33:16]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-11 15:33:16,499 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-11 15:33:19]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:33:19,699 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:33:55]: [32mIteration: 38, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-11 15:33:55,307 - ai_logger - Iteration: 38, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-11 15:33:55]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:33:55,319 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:33:58]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:33:58,448 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:34:42]: [32mIteration: 39, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:34:42,925 - ai_logger - Iteration: 39, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:34:42]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 15:34:42,939 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 15:34:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:34:46,094 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:35:28]: [32mIteration: 40, Place Success: 0.854, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 15:35:28,694 - ai_logger - Iteration: 40, Place Success: 0.854, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 15:35:28]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:35:28,706 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:35:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:35:31,826 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:36:14]: [32mIteration: 41, Place Success: 0.833, touching_surf: False, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:36:14,526 - ai_logger - Iteration: 41, Place Success: 0.833, touching_surf: False, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:36:14]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 15:36:14,538 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 15:36:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:36:17,714 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:37:02]: [32mIteration: 42, Place Success: 0.837, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 15:37:02,451 - ai_logger - Iteration: 42, Place Success: 0.837, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 15:37:02]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 15:37:02,467 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 15:37:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:37:05,682 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:37:48]: [32mIteration: 43, Place Success: 0.841, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 15:37:48,789 - ai_logger - Iteration: 43, Place Success: 0.841, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 15:37:48]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:37:48,801 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:37:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:37:51,993 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:38:38]: [32mIteration: 44, Place Success: 0.822, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:38:38,203 - ai_logger - Iteration: 44, Place Success: 0.822, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:38:38]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:38:38,217 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:38:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:38:41,344 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:39:29]: [32mIteration: 45, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:39:29,529 - ai_logger - Iteration: 45, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:39:29]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:39:29,541 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:39:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:39:32,655 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:40:25]: [32mIteration: 46, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-11 15:40:25,933 - ai_logger - Iteration: 46, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-11 15:40:25]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 15:40:25,945 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 15:40:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:40:29,076 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:41:15]: [32mIteration: 47, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 15:41:15,438 - ai_logger - Iteration: 47, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 15:41:15]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:41:15,450 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:41:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:41:18,684 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:42:11]: [32mIteration: 48, Place Success: 0.837, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:42:11,057 - ai_logger - Iteration: 48, Place Success: 0.837, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:42:11]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 15:42:11,069 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 15:42:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:42:14,241 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:43:01]: [32mIteration: 49, Place Success: 0.840, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 15:43:01,345 - ai_logger - Iteration: 49, Place Success: 0.840, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 15:43:01]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:43:01,357 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:43:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:43:04,570 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:43:53]: [32mIteration: 50, Place Success: 0.843, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:43:53,907 - ai_logger - Iteration: 50, Place Success: 0.843, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:43:53]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:43:53,920 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:43:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:43:57,041 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:44:42]: [32mIteration: 51, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-11 15:44:42,915 - ai_logger - Iteration: 51, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-11 15:44:42]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:44:42,926 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:44:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:44:46,050 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:45:23]: [32mIteration: 52, Place Success: 0.849, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:45:23,713 - ai_logger - Iteration: 52, Place Success: 0.849, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:45:23]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 15:45:23,725 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 15:45:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:45:26,877 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:46:16]: [32mIteration: 53, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 15:46:16,335 - ai_logger - Iteration: 53, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 15:46:16]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:46:16,348 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:46:19]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:46:19,575 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:47:00]: [32mIteration: 54, Place Success: 0.836, touching_surf: True, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:47:00,328 - ai_logger - Iteration: 54, Place Success: 0.836, touching_surf: True, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:47:00]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:47:00,341 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:47:03]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:47:03,470 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:47:47]: [32mIteration: 55, Place Success: 0.839, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 15:47:47,128 - ai_logger - Iteration: 55, Place Success: 0.839, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 15:47:47]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-11 15:47:47,140 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-11 15:47:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:47:50,348 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:48:40]: [32mIteration: 56, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-11 15:48:40,122 - ai_logger - Iteration: 56, Place Success: 0.842, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-11 15:48:40]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:48:40,134 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:48:43]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:48:43,268 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:49:31]: [32mIteration: 57, Place Success: 0.845, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:49:31,893 - ai_logger - Iteration: 57, Place Success: 0.845, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:49:31]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:49:31,904 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:49:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:49:35,031 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:50:11]: [32mIteration: 58, Place Success: 0.847, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:50:11,907 - ai_logger - Iteration: 58, Place Success: 0.847, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:50:11]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:50:11,919 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:50:15]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:50:15,043 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:51:02]: [32mIteration: 59, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 15:51:02,629 - ai_logger - Iteration: 59, Place Success: 0.850, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 15:51:02]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:51:02,641 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:51:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:51:05,839 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:51:43]: [32mIteration: 60, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:51:43,949 - ai_logger - Iteration: 60, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:51:43]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:51:43,961 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:51:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:51:47,165 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:52:28]: [32mIteration: 61, Place Success: 0.839, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 15:52:28,930 - ai_logger - Iteration: 61, Place Success: 0.839, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 15:52:28]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:52:28,943 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:52:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:52:32,074 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:53:12]: [32mIteration: 62, Place Success: 0.825, touching_surf: False, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:53:12,748 - ai_logger - Iteration: 62, Place Success: 0.825, touching_surf: False, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:53:12]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 15:53:12,760 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 15:53:15]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:53:15,886 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:53:56]: [32mIteration: 63, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 15:53:56,763 - ai_logger - Iteration: 63, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 15:53:56]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 15:53:56,775 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 15:53:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:53:59,907 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:54:45]: [32mIteration: 64, Place Success: 0.831, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 15:54:45,413 - ai_logger - Iteration: 64, Place Success: 0.831, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 15:54:45]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:54:45,425 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:54:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:54:48,562 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:55:27]: [32mIteration: 65, Place Success: 0.818, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:55:27,346 - ai_logger - Iteration: 65, Place Success: 0.818, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:55:27]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:55:27,359 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:55:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:55:30,480 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:56:08]: [32mIteration: 66, Place Success: 0.806, touching_surf: False, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-11 15:56:08,828 - ai_logger - Iteration: 66, Place Success: 0.806, touching_surf: False, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-11 15:56:08]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:56:08,839 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:56:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:56:11,964 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:56:57]: [32mIteration: 67, Place Success: 0.809, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-11 15:56:57,933 - ai_logger - Iteration: 67, Place Success: 0.809, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-11 15:56:57]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:56:57,944 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:57:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:57:01,073 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:57:42]: [32mIteration: 68, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:57:42,692 - ai_logger - Iteration: 68, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:57:42]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:57:42,704 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:57:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:57:45,839 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:58:25]: [32mIteration: 69, Place Success: 0.800, touching_surf: False, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:58:25,171 - ai_logger - Iteration: 69, Place Success: 0.800, touching_surf: False, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:58:25]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:58:25,183 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:58:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:58:28,329 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:59:05]: [32mIteration: 70, Place Success: 0.803, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 15:59:05,525 - ai_logger - Iteration: 70, Place Success: 0.803, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 15:59:05]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:59:05,537 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:59:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:59:08,663 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 15:59:46]: [32mIteration: 71, Place Success: 0.806, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 15:59:46,248 - ai_logger - Iteration: 71, Place Success: 0.806, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 15:59:46]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 15:59:46,260 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 15:59:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 15:59:49,457 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:00:32]: [32mIteration: 72, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 16:00:32,199 - ai_logger - Iteration: 72, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 16:00:32]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:00:32,211 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:00:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:00:35,350 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:01:13]: [32mIteration: 73, Place Success: 0.797, touching_surf: True, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:01:13,740 - ai_logger - Iteration: 73, Place Success: 0.797, touching_surf: True, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:01:13]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 16:01:13,752 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 16:01:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:01:16,964 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:02:00]: [32mIteration: 74, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 16:02:00,413 - ai_logger - Iteration: 74, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 16:02:00]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:02:00,424 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:02:03]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:02:03,622 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:02:43]: [32mIteration: 75, Place Success: 0.803, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:02:43,485 - ai_logger - Iteration: 75, Place Success: 0.803, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:02:43]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:02:43,497 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:02:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:02:46,623 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:03:25]: [32mIteration: 76, Place Success: 0.805, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:03:25,809 - ai_logger - Iteration: 76, Place Success: 0.805, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:03:25]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 16:03:25,821 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 16:03:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:03:29,028 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:04:05]: [32mIteration: 77, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 16:04:05,949 - ai_logger - Iteration: 77, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 16:04:05]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 16:04:05,961 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 16:04:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:04:09,090 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:04:51]: [32mIteration: 78, Place Success: 0.810, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 16:04:51,739 - ai_logger - Iteration: 78, Place Success: 0.810, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 16:04:51]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 16:04:51,751 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 16:04:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:04:54,872 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:05:39]: [32mIteration: 79, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-11 16:05:39,287 - ai_logger - Iteration: 79, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-11 16:05:39]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 16:05:39,299 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 16:05:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:05:42,428 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:06:28]: [32mIteration: 80, Place Success: 0.815, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 16:06:28,477 - ai_logger - Iteration: 80, Place Success: 0.815, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 16:06:28]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:06:28,489 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:06:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:06:31,617 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:07:09]: [32mIteration: 81, Place Success: 0.817, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:07:09,030 - ai_logger - Iteration: 81, Place Success: 0.817, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:07:09]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 16:07:09,042 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 16:07:12]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:07:12,167 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:07:55]: [32mIteration: 82, Place Success: 0.819, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 16:07:55,741 - ai_logger - Iteration: 82, Place Success: 0.819, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 16:07:55]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 16:07:55,752 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 16:07:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:07:59,012 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:08:41]: [32mIteration: 83, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-11 16:08:41,094 - ai_logger - Iteration: 83, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-11 16:08:41]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-11 16:08:41,106 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-11 16:08:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:08:44,224 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:09:22]: [32mIteration: 84, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-11 16:09:22,352 - ai_logger - Iteration: 84, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-11 16:09:22]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 16:09:22,364 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 16:09:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:09:25,489 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:10:10]: [32mIteration: 85, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-11 16:10:10,997 - ai_logger - Iteration: 85, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-11 16:10:11]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 16:10:11,008 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 16:10:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:10:14,202 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:10:56]: [32mIteration: 86, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-11 16:10:56,173 - ai_logger - Iteration: 86, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-11 16:10:56]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-11 16:10:56,186 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-11 16:10:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:10:59,452 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:11:44]: [32mIteration: 87, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-11 16:11:44,702 - ai_logger - Iteration: 87, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-11 16:11:44]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:11:44,714 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:11:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:11:47,913 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:12:26]: [32mIteration: 88, Place Success: 0.831, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-11 16:12:26,564 - ai_logger - Iteration: 88, Place Success: 0.831, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-11 16:12:26]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 16:12:26,576 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 16:12:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:12:29,702 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:13:13]: [32mIteration: 89, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-11 16:13:13,193 - ai_logger - Iteration: 89, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-11 16:13:13]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 16:13:13,205 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 16:13:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:13:16,411 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:13:57]: [32mIteration: 90, Place Success: 0.824, touching_surf: True, fell_off_upside_down: False, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 16:13:57,147 - ai_logger - Iteration: 90, Place Success: 0.824, touching_surf: True, fell_off_upside_down: False, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 16:13:57]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 16:13:57,160 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 16:14:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:14:00,283 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:14:41]: [32mIteration: 91, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 16:14:41,348 - ai_logger - Iteration: 91, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 16:14:41]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:14:41,360 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:14:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:14:44,549 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:15:24]: [32mIteration: 92, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:15:24,859 - ai_logger - Iteration: 92, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:15:24]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 16:15:24,871 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 16:15:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:15:27,994 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:16:04]: [32mIteration: 93, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-11 16:16:04,957 - ai_logger - Iteration: 93, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-11 16:16:04]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:16:04,968 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:16:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:16:08,097 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:16:49]: [32mIteration: 94, Place Success: 0.832, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:16:49,584 - ai_logger - Iteration: 94, Place Success: 0.832, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:16:49]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 16:16:49,596 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 16:16:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:16:52,718 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:17:38]: [32mIteration: 95, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-11 16:17:38,965 - ai_logger - Iteration: 95, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-11 16:17:38]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 16:17:38,977 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 16:17:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:17:42,183 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:18:24]: [32mIteration: 96, Place Success: 0.825, touching_surf: True, fell_off_upside_down: False, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-11 16:18:24,914 - ai_logger - Iteration: 96, Place Success: 0.825, touching_surf: True, fell_off_upside_down: False, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-11 16:18:24]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-11 16:18:24,927 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-11 16:18:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:18:28,055 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:19:14]: [32mIteration: 97, Place Success: 0.827, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-11 16:19:14,957 - ai_logger - Iteration: 97, Place Success: 0.827, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-11 16:19:14]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:19:14,969 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:19:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:19:18,151 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:19:59]: [32mIteration: 98, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-11 16:19:59,809 - ai_logger - Iteration: 98, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-11 16:19:59]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 16:19:59,821 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-11 16:20:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-11 16:20:02,950 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-11 16:20:44]: [32mIteration: 99, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-11 16:20:44,945 - ai_logger - Iteration: 99, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: faa200741fa93abb47ec7417da5d353d
+You can open the visualizer by visiting the following URL:
+http://127.0.0.1:7000/static/
+@@ 0.0010736539392419131
+# nearby points: 136649
+@@ 0.00046915752233712445
+# nearby points: 166435
+@@ 0.011888047887967226
+# nearby points: 95119
+@@ 0.00033259893268892135
+# nearby points: 139448
+@@ 0.011795030760718264
+# nearby points: 56242
+@@ 0.0033359621910863846
+# nearby points: 96122
+@@ 0.0019329580701977088
+# nearby points: 148076
+@@ 0.006419557196576804
+# nearby points: 59430
+@@ 0.0034619637594920623
+# nearby points: 85886
+@@ 0.0006065338741598402
+# nearby points: 283541
+costs: [0.7664012758773932, 0.6644770146002481, 3.684362326548212, 0.08103374542356293, 1.5102939856922217, 0.9390784201045609, 1.2712566704814656, 0.7191452930502156, 0.0354119241083841, 0.29158611707501947]
+@@ 0.005256003926220981
+# nearby points: 72494
+PosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+Destroy EGL OpenGL window.
+PosixSharedMemory::releaseSharedMemory detached shared memory

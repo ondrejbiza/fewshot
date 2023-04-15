@@ -1,0 +1,1641 @@
+pybullet build time: Feb 13 2023 14:30:59
+[33m[WARNING][0m[2023-04-12 20:55:58]: [33mStarting meshcat at zmq_url: tcp://127.0.0.1:6000[0m
+WARNING - 2023-04-12 20:55:58,065 - ai_logger - Starting meshcat at zmq_url: tcp://127.0.0.1:6000
+[32m[INFO][0m[2023-04-12 20:55:58]: [32mLoad in OpenGL![0m
+INFO - 2023-04-12 20:55:58,071 - ai_logger - Load in OpenGL!
+[32m[INFO][0m[2023-04-12 20:55:58]: [32mConfig file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults[0m
+INFO - 2023-04-12 20:55:58,117 - ai_logger - Config file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 20:55:58,147 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a'][0m
+INFO - 2023-04-12 20:55:58,148 - ai_logger - ['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a']
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 20:55:58,149 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2'][0m
+INFO - 2023-04-12 20:55:58,149 - ai_logger - ['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2']
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 20:55:58,149 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366'][0m
+INFO - 2023-04-12 20:55:58,149 - ai_logger - ['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366']
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 20:55:58,150 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj'][0m
+INFO - 2023-04-12 20:55:58,150 - ai_logger - ['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj']
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 20:55:58,150 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 20:55:58]: [32m['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj'][0m
+INFO - 2023-04-12 20:55:58,150 - ai_logger - ['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj']
+[32m[INFO][0m[2023-04-12 20:55:58]: [32mTest ids (parent): syn_container_81, syn_container_82, syn_container_83, syn_container_84, syn_container_85, syn_container_86, syn_container_87, syn_container_88, syn_container_89, syn_container_9, syn_container_90, syn_container_91, syn_container_92, syn_container_93, syn_container_94, syn_container_95, syn_container_96, syn_container_97, syn_container_98, syn_container_99[0m
+INFO - 2023-04-12 20:55:58,151 - ai_logger - Test ids (parent): syn_container_81, syn_container_82, syn_container_83, syn_container_84, syn_container_85, syn_container_86, syn_container_87, syn_container_88, syn_container_89, syn_container_9, syn_container_90, syn_container_91, syn_container_92, syn_container_93, syn_container_94, syn_container_95, syn_container_96, syn_container_97, syn_container_98, syn_container_99
+[32m[INFO][0m[2023-04-12 20:55:58]: [32mTest ids (child): e101cc44ead036294bc79c881a0e818b, e23f62bb4794ee6a7fdd0518ed16e820, e24fb21f7cb7998d94b2f4c4a75fd722, e29e8121d93af93bba803759c05367b0, e4915635a488cbfc4c3a35cee92bb95b, e4ada697d05ac7acf9907e8bdd53291e, e56e77c6eb21d9bdf577ff4de1ac394c, e593aa021f3fa324530647fc03dd20dc, e5a5dac174982cea2dcdfc29ed7a2492, e656d6586d481f41eb69804478f9c547, e824b049f16b29f19ab27ff78a8ea481, e8b48d395d3d8744e53e6e0633163da8, e9371d3abbb3bb7265bca0cae1ecfff5, ed55f39e04668bf9837048966ef3fcb9, ed8aff7768d2cc3e45bcca2603f7a948, edfcffbdd585d00ec41b4a535d52e063, ee007f1aac12fbe549a44197486ae284, ee3ca78e36c6a7b2a367d39c852840d5, ee74f5bfb0d7c8a5bd288303be3d57e7, ee77714471b911baeeff0dee910fd183, f0611ec9ff89209bf10c4513652c1c5e, f2279b29f7d45bbd744c199e33849f2a, f47cbefc9aa5b6a918431871c8e05789, f4851a2835228377e101b7546e3ee8a7, f49d6c4b75f695c44d34bdc365023cf4, f68e99b57596b33d197a35146ee825cd, f6ffca90c543edf9d6438d5cb8c578c6, f83c3b75f637241aebe67d9b32c3ddf8, f853ac62bc288e48e56a63d21fb60ae9, f9f67fe61dcf46d7e19818797f240d91, fa44223c6f785c60e71da2487cb2ee5b, fca70766d88fc7b9e5054d95cb6a63e2, fd0ccd09330865277602de57eab5e08f, fda8d8820e4d166bd7134844380eaeb0, fec05c85454edafc4310636931b68fdb, ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 20:55:58,151 - ai_logger - Test ids (child): e101cc44ead036294bc79c881a0e818b, e23f62bb4794ee6a7fdd0518ed16e820, e24fb21f7cb7998d94b2f4c4a75fd722, e29e8121d93af93bba803759c05367b0, e4915635a488cbfc4c3a35cee92bb95b, e4ada697d05ac7acf9907e8bdd53291e, e56e77c6eb21d9bdf577ff4de1ac394c, e593aa021f3fa324530647fc03dd20dc, e5a5dac174982cea2dcdfc29ed7a2492, e656d6586d481f41eb69804478f9c547, e824b049f16b29f19ab27ff78a8ea481, e8b48d395d3d8744e53e6e0633163da8, e9371d3abbb3bb7265bca0cae1ecfff5, ed55f39e04668bf9837048966ef3fcb9, ed8aff7768d2cc3e45bcca2603f7a948, edfcffbdd585d00ec41b4a535d52e063, ee007f1aac12fbe549a44197486ae284, ee3ca78e36c6a7b2a367d39c852840d5, ee74f5bfb0d7c8a5bd288303be3d57e7, ee77714471b911baeeff0dee910fd183, f0611ec9ff89209bf10c4513652c1c5e, f2279b29f7d45bbd744c199e33849f2a, f47cbefc9aa5b6a918431871c8e05789, f4851a2835228377e101b7546e3ee8a7, f49d6c4b75f695c44d34bdc365023cf4, f68e99b57596b33d197a35146ee825cd, f6ffca90c543edf9d6438d5cb8c578c6, f83c3b75f637241aebe67d9b32c3ddf8, f853ac62bc288e48e56a63d21fb60ae9, f9f67fe61dcf46d7e19818797f240d91, fa44223c6f785c60e71da2487cb2ee5b, fca70766d88fc7b9e5054d95cb6a63e2, fd0ccd09330865277602de57eab5e08f, fda8d8820e4d166bd7134844380eaeb0, fec05c85454edafc4310636931b68fdb, ff13595434879bba557ef92e2fa0ccb2
+argv[0]=
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+Loaded EGL 1.5 after reload.
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+GL_VERSION=4.6.0 NVIDIA 515.86.01
+GL_SHADING_LANGUAGE_VERSION=4.60 NVIDIA
+Version = 4.6.0 NVIDIA 515.86.01
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/sklearn/base.py:299: UserWarning: Trying to unpickle estimator PCA from version 1.0.2 when using version 1.2.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+[32m[INFO][0m[2023-04-12 20:59:30]: [32mParent ID: syn_container_92, Child ID: f6ffca90c543edf9d6438d5cb8c578c6[0m
+INFO - 2023-04-12 20:59:30,424 - ai_logger - Parent ID: syn_container_92, Child ID: f6ffca90c543edf9d6438d5cb8c578c6
+[32m[INFO][0m[2023-04-12 20:59:30]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+[0m
+INFO - 2023-04-12 20:59:30,432 - ai_logger - 
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+[32m[INFO][0m[2023-04-12 20:59:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 20:59:33,726 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:00:17]: [32mIteration: 0, Place Success: 0.000, Angle From Upright: 3.142, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: f6ffca90c543edf9d6438d5cb8c578c6[0m
+INFO - 2023-04-12 21:00:17,456 - ai_logger - Iteration: 0, Place Success: 0.000, Angle From Upright: 3.142, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: f6ffca90c543edf9d6438d5cb8c578c6
+[32m[INFO][0m[2023-04-12 21:00:17]: [32mParent ID: syn_container_82, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 21:00:17,467 - ai_logger - Parent ID: syn_container_82, Child ID: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 21:00:17]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+INFO - 2023-04-12 21:00:17,473 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:00:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:00:20,657 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:01:05]: [32mIteration: 1, Place Success: 0.500, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 21:01:05,319 - ai_logger - Iteration: 1, Place Success: 0.500, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 21:01:05]: [32mParent ID: syn_container_96, Child ID: fca70766d88fc7b9e5054d95cb6a63e2[0m
+INFO - 2023-04-12 21:01:05,332 - ai_logger - Parent ID: syn_container_96, Child ID: fca70766d88fc7b9e5054d95cb6a63e2
+[32m[INFO][0m[2023-04-12 21:01:05]: [32m
+Container extents: 0.19159, 0.205716, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+[0m
+INFO - 2023-04-12 21:01:05,338 - ai_logger - 
+Container extents: 0.19159, 0.205716, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:01:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:01:08,464 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:01:52]: [32mIteration: 2, Place Success: 0.667, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_96, child_id: fca70766d88fc7b9e5054d95cb6a63e2[0m
+INFO - 2023-04-12 21:01:52,743 - ai_logger - Iteration: 2, Place Success: 0.667, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_96, child_id: fca70766d88fc7b9e5054d95cb6a63e2
+[32m[INFO][0m[2023-04-12 21:01:52]: [32mParent ID: syn_container_92, Child ID: ee77714471b911baeeff0dee910fd183[0m
+INFO - 2023-04-12 21:01:52,755 - ai_logger - Parent ID: syn_container_92, Child ID: ee77714471b911baeeff0dee910fd183
+[32m[INFO][0m[2023-04-12 21:01:52]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.10391759999999998, 0.10391790000000004, 0.0
+[0m
+INFO - 2023-04-12 21:01:52,760 - ai_logger - 
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.10391759999999998, 0.10391790000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:01:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:01:55,958 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:02:39]: [32mIteration: 3, Place Success: 0.750, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: ee77714471b911baeeff0dee910fd183[0m
+INFO - 2023-04-12 21:02:39,145 - ai_logger - Iteration: 3, Place Success: 0.750, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: ee77714471b911baeeff0dee910fd183
+[32m[INFO][0m[2023-04-12 21:02:39]: [32mParent ID: syn_container_95, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 21:02:39,157 - ai_logger - Parent ID: syn_container_95, Child ID: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 21:02:39]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+INFO - 2023-04-12 21:02:39,162 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+
+[32m[INFO][0m[2023-04-12 21:02:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:02:42,281 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:03:26]: [32mIteration: 4, Place Success: 0.800, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 21:03:26,225 - ai_logger - Iteration: 4, Place Success: 0.800, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 21:03:26]: [32mParent ID: syn_container_98, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:03:26,239 - ai_logger - Parent ID: syn_container_98, Child ID: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:03:26]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+INFO - 2023-04-12 21:03:26,244 - ai_logger - 
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:03:26]: [33mSetting new parent scale to: 1.258 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:03:26,244 - ai_logger - Setting new parent scale to: 1.258 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:03:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:03:29,359 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:04:15]: [32mIteration: 5, Place Success: 0.833, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:04:15,494 - ai_logger - Iteration: 5, Place Success: 0.833, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:04:15]: [32mParent ID: syn_container_96, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 21:04:15,506 - ai_logger - Parent ID: syn_container_96, Child ID: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 21:04:15]: [32m
+Container extents: 0.19159, 0.205716, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+INFO - 2023-04-12 21:04:15,512 - ai_logger - 
+Container extents: 0.19159, 0.205716, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:04:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:04:18,773 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:05:02]: [32mIteration: 6, Place Success: 0.857, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_96, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 21:05:02,820 - ai_logger - Iteration: 6, Place Success: 0.857, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_96, child_id: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 21:05:02]: [32mParent ID: syn_container_9, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 21:05:02,832 - ai_logger - Parent ID: syn_container_9, Child ID: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 21:05:02]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+INFO - 2023-04-12 21:05:02,838 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:05:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:05:06,022 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:05:48]: [32mIteration: 7, Place Success: 0.875, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 21:05:48,758 - ai_logger - Iteration: 7, Place Success: 0.875, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 21:05:48]: [32mParent ID: syn_container_84, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 21:05:48,770 - ai_logger - Parent ID: syn_container_84, Child ID: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 21:05:48]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+INFO - 2023-04-12 21:05:48,775 - ai_logger - 
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:05:48]: [33mSetting new parent scale to: 1.495 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:05:48,775 - ai_logger - Setting new parent scale to: 1.495 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:05:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:05:51,969 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:06:36]: [32mIteration: 8, Place Success: 0.889, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 21:06:36,833 - ai_logger - Iteration: 8, Place Success: 0.889, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 21:06:36]: [32mParent ID: syn_container_97, Child ID: e656d6586d481f41eb69804478f9c547[0m
+INFO - 2023-04-12 21:06:36,844 - ai_logger - Parent ID: syn_container_97, Child ID: e656d6586d481f41eb69804478f9c547
+[32m[INFO][0m[2023-04-12 21:06:36]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.0774555, 0.07745580000000005, 0.0
+[0m
+INFO - 2023-04-12 21:06:36,849 - ai_logger - 
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.0774555, 0.07745580000000005, 0.0
+
+[32m[INFO][0m[2023-04-12 21:06:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:06:39,967 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:07:22]: [32mIteration: 9, Place Success: 0.900, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: e656d6586d481f41eb69804478f9c547[0m
+INFO - 2023-04-12 21:07:22,673 - ai_logger - Iteration: 9, Place Success: 0.900, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: e656d6586d481f41eb69804478f9c547
+[32m[INFO][0m[2023-04-12 21:07:22]: [32mParent ID: syn_container_9, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:07:22,685 - ai_logger - Parent ID: syn_container_9, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:07:22]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+INFO - 2023-04-12 21:07:22,690 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:07:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:07:25,870 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:08:09]: [32mIteration: 10, Place Success: 0.909, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:08:09,737 - ai_logger - Iteration: 10, Place Success: 0.909, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:08:09]: [32mParent ID: syn_container_83, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 21:08:09,748 - ai_logger - Parent ID: syn_container_83, Child ID: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 21:08:09]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+INFO - 2023-04-12 21:08:09,753 - ai_logger - 
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:08:09]: [33mSetting new parent scale to: 1.448 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:08:09,753 - ai_logger - Setting new parent scale to: 1.448 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:08:12]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:08:12,871 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:08:55]: [32mIteration: 11, Place Success: 0.917, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 21:08:55,064 - ai_logger - Iteration: 11, Place Success: 0.917, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 21:08:55]: [32mParent ID: syn_container_95, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 21:08:55,076 - ai_logger - Parent ID: syn_container_95, Child ID: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 21:08:55]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+INFO - 2023-04-12 21:08:55,082 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:08:58]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:08:58,276 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:09:41]: [32mIteration: 12, Place Success: 0.923, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 21:09:41,964 - ai_logger - Iteration: 12, Place Success: 0.923, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 21:09:41]: [32mParent ID: syn_container_84, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 21:09:41,976 - ai_logger - Parent ID: syn_container_84, Child ID: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 21:09:41]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+INFO - 2023-04-12 21:09:41,981 - ai_logger - 
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+
+[32m[INFO][0m[2023-04-12 21:09:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:09:45,109 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:10:30]: [32mIteration: 13, Place Success: 0.857, Angle From Upright: 1.143, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 21:10:30,669 - ai_logger - Iteration: 13, Place Success: 0.857, Angle From Upright: 1.143, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 21:10:30]: [32mParent ID: syn_container_93, Child ID: f0611ec9ff89209bf10c4513652c1c5e[0m
+INFO - 2023-04-12 21:10:30,680 - ai_logger - Parent ID: syn_container_93, Child ID: f0611ec9ff89209bf10c4513652c1c5e
+[32m[INFO][0m[2023-04-12 21:10:30]: [32m
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.08852940000000001, 0.08853000000000003, 0.0
+[0m
+INFO - 2023-04-12 21:10:30,685 - ai_logger - 
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.08852940000000001, 0.08853000000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:10:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:10:33,883 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:11:18]: [32mIteration: 14, Place Success: 0.867, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: f0611ec9ff89209bf10c4513652c1c5e[0m
+INFO - 2023-04-12 21:11:18,486 - ai_logger - Iteration: 14, Place Success: 0.867, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: f0611ec9ff89209bf10c4513652c1c5e
+[32m[INFO][0m[2023-04-12 21:11:18]: [32mParent ID: syn_container_99, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:11:18,498 - ai_logger - Parent ID: syn_container_99, Child ID: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:11:18]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+INFO - 2023-04-12 21:11:18,503 - ai_logger - 
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+
+[32m[INFO][0m[2023-04-12 21:11:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:11:21,620 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:12:05]: [32mIteration: 15, Place Success: 0.812, Angle From Upright: 1.203, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:12:05,607 - ai_logger - Iteration: 15, Place Success: 0.812, Angle From Upright: 1.203, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:12:05]: [32mParent ID: syn_container_97, Child ID: fa44223c6f785c60e71da2487cb2ee5b[0m
+INFO - 2023-04-12 21:12:05,619 - ai_logger - Parent ID: syn_container_97, Child ID: fa44223c6f785c60e71da2487cb2ee5b
+[32m[INFO][0m[2023-04-12 21:12:05]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+[0m
+INFO - 2023-04-12 21:12:05,624 - ai_logger - 
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:12:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:12:08,815 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:12:51]: [32mIteration: 16, Place Success: 0.824, Angle From Upright: 0.074, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: fa44223c6f785c60e71da2487cb2ee5b[0m
+INFO - 2023-04-12 21:12:51,381 - ai_logger - Iteration: 16, Place Success: 0.824, Angle From Upright: 0.074, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: fa44223c6f785c60e71da2487cb2ee5b
+[32m[INFO][0m[2023-04-12 21:12:51]: [32mParent ID: syn_container_94, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 21:12:51,392 - ai_logger - Parent ID: syn_container_94, Child ID: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 21:12:51]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+INFO - 2023-04-12 21:12:51,397 - ai_logger - 
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:12:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:12:54,517 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:13:38]: [32mIteration: 17, Place Success: 0.833, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 21:13:38,253 - ai_logger - Iteration: 17, Place Success: 0.833, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 21:13:38]: [32mParent ID: syn_container_89, Child ID: e29e8121d93af93bba803759c05367b0[0m
+INFO - 2023-04-12 21:13:38,264 - ai_logger - Parent ID: syn_container_89, Child ID: e29e8121d93af93bba803759c05367b0
+[32m[INFO][0m[2023-04-12 21:13:38]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+[0m
+INFO - 2023-04-12 21:13:38,269 - ai_logger - 
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+
+[32m[INFO][0m[2023-04-12 21:13:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:13:41,402 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:14:26]: [32mIteration: 18, Place Success: 0.789, Angle From Upright: 0.509, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_89, child_id: e29e8121d93af93bba803759c05367b0[0m
+INFO - 2023-04-12 21:14:26,672 - ai_logger - Iteration: 18, Place Success: 0.789, Angle From Upright: 0.509, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_89, child_id: e29e8121d93af93bba803759c05367b0
+[32m[INFO][0m[2023-04-12 21:14:26]: [32mParent ID: syn_container_97, Child ID: e101cc44ead036294bc79c881a0e818b[0m
+INFO - 2023-04-12 21:14:26,684 - ai_logger - Parent ID: syn_container_97, Child ID: e101cc44ead036294bc79c881a0e818b
+[32m[INFO][0m[2023-04-12 21:14:26]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.0712791, 0.07413030000000004, 0.0
+[0m
+INFO - 2023-04-12 21:14:26,690 - ai_logger - 
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.0712791, 0.07413030000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:14:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:14:29,881 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:15:12]: [32mIteration: 19, Place Success: 0.800, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: e101cc44ead036294bc79c881a0e818b[0m
+INFO - 2023-04-12 21:15:12,685 - ai_logger - Iteration: 19, Place Success: 0.800, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: e101cc44ead036294bc79c881a0e818b
+[32m[INFO][0m[2023-04-12 21:15:12]: [32mParent ID: syn_container_83, Child ID: f68e99b57596b33d197a35146ee825cd[0m
+INFO - 2023-04-12 21:15:12,696 - ai_logger - Parent ID: syn_container_83, Child ID: f68e99b57596b33d197a35146ee825cd
+[32m[INFO][0m[2023-04-12 21:15:12]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.09467819999999999, 0.09467820000000002, 0.0
+[0m
+INFO - 2023-04-12 21:15:12,701 - ai_logger - 
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.09467819999999999, 0.09467820000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:15:15]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:15:15,822 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:15:58]: [32mIteration: 20, Place Success: 0.810, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f68e99b57596b33d197a35146ee825cd[0m
+INFO - 2023-04-12 21:15:58,649 - ai_logger - Iteration: 20, Place Success: 0.810, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f68e99b57596b33d197a35146ee825cd
+[32m[INFO][0m[2023-04-12 21:15:58]: [32mParent ID: syn_container_81, Child ID: fca70766d88fc7b9e5054d95cb6a63e2[0m
+INFO - 2023-04-12 21:15:58,660 - ai_logger - Parent ID: syn_container_81, Child ID: fca70766d88fc7b9e5054d95cb6a63e2
+[32m[INFO][0m[2023-04-12 21:15:58]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+[0m
+INFO - 2023-04-12 21:15:58,666 - ai_logger - 
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:16:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:16:01,784 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:16:46]: [32mIteration: 21, Place Success: 0.818, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: fca70766d88fc7b9e5054d95cb6a63e2[0m
+INFO - 2023-04-12 21:16:46,421 - ai_logger - Iteration: 21, Place Success: 0.818, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: fca70766d88fc7b9e5054d95cb6a63e2
+[32m[INFO][0m[2023-04-12 21:16:46]: [32mParent ID: syn_container_90, Child ID: edfcffbdd585d00ec41b4a535d52e063[0m
+INFO - 2023-04-12 21:16:46,432 - ai_logger - Parent ID: syn_container_90, Child ID: edfcffbdd585d00ec41b4a535d52e063
+[32m[INFO][0m[2023-04-12 21:16:46]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+[0m
+INFO - 2023-04-12 21:16:46,439 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+
+[32m[INFO][0m[2023-04-12 21:16:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:16:49,563 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:17:35]: [32mIteration: 22, Place Success: 0.826, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: edfcffbdd585d00ec41b4a535d52e063[0m
+INFO - 2023-04-12 21:17:35,997 - ai_logger - Iteration: 22, Place Success: 0.826, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: edfcffbdd585d00ec41b4a535d52e063
+[32m[INFO][0m[2023-04-12 21:17:36]: [32mParent ID: syn_container_90, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:17:36,009 - ai_logger - Parent ID: syn_container_90, Child ID: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:17:36]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+INFO - 2023-04-12 21:17:36,014 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+
+[32m[INFO][0m[2023-04-12 21:17:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:17:39,132 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:18:24]: [32mIteration: 23, Place Success: 0.833, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:18:24,673 - ai_logger - Iteration: 23, Place Success: 0.833, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:18:24]: [32mParent ID: syn_container_87, Child ID: ed8aff7768d2cc3e45bcca2603f7a948[0m
+INFO - 2023-04-12 21:18:24,684 - ai_logger - Parent ID: syn_container_87, Child ID: ed8aff7768d2cc3e45bcca2603f7a948
+[32m[INFO][0m[2023-04-12 21:18:24]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+[0m
+INFO - 2023-04-12 21:18:24,690 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:18:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:18:27,804 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:19:09]: [32mIteration: 24, Place Success: 0.840, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: ed8aff7768d2cc3e45bcca2603f7a948[0m
+INFO - 2023-04-12 21:19:09,987 - ai_logger - Iteration: 24, Place Success: 0.840, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: ed8aff7768d2cc3e45bcca2603f7a948
+[32m[INFO][0m[2023-04-12 21:19:09]: [32mParent ID: syn_container_88, Child ID: e656d6586d481f41eb69804478f9c547[0m
+INFO - 2023-04-12 21:19:09,999 - ai_logger - Parent ID: syn_container_88, Child ID: e656d6586d481f41eb69804478f9c547
+[32m[INFO][0m[2023-04-12 21:19:10]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.0774555, 0.07745580000000005, 0.0
+[0m
+INFO - 2023-04-12 21:19:10,004 - ai_logger - 
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.0774555, 0.07745580000000005, 0.0
+
+[32m[INFO][0m[2023-04-12 21:19:13]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:19:13,200 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:19:54]: [32mIteration: 25, Place Success: 0.808, Angle From Upright: 1.277, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: e656d6586d481f41eb69804478f9c547[0m
+INFO - 2023-04-12 21:19:54,534 - ai_logger - Iteration: 25, Place Success: 0.808, Angle From Upright: 1.277, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: e656d6586d481f41eb69804478f9c547
+[32m[INFO][0m[2023-04-12 21:19:54]: [32mParent ID: syn_container_97, Child ID: f853ac62bc288e48e56a63d21fb60ae9[0m
+INFO - 2023-04-12 21:19:54,545 - ai_logger - Parent ID: syn_container_97, Child ID: f853ac62bc288e48e56a63d21fb60ae9
+[32m[INFO][0m[2023-04-12 21:19:54]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.08683379999999999, 0.08683380000000002, 0.0
+[0m
+INFO - 2023-04-12 21:19:54,551 - ai_logger - 
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.08683379999999999, 0.08683380000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:19:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:19:57,754 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:20:41]: [32mIteration: 26, Place Success: 0.815, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: f853ac62bc288e48e56a63d21fb60ae9[0m
+INFO - 2023-04-12 21:20:41,375 - ai_logger - Iteration: 26, Place Success: 0.815, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: f853ac62bc288e48e56a63d21fb60ae9
+[32m[INFO][0m[2023-04-12 21:20:41]: [32mParent ID: syn_container_83, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:20:41,387 - ai_logger - Parent ID: syn_container_83, Child ID: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:20:41]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+INFO - 2023-04-12 21:20:41,392 - ai_logger - 
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:20:41]: [33mSetting new parent scale to: 1.863 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:20:41,392 - ai_logger - Setting new parent scale to: 1.863 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:20:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:20:44,518 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:21:28]: [32mIteration: 27, Place Success: 0.821, Angle From Upright: 0.017, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:21:28,364 - ai_logger - Iteration: 27, Place Success: 0.821, Angle From Upright: 0.017, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:21:28]: [32mParent ID: syn_container_90, Child ID: fd0ccd09330865277602de57eab5e08f[0m
+INFO - 2023-04-12 21:21:28,376 - ai_logger - Parent ID: syn_container_90, Child ID: fd0ccd09330865277602de57eab5e08f
+[32m[INFO][0m[2023-04-12 21:21:28]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+[0m
+INFO - 2023-04-12 21:21:28,381 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+
+[32m[INFO][0m[2023-04-12 21:21:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:21:31,578 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:22:17]: [32mIteration: 28, Place Success: 0.828, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: fd0ccd09330865277602de57eab5e08f[0m
+INFO - 2023-04-12 21:22:17,837 - ai_logger - Iteration: 28, Place Success: 0.828, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: fd0ccd09330865277602de57eab5e08f
+[32m[INFO][0m[2023-04-12 21:22:17]: [32mParent ID: syn_container_95, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:22:17,849 - ai_logger - Parent ID: syn_container_95, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:22:17]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+INFO - 2023-04-12 21:22:17,854 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:22:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:22:21,096 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:23:04]: [32mIteration: 29, Place Success: 0.833, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:23:04,968 - ai_logger - Iteration: 29, Place Success: 0.833, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:23:04]: [32mParent ID: syn_container_9, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 21:23:04,980 - ai_logger - Parent ID: syn_container_9, Child ID: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 21:23:04]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+INFO - 2023-04-12 21:23:04,987 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:23:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:23:08,116 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:23:51]: [32mIteration: 30, Place Success: 0.839, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 21:23:51,352 - ai_logger - Iteration: 30, Place Success: 0.839, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 21:23:51]: [32mParent ID: syn_container_9, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:23:51,364 - ai_logger - Parent ID: syn_container_9, Child ID: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:23:51]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+INFO - 2023-04-12 21:23:51,369 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:23:51]: [33mSetting new parent scale to: 1.562 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:23:51,369 - ai_logger - Setting new parent scale to: 1.562 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:23:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:23:54,566 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:24:38]: [32mIteration: 31, Place Success: 0.844, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:24:38,193 - ai_logger - Iteration: 31, Place Success: 0.844, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:24:38]: [32mParent ID: syn_container_97, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 21:24:38,204 - ai_logger - Parent ID: syn_container_97, Child ID: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 21:24:38]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+INFO - 2023-04-12 21:24:38,209 - ai_logger - 
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:24:38]: [33mSetting new parent scale to: 1.287 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:24:38,210 - ai_logger - Setting new parent scale to: 1.287 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:24:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:24:41,405 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:25:24]: [32mIteration: 32, Place Success: 0.848, Angle From Upright: 0.003, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 21:25:24,873 - ai_logger - Iteration: 32, Place Success: 0.848, Angle From Upright: 0.003, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 21:25:24]: [32mParent ID: syn_container_97, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:25:24,884 - ai_logger - Parent ID: syn_container_97, Child ID: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:25:24]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+INFO - 2023-04-12 21:25:24,889 - ai_logger - 
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:25:24]: [33mSetting new parent scale to: 1.662 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:25:24,889 - ai_logger - Setting new parent scale to: 1.662 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:25:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:25:28,081 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:26:11]: [32mIteration: 33, Place Success: 0.853, Angle From Upright: 0.015, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:26:11,856 - ai_logger - Iteration: 33, Place Success: 0.853, Angle From Upright: 0.015, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:26:11]: [32mParent ID: syn_container_99, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 21:26:11,867 - ai_logger - Parent ID: syn_container_99, Child ID: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 21:26:11]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+INFO - 2023-04-12 21:26:11,873 - ai_logger - 
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:26:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:26:14,995 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:26:59]: [32mIteration: 34, Place Success: 0.857, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 21:26:59,138 - ai_logger - Iteration: 34, Place Success: 0.857, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 21:26:59]: [32mParent ID: syn_container_98, Child ID: ee74f5bfb0d7c8a5bd288303be3d57e7[0m
+INFO - 2023-04-12 21:26:59,150 - ai_logger - Parent ID: syn_container_98, Child ID: ee74f5bfb0d7c8a5bd288303be3d57e7
+[32m[INFO][0m[2023-04-12 21:26:59]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.06611339999999999, 0.06611340000000004, 0.0
+[0m
+INFO - 2023-04-12 21:26:59,155 - ai_logger - 
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.06611339999999999, 0.06611340000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:27:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:27:02,342 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:27:47]: [32mIteration: 35, Place Success: 0.861, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ee74f5bfb0d7c8a5bd288303be3d57e7[0m
+INFO - 2023-04-12 21:27:47,141 - ai_logger - Iteration: 35, Place Success: 0.861, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ee74f5bfb0d7c8a5bd288303be3d57e7
+[32m[INFO][0m[2023-04-12 21:27:47]: [32mParent ID: syn_container_94, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:27:47,152 - ai_logger - Parent ID: syn_container_94, Child ID: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:27:47]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+INFO - 2023-04-12 21:27:47,157 - ai_logger - 
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:27:47]: [33mSetting new parent scale to: 1.576 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:27:47,157 - ai_logger - Setting new parent scale to: 1.576 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:27:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:27:50,351 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:28:34]: [32mIteration: 36, Place Success: 0.865, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:28:34,389 - ai_logger - Iteration: 36, Place Success: 0.865, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:28:34]: [32mParent ID: syn_container_99, Child ID: f49d6c4b75f695c44d34bdc365023cf4[0m
+INFO - 2023-04-12 21:28:34,400 - ai_logger - Parent ID: syn_container_99, Child ID: f49d6c4b75f695c44d34bdc365023cf4
+[32m[INFO][0m[2023-04-12 21:28:34]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.09978809999999999, 0.09978809999999999, 0.0
+[0m
+INFO - 2023-04-12 21:28:34,405 - ai_logger - 
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.09978809999999999, 0.09978809999999999, 0.0
+
+[32m[INFO][0m[2023-04-12 21:28:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:28:37,606 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:29:20]: [32mIteration: 37, Place Success: 0.868, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: f49d6c4b75f695c44d34bdc365023cf4[0m
+INFO - 2023-04-12 21:29:20,840 - ai_logger - Iteration: 37, Place Success: 0.868, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: f49d6c4b75f695c44d34bdc365023cf4
+[32m[INFO][0m[2023-04-12 21:29:20]: [32mParent ID: syn_container_90, Child ID: edfcffbdd585d00ec41b4a535d52e063[0m
+INFO - 2023-04-12 21:29:20,851 - ai_logger - Parent ID: syn_container_90, Child ID: edfcffbdd585d00ec41b4a535d52e063
+[32m[INFO][0m[2023-04-12 21:29:20]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+[0m
+INFO - 2023-04-12 21:29:20,858 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+
+[32m[INFO][0m[2023-04-12 21:29:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:29:24,051 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:30:10]: [32mIteration: 38, Place Success: 0.872, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: edfcffbdd585d00ec41b4a535d52e063[0m
+INFO - 2023-04-12 21:30:10,827 - ai_logger - Iteration: 38, Place Success: 0.872, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: edfcffbdd585d00ec41b4a535d52e063
+[32m[INFO][0m[2023-04-12 21:30:10]: [32mParent ID: syn_container_9, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:30:10,839 - ai_logger - Parent ID: syn_container_9, Child ID: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:30:10]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+INFO - 2023-04-12 21:30:10,845 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:30:13]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:30:13,970 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:30:58]: [32mIteration: 39, Place Success: 0.875, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:30:58,404 - ai_logger - Iteration: 39, Place Success: 0.875, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:30:58]: [32mParent ID: syn_container_87, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:30:58,416 - ai_logger - Parent ID: syn_container_87, Child ID: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:30:58]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+INFO - 2023-04-12 21:30:58,421 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:31:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:31:01,618 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:31:44]: [32mIteration: 40, Place Success: 0.878, Angle From Upright: 0.009, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:31:44,701 - ai_logger - Iteration: 40, Place Success: 0.878, Angle From Upright: 0.009, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:31:44]: [32mParent ID: syn_container_82, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 21:31:44,712 - ai_logger - Parent ID: syn_container_82, Child ID: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 21:31:44]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+INFO - 2023-04-12 21:31:44,718 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:31:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:31:47,912 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:32:32]: [32mIteration: 41, Place Success: 0.881, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 21:32:32,796 - ai_logger - Iteration: 41, Place Success: 0.881, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 21:32:32]: [32mParent ID: syn_container_95, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:32:32,807 - ai_logger - Parent ID: syn_container_95, Child ID: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:32:32]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+INFO - 2023-04-12 21:32:32,812 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+
+[32m[INFO][0m[2023-04-12 21:32:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:32:35,999 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:33:19]: [32mIteration: 42, Place Success: 0.884, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:33:19,078 - ai_logger - Iteration: 42, Place Success: 0.884, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:33:19]: [32mParent ID: syn_container_83, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 21:33:19,089 - ai_logger - Parent ID: syn_container_83, Child ID: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 21:33:19]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+INFO - 2023-04-12 21:33:19,095 - ai_logger - 
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:33:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:33:22,309 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:34:04]: [32mIteration: 43, Place Success: 0.864, Angle From Upright: 2.929, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_83, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 21:34:04,660 - ai_logger - Iteration: 43, Place Success: 0.864, Angle From Upright: 2.929, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_83, child_id: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 21:34:04]: [32mParent ID: syn_container_85, Child ID: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+INFO - 2023-04-12 21:34:04,671 - ai_logger - Parent ID: syn_container_85, Child ID: e24fb21f7cb7998d94b2f4c4a75fd722
+[32m[INFO][0m[2023-04-12 21:34:04]: [32m
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.078717, 0.07871700000000004, 0.0
+[0m
+INFO - 2023-04-12 21:34:04,677 - ai_logger - 
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.078717, 0.07871700000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:34:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:34:07,795 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:34:48]: [32mIteration: 44, Place Success: 0.844, Angle From Upright: 1.201, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+INFO - 2023-04-12 21:34:48,627 - ai_logger - Iteration: 44, Place Success: 0.844, Angle From Upright: 1.201, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: e24fb21f7cb7998d94b2f4c4a75fd722
+[32m[INFO][0m[2023-04-12 21:34:48]: [32mParent ID: syn_container_83, Child ID: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 21:34:48,638 - ai_logger - Parent ID: syn_container_83, Child ID: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 21:34:48]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+INFO - 2023-04-12 21:34:48,644 - ai_logger - 
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:34:48]: [33mSetting new parent scale to: 1.457 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:34:48,644 - ai_logger - Setting new parent scale to: 1.457 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:34:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:34:51,830 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:35:33]: [32mIteration: 45, Place Success: 0.848, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 21:35:33,827 - ai_logger - Iteration: 45, Place Success: 0.848, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 21:35:33]: [32mParent ID: syn_container_92, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 21:35:33,838 - ai_logger - Parent ID: syn_container_92, Child ID: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 21:35:33]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+INFO - 2023-04-12 21:35:33,843 - ai_logger - 
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:35:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:35:36,961 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:36:19]: [32mIteration: 46, Place Success: 0.851, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 21:36:19,521 - ai_logger - Iteration: 46, Place Success: 0.851, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 21:36:19]: [32mParent ID: syn_container_89, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 21:36:19,533 - ai_logger - Parent ID: syn_container_89, Child ID: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 21:36:19]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+INFO - 2023-04-12 21:36:19,538 - ai_logger - 
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:36:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:36:22,655 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:37:04]: [32mIteration: 47, Place Success: 0.854, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 21:37:04,431 - ai_logger - Iteration: 47, Place Success: 0.854, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 21:37:04]: [32mParent ID: syn_container_88, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:37:04,442 - ai_logger - Parent ID: syn_container_88, Child ID: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:37:04]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+INFO - 2023-04-12 21:37:04,448 - ai_logger - 
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+
+[32m[INFO][0m[2023-04-12 21:37:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:37:07,646 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:37:51]: [32mIteration: 48, Place Success: 0.837, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_88, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+INFO - 2023-04-12 21:37:51,586 - ai_logger - Iteration: 48, Place Success: 0.837, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_88, child_id: ed55f39e04668bf9837048966ef3fcb9
+[32m[INFO][0m[2023-04-12 21:37:51]: [32mParent ID: syn_container_98, Child ID: f6ffca90c543edf9d6438d5cb8c578c6[0m
+INFO - 2023-04-12 21:37:51,598 - ai_logger - Parent ID: syn_container_98, Child ID: f6ffca90c543edf9d6438d5cb8c578c6
+[32m[INFO][0m[2023-04-12 21:37:51]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+[0m
+INFO - 2023-04-12 21:37:51,603 - ai_logger - 
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:37:51]: [33mSetting new parent scale to: 1.394 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:37:51,603 - ai_logger - Setting new parent scale to: 1.394 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:37:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:37:54,719 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:38:39]: [32mIteration: 49, Place Success: 0.820, Angle From Upright: 3.138, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_98, child_id: f6ffca90c543edf9d6438d5cb8c578c6[0m
+INFO - 2023-04-12 21:38:39,000 - ai_logger - Iteration: 49, Place Success: 0.820, Angle From Upright: 3.138, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_98, child_id: f6ffca90c543edf9d6438d5cb8c578c6
+[32m[INFO][0m[2023-04-12 21:38:39]: [32mParent ID: syn_container_98, Child ID: ee3ca78e36c6a7b2a367d39c852840d5[0m
+INFO - 2023-04-12 21:38:39,012 - ai_logger - Parent ID: syn_container_98, Child ID: ee3ca78e36c6a7b2a367d39c852840d5
+[32m[INFO][0m[2023-04-12 21:38:39]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.0841218, 0.08412270000000002, 0.0
+[0m
+INFO - 2023-04-12 21:38:39,018 - ai_logger - 
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.0841218, 0.08412270000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:38:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:38:42,143 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:39:27]: [32mIteration: 50, Place Success: 0.824, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ee3ca78e36c6a7b2a367d39c852840d5[0m
+INFO - 2023-04-12 21:39:27,177 - ai_logger - Iteration: 50, Place Success: 0.824, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ee3ca78e36c6a7b2a367d39c852840d5
+[32m[INFO][0m[2023-04-12 21:39:27]: [32mParent ID: syn_container_94, Child ID: fca70766d88fc7b9e5054d95cb6a63e2[0m
+INFO - 2023-04-12 21:39:27,188 - ai_logger - Parent ID: syn_container_94, Child ID: fca70766d88fc7b9e5054d95cb6a63e2
+[32m[INFO][0m[2023-04-12 21:39:27]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+[0m
+INFO - 2023-04-12 21:39:27,193 - ai_logger - 
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:39:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:39:30,386 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:40:13]: [32mIteration: 51, Place Success: 0.827, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: fca70766d88fc7b9e5054d95cb6a63e2[0m
+INFO - 2023-04-12 21:40:13,674 - ai_logger - Iteration: 51, Place Success: 0.827, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: fca70766d88fc7b9e5054d95cb6a63e2
+[32m[INFO][0m[2023-04-12 21:40:13]: [32mParent ID: syn_container_91, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:40:13,686 - ai_logger - Parent ID: syn_container_91, Child ID: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:40:13]: [32m
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+INFO - 2023-04-12 21:40:13,690 - ai_logger - 
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:40:13]: [33mSetting new parent scale to: 1.469 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:40:13,690 - ai_logger - Setting new parent scale to: 1.469 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:40:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:40:16,815 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:40:59]: [32mIteration: 52, Place Success: 0.830, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:40:59,584 - ai_logger - Iteration: 52, Place Success: 0.830, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:40:59]: [32mParent ID: syn_container_90, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:40:59,595 - ai_logger - Parent ID: syn_container_90, Child ID: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:40:59]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+INFO - 2023-04-12 21:40:59,600 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:41:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:41:02,718 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:41:48]: [32mIteration: 53, Place Success: 0.833, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:41:48,804 - ai_logger - Iteration: 53, Place Success: 0.833, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:41:48]: [32mParent ID: syn_container_95, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 21:41:48,815 - ai_logger - Parent ID: syn_container_95, Child ID: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 21:41:48]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+INFO - 2023-04-12 21:41:48,820 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+
+[32m[INFO][0m[2023-04-12 21:41:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:41:51,944 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:42:35]: [32mIteration: 54, Place Success: 0.836, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 21:42:35,194 - ai_logger - Iteration: 54, Place Success: 0.836, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 21:42:35]: [32mParent ID: syn_container_87, Child ID: edfcffbdd585d00ec41b4a535d52e063[0m
+INFO - 2023-04-12 21:42:35,206 - ai_logger - Parent ID: syn_container_87, Child ID: edfcffbdd585d00ec41b4a535d52e063
+[32m[INFO][0m[2023-04-12 21:42:35]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+[0m
+INFO - 2023-04-12 21:42:35,213 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:42:35]: [33mSetting new parent scale to: 1.525 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:42:35,213 - ai_logger - Setting new parent scale to: 1.525 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:42:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:42:38,398 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:43:21]: [32mIteration: 55, Place Success: 0.839, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: edfcffbdd585d00ec41b4a535d52e063[0m
+INFO - 2023-04-12 21:43:21,547 - ai_logger - Iteration: 55, Place Success: 0.839, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: edfcffbdd585d00ec41b4a535d52e063
+[32m[INFO][0m[2023-04-12 21:43:21]: [32mParent ID: syn_container_81, Child ID: ee3ca78e36c6a7b2a367d39c852840d5[0m
+INFO - 2023-04-12 21:43:21,559 - ai_logger - Parent ID: syn_container_81, Child ID: ee3ca78e36c6a7b2a367d39c852840d5
+[32m[INFO][0m[2023-04-12 21:43:21]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.0841218, 0.08412270000000002, 0.0
+[0m
+INFO - 2023-04-12 21:43:21,564 - ai_logger - 
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.0841218, 0.08412270000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:43:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:43:24,682 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:44:07]: [32mIteration: 56, Place Success: 0.842, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: ee3ca78e36c6a7b2a367d39c852840d5[0m
+INFO - 2023-04-12 21:44:07,780 - ai_logger - Iteration: 56, Place Success: 0.842, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: ee3ca78e36c6a7b2a367d39c852840d5
+[32m[INFO][0m[2023-04-12 21:44:07]: [32mParent ID: syn_container_84, Child ID: ed8aff7768d2cc3e45bcca2603f7a948[0m
+INFO - 2023-04-12 21:44:07,792 - ai_logger - Parent ID: syn_container_84, Child ID: ed8aff7768d2cc3e45bcca2603f7a948
+[32m[INFO][0m[2023-04-12 21:44:07]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+[0m
+INFO - 2023-04-12 21:44:07,797 - ai_logger - 
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:44:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:44:10,994 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:44:55]: [32mIteration: 57, Place Success: 0.845, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: ed8aff7768d2cc3e45bcca2603f7a948[0m
+INFO - 2023-04-12 21:44:55,413 - ai_logger - Iteration: 57, Place Success: 0.845, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: ed8aff7768d2cc3e45bcca2603f7a948
+[32m[INFO][0m[2023-04-12 21:44:55]: [32mParent ID: syn_container_91, Child ID: e824b049f16b29f19ab27ff78a8ea481[0m
+INFO - 2023-04-12 21:44:55,424 - ai_logger - Parent ID: syn_container_91, Child ID: e824b049f16b29f19ab27ff78a8ea481
+[32m[INFO][0m[2023-04-12 21:44:55]: [32m
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+[0m
+INFO - 2023-04-12 21:44:55,430 - ai_logger - 
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+
+[32m[INFO][0m[2023-04-12 21:44:58]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:44:58,553 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:45:41]: [32mIteration: 58, Place Success: 0.831, Angle From Upright: 1.277, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e824b049f16b29f19ab27ff78a8ea481[0m
+INFO - 2023-04-12 21:45:41,268 - ai_logger - Iteration: 58, Place Success: 0.831, Angle From Upright: 1.277, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e824b049f16b29f19ab27ff78a8ea481
+[32m[INFO][0m[2023-04-12 21:45:41]: [32mParent ID: syn_container_90, Child ID: f83c3b75f637241aebe67d9b32c3ddf8[0m
+INFO - 2023-04-12 21:45:41,280 - ai_logger - Parent ID: syn_container_90, Child ID: f83c3b75f637241aebe67d9b32c3ddf8
+[32m[INFO][0m[2023-04-12 21:45:41]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0827292, 0.08272920000000003, 0.0
+[0m
+INFO - 2023-04-12 21:45:41,285 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0827292, 0.08272920000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:45:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:45:44,472 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:46:29]: [32mIteration: 59, Place Success: 0.833, Angle From Upright: 0.009, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: f83c3b75f637241aebe67d9b32c3ddf8[0m
+INFO - 2023-04-12 21:46:29,387 - ai_logger - Iteration: 59, Place Success: 0.833, Angle From Upright: 0.009, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: f83c3b75f637241aebe67d9b32c3ddf8
+[32m[INFO][0m[2023-04-12 21:46:29]: [32mParent ID: syn_container_82, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:46:29,399 - ai_logger - Parent ID: syn_container_82, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:46:29]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+INFO - 2023-04-12 21:46:29,404 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:46:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:46:32,527 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:47:17]: [32mIteration: 60, Place Success: 0.836, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:47:17,788 - ai_logger - Iteration: 60, Place Success: 0.836, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:47:17]: [32mParent ID: syn_container_85, Child ID: ed8aff7768d2cc3e45bcca2603f7a948[0m
+INFO - 2023-04-12 21:47:17,800 - ai_logger - Parent ID: syn_container_85, Child ID: ed8aff7768d2cc3e45bcca2603f7a948
+[32m[INFO][0m[2023-04-12 21:47:17]: [32m
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+[0m
+INFO - 2023-04-12 21:47:17,805 - ai_logger - 
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:47:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:47:20,925 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:48:02]: [32mIteration: 61, Place Success: 0.839, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: ed8aff7768d2cc3e45bcca2603f7a948[0m
+INFO - 2023-04-12 21:48:02,830 - ai_logger - Iteration: 61, Place Success: 0.839, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: ed8aff7768d2cc3e45bcca2603f7a948
+[32m[INFO][0m[2023-04-12 21:48:02]: [32mParent ID: syn_container_82, Child ID: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 21:48:02,842 - ai_logger - Parent ID: syn_container_82, Child ID: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 21:48:02]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+INFO - 2023-04-12 21:48:02,847 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:48:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:48:05,973 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:48:48]: [32mIteration: 62, Place Success: 0.841, Angle From Upright: 0.012, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 21:48:48,636 - ai_logger - Iteration: 62, Place Success: 0.841, Angle From Upright: 0.012, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 21:48:48]: [32mParent ID: syn_container_99, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:48:48,647 - ai_logger - Parent ID: syn_container_99, Child ID: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:48:48]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+INFO - 2023-04-12 21:48:48,653 - ai_logger - 
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+
+[32m[INFO][0m[2023-04-12 21:48:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:48:51,776 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:49:34]: [32mIteration: 63, Place Success: 0.844, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:49:34,807 - ai_logger - Iteration: 63, Place Success: 0.844, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:49:34]: [32mParent ID: syn_container_81, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:49:34,819 - ai_logger - Parent ID: syn_container_81, Child ID: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:49:34]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+INFO - 2023-04-12 21:49:34,824 - ai_logger - 
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:49:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:49:37,950 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:50:21]: [32mIteration: 64, Place Success: 0.846, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:50:21,183 - ai_logger - Iteration: 64, Place Success: 0.846, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:50:21]: [32mParent ID: syn_container_87, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:50:21,195 - ai_logger - Parent ID: syn_container_87, Child ID: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:50:21]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+INFO - 2023-04-12 21:50:21,200 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:50:21]: [33mSetting new parent scale to: 1.288 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:50:21,200 - ai_logger - Setting new parent scale to: 1.288 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:50:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:50:24,402 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:51:06]: [32mIteration: 65, Place Success: 0.848, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:51:06,843 - ai_logger - Iteration: 65, Place Success: 0.848, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:51:06]: [32mParent ID: syn_container_92, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:51:06,854 - ai_logger - Parent ID: syn_container_92, Child ID: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:51:06]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+INFO - 2023-04-12 21:51:06,859 - ai_logger - 
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 21:51:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:51:09,983 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:51:54]: [32mIteration: 66, Place Success: 0.851, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+INFO - 2023-04-12 21:51:54,345 - ai_logger - Iteration: 66, Place Success: 0.851, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: e4ada697d05ac7acf9907e8bdd53291e
+[32m[INFO][0m[2023-04-12 21:51:54]: [32mParent ID: syn_container_91, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:51:54,356 - ai_logger - Parent ID: syn_container_91, Child ID: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:51:54]: [32m
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+INFO - 2023-04-12 21:51:54,361 - ai_logger - 
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:51:54]: [33mSetting new parent scale to: 1.698 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:51:54,361 - ai_logger - Setting new parent scale to: 1.698 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:51:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:51:57,460 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:52:39]: [32mIteration: 67, Place Success: 0.838, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_91, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 21:52:39,221 - ai_logger - Iteration: 67, Place Success: 0.838, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_91, child_id: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 21:52:39]: [32mParent ID: syn_container_82, Child ID: e23f62bb4794ee6a7fdd0518ed16e820[0m
+INFO - 2023-04-12 21:52:39,233 - ai_logger - Parent ID: syn_container_82, Child ID: e23f62bb4794ee6a7fdd0518ed16e820
+[32m[INFO][0m[2023-04-12 21:52:39]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.08155889999999999, 0.09175379999999997, 0.0
+[0m
+INFO - 2023-04-12 21:52:39,238 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.08155889999999999, 0.09175379999999997, 0.0
+
+[32m[INFO][0m[2023-04-12 21:52:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:52:42,355 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:53:26]: [32mIteration: 68, Place Success: 0.841, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: e23f62bb4794ee6a7fdd0518ed16e820[0m
+INFO - 2023-04-12 21:53:26,900 - ai_logger - Iteration: 68, Place Success: 0.841, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: e23f62bb4794ee6a7fdd0518ed16e820
+[32m[INFO][0m[2023-04-12 21:53:26]: [32mParent ID: syn_container_87, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:53:26,912 - ai_logger - Parent ID: syn_container_87, Child ID: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:53:26]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+INFO - 2023-04-12 21:53:26,917 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:53:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:53:30,031 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:54:12]: [32mIteration: 69, Place Success: 0.843, Angle From Upright: 0.009, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:54:12,773 - ai_logger - Iteration: 69, Place Success: 0.843, Angle From Upright: 0.009, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:54:12]: [32mParent ID: syn_container_84, Child ID: fa44223c6f785c60e71da2487cb2ee5b[0m
+INFO - 2023-04-12 21:54:12,785 - ai_logger - Parent ID: syn_container_84, Child ID: fa44223c6f785c60e71da2487cb2ee5b
+[32m[INFO][0m[2023-04-12 21:54:12]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+[0m
+INFO - 2023-04-12 21:54:12,789 - ai_logger - 
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:54:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:54:16,009 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:55:00]: [32mIteration: 70, Place Success: 0.845, Angle From Upright: 0.104, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: fa44223c6f785c60e71da2487cb2ee5b[0m
+INFO - 2023-04-12 21:55:00,565 - ai_logger - Iteration: 70, Place Success: 0.845, Angle From Upright: 0.104, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: fa44223c6f785c60e71da2487cb2ee5b
+[32m[INFO][0m[2023-04-12 21:55:00]: [32mParent ID: syn_container_87, Child ID: e29e8121d93af93bba803759c05367b0[0m
+INFO - 2023-04-12 21:55:00,576 - ai_logger - Parent ID: syn_container_87, Child ID: e29e8121d93af93bba803759c05367b0
+[32m[INFO][0m[2023-04-12 21:55:00]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+[0m
+INFO - 2023-04-12 21:55:00,581 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+
+[33m[WARNING][0m[2023-04-12 21:55:00]: [33mSetting new parent scale to: 1.672 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 21:55:00,581 - ai_logger - Setting new parent scale to: 1.672 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 21:55:03]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:55:03,696 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:55:47]: [32mIteration: 71, Place Success: 0.833, Angle From Upright: 0.139, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_87, child_id: e29e8121d93af93bba803759c05367b0[0m
+INFO - 2023-04-12 21:55:47,445 - ai_logger - Iteration: 71, Place Success: 0.833, Angle From Upright: 0.139, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_87, child_id: e29e8121d93af93bba803759c05367b0
+[32m[INFO][0m[2023-04-12 21:55:47]: [32mParent ID: syn_container_81, Child ID: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 21:55:47,456 - ai_logger - Parent ID: syn_container_81, Child ID: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 21:55:47]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+INFO - 2023-04-12 21:55:47,462 - ai_logger - 
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 21:55:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:55:50,579 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:56:33]: [32mIteration: 72, Place Success: 0.836, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 21:56:33,922 - ai_logger - Iteration: 72, Place Success: 0.836, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 21:56:33]: [32mParent ID: syn_container_93, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:56:33,933 - ai_logger - Parent ID: syn_container_93, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:56:33]: [32m
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+INFO - 2023-04-12 21:56:33,939 - ai_logger - 
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 21:56:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:56:37,136 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:57:21]: [32mIteration: 73, Place Success: 0.838, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 21:57:21,349 - ai_logger - Iteration: 73, Place Success: 0.838, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 21:57:21]: [32mParent ID: syn_container_89, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:57:21,360 - ai_logger - Parent ID: syn_container_89, Child ID: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:57:21]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+INFO - 2023-04-12 21:57:21,365 - ai_logger - 
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+
+[32m[INFO][0m[2023-04-12 21:57:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:57:24,482 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:58:07]: [32mIteration: 74, Place Success: 0.840, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:58:07,220 - ai_logger - Iteration: 74, Place Success: 0.840, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:58:07]: [32mParent ID: syn_container_88, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:58:07,232 - ai_logger - Parent ID: syn_container_88, Child ID: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:58:07]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+INFO - 2023-04-12 21:58:07,239 - ai_logger - 
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+
+[32m[INFO][0m[2023-04-12 21:58:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:58:10,359 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:58:51]: [32mIteration: 75, Place Success: 0.829, Angle From Upright: 1.247, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+INFO - 2023-04-12 21:58:51,552 - ai_logger - Iteration: 75, Place Success: 0.829, Angle From Upright: 1.247, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: e4915635a488cbfc4c3a35cee92bb95b
+[32m[INFO][0m[2023-04-12 21:58:51]: [32mParent ID: syn_container_9, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 21:58:51,566 - ai_logger - Parent ID: syn_container_9, Child ID: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 21:58:51]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+INFO - 2023-04-12 21:58:51,571 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+
+[32m[INFO][0m[2023-04-12 21:58:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:58:54,757 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 21:59:39]: [32mIteration: 76, Place Success: 0.818, Angle From Upright: 1.096, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 21:59:39,933 - ai_logger - Iteration: 76, Place Success: 0.818, Angle From Upright: 1.096, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 21:59:39]: [32mParent ID: syn_container_93, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 21:59:39,944 - ai_logger - Parent ID: syn_container_93, Child ID: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 21:59:39]: [32m
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+INFO - 2023-04-12 21:59:39,950 - ai_logger - 
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 21:59:43]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 21:59:43,076 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:00:27]: [32mIteration: 77, Place Success: 0.821, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+INFO - 2023-04-12 22:00:27,397 - ai_logger - Iteration: 77, Place Success: 0.821, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: e8b48d395d3d8744e53e6e0633163da8
+[32m[INFO][0m[2023-04-12 22:00:27]: [32mParent ID: syn_container_82, Child ID: fd0ccd09330865277602de57eab5e08f[0m
+INFO - 2023-04-12 22:00:27,409 - ai_logger - Parent ID: syn_container_82, Child ID: fd0ccd09330865277602de57eab5e08f
+[32m[INFO][0m[2023-04-12 22:00:27]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+[0m
+INFO - 2023-04-12 22:00:27,414 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+
+[32m[INFO][0m[2023-04-12 22:00:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:00:30,531 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:01:15]: [32mIteration: 78, Place Success: 0.823, Angle From Upright: 0.013, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fd0ccd09330865277602de57eab5e08f[0m
+INFO - 2023-04-12 22:01:15,761 - ai_logger - Iteration: 78, Place Success: 0.823, Angle From Upright: 0.013, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fd0ccd09330865277602de57eab5e08f
+[32m[INFO][0m[2023-04-12 22:01:15]: [32mParent ID: syn_container_94, Child ID: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+INFO - 2023-04-12 22:01:15,772 - ai_logger - Parent ID: syn_container_94, Child ID: e24fb21f7cb7998d94b2f4c4a75fd722
+[32m[INFO][0m[2023-04-12 22:01:15]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.078717, 0.07871700000000004, 0.0
+[0m
+INFO - 2023-04-12 22:01:15,777 - ai_logger - 
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.078717, 0.07871700000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 22:01:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:01:18,904 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:02:01]: [32mIteration: 79, Place Success: 0.825, Angle From Upright: 0.014, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+INFO - 2023-04-12 22:02:01,707 - ai_logger - Iteration: 79, Place Success: 0.825, Angle From Upright: 0.014, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: e24fb21f7cb7998d94b2f4c4a75fd722
+[32m[INFO][0m[2023-04-12 22:02:01]: [32mParent ID: syn_container_99, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 22:02:01,718 - ai_logger - Parent ID: syn_container_99, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 22:02:01]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+INFO - 2023-04-12 22:02:01,723 - ai_logger - 
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 22:02:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:02:04,848 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:02:48]: [32mIteration: 80, Place Success: 0.827, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+INFO - 2023-04-12 22:02:48,242 - ai_logger - Iteration: 80, Place Success: 0.827, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: e56e77c6eb21d9bdf577ff4de1ac394c
+[32m[INFO][0m[2023-04-12 22:02:48]: [32mParent ID: syn_container_92, Child ID: e9371d3abbb3bb7265bca0cae1ecfff5[0m
+INFO - 2023-04-12 22:02:48,254 - ai_logger - Parent ID: syn_container_92, Child ID: e9371d3abbb3bb7265bca0cae1ecfff5
+[32m[INFO][0m[2023-04-12 22:02:48]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.0887049, 0.0887049, 0.0
+[0m
+INFO - 2023-04-12 22:02:48,259 - ai_logger - 
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.0887049, 0.0887049, 0.0
+
+[32m[INFO][0m[2023-04-12 22:02:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:02:51,384 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:03:34]: [32mIteration: 81, Place Success: 0.829, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: e9371d3abbb3bb7265bca0cae1ecfff5[0m
+INFO - 2023-04-12 22:03:34,441 - ai_logger - Iteration: 81, Place Success: 0.829, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: e9371d3abbb3bb7265bca0cae1ecfff5
+[32m[INFO][0m[2023-04-12 22:03:34]: [32mParent ID: syn_container_89, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 22:03:34,453 - ai_logger - Parent ID: syn_container_89, Child ID: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 22:03:34]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+INFO - 2023-04-12 22:03:34,458 - ai_logger - 
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+
+[32m[INFO][0m[2023-04-12 22:03:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:03:37,638 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:04:21]: [32mIteration: 82, Place Success: 0.831, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 22:04:21,488 - ai_logger - Iteration: 82, Place Success: 0.831, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 22:04:21]: [32mParent ID: syn_container_95, Child ID: e824b049f16b29f19ab27ff78a8ea481[0m
+INFO - 2023-04-12 22:04:21,502 - ai_logger - Parent ID: syn_container_95, Child ID: e824b049f16b29f19ab27ff78a8ea481
+[32m[INFO][0m[2023-04-12 22:04:21]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+[0m
+INFO - 2023-04-12 22:04:21,507 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+
+[32m[INFO][0m[2023-04-12 22:04:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:04:24,705 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:05:06]: [32mIteration: 83, Place Success: 0.821, Angle From Upright: 1.225, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e824b049f16b29f19ab27ff78a8ea481[0m
+INFO - 2023-04-12 22:05:06,740 - ai_logger - Iteration: 83, Place Success: 0.821, Angle From Upright: 1.225, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e824b049f16b29f19ab27ff78a8ea481
+[32m[INFO][0m[2023-04-12 22:05:06]: [32mParent ID: syn_container_87, Child ID: e29e8121d93af93bba803759c05367b0[0m
+INFO - 2023-04-12 22:05:06,752 - ai_logger - Parent ID: syn_container_87, Child ID: e29e8121d93af93bba803759c05367b0
+[32m[INFO][0m[2023-04-12 22:05:06]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+[0m
+INFO - 2023-04-12 22:05:06,757 - ai_logger - 
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+
+[33m[WARNING][0m[2023-04-12 22:05:06]: [33mSetting new parent scale to: 1.529 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 22:05:06,757 - ai_logger - Setting new parent scale to: 1.529 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 22:05:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:05:09,953 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:05:54]: [32mIteration: 84, Place Success: 0.812, Angle From Upright: 0.140, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_87, child_id: e29e8121d93af93bba803759c05367b0[0m
+INFO - 2023-04-12 22:05:54,547 - ai_logger - Iteration: 84, Place Success: 0.812, Angle From Upright: 0.140, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_87, child_id: e29e8121d93af93bba803759c05367b0
+[32m[INFO][0m[2023-04-12 22:05:54]: [32mParent ID: syn_container_86, Child ID: e824b049f16b29f19ab27ff78a8ea481[0m
+INFO - 2023-04-12 22:05:54,558 - ai_logger - Parent ID: syn_container_86, Child ID: e824b049f16b29f19ab27ff78a8ea481
+[32m[INFO][0m[2023-04-12 22:05:54]: [32m
+Container extents: 0.341854, 0.289662, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+[0m
+INFO - 2023-04-12 22:05:54,563 - ai_logger - 
+Container extents: 0.341854, 0.289662, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+
+[32m[INFO][0m[2023-04-12 22:05:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:05:57,815 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:06:43]: [32mIteration: 85, Place Success: 0.814, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_86, child_id: e824b049f16b29f19ab27ff78a8ea481[0m
+INFO - 2023-04-12 22:06:43,633 - ai_logger - Iteration: 85, Place Success: 0.814, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_86, child_id: e824b049f16b29f19ab27ff78a8ea481
+[32m[INFO][0m[2023-04-12 22:06:43]: [32mParent ID: syn_container_90, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 22:06:43,644 - ai_logger - Parent ID: syn_container_90, Child ID: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 22:06:43]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+INFO - 2023-04-12 22:06:43,649 - ai_logger - 
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 22:06:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:06:46,849 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:07:31]: [32mIteration: 86, Place Success: 0.816, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+INFO - 2023-04-12 22:07:31,837 - ai_logger - Iteration: 86, Place Success: 0.816, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: fda8d8820e4d166bd7134844380eaeb0
+[32m[INFO][0m[2023-04-12 22:07:31]: [32mParent ID: syn_container_89, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 22:07:31,848 - ai_logger - Parent ID: syn_container_89, Child ID: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 22:07:31]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+INFO - 2023-04-12 22:07:31,853 - ai_logger - 
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 22:07:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:07:35,040 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:08:17]: [32mIteration: 87, Place Success: 0.818, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+INFO - 2023-04-12 22:08:17,284 - ai_logger - Iteration: 87, Place Success: 0.818, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e593aa021f3fa324530647fc03dd20dc
+[32m[INFO][0m[2023-04-12 22:08:17]: [32mParent ID: syn_container_99, Child ID: f853ac62bc288e48e56a63d21fb60ae9[0m
+INFO - 2023-04-12 22:08:17,296 - ai_logger - Parent ID: syn_container_99, Child ID: f853ac62bc288e48e56a63d21fb60ae9
+[32m[INFO][0m[2023-04-12 22:08:17]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.08683379999999999, 0.08683380000000002, 0.0
+[0m
+INFO - 2023-04-12 22:08:17,302 - ai_logger - 
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.08683379999999999, 0.08683380000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 22:08:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:08:20,423 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:09:03]: [32mIteration: 88, Place Success: 0.820, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: f853ac62bc288e48e56a63d21fb60ae9[0m
+INFO - 2023-04-12 22:09:03,181 - ai_logger - Iteration: 88, Place Success: 0.820, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: f853ac62bc288e48e56a63d21fb60ae9
+[32m[INFO][0m[2023-04-12 22:09:03]: [32mParent ID: syn_container_86, Child ID: e101cc44ead036294bc79c881a0e818b[0m
+INFO - 2023-04-12 22:09:03,193 - ai_logger - Parent ID: syn_container_86, Child ID: e101cc44ead036294bc79c881a0e818b
+[32m[INFO][0m[2023-04-12 22:09:03]: [32m
+Container extents: 0.341854, 0.289662, 0.0, 
+Bottle extents: 0.0712791, 0.07413030000000004, 0.0
+[0m
+INFO - 2023-04-12 22:09:03,197 - ai_logger - 
+Container extents: 0.341854, 0.289662, 0.0, 
+Bottle extents: 0.0712791, 0.07413030000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 22:09:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:09:06,315 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:09:52]: [32mIteration: 89, Place Success: 0.822, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_86, child_id: e101cc44ead036294bc79c881a0e818b[0m
+INFO - 2023-04-12 22:09:52,087 - ai_logger - Iteration: 89, Place Success: 0.822, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_86, child_id: e101cc44ead036294bc79c881a0e818b
+[32m[INFO][0m[2023-04-12 22:09:52]: [32mParent ID: syn_container_95, Child ID: f6ffca90c543edf9d6438d5cb8c578c6[0m
+INFO - 2023-04-12 22:09:52,099 - ai_logger - Parent ID: syn_container_95, Child ID: f6ffca90c543edf9d6438d5cb8c578c6
+[32m[INFO][0m[2023-04-12 22:09:52]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+[0m
+INFO - 2023-04-12 22:09:52,104 - ai_logger - 
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 22:09:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:09:55,243 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:10:39]: [32mIteration: 90, Place Success: 0.813, Angle From Upright: 3.142, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_95, child_id: f6ffca90c543edf9d6438d5cb8c578c6[0m
+INFO - 2023-04-12 22:10:39,033 - ai_logger - Iteration: 90, Place Success: 0.813, Angle From Upright: 3.142, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_95, child_id: f6ffca90c543edf9d6438d5cb8c578c6
+[32m[INFO][0m[2023-04-12 22:10:39]: [32mParent ID: syn_container_98, Child ID: fd0ccd09330865277602de57eab5e08f[0m
+INFO - 2023-04-12 22:10:39,046 - ai_logger - Parent ID: syn_container_98, Child ID: fd0ccd09330865277602de57eab5e08f
+[32m[INFO][0m[2023-04-12 22:10:39]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+[0m
+INFO - 2023-04-12 22:10:39,051 - ai_logger - 
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+
+[32m[INFO][0m[2023-04-12 22:10:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:10:42,175 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:11:27]: [32mIteration: 91, Place Success: 0.815, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: fd0ccd09330865277602de57eab5e08f[0m
+INFO - 2023-04-12 22:11:27,057 - ai_logger - Iteration: 91, Place Success: 0.815, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: fd0ccd09330865277602de57eab5e08f
+[32m[INFO][0m[2023-04-12 22:11:27]: [32mParent ID: syn_container_9, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 22:11:27,068 - ai_logger - Parent ID: syn_container_9, Child ID: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 22:11:27]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+INFO - 2023-04-12 22:11:27,074 - ai_logger - 
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+
+[32m[INFO][0m[2023-04-12 22:11:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:11:30,258 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:12:14]: [32mIteration: 92, Place Success: 0.806, Angle From Upright: 1.100, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+INFO - 2023-04-12 22:12:14,928 - ai_logger - Iteration: 92, Place Success: 0.806, Angle From Upright: 1.100, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: f47cbefc9aa5b6a918431871c8e05789
+[32m[INFO][0m[2023-04-12 22:12:14]: [32mParent ID: syn_container_92, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 22:12:14,940 - ai_logger - Parent ID: syn_container_92, Child ID: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 22:12:14]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+INFO - 2023-04-12 22:12:14,944 - ai_logger - 
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+
+[32m[INFO][0m[2023-04-12 22:12:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:12:18,062 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:13:01]: [32mIteration: 93, Place Success: 0.809, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: ee007f1aac12fbe549a44197486ae284[0m
+INFO - 2023-04-12 22:13:01,816 - ai_logger - Iteration: 93, Place Success: 0.809, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: ee007f1aac12fbe549a44197486ae284
+[32m[INFO][0m[2023-04-12 22:13:01]: [32mParent ID: syn_container_85, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 22:13:01,828 - ai_logger - Parent ID: syn_container_85, Child ID: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 22:13:01]: [32m
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+INFO - 2023-04-12 22:13:01,834 - ai_logger - 
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+
+[32m[INFO][0m[2023-04-12 22:13:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:13:04,965 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:13:47]: [32mIteration: 94, Place Success: 0.811, Angle From Upright: 0.003, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+INFO - 2023-04-12 22:13:47,916 - ai_logger - Iteration: 94, Place Success: 0.811, Angle From Upright: 0.003, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: ff13595434879bba557ef92e2fa0ccb2
+[32m[INFO][0m[2023-04-12 22:13:47]: [32mParent ID: syn_container_81, Child ID: f9f67fe61dcf46d7e19818797f240d91[0m
+INFO - 2023-04-12 22:13:47,928 - ai_logger - Parent ID: syn_container_81, Child ID: f9f67fe61dcf46d7e19818797f240d91
+[32m[INFO][0m[2023-04-12 22:13:47]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.06300419999999998, 0.06300390000000003, 0.0
+[0m
+INFO - 2023-04-12 22:13:47,934 - ai_logger - 
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.06300419999999998, 0.06300390000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 22:13:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:13:51,055 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:14:34]: [32mIteration: 95, Place Success: 0.812, Angle From Upright: 0.016, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: f9f67fe61dcf46d7e19818797f240d91[0m
+INFO - 2023-04-12 22:14:34,588 - ai_logger - Iteration: 95, Place Success: 0.812, Angle From Upright: 0.016, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: f9f67fe61dcf46d7e19818797f240d91
+[32m[INFO][0m[2023-04-12 22:14:34]: [32mParent ID: syn_container_83, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 22:14:34,600 - ai_logger - Parent ID: syn_container_83, Child ID: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 22:14:34]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+INFO - 2023-04-12 22:14:34,605 - ai_logger - 
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+
+[33m[WARNING][0m[2023-04-12 22:14:34]: [33mSetting new parent scale to: 1.298 to ensure parent is large enough for child[0m
+WARNING - 2023-04-12 22:14:34,605 - ai_logger - Setting new parent scale to: 1.298 to ensure parent is large enough for child
+[32m[INFO][0m[2023-04-12 22:14:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:14:37,723 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:15:19]: [32mIteration: 96, Place Success: 0.804, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_83, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+INFO - 2023-04-12 22:15:19,656 - ai_logger - Iteration: 96, Place Success: 0.804, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_83, child_id: f2279b29f7d45bbd744c199e33849f2a
+[32m[INFO][0m[2023-04-12 22:15:19]: [32mParent ID: syn_container_82, Child ID: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 22:15:19,669 - ai_logger - Parent ID: syn_container_82, Child ID: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 22:15:19]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+INFO - 2023-04-12 22:15:19,674 - ai_logger - 
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 22:15:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:15:22,801 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:16:07]: [32mIteration: 97, Place Success: 0.806, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fec05c85454edafc4310636931b68fdb[0m
+INFO - 2023-04-12 22:16:07,653 - ai_logger - Iteration: 97, Place Success: 0.806, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fec05c85454edafc4310636931b68fdb
+[32m[INFO][0m[2023-04-12 22:16:07]: [32mParent ID: syn_container_89, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 22:16:07,664 - ai_logger - Parent ID: syn_container_89, Child ID: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 22:16:07]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+INFO - 2023-04-12 22:16:07,671 - ai_logger - 
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+
+[32m[INFO][0m[2023-04-12 22:16:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:16:10,866 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:16:54]: [32mIteration: 98, Place Success: 0.798, Angle From Upright: 1.147, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+INFO - 2023-04-12 22:16:54,092 - ai_logger - Iteration: 98, Place Success: 0.798, Angle From Upright: 1.147, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e5a5dac174982cea2dcdfc29ed7a2492
+[32m[INFO][0m[2023-04-12 22:16:54]: [32mParent ID: syn_container_88, Child ID: fa44223c6f785c60e71da2487cb2ee5b[0m
+INFO - 2023-04-12 22:16:54,104 - ai_logger - Parent ID: syn_container_88, Child ID: fa44223c6f785c60e71da2487cb2ee5b
+[32m[INFO][0m[2023-04-12 22:16:54]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+[0m
+INFO - 2023-04-12 22:16:54,110 - ai_logger - 
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+
+[32m[INFO][0m[2023-04-12 22:16:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 22:16:57,227 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 22:17:39]: [32mIteration: 99, Place Success: 0.790, Angle From Upright: 1.272, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: fa44223c6f785c60e71da2487cb2ee5b[0m
+INFO - 2023-04-12 22:17:39,235 - ai_logger - Iteration: 99, Place Success: 0.790, Angle From Upright: 1.272, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: fa44223c6f785c60e71da2487cb2ee5b
+You can open the visualizer by visiting the following URL:
+http://127.0.0.1:7000/static/
+@@ 0.001457766165268378
+# nearby points: 49801
+@@ 0.009401272085399462
+# nearby points: 25629
+@@ 0.0015929946892364341
+# nearby points: 31299
+@@ 0.0014886724542404219
+# nearby points: 63322
+@@ 0.0017023317518182466
+# nearby points: 27493
+costs: [0.27312373686197977, 1.4604355032823144, 3.9108378640370067, 0.01032303059930377, 2.2264948589109554]
+@@ 0.0025216936512334207
+# nearby points: 61811
+PosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+Destroy EGL OpenGL window.
+PosixSharedMemory::releaseSharedMemory detached shared memory

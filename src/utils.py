@@ -318,6 +318,48 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=100000,
             return pos, quat
 
 
+def wiggle(source_obj: int, target_obj: int, max_tries: int=100000,
+           sim_id: Optional[int]=None, sd: float=0.1) -> Tuple[NPF64, NPF64]:
+    """Wiggle the source object out of a collision with the target object.
+    
+    Important: this function will change the state of the world and we assume
+    the world was saved before and will be restored after.
+    """
+    pos, quat = pb_get_pose(source_obj, sim_id=sim_id)
+
+    pb.performCollisionDetection()
+    in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
+    if not in_collision:
+        # Object are not in collision to begin with.
+        return pos, quat
+
+    solutions = []
+    costs = []
+
+    for i in range(max_tries):
+
+        new_pos = pos + np.random.normal(0, sd, 3)
+        pb_set_pose(source_obj, new_pos, quat, sim_id=sim_id)
+
+        pb.performCollisionDetection()
+        in_collision = pb_body_collision(source_obj, target_obj, sim_id=sim_id)
+        if not in_collision:
+            # We found a nearby position of source_obj that is not in collision.
+            solutions.append(new_pos)
+            costs.append(np.sum(np.square(new_pos - pos)))
+
+    if len(solutions) == 0:
+        # We find no collision-free solution. Return original pose.
+        pb_set_pose(source_obj, pos, quat, sim_id=sim_id)
+        return pos, quat
+    else:
+        # Return the collision free solution that is the closest to the original.
+        best_idx = np.argmin(costs)
+        solution = solutions[best_idx]
+        pb_set_pose(source_obj, solution, quat, sim_id=sim_id)
+        return solution, quat
+
+
 def trimesh_load_object(obj_path: str) -> trimesh.Trimesh:
     return trimesh.load(obj_path)
 
@@ -507,4 +549,4 @@ def pose_distance(trans1, trans2):
     orientation_weight = 1
     total_distance = position_weight * position_distance + orientation_weight * orientation_distance
 
-    return position_distance, orientation_distance, total_distance
+    return total_distance

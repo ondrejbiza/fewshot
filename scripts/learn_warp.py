@@ -63,6 +63,16 @@ def main(args):
         obj_paths = [f"data/simple_trees/train/{i}.stl" for i in range(10)]
         rotation = None
         num_surface_samples = 2000
+    elif args.objects == "cuboids":
+        base_dir = "data/ndf_objects/distractors/cuboids"
+        obj_paths = []
+        for i in range(10):
+            name = "test_cuboid_smaller_{:d}.stl".format(i)
+            path = os.path.join(base_dir, name)
+            print(i, path)
+            obj_paths.append(path)
+        rotation = None
+        num_surface_samples = 2000
     else:
         raise ValueError("Unknown object class.")
 

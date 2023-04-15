@@ -354,11 +354,16 @@ def main(args):
             else:
                 use_keypoint_offset = False 
                 keypoint_offset_params = None
+
+            if n_demos != "all":
+                pc_master_dict['parent']['demo_final_pcds'] = pc_master_dict['parent']['demo_final_pcds'][:n_demos]
+                pc_master_dict['child']['demo_final_pcds'] = pc_master_dict['child']['demo_final_pcds'][:n_demos]
+
             create_target_descriptors(
                 parent_model, child_model, pc_master_dict, target_desc_fname, 
                 cfg, query_scale=args.query_scale, scale_pcds=False, 
                 target_rounds=args.target_rounds, pc_reference=args.pc_reference,
-                skip_alignment=args.skip_alignment, n_demos=n_demos, manual_target_idx=args.target_idx, 
+                skip_alignment=args.skip_alignment, n_demos="all", manual_target_idx=args.target_idx, 
                 add_noise=add_noise, interaction_pt_noise_std=noise_value,
                 use_keypoint_offset=use_keypoint_offset, keypoint_offset_params=keypoint_offset_params,
                 visualize=True, mc_vis=mc_vis)

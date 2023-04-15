@@ -1,0 +1,896 @@
+pybullet build time: Feb 13 2023 14:30:59
+[33m[WARNING][0m[2023-04-13 19:22:46]: [33mStarting meshcat at zmq_url: tcp://127.0.0.1:6000[0m
+[32m[INFO][0m[2023-04-13 19:22:46]: [32mLoad in OpenGL![0m
+[32m[INFO][0m[2023-04-13 19:22:46]: [32mConfig file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults[0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a'][0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2'][0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366'][0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj'][0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m
+
+
+Test objects: [0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32m['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj'][0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32mTest ids (parent): syn_container_81, syn_container_82, syn_container_83, syn_container_84, syn_container_85, syn_container_86, syn_container_87, syn_container_88, syn_container_89, syn_container_9, syn_container_90, syn_container_91, syn_container_92, syn_container_93, syn_container_94, syn_container_95, syn_container_96, syn_container_97, syn_container_98, syn_container_99[0m
+[32m[INFO][0m[2023-04-13 19:22:48]: [32mTest ids (child): e101cc44ead036294bc79c881a0e818b, e23f62bb4794ee6a7fdd0518ed16e820, e24fb21f7cb7998d94b2f4c4a75fd722, e29e8121d93af93bba803759c05367b0, e4915635a488cbfc4c3a35cee92bb95b, e4ada697d05ac7acf9907e8bdd53291e, e56e77c6eb21d9bdf577ff4de1ac394c, e593aa021f3fa324530647fc03dd20dc, e5a5dac174982cea2dcdfc29ed7a2492, e656d6586d481f41eb69804478f9c547, e824b049f16b29f19ab27ff78a8ea481, e8b48d395d3d8744e53e6e0633163da8, e9371d3abbb3bb7265bca0cae1ecfff5, ed55f39e04668bf9837048966ef3fcb9, ed8aff7768d2cc3e45bcca2603f7a948, edfcffbdd585d00ec41b4a535d52e063, ee007f1aac12fbe549a44197486ae284, ee3ca78e36c6a7b2a367d39c852840d5, ee74f5bfb0d7c8a5bd288303be3d57e7, ee77714471b911baeeff0dee910fd183, f0611ec9ff89209bf10c4513652c1c5e, f2279b29f7d45bbd744c199e33849f2a, f47cbefc9aa5b6a918431871c8e05789, f4851a2835228377e101b7546e3ee8a7, f49d6c4b75f695c44d34bdc365023cf4, f68e99b57596b33d197a35146ee825cd, f6ffca90c543edf9d6438d5cb8c578c6, f83c3b75f637241aebe67d9b32c3ddf8, f853ac62bc288e48e56a63d21fb60ae9, f9f67fe61dcf46d7e19818797f240d91, fa44223c6f785c60e71da2487cb2ee5b, fca70766d88fc7b9e5054d95cb6a63e2, fd0ccd09330865277602de57eab5e08f, fda8d8820e4d166bd7134844380eaeb0, fec05c85454edafc4310636931b68fdb, ff13595434879bba557ef92e2fa0ccb2[0m
+[33m[WARNING][0m[2023-04-13 19:22:48]: [33m
+
+[create_target_descriptors] 
+Filename: /home/ondrej/Research/code/relational_ndf/src/rndf_robot/data/relation_demos/release_demos/bottle_in_container_relation/parent_model--rndf_weights--ndf_container_child--rndf_weights--ndf_bottle/target_descriptors.npz already exists! 
+
+Saving to folder: /home/ondrej/Research/code/relational_ndf/src/rndf_robot/data/relation_demos/release_demos/bottle_in_container_relation/parent_model--rndf_weights--ndf_container_child--rndf_weights--ndf_bottle/04-13-2023_19-22-48 as a backup before overwriting
+
+[0m
+argv[0]=
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+Loaded EGL 1.5 after reload.
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+GL_VERSION=4.6.0 NVIDIA 515.86.01
+GL_SHADING_LANGUAGE_VERSION=4.60 NVIDIA
+Version = 4.6.0 NVIDIA 515.86.01
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/torch/nn/functional.py:1960: UserWarning: nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+  warnings.warn("nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.")
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/torch/nn/functional.py:1960: UserWarning:
+
+nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+
+[32m[INFO][0m[2023-04-13 19:26:13]: [32mLoading target descriptors from file:
+/home/ondrej/Research/code/relational_ndf/src/rndf_robot/data/relation_demos/release_demos/bottle_in_container_relation/parent_model--rndf_weights--ndf_container_child--rndf_weights--ndf_bottle/target_descriptors.npz[0m
+[32m[INFO][0m[2023-04-13 19:26:13]: [32mMaking a copy of the target descriptors in eval folder[0m
+[32m[INFO][0m[2023-04-13 19:26:22]: [32mParent ID: syn_container_92, Child ID: f6ffca90c543edf9d6438d5cb8c578c6[0m
+[32m[INFO][0m[2023-04-13 19:26:22]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+[0m
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+[32m[INFO][0m[2023-04-13 19:26:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:26:50]: [32mIteration: 0, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: f6ffca90c543edf9d6438d5cb8c578c6[0m
+[32m[INFO][0m[2023-04-13 19:26:50]: [32mParent ID: syn_container_82, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 19:26:50]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:26:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:27:18]: [32mIteration: 1, Place Success: 1.000, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 19:27:18]: [32mParent ID: syn_container_96, Child ID: fca70766d88fc7b9e5054d95cb6a63e2[0m
+[32m[INFO][0m[2023-04-13 19:27:18]: [32m
+Container extents: 0.19159, 0.205716, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:27:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:27:45]: [32mIteration: 2, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_96, child_id: fca70766d88fc7b9e5054d95cb6a63e2[0m
+[32m[INFO][0m[2023-04-13 19:27:45]: [32mParent ID: syn_container_92, Child ID: ee77714471b911baeeff0dee910fd183[0m
+[32m[INFO][0m[2023-04-13 19:27:45]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.10391759999999998, 0.10391790000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:27:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:28:12]: [32mIteration: 3, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: ee77714471b911baeeff0dee910fd183[0m
+[32m[INFO][0m[2023-04-13 19:28:12]: [32mParent ID: syn_container_95, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 19:28:12]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:28:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:28:39]: [32mIteration: 4, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 19:28:39]: [32mParent ID: syn_container_98, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:28:39]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:28:39]: [33mSetting new parent scale to: 1.477 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:28:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:29:07]: [32mIteration: 5, Place Success: 1.000, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:29:07]: [32mParent ID: syn_container_96, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 19:29:07]: [32m
+Container extents: 0.19159, 0.205716, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:29:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:29:34]: [32mIteration: 6, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_96, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 19:29:34]: [32mParent ID: syn_container_9, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 19:29:34]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:29:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:30:01]: [32mIteration: 7, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 19:30:01]: [32mParent ID: syn_container_84, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 19:30:01]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:30:01]: [33mSetting new parent scale to: 1.540 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:30:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:30:29]: [32mIteration: 8, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 19:30:29]: [32mParent ID: syn_container_97, Child ID: e656d6586d481f41eb69804478f9c547[0m
+[32m[INFO][0m[2023-04-13 19:30:29]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.0774555, 0.07745580000000005, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:30:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:30:56]: [32mIteration: 9, Place Success: 1.000, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: e656d6586d481f41eb69804478f9c547[0m
+[32m[INFO][0m[2023-04-13 19:30:56]: [32mParent ID: syn_container_9, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:30:56]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:30:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:31:23]: [32mIteration: 10, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:31:23]: [32mParent ID: syn_container_83, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 19:31:23]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:31:23]: [33mSetting new parent scale to: 1.492 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:31:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:31:50]: [32mIteration: 11, Place Success: 1.000, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 19:31:50]: [32mParent ID: syn_container_95, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 19:31:50]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:31:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:32:17]: [32mIteration: 12, Place Success: 1.000, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 19:32:17]: [32mParent ID: syn_container_84, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 19:32:17]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:32:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:32:45]: [32mIteration: 13, Place Success: 0.929, Angle From Upright: 0.291, touching_surf: False, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 19:32:45]: [32mParent ID: syn_container_93, Child ID: f0611ec9ff89209bf10c4513652c1c5e[0m
+[32m[INFO][0m[2023-04-13 19:32:45]: [32m
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.08852940000000001, 0.08853000000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:32:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:33:12]: [32mIteration: 14, Place Success: 0.933, Angle From Upright: 0.013, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: f0611ec9ff89209bf10c4513652c1c5e[0m
+[32m[INFO][0m[2023-04-13 19:33:12]: [32mParent ID: syn_container_99, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:33:12]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:33:15]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:33:39]: [32mIteration: 15, Place Success: 0.938, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:33:39]: [32mParent ID: syn_container_97, Child ID: fa44223c6f785c60e71da2487cb2ee5b[0m
+[32m[INFO][0m[2023-04-13 19:33:39]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:33:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:34:06]: [32mIteration: 16, Place Success: 0.882, Angle From Upright: 0.088, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_97, child_id: fa44223c6f785c60e71da2487cb2ee5b[0m
+[32m[INFO][0m[2023-04-13 19:34:06]: [32mParent ID: syn_container_94, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 19:34:06]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:34:09]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:34:33]: [32mIteration: 17, Place Success: 0.889, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 19:34:33]: [32mParent ID: syn_container_89, Child ID: e29e8121d93af93bba803759c05367b0[0m
+[32m[INFO][0m[2023-04-13 19:34:33]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:34:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:35:00]: [32mIteration: 18, Place Success: 0.842, Angle From Upright: 0.652, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e29e8121d93af93bba803759c05367b0[0m
+[32m[INFO][0m[2023-04-13 19:35:00]: [32mParent ID: syn_container_97, Child ID: e101cc44ead036294bc79c881a0e818b[0m
+[32m[INFO][0m[2023-04-13 19:35:00]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.0712791, 0.07413030000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:35:03]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:35:27]: [32mIteration: 19, Place Success: 0.850, Angle From Upright: 0.002, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: e101cc44ead036294bc79c881a0e818b[0m
+[32m[INFO][0m[2023-04-13 19:35:27]: [32mParent ID: syn_container_83, Child ID: f68e99b57596b33d197a35146ee825cd[0m
+[32m[INFO][0m[2023-04-13 19:35:27]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.09467819999999999, 0.09467820000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:35:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:35:54]: [32mIteration: 20, Place Success: 0.810, Angle From Upright: 1.422, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f68e99b57596b33d197a35146ee825cd[0m
+[32m[INFO][0m[2023-04-13 19:35:54]: [32mParent ID: syn_container_81, Child ID: fca70766d88fc7b9e5054d95cb6a63e2[0m
+[32m[INFO][0m[2023-04-13 19:35:54]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:35:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:36:21]: [32mIteration: 21, Place Success: 0.818, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: fca70766d88fc7b9e5054d95cb6a63e2[0m
+[32m[INFO][0m[2023-04-13 19:36:21]: [32mParent ID: syn_container_90, Child ID: edfcffbdd585d00ec41b4a535d52e063[0m
+[32m[INFO][0m[2023-04-13 19:36:21]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:36:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:36:49]: [32mIteration: 22, Place Success: 0.826, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: edfcffbdd585d00ec41b4a535d52e063[0m
+[32m[INFO][0m[2023-04-13 19:36:49]: [32mParent ID: syn_container_90, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:36:49]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:36:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:37:17]: [32mIteration: 23, Place Success: 0.833, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:37:17]: [32mParent ID: syn_container_87, Child ID: ed8aff7768d2cc3e45bcca2603f7a948[0m
+[32m[INFO][0m[2023-04-13 19:37:17]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:37:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:37:43]: [32mIteration: 24, Place Success: 0.840, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: ed8aff7768d2cc3e45bcca2603f7a948[0m
+[32m[INFO][0m[2023-04-13 19:37:44]: [32mParent ID: syn_container_88, Child ID: e656d6586d481f41eb69804478f9c547[0m
+[32m[INFO][0m[2023-04-13 19:37:44]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.0774555, 0.07745580000000005, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:37:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:38:10]: [32mIteration: 25, Place Success: 0.808, Angle From Upright: 1.305, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: e656d6586d481f41eb69804478f9c547[0m
+[32m[INFO][0m[2023-04-13 19:38:10]: [32mParent ID: syn_container_97, Child ID: f853ac62bc288e48e56a63d21fb60ae9[0m
+[32m[INFO][0m[2023-04-13 19:38:10]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.08683379999999999, 0.08683380000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:38:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:38:37]: [32mIteration: 26, Place Success: 0.815, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: f853ac62bc288e48e56a63d21fb60ae9[0m
+[32m[INFO][0m[2023-04-13 19:38:37]: [32mParent ID: syn_container_83, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:38:37]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:38:37]: [33mSetting new parent scale to: 1.522 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:38:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:39:05]: [32mIteration: 27, Place Success: 0.821, Angle From Upright: 0.018, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:39:05]: [32mParent ID: syn_container_90, Child ID: fd0ccd09330865277602de57eab5e08f[0m
+[32m[INFO][0m[2023-04-13 19:39:05]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:39:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:39:32]: [32mIteration: 28, Place Success: 0.828, Angle From Upright: 0.010, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: fd0ccd09330865277602de57eab5e08f[0m
+[32m[INFO][0m[2023-04-13 19:39:32]: [32mParent ID: syn_container_95, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:39:32]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:39:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:39:59]: [32mIteration: 29, Place Success: 0.833, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:39:59]: [32mParent ID: syn_container_9, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 19:39:59]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:40:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:40:26]: [32mIteration: 30, Place Success: 0.839, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 19:40:26]: [32mParent ID: syn_container_9, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:40:26]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:40:26]: [33mSetting new parent scale to: 1.570 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:40:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:40:53]: [32mIteration: 31, Place Success: 0.844, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:40:53]: [32mParent ID: syn_container_97, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 19:40:53]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:40:53]: [33mSetting new parent scale to: 1.488 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:40:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:41:20]: [32mIteration: 32, Place Success: 0.848, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 19:41:20]: [32mParent ID: syn_container_97, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:41:20]: [32m
+Container extents: 0.219686, 0.131015, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:41:20]: [33mSetting new parent scale to: 1.605 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:41:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:41:47]: [32mIteration: 33, Place Success: 0.853, Angle From Upright: 0.014, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_97, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:41:47]: [32mParent ID: syn_container_99, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 19:41:47]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:41:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:42:14]: [32mIteration: 34, Place Success: 0.829, Angle From Upright: 1.384, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 19:42:14]: [32mParent ID: syn_container_98, Child ID: ee74f5bfb0d7c8a5bd288303be3d57e7[0m
+[32m[INFO][0m[2023-04-13 19:42:14]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.06611339999999999, 0.06611340000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:42:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:42:41]: [32mIteration: 35, Place Success: 0.806, Angle From Upright: 0.032, touching_surf: False, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ee74f5bfb0d7c8a5bd288303be3d57e7[0m
+[32m[INFO][0m[2023-04-13 19:42:41]: [32mParent ID: syn_container_94, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:42:41]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:42:41]: [33mSetting new parent scale to: 1.434 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:42:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:43:08]: [32mIteration: 36, Place Success: 0.811, Angle From Upright: 0.014, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:43:08]: [32mParent ID: syn_container_99, Child ID: f49d6c4b75f695c44d34bdc365023cf4[0m
+[32m[INFO][0m[2023-04-13 19:43:08]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.09978809999999999, 0.09978809999999999, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:43:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:43:36]: [32mIteration: 37, Place Success: 0.816, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: f49d6c4b75f695c44d34bdc365023cf4[0m
+[32m[INFO][0m[2023-04-13 19:43:36]: [32mParent ID: syn_container_90, Child ID: edfcffbdd585d00ec41b4a535d52e063[0m
+[32m[INFO][0m[2023-04-13 19:43:36]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:43:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:44:03]: [32mIteration: 38, Place Success: 0.795, Angle From Upright: 1.127, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: edfcffbdd585d00ec41b4a535d52e063[0m
+[32m[INFO][0m[2023-04-13 19:44:03]: [32mParent ID: syn_container_9, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 19:44:03]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:44:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:44:30]: [32mIteration: 39, Place Success: 0.800, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 19:44:30]: [32mParent ID: syn_container_87, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 19:44:30]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:44:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:44:57]: [32mIteration: 40, Place Success: 0.805, Angle From Upright: 0.012, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 19:44:57]: [32mParent ID: syn_container_82, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 19:44:57]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:45:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:45:24]: [32mIteration: 41, Place Success: 0.810, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 19:45:24]: [32mParent ID: syn_container_95, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:45:24]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:45:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:45:51]: [32mIteration: 42, Place Success: 0.814, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:45:51]: [32mParent ID: syn_container_83, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 19:45:51]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:45:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:46:18]: [32mIteration: 43, Place Success: 0.795, Angle From Upright: 2.996, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_83, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 19:46:18]: [32mParent ID: syn_container_85, Child ID: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+[32m[INFO][0m[2023-04-13 19:46:18]: [32m
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.078717, 0.07871700000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:46:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:46:45]: [32mIteration: 44, Place Success: 0.800, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+[32m[INFO][0m[2023-04-13 19:46:45]: [32mParent ID: syn_container_83, Child ID: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 19:46:45]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:46:45]: [33mSetting new parent scale to: 1.520 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:46:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:47:13]: [32mIteration: 45, Place Success: 0.804, Angle From Upright: 0.002, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 19:47:13]: [32mParent ID: syn_container_92, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 19:47:13]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:47:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:47:41]: [32mIteration: 46, Place Success: 0.809, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 19:47:41]: [32mParent ID: syn_container_89, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 19:47:41]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:47:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:48:08]: [32mIteration: 47, Place Success: 0.812, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 19:48:08]: [32mParent ID: syn_container_88, Child ID: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:48:08]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.1311108, 0.0626547, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:48:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:48:35]: [32mIteration: 48, Place Success: 0.796, Angle From Upright: 1.292, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: ed55f39e04668bf9837048966ef3fcb9[0m
+[32m[INFO][0m[2023-04-13 19:48:35]: [32mParent ID: syn_container_98, Child ID: f6ffca90c543edf9d6438d5cb8c578c6[0m
+[32m[INFO][0m[2023-04-13 19:48:35]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:48:35]: [33mSetting new parent scale to: 1.449 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:48:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:49:03]: [32mIteration: 49, Place Success: 0.800, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: f6ffca90c543edf9d6438d5cb8c578c6[0m
+[32m[INFO][0m[2023-04-13 19:49:03]: [32mParent ID: syn_container_98, Child ID: ee3ca78e36c6a7b2a367d39c852840d5[0m
+[32m[INFO][0m[2023-04-13 19:49:03]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.0841218, 0.08412270000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:49:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:49:30]: [32mIteration: 50, Place Success: 0.784, Angle From Upright: 0.208, touching_surf: False, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: ee3ca78e36c6a7b2a367d39c852840d5[0m
+[32m[INFO][0m[2023-04-13 19:49:30]: [32mParent ID: syn_container_94, Child ID: fca70766d88fc7b9e5054d95cb6a63e2[0m
+[32m[INFO][0m[2023-04-13 19:49:30]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.1097922, 0.10979250000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:49:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:49:57]: [32mIteration: 51, Place Success: 0.788, Angle From Upright: 0.003, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: fca70766d88fc7b9e5054d95cb6a63e2[0m
+[32m[INFO][0m[2023-04-13 19:49:57]: [32mParent ID: syn_container_91, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:49:57]: [32m
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:49:57]: [33mSetting new parent scale to: 1.676 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:50:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:50:25]: [32mIteration: 52, Place Success: 0.774, Angle From Upright: 1.579, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:50:25]: [32mParent ID: syn_container_90, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:50:25]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:50:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:50:52]: [32mIteration: 53, Place Success: 0.778, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:50:52]: [32mParent ID: syn_container_95, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 19:50:52]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:50:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:51:19]: [32mIteration: 54, Place Success: 0.782, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 19:51:19]: [32mParent ID: syn_container_87, Child ID: edfcffbdd585d00ec41b4a535d52e063[0m
+[32m[INFO][0m[2023-04-13 19:51:19]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.1459209, 0.1459206, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:51:19]: [33mSetting new parent scale to: 1.497 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:51:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:51:47]: [32mIteration: 55, Place Success: 0.768, Angle From Upright: 1.298, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: edfcffbdd585d00ec41b4a535d52e063[0m
+[32m[INFO][0m[2023-04-13 19:51:47]: [32mParent ID: syn_container_81, Child ID: ee3ca78e36c6a7b2a367d39c852840d5[0m
+[32m[INFO][0m[2023-04-13 19:51:47]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.0841218, 0.08412270000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:51:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:52:14]: [32mIteration: 56, Place Success: 0.772, Angle From Upright: 0.002, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: ee3ca78e36c6a7b2a367d39c852840d5[0m
+[32m[INFO][0m[2023-04-13 19:52:14]: [32mParent ID: syn_container_84, Child ID: ed8aff7768d2cc3e45bcca2603f7a948[0m
+[32m[INFO][0m[2023-04-13 19:52:14]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:52:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:52:42]: [32mIteration: 57, Place Success: 0.759, Angle From Upright: 0.316, touching_surf: False, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: ed8aff7768d2cc3e45bcca2603f7a948[0m
+[32m[INFO][0m[2023-04-13 19:52:42]: [32mParent ID: syn_container_91, Child ID: e824b049f16b29f19ab27ff78a8ea481[0m
+[32m[INFO][0m[2023-04-13 19:52:42]: [32m
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:52:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:53:09]: [32mIteration: 58, Place Success: 0.746, Angle From Upright: 0.017, touching_surf: False, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e824b049f16b29f19ab27ff78a8ea481[0m
+[32m[INFO][0m[2023-04-13 19:53:09]: [32mParent ID: syn_container_90, Child ID: f83c3b75f637241aebe67d9b32c3ddf8[0m
+[32m[INFO][0m[2023-04-13 19:53:09]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.0827292, 0.08272920000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:53:12]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:53:36]: [32mIteration: 59, Place Success: 0.733, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_90, child_id: f83c3b75f637241aebe67d9b32c3ddf8[0m
+[32m[INFO][0m[2023-04-13 19:53:36]: [32mParent ID: syn_container_82, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:53:36]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:53:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:54:03]: [32mIteration: 60, Place Success: 0.738, Angle From Upright: 0.004, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:54:03]: [32mParent ID: syn_container_85, Child ID: ed8aff7768d2cc3e45bcca2603f7a948[0m
+[32m[INFO][0m[2023-04-13 19:54:03]: [32m
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.0988155, 0.10238730000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:54:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:54:30]: [32mIteration: 61, Place Success: 0.742, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: ed8aff7768d2cc3e45bcca2603f7a948[0m
+[32m[INFO][0m[2023-04-13 19:54:30]: [32mParent ID: syn_container_82, Child ID: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 19:54:30]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:54:34]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:54:58]: [32mIteration: 62, Place Success: 0.746, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 19:54:58]: [32mParent ID: syn_container_99, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:54:58]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:55:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:55:25]: [32mIteration: 63, Place Success: 0.750, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:55:25]: [32mParent ID: syn_container_81, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:55:25]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:55:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:55:53]: [32mIteration: 64, Place Success: 0.754, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:55:53]: [32mParent ID: syn_container_87, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:55:53]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:55:53]: [33mSetting new parent scale to: 1.173 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:55:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:56:20]: [32mIteration: 65, Place Success: 0.758, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:56:20]: [32mParent ID: syn_container_92, Child ID: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:56:20]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.1308372, 0.05053050000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:56:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:56:47]: [32mIteration: 66, Place Success: 0.761, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: e4ada697d05ac7acf9907e8bdd53291e[0m
+[32m[INFO][0m[2023-04-13 19:56:47]: [32mParent ID: syn_container_91, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:56:47]: [32m
+Container extents: 0.214428, 0.137846, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:56:47]: [33mSetting new parent scale to: 1.648 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:56:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:57:15]: [32mIteration: 67, Place Success: 0.765, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_91, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 19:57:15]: [32mParent ID: syn_container_82, Child ID: e23f62bb4794ee6a7fdd0518ed16e820[0m
+[32m[INFO][0m[2023-04-13 19:57:15]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.08155889999999999, 0.09175379999999997, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:57:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:57:43]: [32mIteration: 68, Place Success: 0.754, Angle From Upright: 0.002, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_82, child_id: e23f62bb4794ee6a7fdd0518ed16e820[0m
+[32m[INFO][0m[2023-04-13 19:57:43]: [32mParent ID: syn_container_87, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 19:57:43]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:57:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:58:10]: [32mIteration: 69, Place Success: 0.757, Angle From Upright: 0.011, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 19:58:10]: [32mParent ID: syn_container_84, Child ID: fa44223c6f785c60e71da2487cb2ee5b[0m
+[32m[INFO][0m[2023-04-13 19:58:10]: [32m
+Container extents: 0.167137, 0.211462, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:58:13]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:58:37]: [32mIteration: 70, Place Success: 0.746, Angle From Upright: 0.147, touching_surf: False, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_84, child_id: fa44223c6f785c60e71da2487cb2ee5b[0m
+[32m[INFO][0m[2023-04-13 19:58:37]: [32mParent ID: syn_container_87, Child ID: e29e8121d93af93bba803759c05367b0[0m
+[32m[INFO][0m[2023-04-13 19:58:37]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 19:58:37]: [33mSetting new parent scale to: 1.656 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 19:58:40]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:59:04]: [32mIteration: 71, Place Success: 0.736, Angle From Upright: 1.456, touching_surf: True, bottle_upright: False, fell_off_upside_down: False, , parent_id: syn_container_87, child_id: e29e8121d93af93bba803759c05367b0[0m
+[32m[INFO][0m[2023-04-13 19:59:04]: [32mParent ID: syn_container_81, Child ID: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 19:59:04]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:59:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:59:31]: [32mIteration: 72, Place Success: 0.740, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 19:59:31]: [32mParent ID: syn_container_93, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:59:31]: [32m
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 19:59:34]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 19:59:58]: [32mIteration: 73, Place Success: 0.743, Angle From Upright: 0.012, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 19:59:58]: [32mParent ID: syn_container_89, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 19:59:58]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:00:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:00:25]: [32mIteration: 74, Place Success: 0.747, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 20:00:25]: [32mParent ID: syn_container_88, Child ID: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 20:00:25]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.0761811, 0.0761811, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:00:28]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:00:52]: [32mIteration: 75, Place Success: 0.750, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: e4915635a488cbfc4c3a35cee92bb95b[0m
+[32m[INFO][0m[2023-04-13 20:00:52]: [32mParent ID: syn_container_9, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 20:00:52]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:00:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:01:19]: [32mIteration: 76, Place Success: 0.753, Angle From Upright: 0.021, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 20:01:19]: [32mParent ID: syn_container_93, Child ID: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 20:01:19]: [32m
+Container extents: 0.235282, 0.155031, 0.0, 
+Bottle extents: 0.0765066, 0.07650660000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:01:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:01:46]: [32mIteration: 77, Place Success: 0.756, Angle From Upright: 0.006, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_93, child_id: e8b48d395d3d8744e53e6e0633163da8[0m
+[32m[INFO][0m[2023-04-13 20:01:46]: [32mParent ID: syn_container_82, Child ID: fd0ccd09330865277602de57eab5e08f[0m
+[32m[INFO][0m[2023-04-13 20:01:46]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:01:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:02:13]: [32mIteration: 78, Place Success: 0.759, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fd0ccd09330865277602de57eab5e08f[0m
+[32m[INFO][0m[2023-04-13 20:02:13]: [32mParent ID: syn_container_94, Child ID: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+[32m[INFO][0m[2023-04-13 20:02:13]: [32m
+Container extents: 0.27501, 0.16562, 0.0, 
+Bottle extents: 0.078717, 0.07871700000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:02:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:02:40]: [32mIteration: 79, Place Success: 0.762, Angle From Upright: 0.003, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_94, child_id: e24fb21f7cb7998d94b2f4c4a75fd722[0m
+[32m[INFO][0m[2023-04-13 20:02:40]: [32mParent ID: syn_container_99, Child ID: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 20:02:40]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.08494169999999998, 0.10107030000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:02:43]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:03:07]: [32mIteration: 80, Place Success: 0.765, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_99, child_id: e56e77c6eb21d9bdf577ff4de1ac394c[0m
+[32m[INFO][0m[2023-04-13 20:03:07]: [32mParent ID: syn_container_92, Child ID: e9371d3abbb3bb7265bca0cae1ecfff5[0m
+[32m[INFO][0m[2023-04-13 20:03:07]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.0887049, 0.0887049, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:03:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:03:35]: [32mIteration: 81, Place Success: 0.768, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: e9371d3abbb3bb7265bca0cae1ecfff5[0m
+[32m[INFO][0m[2023-04-13 20:03:35]: [32mParent ID: syn_container_89, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 20:03:35]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:03:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:04:02]: [32mIteration: 82, Place Success: 0.771, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 20:04:02]: [32mParent ID: syn_container_95, Child ID: e824b049f16b29f19ab27ff78a8ea481[0m
+[32m[INFO][0m[2023-04-13 20:04:02]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:04:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:04:29]: [32mIteration: 83, Place Success: 0.774, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: e824b049f16b29f19ab27ff78a8ea481[0m
+[32m[INFO][0m[2023-04-13 20:04:29]: [32mParent ID: syn_container_87, Child ID: e29e8121d93af93bba803759c05367b0[0m
+[32m[INFO][0m[2023-04-13 20:04:29]: [32m
+Container extents: 0.189956, 0.160548, 0.0, 
+Bottle extents: 0.156474, 0.1564755, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 20:04:29]: [33mSetting new parent scale to: 1.880 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 20:04:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:04:55]: [32mIteration: 84, Place Success: 0.765, Angle From Upright: 1.137, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_87, child_id: e29e8121d93af93bba803759c05367b0[0m
+[32m[INFO][0m[2023-04-13 20:04:55]: [32mParent ID: syn_container_86, Child ID: e824b049f16b29f19ab27ff78a8ea481[0m
+[32m[INFO][0m[2023-04-13 20:04:55]: [32m
+Container extents: 0.341854, 0.289662, 0.0, 
+Bottle extents: 0.06729389999999999, 0.06729390000000005, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:04:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:05:23]: [32mIteration: 85, Place Success: 0.767, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_86, child_id: e824b049f16b29f19ab27ff78a8ea481[0m
+[32m[INFO][0m[2023-04-13 20:05:23]: [32mParent ID: syn_container_90, Child ID: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 20:05:23]: [32m
+Container extents: 0.239556, 0.226836, 0.0, 
+Bottle extents: 0.1098882, 0.10986690000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:05:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:05:51]: [32mIteration: 86, Place Success: 0.770, Angle From Upright: 0.002, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_90, child_id: fda8d8820e4d166bd7134844380eaeb0[0m
+[32m[INFO][0m[2023-04-13 20:05:51]: [32mParent ID: syn_container_89, Child ID: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 20:05:51]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.1245099, 0.12450990000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:05:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:06:18]: [32mIteration: 87, Place Success: 0.773, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e593aa021f3fa324530647fc03dd20dc[0m
+[32m[INFO][0m[2023-04-13 20:06:18]: [32mParent ID: syn_container_99, Child ID: f853ac62bc288e48e56a63d21fb60ae9[0m
+[32m[INFO][0m[2023-04-13 20:06:18]: [32m
+Container extents: 0.242009, 0.250828, 0.0, 
+Bottle extents: 0.08683379999999999, 0.08683380000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:06:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:06:45]: [32mIteration: 88, Place Success: 0.764, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: False, , parent_id: syn_container_99, child_id: f853ac62bc288e48e56a63d21fb60ae9[0m
+[32m[INFO][0m[2023-04-13 20:06:46]: [32mParent ID: syn_container_86, Child ID: e101cc44ead036294bc79c881a0e818b[0m
+[32m[INFO][0m[2023-04-13 20:06:46]: [32m
+Container extents: 0.341854, 0.289662, 0.0, 
+Bottle extents: 0.0712791, 0.07413030000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:06:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:07:13]: [32mIteration: 89, Place Success: 0.767, Angle From Upright: 0.001, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_86, child_id: e101cc44ead036294bc79c881a0e818b[0m
+[32m[INFO][0m[2023-04-13 20:07:13]: [32mParent ID: syn_container_95, Child ID: f6ffca90c543edf9d6438d5cb8c578c6[0m
+[32m[INFO][0m[2023-04-13 20:07:13]: [32m
+Container extents: 0.243858, 0.23464000000000002, 0.0, 
+Bottle extents: 0.1435653, 0.14357940000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:07:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:07:41]: [32mIteration: 90, Place Success: 0.769, Angle From Upright: 0.002, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_95, child_id: f6ffca90c543edf9d6438d5cb8c578c6[0m
+[32m[INFO][0m[2023-04-13 20:07:41]: [32mParent ID: syn_container_98, Child ID: fd0ccd09330865277602de57eab5e08f[0m
+[32m[INFO][0m[2023-04-13 20:07:41]: [32m
+Container extents: 0.169, 0.159691, 0.0, 
+Bottle extents: 0.0871356, 0.08713739999999999, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:07:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:08:08]: [32mIteration: 91, Place Success: 0.772, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_98, child_id: fd0ccd09330865277602de57eab5e08f[0m
+[32m[INFO][0m[2023-04-13 20:08:08]: [32mParent ID: syn_container_9, Child ID: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 20:08:08]: [32m
+Container extents: 0.15264, 0.17849500000000001, 0.0, 
+Bottle extents: 0.0799317, 0.0799377, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:08:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:08:35]: [32mIteration: 92, Place Success: 0.774, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_9, child_id: f47cbefc9aa5b6a918431871c8e05789[0m
+[32m[INFO][0m[2023-04-13 20:08:35]: [32mParent ID: syn_container_92, Child ID: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 20:08:35]: [32m
+Container extents: 0.326064, 0.19817400000000002, 0.0, 
+Bottle extents: 0.13465349999999998, 0.13465350000000004, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:08:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:09:02]: [32mIteration: 93, Place Success: 0.777, Angle From Upright: 0.000, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_92, child_id: ee007f1aac12fbe549a44197486ae284[0m
+[32m[INFO][0m[2023-04-13 20:09:02]: [32mParent ID: syn_container_85, Child ID: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 20:09:02]: [32m
+Container extents: 0.340288, 0.19445, 0.0, 
+Bottle extents: 0.09456809999999999, 0.09794550000000002, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:09:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:09:29]: [32mIteration: 94, Place Success: 0.779, Angle From Upright: 0.008, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_85, child_id: ff13595434879bba557ef92e2fa0ccb2[0m
+[32m[INFO][0m[2023-04-13 20:09:29]: [32mParent ID: syn_container_81, Child ID: f9f67fe61dcf46d7e19818797f240d91[0m
+[32m[INFO][0m[2023-04-13 20:09:29]: [32m
+Container extents: 0.29299699999999995, 0.199148, 0.0, 
+Bottle extents: 0.06300419999999998, 0.06300390000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:09:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:09:57]: [32mIteration: 95, Place Success: 0.781, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_81, child_id: f9f67fe61dcf46d7e19818797f240d91[0m
+[32m[INFO][0m[2023-04-13 20:09:57]: [32mParent ID: syn_container_83, Child ID: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 20:09:57]: [32m
+Container extents: 0.272502, 0.129721, 0.0, 
+Bottle extents: 0.10032060000000001, 0.1002918, 0.0
+[0m
+[33m[WARNING][0m[2023-04-13 20:09:57]: [33mSetting new parent scale to: 1.448 to ensure parent is large enough for child[0m
+[32m[INFO][0m[2023-04-13 20:10:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:10:24]: [32mIteration: 96, Place Success: 0.784, Angle From Upright: 0.005, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_83, child_id: f2279b29f7d45bbd744c199e33849f2a[0m
+[32m[INFO][0m[2023-04-13 20:10:24]: [32mParent ID: syn_container_82, Child ID: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 20:10:24]: [32m
+Container extents: 0.226851, 0.2764, 0.0, 
+Bottle extents: 0.1051983, 0.10519830000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:10:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:10:51]: [32mIteration: 97, Place Success: 0.786, Angle From Upright: 0.007, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_82, child_id: fec05c85454edafc4310636931b68fdb[0m
+[32m[INFO][0m[2023-04-13 20:10:51]: [32mParent ID: syn_container_89, Child ID: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 20:10:51]: [32m
+Container extents: 0.308322, 0.214439, 0.0, 
+Bottle extents: 0.0744264, 0.07442640000000003, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:10:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:11:19]: [32mIteration: 98, Place Success: 0.788, Angle From Upright: 0.255, touching_surf: True, bottle_upright: True, fell_off_upside_down: True, , parent_id: syn_container_89, child_id: e5a5dac174982cea2dcdfc29ed7a2492[0m
+[32m[INFO][0m[2023-04-13 20:11:19]: [32mParent ID: syn_container_88, Child ID: fa44223c6f785c60e71da2487cb2ee5b[0m
+[32m[INFO][0m[2023-04-13 20:11:19]: [32m
+Container extents: 0.222108, 0.238144, 0.0, 
+Bottle extents: 0.06624719999999999, 0.06624750000000001, 0.0
+[0m
+[32m[INFO][0m[2023-04-13 20:11:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+[32m[INFO][0m[2023-04-13 20:11:46]: [32mIteration: 99, Place Success: 0.780, Angle From Upright: 1.321, touching_surf: True, bottle_upright: False, fell_off_upside_down: True, , parent_id: syn_container_88, child_id: fa44223c6f785c60e71da2487cb2ee5b[0m
+Parent model name specific: rndf_weights--ndf_container, Child model name specific: rndf_weights--ndf_bottle, EBM name specific: ebm_model_None
+You can open the visualizer by visiting the following URL:
+http://127.0.0.1:7000/static/
+
+
+
+Creating target descriptors for this parent model + child model, and these demos
+Saving to /home/ondrej/Research/code/relational_ndf/src/rndf_robot/data/relation_demos/release_demos/bottle_in_container_relation/parent_model--rndf_weights--ndf_container_child--rndf_weights--ndf_bottle/target_descriptors.npz
+
+
+
+Got at least one valid target, continuing
+Got at least one valid target, continuing
+Got at least one valid target, continuing
+Got at least one valid target, continuing
+
+
+Aligning demo number: 3 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 3: last: inf, new: 0.00060
+
+
+Aligning demo number: 2 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 2: last: inf, new: 0.00161
+
+
+Aligning demo number: 0 to target demo number: 0
+
+
+
+
+Aligning demo number: 4 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 4: last: inf, new: 0.00113
+
+
+Aligning demo number: 1 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 1: last: inf, new: 0.00178
+
+
+Aligning demo number: 3 to target demo number: 0
+
+
+
+
+Aligning demo number: 2 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 2: last: 0.00161, new: 0.00096
+
+
+Aligning demo number: 0 to target demo number: 0
+
+
+Updating original target idx
+Parent Target: 0, Updating best loss 0: last: inf, new: 0.00054
+
+
+Aligning demo number: 4 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 4: last: 0.00113, new: 0.00107
+
+
+Aligning demo number: 1 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 1: last: 0.00178, new: 0.00139
+
+
+Aligning demo number: 3 to target demo number: 0
+
+
+
+
+Aligning demo number: 2 to target demo number: 0
+
+
+
+
+Aligning demo number: 0 to target demo number: 0
+
+
+Updating original target idx
+
+
+Aligning demo number: 4 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 4: last: 0.00107, new: 0.00083
+
+
+Aligning demo number: 1 to target demo number: 0
+
+
+Parent Target: 0, Updating best loss 1: last: 0.00139, new: 0.00136
+Done! Saving to /home/ondrej/Research/code/relational_ndf/src/rndf_robot/data/relation_demos/release_demos/bottle_in_container_relation/parent_model--rndf_weights--ndf_container_child--rndf_weights--ndf_bottle/target_descriptors.npz
+PosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+Destroy EGL OpenGL window.
+PosixSharedMemory::releaseSharedMemory detached shared memory

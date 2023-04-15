@@ -1,4 +1,6 @@
-CUDA_VISIBLE_DEVICES=0 \
+GPU=1
+
+CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_rndf --parent_class syn_rack_easy --child_class mug \
     --exp mug_on_rack_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_rack.pth \
@@ -8,10 +10,11 @@ CUDA_VISIBLE_DEVICES=0 \
     --pybullet_server \
     --opt_iterations 650 \
     --n_demos 5 \
+    --target_idx 0 \
     --new_descriptors \
     --parent_load_pose_type random_upright --child_load_pose_type random_upright &> outputs/rndf_mug_on_tree_upright_5_demo.txt
 
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_rndf --parent_class syn_container --child_class bottle \
     --exp bottle_in_container_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_container.pth \
@@ -22,10 +25,11 @@ CUDA_VISIBLE_DEVICES=0 \
     --opt_iterations 650 \
     --pc_reference child \
     --n_demos 5 \
+    --target_idx 0 \
     --new_descriptors \
     --parent_load_pose_type random_upright --child_load_pose_type random_upright &> outputs/rndf_bottle_in_box_upright_5_demo.txt
 
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_rndf --parent_class mug --child_class bowl \
     --exp bowl_on_mug_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_mug.pth \
@@ -35,10 +39,11 @@ CUDA_VISIBLE_DEVICES=0 \
     --pybullet_server \
     --opt_iterations 650 \
     --n_demos 5 \
+    --target_idx 0 \
     --new_descriptors \
     --parent_load_pose_type random_upright --child_load_pose_type random_upright &> outputs/rndf_bowl_on_mug_upright_5_demo.txt
 
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_rndf --parent_class syn_rack_easy --child_class mug \
     --exp mug_on_rack_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_rack.pth \
@@ -48,10 +53,11 @@ CUDA_VISIBLE_DEVICES=0 \
     --pybullet_server \
     --opt_iterations 650 \
     --n_demos 5 \
+    --target_idx 0 \
     --new_descriptors \
     --parent_load_pose_type random_upright --child_load_pose_type any_pose &> outputs/rndf_mug_on_tree_any_5_demo.txt
 
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_rndf --parent_class syn_container --child_class bottle \
     --exp bottle_in_container_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_container.pth \
@@ -62,10 +68,11 @@ CUDA_VISIBLE_DEVICES=0 \
     --opt_iterations 650 \
     --pc_reference child \
     --n_demos 5 \
+    --target_idx 0 \
     --new_descriptors \
     --parent_load_pose_type random_upright --child_load_pose_type any_pose &> outputs/rndf_bottle_in_box_any_5_demo.txt
 
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_rndf --parent_class mug --child_class bowl \
     --exp bowl_on_mug_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_mug.pth \
@@ -75,5 +82,6 @@ CUDA_VISIBLE_DEVICES=0 \
     --pybullet_server \
     --opt_iterations 650 \
     --n_demos 5 \
+    --target_idx 0 \
     --new_descriptors \
     --parent_load_pose_type random_upright --child_load_pose_type any_pose &> outputs/rndf_bowl_on_mug_any_5_demo.txt

@@ -1,0 +1,807 @@
+pybullet build time: Feb 13 2023 14:30:59
+[33m[WARNING][0m[2023-04-12 15:09:25]: [33mStarting meshcat at zmq_url: tcp://127.0.0.1:6000[0m
+WARNING - 2023-04-12 15:09:25,593 - ai_logger - Starting meshcat at zmq_url: tcp://127.0.0.1:6000
+[32m[INFO][0m[2023-04-12 15:09:25]: [32mLoad in OpenGL![0m
+INFO - 2023-04-12 15:09:25,599 - ai_logger - Load in OpenGL!
+[32m[INFO][0m[2023-04-12 15:09:25]: [32mConfig file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults[0m
+INFO - 2023-04-12 15:09:25,648 - ai_logger - Config file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 15:09:25,677 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a'][0m
+INFO - 2023-04-12 15:09:25,677 - ai_logger - ['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a']
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 15:09:25,678 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2'][0m
+INFO - 2023-04-12 15:09:25,678 - ai_logger - ['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2']
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 15:09:25,679 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366'][0m
+INFO - 2023-04-12 15:09:25,679 - ai_logger - ['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366']
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 15:09:25,679 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj'][0m
+INFO - 2023-04-12 15:09:25,680 - ai_logger - ['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj']
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-12 15:09:25,680 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-12 15:09:25]: [32m['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj'][0m
+INFO - 2023-04-12 15:09:25,680 - ai_logger - ['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj']
+[32m[INFO][0m[2023-04-12 15:09:25]: [32mTest ids (parent): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-12 15:09:25,681 - ai_logger - Test ids (parent): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-12 15:09:25]: [32mTest ids (child): e30e5cbc54a62b023c143af07c12991a, e3d4d57aea714a88669ff09d7001bab6, e3e57a94be495771f54e1b6f41fdd78a, e4c871d1d5e3c49844b2fa2cac0778f5, e816066ac8281e2ecf70f9641eb97702, ea473a79fd2c98e5789eafad9d8a9394, ed220bdfa852f00ba2c59a4d90e63212, eff9864bfb9920b521374fbf1ea544c, f09d5d7ed64b6585eb6db0b349a2b804, f0fdca5f5c7a06252dbdfbe028032489, f2cb15fb793e7fa244057c222118625, f2ef5e5b49f2bb8340dfb1e6c8f5a333, f44387d8cb8d2e4ebaedc225f2279ecf, fa23aa60ec51c8e4c40fe5637f0a27e1, fa61e604661d4aa66658ecd96794a1cd, faa200741fa93abb47ec7417da5d353d, fc77ad0828db2caa533e44d90297dd6e, ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:09:25,681 - ai_logger - Test ids (child): e30e5cbc54a62b023c143af07c12991a, e3d4d57aea714a88669ff09d7001bab6, e3e57a94be495771f54e1b6f41fdd78a, e4c871d1d5e3c49844b2fa2cac0778f5, e816066ac8281e2ecf70f9641eb97702, ea473a79fd2c98e5789eafad9d8a9394, ed220bdfa852f00ba2c59a4d90e63212, eff9864bfb9920b521374fbf1ea544c, f09d5d7ed64b6585eb6db0b349a2b804, f0fdca5f5c7a06252dbdfbe028032489, f2cb15fb793e7fa244057c222118625, f2ef5e5b49f2bb8340dfb1e6c8f5a333, f44387d8cb8d2e4ebaedc225f2279ecf, fa23aa60ec51c8e4c40fe5637f0a27e1, fa61e604661d4aa66658ecd96794a1cd, faa200741fa93abb47ec7417da5d353d, fc77ad0828db2caa533e44d90297dd6e, ff7c33db3598df342d88c45db31bc366
+argv[0]=
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+Loaded EGL 1.5 after reload.
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+GL_VERSION=4.6.0 NVIDIA 515.86.01
+GL_SHADING_LANGUAGE_VERSION=4.60 NVIDIA
+Version = 4.6.0 NVIDIA 515.86.01
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/sklearn/base.py:299: UserWarning: Trying to unpickle estimator PCA from version 1.0.2 when using version 1.2.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+[32m[INFO][0m[2023-04-12 15:15:04]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 15:15:04,268 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+[32m[INFO][0m[2023-04-12 15:15:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:15:07,558 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:16:08]: [32mIteration: 0, Place Success: 1.000, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 15:16:08,325 - ai_logger - Iteration: 0, Place Success: 1.000, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 15:16:08]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 15:16:08,337 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 15:16:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:16:11,585 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:17:07]: [32mIteration: 1, Place Success: 0.500, touching_surf: False, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 15:17:07,017 - ai_logger - Iteration: 1, Place Success: 0.500, touching_surf: False, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 15:17:07]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 15:17:07,030 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 15:17:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:17:10,259 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:18:05]: [32mIteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 15:18:05,853 - ai_logger - Iteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 15:18:05]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-12 15:18:05,864 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-12 15:18:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:18:08,997 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:19:02]: [32mIteration: 3, Place Success: 0.500, touching_surf: True, fell_off_upside_down: False, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-12 15:19:02,341 - ai_logger - Iteration: 3, Place Success: 0.500, touching_surf: True, fell_off_upside_down: False, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-12 15:19:02]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-12 15:19:02,353 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-12 15:19:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:19:05,482 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:20:09]: [32mIteration: 4, Place Success: 0.600, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-12 15:20:09,647 - ai_logger - Iteration: 4, Place Success: 0.600, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-12 15:20:09]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 15:20:09,659 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 15:20:12]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:20:12,785 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:21:03]: [32mIteration: 5, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 15:21:03,451 - ai_logger - Iteration: 5, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 15:21:03]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:21:03,463 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:21:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:21:06,710 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:22:09]: [32mIteration: 6, Place Success: 0.714, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:22:09,000 - ai_logger - Iteration: 6, Place Success: 0.714, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:22:09]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:22:09,012 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:22:12]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:22:12,138 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:23:14]: [32mIteration: 7, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:23:14,513 - ai_logger - Iteration: 7, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:23:14]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 15:23:14,525 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 15:23:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:23:17,725 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:24:15]: [32mIteration: 8, Place Success: 0.778, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 15:24:15,747 - ai_logger - Iteration: 8, Place Success: 0.778, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 15:24:15]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:24:15,759 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:24:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:24:18,888 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:25:21]: [32mIteration: 9, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:25:21,299 - ai_logger - Iteration: 9, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:25:21]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 15:25:21,311 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 15:25:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:25:24,520 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:26:30]: [32mIteration: 10, Place Success: 0.727, touching_surf: True, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 15:26:30,266 - ai_logger - Iteration: 10, Place Success: 0.727, touching_surf: True, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 15:26:30]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:26:30,279 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:26:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:26:33,406 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:27:32]: [32mIteration: 11, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:27:32,557 - ai_logger - Iteration: 11, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:27:32]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:27:32,568 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:27:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:27:35,752 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:28:36]: [32mIteration: 12, Place Success: 0.769, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:28:36,901 - ai_logger - Iteration: 12, Place Success: 0.769, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:28:36]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:28:36,912 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 15:28:40]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:28:40,045 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:29:41]: [32mIteration: 13, Place Success: 0.786, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:29:41,613 - ai_logger - Iteration: 13, Place Success: 0.786, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 15:29:41]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-12 15:29:41,624 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-12 15:29:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:29:44,751 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:30:50]: [32mIteration: 14, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-12 15:30:50,321 - ai_logger - Iteration: 14, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-12 15:30:50]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:30:50,333 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:30:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:30:53,455 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:31:53]: [32mIteration: 15, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:31:53,521 - ai_logger - Iteration: 15, Place Success: 0.812, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:31:53]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 15:31:53,532 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 15:31:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:31:56,736 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:32:48]: [32mIteration: 16, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 15:32:48,259 - ai_logger - Iteration: 16, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 15:32:48]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 15:32:48,271 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 15:32:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:32:51,399 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:33:48]: [32mIteration: 17, Place Success: 0.778, touching_surf: True, fell_off_upside_down: False, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 15:33:48,805 - ai_logger - Iteration: 17, Place Success: 0.778, touching_surf: True, fell_off_upside_down: False, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 15:33:48]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 15:33:48,817 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 15:33:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:33:52,028 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:34:52]: [32mIteration: 18, Place Success: 0.789, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 15:34:52,913 - ai_logger - Iteration: 18, Place Success: 0.789, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 15:34:52]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 15:34:52,924 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 15:34:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:34:56,175 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:35:58]: [32mIteration: 19, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 15:35:58,785 - ai_logger - Iteration: 19, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 15:35:58]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 15:35:58,797 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 15:36:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:36:01,925 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:37:01]: [32mIteration: 20, Place Success: 0.762, touching_surf: True, fell_off_upside_down: False, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 15:37:01,776 - ai_logger - Iteration: 20, Place Success: 0.762, touching_surf: True, fell_off_upside_down: False, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 15:37:01]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 15:37:01,788 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 15:37:04]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:37:04,918 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:38:05]: [32mIteration: 21, Place Success: 0.773, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 15:38:05,617 - ai_logger - Iteration: 21, Place Success: 0.773, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 15:38:05]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 15:38:05,629 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 15:38:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:38:08,756 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:39:08]: [32mIteration: 22, Place Success: 0.783, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 15:39:08,256 - ai_logger - Iteration: 22, Place Success: 0.783, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 15:39:08]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 15:39:08,268 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 15:39:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:39:11,475 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:40:05]: [32mIteration: 23, Place Success: 0.792, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 15:40:05,003 - ai_logger - Iteration: 23, Place Success: 0.792, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 15:40:05]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 15:40:05,015 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 15:40:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:40:08,145 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:41:02]: [32mIteration: 24, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 15:41:02,853 - ai_logger - Iteration: 24, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 15:41:02]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:41:02,864 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:41:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:41:05,992 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:42:06]: [32mIteration: 25, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:42:06,973 - ai_logger - Iteration: 25, Place Success: 0.808, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:42:06]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:42:06,985 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:42:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:42:10,112 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:43:11]: [32mIteration: 26, Place Success: 0.815, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:43:11,397 - ai_logger - Iteration: 26, Place Success: 0.815, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:43:11]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 15:43:11,409 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 15:43:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:43:14,528 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:44:16]: [32mIteration: 27, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 15:44:16,412 - ai_logger - Iteration: 27, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 15:44:16]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:44:16,425 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:44:19]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:44:19,548 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:45:21]: [32mIteration: 28, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 15:45:21,199 - ai_logger - Iteration: 28, Place Success: 0.828, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 15:45:21]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-12 15:45:21,210 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-12 15:45:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:45:24,409 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:46:23]: [32mIteration: 29, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-12 15:46:23,405 - ai_logger - Iteration: 29, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-12 15:46:23]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:46:23,416 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:46:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:46:26,545 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:47:29]: [32mIteration: 30, Place Success: 0.839, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:47:29,318 - ai_logger - Iteration: 30, Place Success: 0.839, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:47:29]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 15:47:29,330 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 15:47:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:47:32,454 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:48:32]: [32mIteration: 31, Place Success: 0.844, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 15:48:32,107 - ai_logger - Iteration: 31, Place Success: 0.844, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 15:48:32]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 15:48:32,119 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 15:48:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:48:35,312 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:49:31]: [32mIteration: 32, Place Success: 0.818, touching_surf: True, fell_off_upside_down: False, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 15:49:31,386 - ai_logger - Iteration: 32, Place Success: 0.818, touching_surf: True, fell_off_upside_down: False, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 15:49:31]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:49:31,402 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 15:49:34]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:49:34,522 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:50:35]: [32mIteration: 33, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:50:35,701 - ai_logger - Iteration: 33, Place Success: 0.824, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 15:50:35]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 15:50:35,713 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 15:50:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:50:38,901 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:51:49]: [32mIteration: 34, Place Success: 0.800, touching_surf: True, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 15:51:49,374 - ai_logger - Iteration: 34, Place Success: 0.800, touching_surf: True, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 15:51:49]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:51:49,387 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:51:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:51:52,520 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:52:53]: [32mIteration: 35, Place Success: 0.806, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 15:52:53,506 - ai_logger - Iteration: 35, Place Success: 0.806, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 15:52:53]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 15:52:53,518 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 15:52:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:52:56,645 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:53:50]: [32mIteration: 36, Place Success: 0.811, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 15:53:50,713 - ai_logger - Iteration: 36, Place Success: 0.811, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 15:53:50]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:53:50,725 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 15:53:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:53:53,922 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:54:53]: [32mIteration: 37, Place Success: 0.816, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 15:54:53,226 - ai_logger - Iteration: 37, Place Success: 0.816, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 15:54:53]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-12 15:54:53,238 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-12 15:54:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:54:56,358 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:55:49]: [32mIteration: 38, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-12 15:55:49,120 - ai_logger - Iteration: 38, Place Success: 0.821, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-12 15:55:49]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:55:49,132 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:55:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:55:52,334 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:56:52]: [32mIteration: 39, Place Success: 0.825, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 15:56:52,949 - ai_logger - Iteration: 39, Place Success: 0.825, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 15:56:52]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 15:56:52,961 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 15:56:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:56:56,085 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:57:52]: [32mIteration: 40, Place Success: 0.829, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 15:57:52,669 - ai_logger - Iteration: 40, Place Success: 0.829, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 15:57:52]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 15:57:52,681 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 15:57:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:57:55,802 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:58:52]: [32mIteration: 41, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 15:58:52,150 - ai_logger - Iteration: 41, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 15:58:52]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 15:58:52,162 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 15:58:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:58:55,375 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 15:59:50]: [32mIteration: 42, Place Success: 0.814, touching_surf: False, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 15:59:50,495 - ai_logger - Iteration: 42, Place Success: 0.814, touching_surf: False, fell_off_upside_down: False, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 15:59:50]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 15:59:50,507 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 15:59:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 15:59:53,761 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:00:47]: [32mIteration: 43, Place Success: 0.818, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:00:47,253 - ai_logger - Iteration: 43, Place Success: 0.818, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:00:47]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:00:47,265 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:00:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:00:50,459 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:01:46]: [32mIteration: 44, Place Success: 0.822, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:01:46,863 - ai_logger - Iteration: 44, Place Success: 0.822, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:01:46]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:01:46,875 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:01:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:01:50,011 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:02:51]: [32mIteration: 45, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:02:51,411 - ai_logger - Iteration: 45, Place Success: 0.826, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:02:51]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 16:02:51,423 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 16:02:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:02:54,622 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:03:58]: [32mIteration: 46, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e816066ac8281e2ecf70f9641eb97702[0m
+INFO - 2023-04-12 16:03:58,377 - ai_logger - Iteration: 46, Place Success: 0.830, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: e816066ac8281e2ecf70f9641eb97702
+[32m[INFO][0m[2023-04-12 16:03:58]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 16:03:58,388 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 16:04:01]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:04:01,594 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:05:04]: [32mIteration: 47, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 16:05:04,694 - ai_logger - Iteration: 47, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 16:05:04]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 16:05:04,706 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 16:05:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:05:07,948 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:06:11]: [32mIteration: 48, Place Success: 0.837, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 16:06:11,102 - ai_logger - Iteration: 48, Place Success: 0.837, touching_surf: True, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 16:06:11]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 16:06:11,114 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 16:06:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:06:14,336 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:07:13]: [32mIteration: 49, Place Success: 0.840, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 16:07:13,946 - ai_logger - Iteration: 49, Place Success: 0.840, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 16:07:13]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 16:07:13,958 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 16:07:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:07:17,083 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:08:17]: [32mIteration: 50, Place Success: 0.843, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 16:08:17,121 - ai_logger - Iteration: 50, Place Success: 0.843, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 16:08:17]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 16:08:17,132 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 16:08:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:08:20,337 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:09:20]: [32mIteration: 51, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: fc77ad0828db2caa533e44d90297dd6e[0m
+INFO - 2023-04-12 16:09:20,613 - ai_logger - Iteration: 51, Place Success: 0.846, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: fc77ad0828db2caa533e44d90297dd6e
+[32m[INFO][0m[2023-04-12 16:09:20]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:09:20,624 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:09:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:09:23,755 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:10:15]: [32mIteration: 52, Place Success: 0.849, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:10:15,509 - ai_logger - Iteration: 52, Place Success: 0.849, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:10:15]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:10:15,520 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:10:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:10:18,648 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:11:22]: [32mIteration: 53, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:11:22,139 - ai_logger - Iteration: 53, Place Success: 0.852, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:11:22]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:11:22,151 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:11:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:11:25,281 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:12:19]: [32mIteration: 54, Place Success: 0.855, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:12:19,546 - ai_logger - Iteration: 54, Place Success: 0.855, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:12:19]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 16:12:19,558 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 16:12:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:12:22,684 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:13:19]: [32mIteration: 55, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 16:13:19,982 - ai_logger - Iteration: 55, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 16:13:19]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-12 16:13:19,994 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-12 16:13:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:13:23,114 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:14:27]: [32mIteration: 56, Place Success: 0.860, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333[0m
+INFO - 2023-04-12 16:14:27,617 - ai_logger - Iteration: 56, Place Success: 0.860, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f2ef5e5b49f2bb8340dfb1e6c8f5a333
+[32m[INFO][0m[2023-04-12 16:14:27]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 16:14:27,629 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 16:14:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:14:30,752 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:15:33]: [32mIteration: 57, Place Success: 0.845, touching_surf: True, fell_off_upside_down: False, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 16:15:33,746 - ai_logger - Iteration: 57, Place Success: 0.845, touching_surf: True, fell_off_upside_down: False, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 16:15:33]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:15:33,758 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:15:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:15:36,977 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:16:30]: [32mIteration: 58, Place Success: 0.831, touching_surf: True, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:16:30,729 - ai_logger - Iteration: 58, Place Success: 0.831, touching_surf: True, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:16:30]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 16:16:30,742 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 16:16:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:16:33,950 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:17:35]: [32mIteration: 59, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 16:17:35,413 - ai_logger - Iteration: 59, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 16:17:35]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 16:17:35,425 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 16:17:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:17:38,619 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:18:34]: [32mIteration: 60, Place Success: 0.820, touching_surf: True, fell_off_upside_down: False, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 16:18:34,017 - ai_logger - Iteration: 60, Place Success: 0.820, touching_surf: True, fell_off_upside_down: False, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 16:18:34]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:18:34,030 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:18:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:18:37,163 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:19:33]: [32mIteration: 61, Place Success: 0.823, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:19:33,227 - ai_logger - Iteration: 61, Place Success: 0.823, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:19:33]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 16:19:33,239 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 16:19:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:19:36,362 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:20:33]: [32mIteration: 62, Place Success: 0.810, touching_surf: False, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 16:20:33,508 - ai_logger - Iteration: 62, Place Success: 0.810, touching_surf: False, fell_off_upside_down: True, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 16:20:33]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:20:33,520 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:20:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:20:36,650 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:21:31]: [32mIteration: 63, Place Success: 0.797, touching_surf: True, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:21:31,074 - ai_logger - Iteration: 63, Place Success: 0.797, touching_surf: True, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:21:31]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:21:31,087 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:21:34]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:21:34,219 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:22:35]: [32mIteration: 64, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:22:35,109 - ai_logger - Iteration: 64, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:22:35]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:22:35,121 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:22:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:22:38,250 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:23:44]: [32mIteration: 65, Place Success: 0.788, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:23:44,801 - ai_logger - Iteration: 65, Place Success: 0.788, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:23:44]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 16:23:44,814 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 16:23:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:23:48,002 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:24:43]: [32mIteration: 66, Place Success: 0.791, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: eff9864bfb9920b521374fbf1ea544c[0m
+INFO - 2023-04-12 16:24:43,584 - ai_logger - Iteration: 66, Place Success: 0.791, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: eff9864bfb9920b521374fbf1ea544c
+[32m[INFO][0m[2023-04-12 16:24:43]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 16:24:43,596 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 16:24:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:24:46,785 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:25:46]: [32mIteration: 67, Place Success: 0.794, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ff7c33db3598df342d88c45db31bc366[0m
+INFO - 2023-04-12 16:25:46,989 - ai_logger - Iteration: 67, Place Success: 0.794, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ff7c33db3598df342d88c45db31bc366
+[32m[INFO][0m[2023-04-12 16:25:47]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:25:47,001 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:25:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:25:50,204 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:26:50]: [32mIteration: 68, Place Success: 0.797, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:26:50,947 - ai_logger - Iteration: 68, Place Success: 0.797, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:26:50]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:26:50,959 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:26:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:26:54,160 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:27:48]: [32mIteration: 69, Place Success: 0.786, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:27:48,744 - ai_logger - Iteration: 69, Place Success: 0.786, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:27:48]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:27:48,756 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:27:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:27:51,880 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:28:49]: [32mIteration: 70, Place Success: 0.789, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:28:49,921 - ai_logger - Iteration: 70, Place Success: 0.789, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:28:49]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:28:49,933 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:28:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:28:53,136 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:29:45]: [32mIteration: 71, Place Success: 0.778, touching_surf: True, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:29:45,799 - ai_logger - Iteration: 71, Place Success: 0.778, touching_surf: True, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:29:45]: [32mParent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:29:45,812 - ai_logger - Parent ID: f09e51579600cfbb88b651d2e4ea0846, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:29:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:29:48,947 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:30:45]: [32mIteration: 72, Place Success: 0.781, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:30:45,605 - ai_logger - Iteration: 72, Place Success: 0.781, touching_surf: True, fell_off_upside_down: True, , parent_id: f09e51579600cfbb88b651d2e4ea0846, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:30:45]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:30:45,616 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:30:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:30:48,743 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:31:42]: [32mIteration: 73, Place Success: 0.770, touching_surf: True, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:31:42,980 - ai_logger - Iteration: 73, Place Success: 0.770, touching_surf: True, fell_off_upside_down: False, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:31:42]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 16:31:42,993 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 16:31:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:31:46,159 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:32:45]: [32mIteration: 74, Place Success: 0.773, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 16:32:45,525 - ai_logger - Iteration: 74, Place Success: 0.773, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 16:32:45]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:32:45,537 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:32:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:32:48,660 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:33:42]: [32mIteration: 75, Place Success: 0.763, touching_surf: False, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:33:42,070 - ai_logger - Iteration: 75, Place Success: 0.763, touching_surf: False, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:33:42]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:33:42,082 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:33:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:33:45,264 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:34:40]: [32mIteration: 76, Place Success: 0.753, touching_surf: True, fell_off_upside_down: False, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:34:40,948 - ai_logger - Iteration: 76, Place Success: 0.753, touching_surf: True, fell_off_upside_down: False, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:34:40]: [32mParent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:34:40,960 - ai_logger - Parent ID: f1c5b9bb744afd96d6e1954365b10b52, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:34:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:34:44,086 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:35:37]: [32mIteration: 77, Place Success: 0.756, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:35:37,465 - ai_logger - Iteration: 77, Place Success: 0.756, touching_surf: True, fell_off_upside_down: True, , parent_id: f1c5b9bb744afd96d6e1954365b10b52, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:35:37]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 16:35:37,477 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 16:35:40]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:35:40,605 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:36:41]: [32mIteration: 78, Place Success: 0.759, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 16:36:41,744 - ai_logger - Iteration: 78, Place Success: 0.759, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 16:36:41]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 16:36:41,756 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 16:36:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:36:44,884 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:37:45]: [32mIteration: 79, Place Success: 0.762, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: e30e5cbc54a62b023c143af07c12991a[0m
+INFO - 2023-04-12 16:37:45,000 - ai_logger - Iteration: 79, Place Success: 0.762, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: e30e5cbc54a62b023c143af07c12991a
+[32m[INFO][0m[2023-04-12 16:37:45]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:37:45,012 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:37:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:37:48,138 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:38:49]: [32mIteration: 80, Place Success: 0.765, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:38:49,337 - ai_logger - Iteration: 80, Place Success: 0.765, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:38:49]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:38:49,349 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:38:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:38:52,484 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:39:45]: [32mIteration: 81, Place Success: 0.756, touching_surf: False, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:39:45,029 - ai_logger - Iteration: 81, Place Success: 0.756, touching_surf: False, fell_off_upside_down: False, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:39:45]: [32mParent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:39:45,042 - ai_logger - Parent ID: edaf960fb6afdadc4cebc4b5998de5d0, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:39:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:39:48,173 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:40:44]: [32mIteration: 82, Place Success: 0.759, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:40:44,674 - ai_logger - Iteration: 82, Place Success: 0.759, touching_surf: True, fell_off_upside_down: True, , parent_id: edaf960fb6afdadc4cebc4b5998de5d0, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:40:44]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:40:44,686 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:40:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:40:47,892 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:41:46]: [32mIteration: 83, Place Success: 0.762, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e3e57a94be495771f54e1b6f41fdd78a[0m
+INFO - 2023-04-12 16:41:46,514 - ai_logger - Iteration: 83, Place Success: 0.762, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: e3e57a94be495771f54e1b6f41fdd78a
+[32m[INFO][0m[2023-04-12 16:41:46]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-12 16:41:46,527 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-12 16:41:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:41:49,714 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:42:43]: [32mIteration: 84, Place Success: 0.753, touching_surf: True, fell_off_upside_down: False, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f0fdca5f5c7a06252dbdfbe028032489[0m
+INFO - 2023-04-12 16:42:43,931 - ai_logger - Iteration: 84, Place Success: 0.753, touching_surf: True, fell_off_upside_down: False, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: f0fdca5f5c7a06252dbdfbe028032489
+[32m[INFO][0m[2023-04-12 16:42:43]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:42:43,943 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:42:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:42:47,074 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:43:48]: [32mIteration: 85, Place Success: 0.756, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1[0m
+INFO - 2023-04-12 16:43:48,689 - ai_logger - Iteration: 85, Place Success: 0.756, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: fa23aa60ec51c8e4c40fe5637f0a27e1
+[32m[INFO][0m[2023-04-12 16:43:48]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 16:43:48,701 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 16:43:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:43:51,830 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:44:50]: [32mIteration: 86, Place Success: 0.759, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6[0m
+INFO - 2023-04-12 16:44:50,977 - ai_logger - Iteration: 86, Place Success: 0.759, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: e3d4d57aea714a88669ff09d7001bab6
+[32m[INFO][0m[2023-04-12 16:44:50]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-12 16:44:50,988 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-12 16:44:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:44:54,191 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:45:52]: [32mIteration: 87, Place Success: 0.761, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-12 16:45:52,833 - ai_logger - Iteration: 87, Place Success: 0.761, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-12 16:45:52]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:45:52,845 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:45:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:45:56,080 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:46:50]: [32mIteration: 88, Place Success: 0.753, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5[0m
+INFO - 2023-04-12 16:46:50,889 - ai_logger - Iteration: 88, Place Success: 0.753, touching_surf: True, fell_off_upside_down: False, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: e4c871d1d5e3c49844b2fa2cac0778f5
+[32m[INFO][0m[2023-04-12 16:46:50]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 16:46:50,901 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 16:46:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:46:54,023 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:47:51]: [32mIteration: 89, Place Success: 0.756, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f44387d8cb8d2e4ebaedc225f2279ecf[0m
+INFO - 2023-04-12 16:47:51,555 - ai_logger - Iteration: 89, Place Success: 0.756, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: f44387d8cb8d2e4ebaedc225f2279ecf
+[32m[INFO][0m[2023-04-12 16:47:51]: [32mParent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:47:51,567 - ai_logger - Parent ID: ec846432f3ebedf0a6f32a8797e3b9e9, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:47:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:47:54,690 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:48:49]: [32mIteration: 90, Place Success: 0.758, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:48:49,881 - ai_logger - Iteration: 90, Place Success: 0.758, touching_surf: True, fell_off_upside_down: True, , parent_id: ec846432f3ebedf0a6f32a8797e3b9e9, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:48:49]: [32mParent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 16:48:49,893 - ai_logger - Parent ID: eecb13f61a93b4048f58d8b19de93f99, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 16:48:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:48:53,016 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:49:50]: [32mIteration: 91, Place Success: 0.761, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 16:49:50,007 - ai_logger - Iteration: 91, Place Success: 0.761, touching_surf: True, fell_off_upside_down: True, , parent_id: eecb13f61a93b4048f58d8b19de93f99, child_id: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 16:49:50]: [32mParent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:49:50,019 - ai_logger - Parent ID: f7d776fd68b126f23b67070c4a034f08, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:49:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:49:53,141 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:50:45]: [32mIteration: 92, Place Success: 0.763, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:50:45,487 - ai_logger - Iteration: 92, Place Success: 0.763, touching_surf: True, fell_off_upside_down: True, , parent_id: f7d776fd68b126f23b67070c4a034f08, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:50:45]: [32mParent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:50:45,499 - ai_logger - Parent ID: ff1a44e1c1785d618bca309f2c51966a, Child ID: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:50:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:50:48,758 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:51:43]: [32mIteration: 93, Place Success: 0.766, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: ed220bdfa852f00ba2c59a4d90e63212[0m
+INFO - 2023-04-12 16:51:43,451 - ai_logger - Iteration: 93, Place Success: 0.766, touching_surf: True, fell_off_upside_down: True, , parent_id: ff1a44e1c1785d618bca309f2c51966a, child_id: ed220bdfa852f00ba2c59a4d90e63212
+[32m[INFO][0m[2023-04-12 16:51:43]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:51:43,465 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:51:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:51:46,598 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:52:41]: [32mIteration: 94, Place Success: 0.768, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:52:41,381 - ai_logger - Iteration: 94, Place Success: 0.768, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:52:41]: [32mParent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 16:52:41,393 - ai_logger - Parent ID: e9bd4ee553eb35c1d5ccc40b510e4bd, Child ID: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 16:52:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:52:44,587 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:53:45]: [32mIteration: 95, Place Success: 0.771, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: f2cb15fb793e7fa244057c222118625[0m
+INFO - 2023-04-12 16:53:45,577 - ai_logger - Iteration: 95, Place Success: 0.771, touching_surf: True, fell_off_upside_down: True, , parent_id: e9bd4ee553eb35c1d5ccc40b510e4bd, child_id: f2cb15fb793e7fa244057c222118625
+[32m[INFO][0m[2023-04-12 16:53:45]: [32mParent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:53:45,588 - ai_logger - Parent ID: f1e439307b834015770a0ff1161fa15a, Child ID: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:53:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:53:48,802 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:54:43]: [32mIteration: 96, Place Success: 0.773, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f09d5d7ed64b6585eb6db0b349a2b804[0m
+INFO - 2023-04-12 16:54:43,836 - ai_logger - Iteration: 96, Place Success: 0.773, touching_surf: True, fell_off_upside_down: True, , parent_id: f1e439307b834015770a0ff1161fa15a, child_id: f09d5d7ed64b6585eb6db0b349a2b804
+[32m[INFO][0m[2023-04-12 16:54:43]: [32mParent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-12 16:54:43,848 - ai_logger - Parent ID: e984fd7e97c2be347eaeab1f0c9120b7, Child ID: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-12 16:54:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:54:47,054 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:55:48]: [32mIteration: 97, Place Success: 0.765, touching_surf: True, fell_off_upside_down: False, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: fa61e604661d4aa66658ecd96794a1cd[0m
+INFO - 2023-04-12 16:55:48,372 - ai_logger - Iteration: 97, Place Success: 0.765, touching_surf: True, fell_off_upside_down: False, , parent_id: e984fd7e97c2be347eaeab1f0c9120b7, child_id: fa61e604661d4aa66658ecd96794a1cd
+[32m[INFO][0m[2023-04-12 16:55:48]: [32mParent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:55:48,385 - ai_logger - Parent ID: fad118b32085f3f2c2c72e575af174cd, Child ID: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:55:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:55:51,505 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:56:50]: [32mIteration: 98, Place Success: 0.768, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ea473a79fd2c98e5789eafad9d8a9394[0m
+INFO - 2023-04-12 16:56:50,340 - ai_logger - Iteration: 98, Place Success: 0.768, touching_surf: True, fell_off_upside_down: True, , parent_id: fad118b32085f3f2c2c72e575af174cd, child_id: ea473a79fd2c98e5789eafad9d8a9394
+[32m[INFO][0m[2023-04-12 16:56:50]: [32mParent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 16:56:50,352 - ai_logger - Parent ID: e94e46bc5833f2f5e57b873e4f3ef3a4, Child ID: faa200741fa93abb47ec7417da5d353d
+[32m[INFO][0m[2023-04-12 16:56:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-12 16:56:53,486 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,807]:
+removeConstraint failed[32m[INFO][0m[2023-04-12 16:57:50]: [32mIteration: 99, Place Success: 0.770, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: faa200741fa93abb47ec7417da5d353d[0m
+INFO - 2023-04-12 16:57:50,891 - ai_logger - Iteration: 99, Place Success: 0.770, touching_surf: True, fell_off_upside_down: True, , parent_id: e94e46bc5833f2f5e57b873e4f3ef3a4, child_id: faa200741fa93abb47ec7417da5d353d
+You can open the visualizer by visiting the following URL:
+http://127.0.0.1:7000/static/
+@@ 0.0010736539392419131
+# nearby points: 136649
+@@ 0.00046915752233712445
+# nearby points: 166435
+@@ 0.011888047887967226
+# nearby points: 95119
+@@ 0.00033259893268892135
+# nearby points: 139448
+@@ 0.011795030760718264
+# nearby points: 56242
+costs: [0.7664012758773932, 0.6644770146002481, 3.684362326548212, 0.08103374542356293, 1.5102939856922217]
+@@ 0.0014387117882056863
+# nearby points: 105971
+PosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+Destroy EGL OpenGL window.
+PosixSharedMemory::releaseSharedMemory detached shared memory
