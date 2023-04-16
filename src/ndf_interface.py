@@ -19,7 +19,10 @@ class NDFInterface:
     canon_target_scale: float = 1.
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.03
-    wiggle: bool = True
+    wiggle: bool = False
+    ablate_no_warp: bool = True
+    ablate_no_scale: bool = False
+    ablate_no_pose_training: bool = False
 
     def __post_init__(self):
 
@@ -47,15 +50,21 @@ class NDFInterface:
             target_pcd, _ = utils.farthest_point_sample(target_pcd, self.pcd_subsample_points)
 
         # Perception.
+        inference_kwargs = {
+            "train_latents": not self.ablate_no_warp,
+            "train_scales": not self.ablate_no_scale,
+            "train_poses": not self.ablate_no_pose_training
+        }
+
         warp = ObjectWarpingSE2Batch(
             self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
             init_scale=self.canon_source_scale)
-        source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
         warp = ObjectWarpingSE2Batch(
             self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
             init_scale=self.canon_target_scale)
-        target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
         if show:
             viz_utils.show_pcds_plotly({
@@ -110,21 +119,27 @@ class NDFInterface:
         if self.pcd_subsample_points is not None and len(target_pcd) > self.pcd_subsample_points:
             target_pcd, _ = utils.farthest_point_sample(target_pcd, self.pcd_subsample_points)
 
+        inference_kwargs = {
+            "train_latents": not self.ablate_no_warp,
+            "train_scales": not self.ablate_no_scale,
+            "train_poses": not self.ablate_no_pose_training
+        }
+
         if se3:
             warp = ObjectWarpingSE3Batch(
                 self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
                 init_scale=self.canon_source_scale)
-            source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
+            source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15, inference_kwargs=inference_kwargs)
         else:
             warp = ObjectWarpingSE2Batch(
                 self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
                 init_scale=self.canon_source_scale)
-            source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+            source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
         warp = ObjectWarpingSE2Batch(
             self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
             init_scale=self.canon_target_scale)
-        target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
         if show:
             viz_utils.show_pcds_plotly({

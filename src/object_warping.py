@@ -483,7 +483,7 @@ class ObjectSE2Batch(ObjectWarping):
 
 
 def warp_to_pcd_se3(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch], n_angles: int=50,
-                    n_batches: int=3) -> Tuple[NDArray, float, utils.ObjParam]:
+                    n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
 
     poses = random_rots(n_angles * n_batches)
 
@@ -492,7 +492,7 @@ def warp_to_pcd_se3(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch]
     for batch_idx in range(n_batches):
 
         poses_batch = poses[batch_idx * n_angles: (batch_idx + 1) * n_angles]
-        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(poses_batch)
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(poses_batch, **inference_kwargs)
         all_costs += batch_costs
         all_new_pcds += batch_new_pcds
         all_parameters += batch_parameters
@@ -502,8 +502,7 @@ def warp_to_pcd_se3(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch]
 
 
 def warp_to_pcd_se3_hemisphere(object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch],
-                               n_angles: int=50,
-                               n_batches: int=3) -> Tuple[NDArray, float, utils.ObjParam]:
+                               n_angles: int=50, n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
 
     poses = random_rots_hemisphere(n_angles * n_batches)
 
@@ -512,7 +511,7 @@ def warp_to_pcd_se3_hemisphere(object_warping: Union[ObjectWarpingSE3Batch, Obje
     for batch_idx in range(n_batches):
 
         poses_batch = poses[batch_idx * n_angles: (batch_idx + 1) * n_angles]
-        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(poses_batch)
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(poses_batch, **inference_kwargs)
         all_costs += batch_costs
         all_new_pcds += batch_new_pcds
         all_parameters += batch_parameters
