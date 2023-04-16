@@ -19,7 +19,7 @@ class NDFInterface:
     canon_target_scale: float = 1.
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.03
-    wiggle: bool = False
+    wiggle: bool = True
 
     def __post_init__(self):
 

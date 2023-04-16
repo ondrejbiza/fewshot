@@ -3,6 +3,7 @@ import unittest
 
 import numpy as np
 from scipy.spatial.transform import Rotation
+import pybullet as pb
 
 from src import utils
 
@@ -106,19 +107,17 @@ class TestPoseDistance(unittest.TestCase):
     def test_same_pose(self):
         trans1 = np.eye(4)
         trans2 = np.eye(4)
-        expected = (0.0, 0.0, 0.0)
+        expected = 0.0
         result = utils.pose_distance(trans1, trans2)
-        for i in range(3):
-            self.assertAlmostEqual(result[i], expected[i], places=5)
+        self.assertAlmostEqual(result, expected, places=5)
 
     def test_translation_only(self):
         trans1 = np.eye(4)
         trans2 = np.eye(4)
         trans2[:3, 3] = np.array([2, 0, 0])
-        expected = (2.0, 0.0, 2.0)
+        expected = 2.0
         result = utils.pose_distance(trans1, trans2)
-        for i in range(3):
-            self.assertAlmostEqual(result[i], expected[i], places=5)
+        self.assertAlmostEqual(result, expected, places=5)
 
     def test_rotation_only(self):
         trans1 = np.eye(4)
@@ -126,10 +125,9 @@ class TestPoseDistance(unittest.TestCase):
         trans2[:3, :3] = np.array([[0, -1, 0],
                                    [1,  0, 0],
                                    [0,  0, 1]])
-        expected = (0.0, np.pi / 2, np.pi / 2)
+        expected = np.pi / 2
         result = utils.pose_distance(trans1, trans2)
-        for i in range(3):
-            self.assertAlmostEqual(result[i], expected[i], places=5)
+        self.assertAlmostEqual(result, expected, places=5)
 
     def test_combined_translation_and_rotation(self):
         trans1 = np.eye(4)
@@ -138,10 +136,9 @@ class TestPoseDistance(unittest.TestCase):
         trans2[:3, :3] = np.array([[0, -1, 0],
                                    [1,  0, 0],
                                    [0,  0, 1]])
-        expected = (2.0, np.pi / 2, 2.0 + np.pi / 2)
+        expected = 2.0 + np.pi / 2
         result = utils.pose_distance(trans1, trans2)
-        for i in range(3):
-            self.assertAlmostEqual(result[i], expected[i], places=5)
+        self.assertAlmostEqual(result, expected, places=5)
 
 
 class TestFarthestPointSample(unittest.TestCase):
@@ -252,3 +249,45 @@ class TestBestFitTransform(unittest.TestCase):
         np.testing.assert_array_almost_equal(result_T, expected_T, decimal=5)
         np.testing.assert_array_almost_equal(result_R, expected_R, decimal=5)
         np.testing.assert_array_almost_equal(result_t, expected_t, decimal=5)
+
+
+class TestWiggle(unittest.TestCase):
+
+    def setUp(self):
+        self.sim_id = pb.connect(pb.DIRECT)
+        pb.resetSimulation()
+        self.source_obj = pb.loadURDF("data/boxes/train/0.urdf")
+        self.target_obj = pb.loadURDF("data/boxes/train/1.urdf")
+
+    def tearDown(self):
+        pb.disconnect(self.sim_id)
+
+    def test_no_collision_initially(self):
+        utils.pb_set_pose(self.source_obj, np.array([1, 1, 1]), np.array([0, 0, 0, 1]), sim_id=self.sim_id)
+        utils.pb_set_pose(self.target_obj, np.array([3, 3, 3]), np.array([0, 0, 0, 1]), sim_id=self.sim_id)
+
+        pos, quat = utils.pb_get_pose(self.source_obj, sim_id=self.sim_id)
+        result_pos, result_quat = utils.wiggle(self.source_obj, self.target_obj, sim_id=self.sim_id)
+
+        self.assertTrue(np.allclose(result_pos, pos))
+        self.assertTrue(np.allclose(result_quat, quat))
+
+    def test_collision(self):
+        utils.pb_set_pose(self.source_obj, np.array([1, 1, 1]), np.array([0, 0, 0, 1]), sim_id=self.sim_id)
+        utils.pb_set_pose(self.target_obj, np.array([1.1, 1.1, 1.1]), np.array([0, 0, 0, 1]), sim_id=self.sim_id)
+
+        result_pos, result_quat = utils.wiggle(self.source_obj, self.target_obj, sim_id=self.sim_id)
+
+        pb.performCollisionDetection()
+        in_collision = utils.pb_body_collision(self.source_obj, self.target_obj, sim_id=self.sim_id)
+        self.assertFalse(in_collision)
+
+    def test_no_solution_found(self):
+        utils.pb_set_pose(self.source_obj, np.array([1, 1, 1]), np.array([0, 0, 0, 1]), sim_id=self.sim_id)
+        utils.pb_set_pose(self.target_obj, np.array([1.1, 1.1, 1.1]), np.array([0, 0, 0, 1]), sim_id=self.sim_id)
+
+        pos, quat = utils.pb_get_pose(self.source_obj, sim_id=self.sim_id)
+        result_pos, result_quat = utils.wiggle(self.source_obj, self.target_obj, max_tries=1, sd=0.001, sim_id=self.sim_id)
+
+        self.assertTrue(np.allclose(result_pos, pos))
+        self.assertTrue(np.allclose(result_quat, quat))
