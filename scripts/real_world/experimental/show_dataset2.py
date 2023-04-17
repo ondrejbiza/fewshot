@@ -13,21 +13,16 @@ def main(args):
         data = pickle.load(f)
 
     for i in range(len(data)):
-        pcd = np.concatenate(data[i]["clouds"])
+        pcd = np.concatenate(data[i]["cloud"])
+        pcd = pcd.reshape(-1, 3)
         pcd = pcd[np.random.randint(len(pcd), size=4000)]
-        viz_utils.show_pcd_plotly(pcd)
+        # viz_utils.show_pcd_plotly(pcd)
         plt.subplot(3, 2, 1)
-        plt.imshow(data[i]["images"][0])
+        plt.imshow(data[i]["image"])
         plt.subplot(3, 2, 2)
-        plt.imshow(data[i]["depths"][0] / np.max(data[i]["depths"][0]))
+        plt.imshow(data[i]["depth"] / np.max(data[i]["depth"]))
         plt.subplot(3, 2, 3)
-        plt.imshow(data[i]["images"][1])
-        plt.subplot(3, 2, 4)
-        plt.imshow(data[i]["depths"][1] / np.max(data[i]["depths"][1]))
-        plt.subplot(3, 2, 5)
-        plt.imshow(data[i]["images"][2])
-        plt.subplot(3, 2, 6)
-        plt.imshow(data[i]["depths"][2] / np.max(data[i]["depths"][2]))
+        plt.imshow(data[i]["masks"][1, 0].cpu())
         plt.show()
 
         # Showing ordered point cloud.
