@@ -1,0 +1,713 @@
+pybullet build time: Feb 13 2023 14:30:59
+[33m[WARNING][0m[2023-04-16 14:20:23]: [33mStarting meshcat at zmq_url: tcp://127.0.0.1:6000[0m
+WARNING - 2023-04-16 14:20:23,764 - ai_logger - Starting meshcat at zmq_url: tcp://127.0.0.1:6000
+[32m[INFO][0m[2023-04-16 14:20:23]: [32mLoad in OpenGL![0m
+INFO - 2023-04-16 14:20:23,770 - ai_logger - Load in OpenGL!
+[32m[INFO][0m[2023-04-16 14:20:23]: [32mConfig file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults[0m
+INFO - 2023-04-16 14:20:23,806 - ai_logger - Config file /home/ondrej/Research/code/relational_ndf/src/rndf_robot/config/eval_cfgs/base_cfg does not exist, using defaults
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-16 14:20:23,834 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a'][0m
+INFO - 2023-04-16 14:20:23,834 - ai_logger - ['e94e46bc5833f2f5e57b873e4f3ef3a4', 'e984fd7e97c2be347eaeab1f0c9120b7', 'e9bd4ee553eb35c1d5ccc40b510e4bd', 'ec846432f3ebedf0a6f32a8797e3b9e9', 'edaf960fb6afdadc4cebc4b5998de5d0', 'eecb13f61a93b4048f58d8b19de93f99', 'f09e51579600cfbb88b651d2e4ea0846', 'f1c5b9bb744afd96d6e1954365b10b52', 'f1e439307b834015770a0ff1161fa15a', 'f7d776fd68b126f23b67070c4a034f08', 'fad118b32085f3f2c2c72e575af174cd', 'ff1a44e1c1785d618bca309f2c51966a']
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-16 14:20:23,835 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2'][0m
+INFO - 2023-04-16 14:20:23,835 - ai_logger - ['e101cc44ead036294bc79c881a0e818b', 'e23f62bb4794ee6a7fdd0518ed16e820', 'e24fb21f7cb7998d94b2f4c4a75fd722', 'e29e8121d93af93bba803759c05367b0', 'e4915635a488cbfc4c3a35cee92bb95b', 'e4ada697d05ac7acf9907e8bdd53291e', 'e56e77c6eb21d9bdf577ff4de1ac394c', 'e593aa021f3fa324530647fc03dd20dc', 'e5a5dac174982cea2dcdfc29ed7a2492', 'e656d6586d481f41eb69804478f9c547', 'e824b049f16b29f19ab27ff78a8ea481', 'e8b48d395d3d8744e53e6e0633163da8', 'e9371d3abbb3bb7265bca0cae1ecfff5', 'ed55f39e04668bf9837048966ef3fcb9', 'ed8aff7768d2cc3e45bcca2603f7a948', 'edfcffbdd585d00ec41b4a535d52e063', 'ee007f1aac12fbe549a44197486ae284', 'ee3ca78e36c6a7b2a367d39c852840d5', 'ee74f5bfb0d7c8a5bd288303be3d57e7', 'ee77714471b911baeeff0dee910fd183', 'f0611ec9ff89209bf10c4513652c1c5e', 'f2279b29f7d45bbd744c199e33849f2a', 'f47cbefc9aa5b6a918431871c8e05789', 'f4851a2835228377e101b7546e3ee8a7', 'f49d6c4b75f695c44d34bdc365023cf4', 'f68e99b57596b33d197a35146ee825cd', 'f6ffca90c543edf9d6438d5cb8c578c6', 'f83c3b75f637241aebe67d9b32c3ddf8', 'f853ac62bc288e48e56a63d21fb60ae9', 'f9f67fe61dcf46d7e19818797f240d91', 'fa44223c6f785c60e71da2487cb2ee5b', 'fca70766d88fc7b9e5054d95cb6a63e2', 'fd0ccd09330865277602de57eab5e08f', 'fda8d8820e4d166bd7134844380eaeb0', 'fec05c85454edafc4310636931b68fdb', 'ff13595434879bba557ef92e2fa0ccb2']
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-16 14:20:23,835 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366'][0m
+INFO - 2023-04-16 14:20:23,836 - ai_logger - ['e30e5cbc54a62b023c143af07c12991a', 'e3d4d57aea714a88669ff09d7001bab6', 'e3e57a94be495771f54e1b6f41fdd78a', 'e4c871d1d5e3c49844b2fa2cac0778f5', 'e816066ac8281e2ecf70f9641eb97702', 'ea473a79fd2c98e5789eafad9d8a9394', 'ed220bdfa852f00ba2c59a4d90e63212', 'eff9864bfb9920b521374fbf1ea544c', 'f09d5d7ed64b6585eb6db0b349a2b804', 'f0fdca5f5c7a06252dbdfbe028032489', 'f2cb15fb793e7fa244057c222118625', 'f2ef5e5b49f2bb8340dfb1e6c8f5a333', 'f44387d8cb8d2e4ebaedc225f2279ecf', 'fa23aa60ec51c8e4c40fe5637f0a27e1', 'fa61e604661d4aa66658ecd96794a1cd', 'faa200741fa93abb47ec7417da5d353d', 'fc77ad0828db2caa533e44d90297dd6e', 'ff7c33db3598df342d88c45db31bc366']
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-16 14:20:23,836 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj'][0m
+INFO - 2023-04-16 14:20:23,836 - ai_logger - ['syn_rack_81.obj', 'syn_rack_82.obj', 'syn_rack_83.obj', 'syn_rack_84.obj', 'syn_rack_85.obj', 'syn_rack_86.obj', 'syn_rack_87.obj', 'syn_rack_88.obj', 'syn_rack_89.obj', 'syn_rack_9.obj', 'syn_rack_90.obj', 'syn_rack_91.obj', 'syn_rack_92.obj', 'syn_rack_93.obj', 'syn_rack_94.obj', 'syn_rack_95.obj', 'syn_rack_96.obj', 'syn_rack_97.obj', 'syn_rack_98.obj', 'syn_rack_99.obj']
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m
+
+
+Test objects: [0m
+INFO - 2023-04-16 14:20:23,836 - ai_logger - 
+
+
+Test objects: 
+[32m[INFO][0m[2023-04-16 14:20:23]: [32m['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj'][0m
+INFO - 2023-04-16 14:20:23,836 - ai_logger - ['syn_container_81.obj', 'syn_container_82.obj', 'syn_container_83.obj', 'syn_container_84.obj', 'syn_container_85.obj', 'syn_container_86.obj', 'syn_container_87.obj', 'syn_container_88.obj', 'syn_container_89.obj', 'syn_container_9.obj', 'syn_container_90.obj', 'syn_container_91.obj', 'syn_container_92.obj', 'syn_container_93.obj', 'syn_container_94.obj', 'syn_container_95.obj', 'syn_container_96.obj', 'syn_container_97.obj', 'syn_container_98.obj', 'syn_container_99.obj']
+[32m[INFO][0m[2023-04-16 14:20:23]: [32mTest ids (parent): syn_rack_81, syn_rack_82, syn_rack_83, syn_rack_84, syn_rack_85, syn_rack_86, syn_rack_87, syn_rack_88, syn_rack_89, syn_rack_9, syn_rack_90, syn_rack_91, syn_rack_92, syn_rack_93, syn_rack_94, syn_rack_95, syn_rack_96, syn_rack_97, syn_rack_98, syn_rack_99[0m
+INFO - 2023-04-16 14:20:23,837 - ai_logger - Test ids (parent): syn_rack_81, syn_rack_82, syn_rack_83, syn_rack_84, syn_rack_85, syn_rack_86, syn_rack_87, syn_rack_88, syn_rack_89, syn_rack_9, syn_rack_90, syn_rack_91, syn_rack_92, syn_rack_93, syn_rack_94, syn_rack_95, syn_rack_96, syn_rack_97, syn_rack_98, syn_rack_99
+[32m[INFO][0m[2023-04-16 14:20:23]: [32mTest ids (child): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:20:23,837 - ai_logger - Test ids (child): e94e46bc5833f2f5e57b873e4f3ef3a4, e984fd7e97c2be347eaeab1f0c9120b7, e9bd4ee553eb35c1d5ccc40b510e4bd, ec846432f3ebedf0a6f32a8797e3b9e9, edaf960fb6afdadc4cebc4b5998de5d0, eecb13f61a93b4048f58d8b19de93f99, f09e51579600cfbb88b651d2e4ea0846, f1c5b9bb744afd96d6e1954365b10b52, f1e439307b834015770a0ff1161fa15a, f7d776fd68b126f23b67070c4a034f08, fad118b32085f3f2c2c72e575af174cd, ff1a44e1c1785d618bca309f2c51966a
+argv[0]=
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+Loaded EGL 1.5 after reload.
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+GL_VERSION=4.6.0 NVIDIA 515.86.01
+GL_SHADING_LANGUAGE_VERSION=4.60 NVIDIA
+Version = 4.6.0 NVIDIA 515.86.01
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 2080 Ti/PCIe/SSE2
+/home/ondrej/envs/rndf_robot/lib/python3.8/site-packages/sklearn/base.py:299: UserWarning: Trying to unpickle estimator PCA from version 1.0.2 when using version 1.2.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+[32m[INFO][0m[2023-04-16 14:28:29]: [32mParent ID: syn_rack_92, Child ID: f09e51579600cfbb88b651d2e4ea0846[0m
+INFO - 2023-04-16 14:28:29,396 - ai_logger - Parent ID: syn_rack_92, Child ID: f09e51579600cfbb88b651d2e4ea0846
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+[32m[INFO][0m[2023-04-16 14:28:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:28:32,687 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:29:11]: [32mIteration: 0, Place Success: 0.000, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: f09e51579600cfbb88b651d2e4ea0846[0m
+INFO - 2023-04-16 14:29:11,228 - ai_logger - Iteration: 0, Place Success: 0.000, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: f09e51579600cfbb88b651d2e4ea0846
+[32m[INFO][0m[2023-04-16 14:29:11]: [32mParent ID: syn_rack_82, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 14:29:11,241 - ai_logger - Parent ID: syn_rack_82, Child ID: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 14:29:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:29:14,438 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:29:53]: [32mIteration: 1, Place Success: 0.500, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 14:29:53,220 - ai_logger - Iteration: 1, Place Success: 0.500, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 14:29:53]: [32mParent ID: syn_rack_96, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:29:53,232 - ai_logger - Parent ID: syn_rack_96, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:29:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:29:56,370 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:30:35]: [32mIteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:30:35,717 - ai_logger - Iteration: 2, Place Success: 0.667, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:30:35]: [32mParent ID: syn_rack_92, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 14:30:35,729 - ai_logger - Parent ID: syn_rack_92, Child ID: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 14:30:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:30:38,921 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:31:18]: [32mIteration: 3, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_92, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 14:31:18,825 - ai_logger - Iteration: 3, Place Success: 0.750, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_92, child_id: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 14:31:18]: [32mParent ID: syn_rack_95, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 14:31:18,837 - ai_logger - Parent ID: syn_rack_95, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 14:31:22]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:31:22,024 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:32:00]: [32mIteration: 4, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 14:32:00,494 - ai_logger - Iteration: 4, Place Success: 0.800, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 14:32:00]: [32mParent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:32:00,506 - ai_logger - Parent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:32:03]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:32:03,630 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:32:42]: [32mIteration: 5, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:32:42,554 - ai_logger - Iteration: 5, Place Success: 0.833, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:32:42]: [32mParent ID: syn_rack_96, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:32:42,566 - ai_logger - Parent ID: syn_rack_96, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:32:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:32:45,823 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:33:24]: [32mIteration: 6, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:33:24,369 - ai_logger - Iteration: 6, Place Success: 0.857, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:33:24]: [32mParent ID: syn_rack_9, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:33:24,381 - ai_logger - Parent ID: syn_rack_9, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:33:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:33:27,506 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:34:06]: [32mIteration: 7, Place Success: 0.875, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:34:06,961 - ai_logger - Iteration: 7, Place Success: 0.875, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:34:06]: [32mParent ID: syn_rack_84, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:34:06,973 - ai_logger - Parent ID: syn_rack_84, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:34:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:34:10,187 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:34:48]: [32mIteration: 8, Place Success: 0.889, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:34:48,091 - ai_logger - Iteration: 8, Place Success: 0.889, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:34:48]: [32mParent ID: syn_rack_89, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:34:48,103 - ai_logger - Parent ID: syn_rack_89, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:34:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:34:51,294 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:35:28]: [32mIteration: 9, Place Success: 0.900, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:35:28,939 - ai_logger - Iteration: 9, Place Success: 0.900, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:35:28]: [32mParent ID: syn_rack_99, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:35:28,951 - ai_logger - Parent ID: syn_rack_99, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:35:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:35:32,117 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:36:11]: [32mIteration: 10, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_99, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:36:11,362 - ai_logger - Iteration: 10, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_99, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:36:11]: [32mParent ID: syn_rack_9, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:36:11,373 - ai_logger - Parent ID: syn_rack_9, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:36:14]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:36:14,588 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:36:54]: [32mIteration: 11, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:36:54,051 - ai_logger - Iteration: 11, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:36:54]: [32mParent ID: syn_rack_83, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 14:36:54,064 - ai_logger - Parent ID: syn_rack_83, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 14:36:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:36:57,254 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:37:36]: [32mIteration: 12, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 14:37:36,577 - ai_logger - Iteration: 12, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 14:37:36]: [32mParent ID: syn_rack_90, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:37:36,589 - ai_logger - Parent ID: syn_rack_90, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:37:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:37:39,739 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:38:20]: [32mIteration: 13, Place Success: 0.929, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:38:20,314 - ai_logger - Iteration: 13, Place Success: 0.929, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:38:20]: [32mParent ID: syn_rack_97, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:38:20,326 - ai_logger - Parent ID: syn_rack_97, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:38:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:38:23,514 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:39:02]: [32mIteration: 14, Place Success: 0.933, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:39:02,005 - ai_logger - Iteration: 14, Place Success: 0.933, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:39:02]: [32mParent ID: syn_rack_91, Child ID: f09e51579600cfbb88b651d2e4ea0846[0m
+INFO - 2023-04-16 14:39:02,062 - ai_logger - Parent ID: syn_rack_91, Child ID: f09e51579600cfbb88b651d2e4ea0846
+[32m[INFO][0m[2023-04-16 14:39:05]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:39:05,185 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:39:44]: [32mIteration: 15, Place Success: 0.938, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: f09e51579600cfbb88b651d2e4ea0846[0m
+INFO - 2023-04-16 14:39:44,005 - ai_logger - Iteration: 15, Place Success: 0.938, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: f09e51579600cfbb88b651d2e4ea0846
+[32m[INFO][0m[2023-04-16 14:39:44]: [32mParent ID: syn_rack_90, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:39:44,017 - ai_logger - Parent ID: syn_rack_90, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:39:47]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:39:47,133 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:40:26]: [32mIteration: 16, Place Success: 0.941, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:40:26,086 - ai_logger - Iteration: 16, Place Success: 0.941, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:40:26]: [32mParent ID: syn_rack_87, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:40:26,098 - ai_logger - Parent ID: syn_rack_87, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:40:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:40:29,306 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:41:08]: [32mIteration: 17, Place Success: 0.944, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:41:08,206 - ai_logger - Iteration: 17, Place Success: 0.944, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:41:08]: [32mParent ID: syn_rack_95, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:41:08,219 - ai_logger - Parent ID: syn_rack_95, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:41:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:41:11,347 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:41:50]: [32mIteration: 18, Place Success: 0.947, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:41:50,729 - ai_logger - Iteration: 18, Place Success: 0.947, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:41:50]: [32mParent ID: syn_rack_96, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 14:41:50,741 - ai_logger - Parent ID: syn_rack_96, Child ID: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 14:41:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:41:53,947 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:42:32]: [32mIteration: 19, Place Success: 0.950, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 14:42:32,121 - ai_logger - Iteration: 19, Place Success: 0.950, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 14:42:32]: [32mParent ID: syn_rack_82, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:42:32,132 - ai_logger - Parent ID: syn_rack_82, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:42:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:42:35,328 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:43:13]: [32mIteration: 20, Place Success: 0.952, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:43:13,574 - ai_logger - Iteration: 20, Place Success: 0.952, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:43:13]: [32mParent ID: syn_rack_81, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:43:13,586 - ai_logger - Parent ID: syn_rack_81, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:43:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:43:16,750 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:43:55]: [32mIteration: 21, Place Success: 0.955, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:43:55,793 - ai_logger - Iteration: 21, Place Success: 0.955, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:43:55]: [32mParent ID: syn_rack_92, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:43:55,805 - ai_logger - Parent ID: syn_rack_92, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:43:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:43:59,014 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:44:39]: [32mIteration: 22, Place Success: 0.913, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:44:39,117 - ai_logger - Iteration: 22, Place Success: 0.913, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:44:39]: [32mParent ID: syn_rack_81, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:44:39,129 - ai_logger - Parent ID: syn_rack_81, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:44:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:44:42,313 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:45:21]: [32mIteration: 23, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:45:21,285 - ai_logger - Iteration: 23, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:45:21]: [32mParent ID: syn_rack_95, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 14:45:21,297 - ai_logger - Parent ID: syn_rack_95, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 14:45:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:45:24,422 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:46:03]: [32mIteration: 24, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 14:46:03,513 - ai_logger - Iteration: 24, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 14:46:03]: [32mParent ID: syn_rack_88, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:46:03,527 - ai_logger - Parent ID: syn_rack_88, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:46:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:46:06,669 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:46:45]: [32mIteration: 25, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:46:45,233 - ai_logger - Iteration: 25, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:46:45]: [32mParent ID: syn_rack_90, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:46:45,245 - ai_logger - Parent ID: syn_rack_90, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:46:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:46:48,425 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:47:28]: [32mIteration: 26, Place Success: 0.889, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_90, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:47:28,705 - ai_logger - Iteration: 26, Place Success: 0.889, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_90, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:47:28]: [32mParent ID: syn_rack_83, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:47:28,717 - ai_logger - Parent ID: syn_rack_83, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:47:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:47:31,832 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:48:09]: [32mIteration: 27, Place Success: 0.893, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:48:09,931 - ai_logger - Iteration: 27, Place Success: 0.893, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:48:09]: [32mParent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:48:09,943 - ai_logger - Parent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:48:13]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:48:13,172 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:48:51]: [32mIteration: 28, Place Success: 0.897, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:48:51,571 - ai_logger - Iteration: 28, Place Success: 0.897, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:48:51]: [32mParent ID: syn_rack_88, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:48:51,585 - ai_logger - Parent ID: syn_rack_88, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:48:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:48:54,701 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:49:33]: [32mIteration: 29, Place Success: 0.900, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:49:33,381 - ai_logger - Iteration: 29, Place Success: 0.900, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:49:33]: [32mParent ID: syn_rack_97, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:49:33,393 - ai_logger - Parent ID: syn_rack_97, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:49:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:49:36,521 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:50:15]: [32mIteration: 30, Place Success: 0.903, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:50:15,692 - ai_logger - Iteration: 30, Place Success: 0.903, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:50:15]: [32mParent ID: syn_rack_83, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:50:15,704 - ai_logger - Parent ID: syn_rack_83, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:50:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:50:18,884 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:50:57]: [32mIteration: 31, Place Success: 0.906, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:50:57,493 - ai_logger - Iteration: 31, Place Success: 0.906, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:50:57]: [32mParent ID: syn_rack_90, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:50:57,505 - ai_logger - Parent ID: syn_rack_90, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:51:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:51:00,629 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:51:39]: [32mIteration: 32, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:51:39,460 - ai_logger - Iteration: 32, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:51:39]: [32mParent ID: syn_rack_95, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:51:39,472 - ai_logger - Parent ID: syn_rack_95, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:51:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:51:42,681 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:52:21]: [32mIteration: 33, Place Success: 0.912, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 14:52:21,748 - ai_logger - Iteration: 33, Place Success: 0.912, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 14:52:21]: [32mParent ID: syn_rack_9, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:52:21,760 - ai_logger - Parent ID: syn_rack_9, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:52:24]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:52:24,966 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:53:02]: [32mIteration: 34, Place Success: 0.914, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:53:02,909 - ai_logger - Iteration: 34, Place Success: 0.914, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:53:02]: [32mParent ID: syn_rack_9, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:53:02,923 - ai_logger - Parent ID: syn_rack_9, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:53:06]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:53:06,048 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:53:45]: [32mIteration: 35, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 14:53:45,037 - ai_logger - Iteration: 35, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 14:53:45]: [32mParent ID: syn_rack_84, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:53:45,049 - ai_logger - Parent ID: syn_rack_84, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:53:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:53:48,169 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:54:26]: [32mIteration: 36, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:54:26,841 - ai_logger - Iteration: 36, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:54:26]: [32mParent ID: syn_rack_90, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:54:26,853 - ai_logger - Parent ID: syn_rack_90, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:54:29]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:54:29,972 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:55:08]: [32mIteration: 37, Place Success: 0.921, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 14:55:08,668 - ai_logger - Iteration: 37, Place Success: 0.921, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 14:55:08]: [32mParent ID: syn_rack_87, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:55:08,680 - ai_logger - Parent ID: syn_rack_87, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:55:11]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:55:11,825 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:55:49]: [32mIteration: 38, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:55:49,622 - ai_logger - Iteration: 38, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:55:49]: [32mParent ID: syn_rack_97, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:55:49,634 - ai_logger - Parent ID: syn_rack_97, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:55:52]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:55:52,790 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:56:30]: [32mIteration: 39, Place Success: 0.925, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:56:30,277 - ai_logger - Iteration: 39, Place Success: 0.925, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:56:30]: [32mParent ID: syn_rack_9, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:56:30,361 - ai_logger - Parent ID: syn_rack_9, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:56:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:56:33,494 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:57:12]: [32mIteration: 40, Place Success: 0.927, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 14:57:12,617 - ai_logger - Iteration: 40, Place Success: 0.927, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 14:57:12]: [32mParent ID: syn_rack_83, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:57:12,680 - ai_logger - Parent ID: syn_rack_83, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:57:15]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:57:15,841 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:57:53]: [32mIteration: 41, Place Success: 0.929, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 14:57:53,557 - ai_logger - Iteration: 41, Place Success: 0.929, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 14:57:53]: [32mParent ID: syn_rack_92, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 14:57:53,569 - ai_logger - Parent ID: syn_rack_92, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 14:57:56]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:57:56,776 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:58:35]: [32mIteration: 42, Place Success: 0.907, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 14:58:35,811 - ai_logger - Iteration: 42, Place Success: 0.907, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 14:58:35]: [32mParent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:58:35,823 - ai_logger - Parent ID: syn_rack_98, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:58:39]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:58:39,011 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:59:16]: [32mIteration: 43, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 14:59:16,861 - ai_logger - Iteration: 43, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 14:59:16]: [32mParent ID: syn_rack_9, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:59:16,873 - ai_logger - Parent ID: syn_rack_9, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:59:19]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 14:59:19,989 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 14:59:58]: [32mIteration: 44, Place Success: 0.911, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:59:58,946 - ai_logger - Iteration: 44, Place Success: 0.911, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 14:59:58]: [32mParent ID: syn_rack_87, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 14:59:58,958 - ai_logger - Parent ID: syn_rack_87, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:00:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:00:02,201 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:00:41]: [32mIteration: 45, Place Success: 0.913, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:00:41,002 - ai_logger - Iteration: 45, Place Success: 0.913, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:00:41]: [32mParent ID: syn_rack_82, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:00:41,014 - ai_logger - Parent ID: syn_rack_82, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:00:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:00:44,177 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:01:23]: [32mIteration: 46, Place Success: 0.915, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:01:23,217 - ai_logger - Iteration: 46, Place Success: 0.915, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:01:23]: [32mParent ID: syn_rack_89, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:01:23,229 - ai_logger - Parent ID: syn_rack_89, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:01:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:01:26,366 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:02:05]: [32mIteration: 47, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:02:05,457 - ai_logger - Iteration: 47, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:02:05]: [32mParent ID: syn_rack_83, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:02:05,469 - ai_logger - Parent ID: syn_rack_83, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:02:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:02:08,598 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:02:47]: [32mIteration: 48, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:02:47,691 - ai_logger - Iteration: 48, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:02:47]: [32mParent ID: syn_rack_85, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:02:47,763 - ai_logger - Parent ID: syn_rack_85, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:02:50]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:02:50,883 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:03:30]: [32mIteration: 49, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_85, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:03:30,275 - ai_logger - Iteration: 49, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_85, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:03:30]: [32mParent ID: syn_rack_82, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:03:30,287 - ai_logger - Parent ID: syn_rack_82, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:03:33]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:03:33,411 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:04:13]: [32mIteration: 50, Place Success: 0.922, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:04:13,909 - ai_logger - Iteration: 50, Place Success: 0.922, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:04:13]: [32mParent ID: syn_rack_97, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:04:13,921 - ai_logger - Parent ID: syn_rack_97, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:04:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:04:17,175 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:04:55]: [32mIteration: 51, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:04:55,995 - ai_logger - Iteration: 51, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:04:56]: [32mParent ID: syn_rack_92, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:04:56,007 - ai_logger - Parent ID: syn_rack_92, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:04:59]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:04:59,223 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:05:38]: [32mIteration: 52, Place Success: 0.906, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:05:38,189 - ai_logger - Iteration: 52, Place Success: 0.906, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:05:38]: [32mParent ID: syn_rack_96, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 15:05:38,201 - ai_logger - Parent ID: syn_rack_96, Child ID: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 15:05:41]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:05:41,328 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:06:19]: [32mIteration: 53, Place Success: 0.907, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 15:06:19,905 - ai_logger - Iteration: 53, Place Success: 0.907, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 15:06:19]: [32mParent ID: syn_rack_96, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:06:19,917 - ai_logger - Parent ID: syn_rack_96, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:06:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:06:23,080 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:07:00]: [32mIteration: 54, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:07:00,719 - ai_logger - Iteration: 54, Place Success: 0.909, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_96, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:07:00]: [32mParent ID: syn_rack_87, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:07:00,732 - ai_logger - Parent ID: syn_rack_87, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:07:03]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:07:03,910 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:07:42]: [32mIteration: 55, Place Success: 0.911, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:07:42,939 - ai_logger - Iteration: 55, Place Success: 0.911, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:07:42]: [32mParent ID: syn_rack_98, Child ID: f09e51579600cfbb88b651d2e4ea0846[0m
+INFO - 2023-04-16 15:07:42,952 - ai_logger - Parent ID: syn_rack_98, Child ID: f09e51579600cfbb88b651d2e4ea0846
+[32m[INFO][0m[2023-04-16 15:07:46]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:07:46,175 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:08:24]: [32mIteration: 56, Place Success: 0.912, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: f09e51579600cfbb88b651d2e4ea0846[0m
+INFO - 2023-04-16 15:08:24,566 - ai_logger - Iteration: 56, Place Success: 0.912, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: f09e51579600cfbb88b651d2e4ea0846
+[32m[INFO][0m[2023-04-16 15:08:24]: [32mParent ID: syn_rack_98, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 15:08:24,578 - ai_logger - Parent ID: syn_rack_98, Child ID: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 15:08:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:08:27,774 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:09:07]: [32mIteration: 57, Place Success: 0.914, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 15:09:07,184 - ai_logger - Iteration: 57, Place Success: 0.914, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 15:09:07]: [32mParent ID: syn_rack_94, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:09:07,198 - ai_logger - Parent ID: syn_rack_94, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:09:10]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:09:10,324 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:09:50]: [32mIteration: 58, Place Success: 0.915, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_94, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:09:50,658 - ai_logger - Iteration: 58, Place Success: 0.915, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_94, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:09:50]: [32mParent ID: syn_rack_91, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:09:50,670 - ai_logger - Parent ID: syn_rack_91, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:09:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:09:53,796 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:10:33]: [32mIteration: 59, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:10:33,199 - ai_logger - Iteration: 59, Place Success: 0.917, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:10:33]: [32mParent ID: syn_rack_90, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:10:33,211 - ai_logger - Parent ID: syn_rack_90, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:10:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:10:36,379 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:11:15]: [32mIteration: 60, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:11:15,509 - ai_logger - Iteration: 60, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:11:15]: [32mParent ID: syn_rack_84, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:11:15,521 - ai_logger - Parent ID: syn_rack_84, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:11:18]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:11:18,661 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:11:57]: [32mIteration: 61, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:11:57,601 - ai_logger - Iteration: 61, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:11:57]: [32mParent ID: syn_rack_98, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:11:57,613 - ai_logger - Parent ID: syn_rack_98, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:12:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:12:00,800 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:12:40]: [32mIteration: 62, Place Success: 0.921, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:12:40,901 - ai_logger - Iteration: 62, Place Success: 0.921, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:12:40]: [32mParent ID: syn_rack_90, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:12:40,913 - ai_logger - Parent ID: syn_rack_90, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:12:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:12:44,047 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:13:23]: [32mIteration: 63, Place Success: 0.922, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:13:23,339 - ai_logger - Iteration: 63, Place Success: 0.922, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_90, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:13:23]: [32mParent ID: syn_rack_88, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:13:23,351 - ai_logger - Parent ID: syn_rack_88, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:13:26]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:13:26,488 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:14:05]: [32mIteration: 64, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:14:05,285 - ai_logger - Iteration: 64, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:14:05]: [32mParent ID: syn_rack_89, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:14:05,297 - ai_logger - Parent ID: syn_rack_89, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:14:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:14:08,433 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:14:50]: [32mIteration: 65, Place Success: 0.924, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:14:50,336 - ai_logger - Iteration: 65, Place Success: 0.924, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:14:50]: [32mParent ID: syn_rack_88, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:14:50,348 - ai_logger - Parent ID: syn_rack_88, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:14:53]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:14:53,560 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:15:32]: [32mIteration: 66, Place Success: 0.925, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:15:32,301 - ai_logger - Iteration: 66, Place Success: 0.925, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:15:32]: [32mParent ID: syn_rack_86, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:15:32,313 - ai_logger - Parent ID: syn_rack_86, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:15:35]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:15:35,431 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:16:14]: [32mIteration: 67, Place Success: 0.926, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_86, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:16:14,608 - ai_logger - Iteration: 67, Place Success: 0.926, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_86, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:16:14]: [32mParent ID: syn_rack_93, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:16:14,620 - ai_logger - Parent ID: syn_rack_93, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:16:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:16:17,776 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:16:57]: [32mIteration: 68, Place Success: 0.928, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:16:57,232 - ai_logger - Iteration: 68, Place Success: 0.928, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:16:57]: [32mParent ID: syn_rack_84, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:16:57,244 - ai_logger - Parent ID: syn_rack_84, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:17:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:17:00,370 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:17:38]: [32mIteration: 69, Place Success: 0.929, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:17:38,841 - ai_logger - Iteration: 69, Place Success: 0.929, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:17:38]: [32mParent ID: syn_rack_88, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:17:38,853 - ai_logger - Parent ID: syn_rack_88, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:17:42]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:17:42,045 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:18:20]: [32mIteration: 70, Place Success: 0.930, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:18:20,673 - ai_logger - Iteration: 70, Place Success: 0.930, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_88, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:18:20]: [32mParent ID: syn_rack_98, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:18:20,685 - ai_logger - Parent ID: syn_rack_98, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:18:23]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:18:23,871 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:19:04]: [32mIteration: 71, Place Success: 0.931, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:19:04,453 - ai_logger - Iteration: 71, Place Success: 0.931, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:19:04]: [32mParent ID: syn_rack_97, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:19:04,465 - ai_logger - Parent ID: syn_rack_97, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:19:07]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:19:07,589 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:19:45]: [32mIteration: 72, Place Success: 0.932, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:19:45,130 - ai_logger - Iteration: 72, Place Success: 0.932, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_97, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:19:45]: [32mParent ID: syn_rack_83, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:19:45,142 - ai_logger - Parent ID: syn_rack_83, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:19:48]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:19:48,382 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:20:27]: [32mIteration: 73, Place Success: 0.932, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:20:27,101 - ai_logger - Iteration: 73, Place Success: 0.932, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:20:27]: [32mParent ID: syn_rack_84, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:20:27,113 - ai_logger - Parent ID: syn_rack_84, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:20:30]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:20:30,276 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:21:09]: [32mIteration: 74, Place Success: 0.933, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:21:09,937 - ai_logger - Iteration: 74, Place Success: 0.933, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:21:09]: [32mParent ID: syn_rack_87, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:21:09,949 - ai_logger - Parent ID: syn_rack_87, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:21:13]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:21:13,143 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:21:51]: [32mIteration: 75, Place Success: 0.934, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:21:51,945 - ai_logger - Iteration: 75, Place Success: 0.934, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:21:51]: [32mParent ID: syn_rack_98, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:21:51,957 - ai_logger - Parent ID: syn_rack_98, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:21:55]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:21:55,154 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:22:34]: [32mIteration: 76, Place Success: 0.935, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:22:34,077 - ai_logger - Iteration: 76, Place Success: 0.935, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_98, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:22:34]: [32mParent ID: syn_rack_92, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:22:34,089 - ai_logger - Parent ID: syn_rack_92, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:22:37]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:22:37,243 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:23:17]: [32mIteration: 77, Place Success: 0.936, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_92, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:23:17,049 - ai_logger - Iteration: 77, Place Success: 0.936, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_92, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:23:17]: [32mParent ID: syn_rack_91, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:23:17,061 - ai_logger - Parent ID: syn_rack_91, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:23:20]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:23:20,279 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:23:59]: [32mIteration: 78, Place Success: 0.937, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:23:59,667 - ai_logger - Iteration: 78, Place Success: 0.937, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_91, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:23:59]: [32mParent ID: syn_rack_82, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:23:59,679 - ai_logger - Parent ID: syn_rack_82, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:24:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:24:02,799 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:24:41]: [32mIteration: 79, Place Success: 0.938, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:24:41,246 - ai_logger - Iteration: 79, Place Success: 0.938, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:24:41]: [32mParent ID: syn_rack_81, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:24:41,258 - ai_logger - Parent ID: syn_rack_81, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:24:44]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:24:44,374 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:25:22]: [32mIteration: 80, Place Success: 0.938, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:25:22,335 - ai_logger - Iteration: 80, Place Success: 0.938, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:25:22]: [32mParent ID: syn_rack_86, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:25:22,347 - ai_logger - Parent ID: syn_rack_86, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:25:25]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:25:25,474 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:26:05]: [32mIteration: 81, Place Success: 0.927, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_86, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:26:05,117 - ai_logger - Iteration: 81, Place Success: 0.927, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_86, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:26:05]: [32mParent ID: syn_rack_84, Child ID: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:26:05,129 - ai_logger - Parent ID: syn_rack_84, Child ID: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:26:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:26:08,317 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:26:48]: [32mIteration: 82, Place Success: 0.928, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1c5b9bb744afd96d6e1954365b10b52[0m
+INFO - 2023-04-16 15:26:48,057 - ai_logger - Iteration: 82, Place Success: 0.928, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: f1c5b9bb744afd96d6e1954365b10b52
+[32m[INFO][0m[2023-04-16 15:26:48]: [32mParent ID: syn_rack_87, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:26:48,069 - ai_logger - Parent ID: syn_rack_87, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:26:51]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:26:51,264 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:27:29]: [32mIteration: 83, Place Success: 0.917, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_87, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:27:29,745 - ai_logger - Iteration: 83, Place Success: 0.917, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_87, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:27:29]: [32mParent ID: syn_rack_82, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:27:29,757 - ai_logger - Parent ID: syn_rack_82, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:27:32]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:27:32,956 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:28:13]: [32mIteration: 84, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:28:13,353 - ai_logger - Iteration: 84, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:28:13]: [32mParent ID: syn_rack_81, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 15:28:13,367 - ai_logger - Parent ID: syn_rack_81, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 15:28:16]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:28:16,535 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:28:54]: [32mIteration: 85, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 15:28:54,337 - ai_logger - Iteration: 85, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_81, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 15:28:54]: [32mParent ID: syn_rack_93, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:28:54,349 - ai_logger - Parent ID: syn_rack_93, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:28:57]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:28:57,527 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:29:35]: [32mIteration: 86, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:29:35,393 - ai_logger - Iteration: 86, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:29:35]: [32mParent ID: syn_rack_84, Child ID: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 15:29:35,407 - ai_logger - Parent ID: syn_rack_84, Child ID: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 15:29:38]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:29:38,593 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:30:18]: [32mIteration: 87, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: edaf960fb6afdadc4cebc4b5998de5d0[0m
+INFO - 2023-04-16 15:30:18,292 - ai_logger - Iteration: 87, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_84, child_id: edaf960fb6afdadc4cebc4b5998de5d0
+[32m[INFO][0m[2023-04-16 15:30:18]: [32mParent ID: syn_rack_83, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:30:18,304 - ai_logger - Parent ID: syn_rack_83, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:30:21]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:30:21,520 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:30:59]: [32mIteration: 88, Place Success: 0.921, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:30:59,602 - ai_logger - Iteration: 88, Place Success: 0.921, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:30:59]: [32mParent ID: syn_rack_83, Child ID: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:30:59,614 - ai_logger - Parent ID: syn_rack_83, Child ID: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:31:02]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:31:02,812 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:31:42]: [32mIteration: 89, Place Success: 0.922, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: fad118b32085f3f2c2c72e575af174cd[0m
+INFO - 2023-04-16 15:31:42,299 - ai_logger - Iteration: 89, Place Success: 0.922, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_83, child_id: fad118b32085f3f2c2c72e575af174cd
+[32m[INFO][0m[2023-04-16 15:31:42]: [32mParent ID: syn_rack_9, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:31:42,311 - ai_logger - Parent ID: syn_rack_9, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:31:45]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:31:45,453 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:32:23]: [32mIteration: 90, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:32:23,871 - ai_logger - Iteration: 90, Place Success: 0.923, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_9, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:32:23]: [32mParent ID: syn_rack_93, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:32:23,883 - ai_logger - Parent ID: syn_rack_93, Child ID: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:32:27]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:32:27,117 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:33:05]: [32mIteration: 91, Place Success: 0.924, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd[0m
+INFO - 2023-04-16 15:33:05,501 - ai_logger - Iteration: 91, Place Success: 0.924, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_93, child_id: e9bd4ee553eb35c1d5ccc40b510e4bd
+[32m[INFO][0m[2023-04-16 15:33:05]: [32mParent ID: syn_rack_82, Child ID: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 15:33:05,513 - ai_logger - Parent ID: syn_rack_82, Child ID: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 15:33:08]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:33:08,637 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:33:46]: [32mIteration: 92, Place Success: 0.925, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f1e439307b834015770a0ff1161fa15a[0m
+INFO - 2023-04-16 15:33:46,333 - ai_logger - Iteration: 92, Place Success: 0.925, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_82, child_id: f1e439307b834015770a0ff1161fa15a
+[32m[INFO][0m[2023-04-16 15:33:46]: [32mParent ID: syn_rack_94, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:33:46,345 - ai_logger - Parent ID: syn_rack_94, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:33:49]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:33:49,561 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:34:28]: [32mIteration: 93, Place Success: 0.926, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_94, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:34:28,393 - ai_logger - Iteration: 93, Place Success: 0.926, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_94, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:34:28]: [32mParent ID: syn_rack_99, Child ID: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:34:28,406 - ai_logger - Parent ID: syn_rack_99, Child ID: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:34:31]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:34:31,592 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:35:10]: [32mIteration: 94, Place Success: 0.926, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_99, child_id: e984fd7e97c2be347eaeab1f0c9120b7[0m
+INFO - 2023-04-16 15:35:10,015 - ai_logger - Iteration: 94, Place Success: 0.926, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_99, child_id: e984fd7e97c2be347eaeab1f0c9120b7
+[32m[INFO][0m[2023-04-16 15:35:10]: [32mParent ID: syn_rack_92, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:35:10,028 - ai_logger - Parent ID: syn_rack_92, Child ID: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:35:13]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:35:13,252 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:35:51]: [32mIteration: 95, Place Success: 0.917, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ec846432f3ebedf0a6f32a8797e3b9e9[0m
+INFO - 2023-04-16 15:35:51,624 - ai_logger - Iteration: 95, Place Success: 0.917, touching_surf: True, fell_off_upside_down: False, , parent_id: syn_rack_92, child_id: ec846432f3ebedf0a6f32a8797e3b9e9
+[32m[INFO][0m[2023-04-16 15:35:51]: [32mParent ID: syn_rack_89, Child ID: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:35:51,636 - ai_logger - Parent ID: syn_rack_89, Child ID: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:35:54]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:35:54,825 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:36:33]: [32mIteration: 96, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: eecb13f61a93b4048f58d8b19de93f99[0m
+INFO - 2023-04-16 15:36:33,032 - ai_logger - Iteration: 96, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_89, child_id: eecb13f61a93b4048f58d8b19de93f99
+[32m[INFO][0m[2023-04-16 15:36:33]: [32mParent ID: syn_rack_95, Child ID: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:36:33,044 - ai_logger - Parent ID: syn_rack_95, Child ID: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:36:36]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:36:36,215 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:37:14]: [32mIteration: 97, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: f7d776fd68b126f23b67070c4a034f08[0m
+INFO - 2023-04-16 15:37:14,800 - ai_logger - Iteration: 97, Place Success: 0.918, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_95, child_id: f7d776fd68b126f23b67070c4a034f08
+[32m[INFO][0m[2023-04-16 15:37:14]: [32mParent ID: syn_rack_86, Child ID: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:37:14,812 - ai_logger - Parent ID: syn_rack_86, Child ID: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:37:17]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:37:17,973 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:37:57]: [32mIteration: 98, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_86, child_id: ff1a44e1c1785d618bca309f2c51966a[0m
+INFO - 2023-04-16 15:37:57,206 - ai_logger - Iteration: 98, Place Success: 0.919, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_86, child_id: ff1a44e1c1785d618bca309f2c51966a
+[32m[INFO][0m[2023-04-16 15:37:57]: [32mParent ID: syn_rack_87, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:37:57,218 - ai_logger - Parent ID: syn_rack_87, Child ID: e94e46bc5833f2f5e57b873e4f3ef3a4
+[32m[INFO][0m[2023-04-16 15:38:00]: [32m[INTERSECTION], Loading model weights for multi NDF inference[0m
+INFO - 2023-04-16 15:38:00,341 - ai_logger - [INTERSECTION], Loading model weights for multi NDF inference
+[32m[INFO][0m[2023-04-16 15:38:39]: [32mIteration: 99, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4[0m
+INFO - 2023-04-16 15:38:39,143 - ai_logger - Iteration: 99, Place Success: 0.920, touching_surf: True, fell_off_upside_down: True, , parent_id: syn_rack_87, child_id: e94e46bc5833f2f5e57b873e4f3ef3a4
+You can open the visualizer by visiting the following URL:
+http://127.0.0.1:7000/static/
+@@ 0.001289168482880459
+# nearby points: 42844
+@@ 0.001521247425452667
+# nearby points: 30778
+@@ 0.003764193550770214
+# nearby points: 21975
+@@ 0.012498628233125891
+# nearby points: 12819
+@@ 0.00546568270604623
+# nearby points: 38668
+@@ 0.0010444555148963427
+# nearby points: 55960
+@@ 0.004646817238667222
+# nearby points: 43906
+@@ 0.003919024650916808
+# nearby points: 45222
+costs: [0.01646030673035971, 0.0025723034540158516, 0.011617730137032628, 0.005529484709742917, 0.03310826137320892, 0.011735446599014966, 0.016946382841395238, 0.005067869345658898]
+@@ 0.0007758242764409237
+# nearby points: 32257
+PosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+PosixSharedMemory::releaseSharedMemory removed shared memoryPosixSharedMemory::releaseSharedMemory detached shared memory
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+Destroy EGL OpenGL window.
+PosixSharedMemory::releaseSharedMemory detached shared memory

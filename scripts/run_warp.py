@@ -33,6 +33,7 @@ from rndf_robot.utils.eval_gen_utils import constraint_obj_world, safeCollisionF
 from rndf_robot.eval.relation_tools.multi_ndf import infer_relation_intersection, create_target_descriptors
 
 from src.ndf_interface import NDFInterface
+from src.real_world import constants
 
 NOISE_VALUE_LIST = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.16, 0.24, 0.32, 0.4]
 
@@ -292,20 +293,20 @@ def main(args):
     # prepare the target descriptors
 
     if args.exp == "bowl_on_mug_upright_pose_new":
-        canon_source_path = "data/230315_ndf_bowls_scale_pca_8_dim_alp_0_01.pkl"
-        canon_target_path = "data/230315_ndf_mugs_scale_pca_8_dim_alp_0_01.pkl"
-        canon_source_scale = 0.8
-        canon_target_scale = 0.7
+        canon_source_path = constants.NDF_BOWLS_PCA_PATH
+        canon_target_path = constants.NDF_MUGS_PCA_PATH
+        canon_source_scale = constants.NDF_BOWLS_INIT_SCALE
+        canon_target_scale = constants.NDF_MUGS_INIT_SCALE
     elif args.exp == "mug_on_rack_upright_pose_new":
-        canon_source_path = "data/230315_ndf_mugs_scale_pca_8_dim_alp_0_01.pkl"
-        canon_target_path = "data/230315_ndf_trees_scale_pca_8_dim_alp_0_01.pkl"
-        canon_source_scale = 0.7
-        canon_target_scale = 1.
+        canon_source_path = constants.NDF_MUGS_PCA_PATH
+        canon_target_path = constants.NDF_TREES_PCA_PATH
+        canon_source_scale = constants.NDF_MUGS_INIT_SCALE
+        canon_target_scale = constants.NDF_TREES_INIT_SCALE
     elif args.exp == "bottle_in_container_upright_pose_new":
-        canon_source_path = "data/230328_ndf_bottles_scale_pca_8_dim_alp_0_01.pkl"
-        canon_target_path = "data/230315_boxes_scale_pca_8_dim_alp_0_01.pkl"
-        canon_source_scale = 1.
-        canon_target_scale = 1.
+        canon_source_path = constants.NDF_BOTTLES_PCA_PATH
+        canon_target_path = constants.BOXES_PCA_PATH
+        canon_source_scale = constants.NDF_BOTTLES_INIT_SCALE
+        canon_target_scale = constants.BOXES_INIT_SCALE
     else:
         raise ValueError("Unknown experiment.")
 

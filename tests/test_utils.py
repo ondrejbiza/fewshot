@@ -256,8 +256,8 @@ class TestWiggle(unittest.TestCase):
     def setUp(self):
         self.sim_id = pb.connect(pb.DIRECT)
         pb.resetSimulation()
-        self.source_obj = pb.loadURDF("data/boxes/train/0.urdf")
-        self.target_obj = pb.loadURDF("data/boxes/train/1.urdf")
+        self.source_obj = pb.loadURDF("data/test_data/box_0.urdf")
+        self.target_obj = pb.loadURDF("data/test_data/box_1.urdf")
 
     def tearDown(self):
         pb.disconnect(self.sim_id)
