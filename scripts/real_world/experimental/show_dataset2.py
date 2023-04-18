@@ -3,36 +3,53 @@ import pickle
 
 import numpy as np
 import matplotlib.pyplot as plt
+from skimage.io import imsave, imread
 
 from src import viz_utils
 
 
 def main(args):
 
+    classes = ['cup', 'bowl', 'mug', 'bottle', 'cardboard', 'box', 'Tripod', 'Baseball bat' , 'Lamp', 'Mug Rack', 'Plate', 'Toaster', 'Spoon']
+
     with open(args.save_file, "rb") as f:
         data = pickle.load(f)
 
-    for i in range(len(data)):
-        pcd = np.concatenate(data[i]["cloud"])
-        pcd = pcd.reshape(-1, 3)
-        pcd = pcd[np.random.randint(len(pcd), size=4000)]
-        # viz_utils.show_pcd_plotly(pcd)
-        plt.subplot(3, 2, 1)
-        plt.imshow(data[i]["image"])
-        plt.subplot(3, 2, 2)
-        plt.imshow(data[i]["depth"] / np.max(data[i]["depth"]))
-        plt.subplot(3, 2, 3)
-        plt.imshow(data[i]["masks"][1, 0].cpu())
-        plt.show()
+    i = 2
 
-        # Showing ordered point cloud.
-        # pcd = data[i]["clouds"][0]
-        # pcd = pcd.reshape(720, 1280, 3)
-        # plt.subplot(1, 2, 1)
-        # plt.imshow(data[i]["images"][0])
-        # plt.subplot(1, 2, 2)
-        # plt.imshow(pcd[:, :, 0])
-        # plt.show()
+    pcd = data[i]["cloud"].reshape(480, 640, 3)
+    image = data[i]["image"]
+    depth = data[i]["depth"]
+    masks = data[i]["masks"][:, 0].cpu()
+    class_idx = data[i]["class_idx"]
+
+    # BGR to RGB
+    image = image[:, :, ::-1]
+
+    depth2 = imread("test_depth.png")
+
+    print(np.min(depth), np.max(depth), np.mean(depth))
+    print(np.min(pcd), np.max(pcd), np.mean(pcd))
+    print(np.min(depth2), np.max(depth2), np.mean(depth2))
+
+    exit(0)
+
+    for j in range(8):
+        plt.subplot(2, 8, 1 + j)
+        plt.imshow(image)
+        plt.subplot(2, 8, 1 + 8 + j)
+        plt.imshow(masks[j])
+    plt.show()
+
+    for j in range(len(class_idx)):
+        name = f"{j}_{classes[class_idx[j]]}"
+        mask = masks[j]
+        tmp = pcd[mask]
+        d[name] = tmp
+        print(name)
+        viz_utils.show_pcd_plotly(tmp, center=True)
+
+    # viz_utils.show_pcds_plotly(d)
 
 
 parser = argparse.ArgumentParser("Find objects for a particular task.")
