@@ -14,11 +14,23 @@ def d435_intrinsics():
     width = 640
     height = 480
 
-    fx = 608.6419
-    fy = 607.1061
+    # My guess.
+    # fx = 608.6419
+    # fy = 607.1061
+    # ppx = width / 2
+    # ppy = height / 2
 
-    ppx = width / 2
-    ppy = height / 2
+    # Color.
+    # fx = 604.364
+    # fy = 603.84
+    # ppx = 329.917
+    # ppy = 240.609
+
+    # Depth.
+    fx = 381.814
+    fy = 381.814
+    ppx = 317.193
+    ppy = 239.334
 
     proj = np.array([
         [fx, 0, ppx],
@@ -28,32 +40,28 @@ def d435_intrinsics():
     return proj, width, height
 
 
-def get_point_cloud(depth, width, height, proj_matrix):
-    # TODO: fix this.
+def depth_to_point_cloud(K, D, depth_scale=1):
+    height, width = D.shape
 
-    # create a 4x4 transform matrix that goes from pixel coordinates (and depth values) to world coordinates
-    tmp = np.eye(4)
-    tmp[:3, :3] = proj_matrix
-    tran_pix_world = np.linalg.inv(tmp)
+    # Invert the camera matrix
+    K_inv = np.linalg.inv(K)
 
-    # create a grid with pixel coordinates and depth values
-    y, x = np.mgrid[-1:1:2 / height, -1:1:2 / width]
-    y *= -1.
-    x, y, z = x.reshape(-1), y.reshape(-1), depth.reshape(-1)
-    
-    h = np.ones_like(z)
+    # Create meshgrid for pixel coordinates
+    x, y = np.meshgrid(np.arange(width), np.arange(height))
 
-    pixels = np.stack([x, y, z, h], axis=1)
-    # filter out "infinite" depths
-    pixels = pixels[[np.logical_not(np.isnan(z))]]
-    pixels[:, 2] = 2 * pixels[:, 2] - 1
+    # Normalize the pixel coordinates
+    normalized_pixel_coords = np.stack([x, y, np.ones_like(x)], axis=-1)
 
-    # turn pixels to world coordinates
-    points = np.matmul(tran_pix_world, pixels.T).T
-    points /= points[:, 3: 4]
-    points = points[:, :3]
+    # Convert depth image to meters
+    depth_meters = D * depth_scale / 1000
 
-    return points
+    # Multiply the normalized pixel coordinates by the inverse camera matrix
+    camera_coords = np.matmul(normalized_pixel_coords * depth_meters[..., np.newaxis], K_inv.T)
+
+    # Create the point cloud by reshaping the camera coordinates
+    point_cloud = camera_coords.reshape(-1, 3)
+
+    return point_cloud
 
 
 def main(args):
@@ -109,7 +117,9 @@ def main(args):
     plt.show()
 
     proj, width, height = d435_intrinsics()
-    pcd = get_point_cloud(depth / 1000., width, height, proj)
+    pcd = depth_to_point_cloud(proj, depth)
+    norm = np.sqrt(np.sum(np.square(pcd), axis=-1))
+    # pcd = pcd[norm <= 0.5]
     print("@@", np.min(pcd), np.max(pcd), np.sum(np.isnan(pcd)), np.sum(np.isinf(pcd)))
     viz_utils.show_pcd_plotly(pcd, center=True)
 
