@@ -2,7 +2,7 @@
 
 resources:
   agent_label: ''
-  resource_pool: gpu-3080-servers
+  resource_pool: gpu-2080ti
   slots: 1
   weight: 1
   devices: null

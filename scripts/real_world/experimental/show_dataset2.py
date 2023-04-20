@@ -4,8 +4,11 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.io import imsave, imread
+import torch
 
-from src import viz_utils
+from src import utils, viz_utils
+from src.object_warping import ObjectWarpingSE2Batch, ObjectWarpingSE3Batch, warp_to_pcd_se2, warp_to_pcd_se3, PARAM_1
+from src.real_world import constants
 
 
 def d435_intrinsics():
@@ -21,16 +24,16 @@ def d435_intrinsics():
     # ppy = height / 2
 
     # Color.
-    # fx = 604.364
-    # fy = 603.84
-    # ppx = 329.917
-    # ppy = 240.609
+    fx = 604.364
+    fy = 603.84
+    ppx = 329.917
+    ppy = 240.609
 
     # Depth.
-    fx = 381.814
-    fy = 381.814
-    ppx = 317.193
-    ppy = 239.334
+    # fx = 381.814
+    # fy = 381.814
+    # ppx = 317.193
+    # ppy = 239.334
 
     proj = np.array([
         [fx, 0, ppx],
@@ -71,20 +74,25 @@ def main(args):
     with open(args.save_file, "rb") as f:
         data = pickle.load(f)
 
+    with open(args.save_file2, "rb") as f:
+        data2 = pickle.load(f)
+
     i = 2
 
+    print(data[i].keys())
     pcd = data[i]["cloud"].reshape(480, 640, 3)
     image = data[i]["image"]
     depth = data[i]["depth"]
-    masks = data[i]["masks"][:, 0].cpu()
+    masks = data[i]["masks"][:, 0].cpu().numpy()
     class_idx = data[i]["class_idx"]
+    texcoords = data2[i]["texcoords"].reshape(480 * 640, 2)
+    texcoords[:, 1] = np.clip(texcoords[:, 1] * 480, 0, 480 - 1)
+    texcoords[:, 0] = np.clip(texcoords[:, 0] * 640, 0, 640 - 1)
+    texcoords = texcoords.astype(np.int32)
 
     # I think I should do this only after I match the quantiles.
     max_distance = 1000
     depth[depth > max_distance] = max_distance
-
-    plt.imshow(depth)
-    plt.show()
 
     # BGR to RGB
     image = image[:, :, ::-1]
@@ -94,55 +102,57 @@ def main(args):
     depth2[depth2 < 1.] = 1.
     depth2 = 1. / depth2
 
-    plt.imshow(depth2)
-    plt.show()
-
     depth_q = np.quantile(depth, [0.25, 0.5])
     depth2_q = np.quantile(depth2, [0.25, 0.5])
-
-    print("depth_q", depth_q)
-    print("depth2_q", depth2_q)
 
     depth2_n = ((depth2 - depth2_q[0]) / (depth2_q[1] - depth2_q[0])) * (depth_q[1] - depth_q[0]) + depth_q[0]
 
     depth2_q = np.quantile(depth2, [0.25, 0.5])
-    print("depth2_q", depth2_q)
 
     depth2_n[depth2_n > max_distance] = max_distance
 
-    plt.subplot(1, 2, 1)
-    plt.imshow(depth)
-    plt.subplot(1, 2, 2)
-    plt.imshow(depth2_n)
-    plt.show()
-
     proj, width, height = d435_intrinsics()
     pcd = depth_to_point_cloud(proj, depth)
-    norm = np.sqrt(np.sum(np.square(pcd), axis=-1))
-    # pcd = pcd[norm <= 0.5]
-    print("@@", np.min(pcd), np.max(pcd), np.sum(np.isnan(pcd)), np.sum(np.isinf(pcd)))
-    viz_utils.show_pcd_plotly(pcd, center=True)
+    # viz_utils.show_pcd_plotly(pcd, center=True)
 
-    exit(0)
+    pcd = pcd.reshape(480 * 640, 3)
 
-    for j in range(8):
-        plt.subplot(2, 8, 1 + j)
-        plt.imshow(image)
-        plt.subplot(2, 8, 1 + 8 + j)
-        plt.imshow(masks[j])
-    plt.show()
-
-    for j in range(len(class_idx)):
+    d = {}
+    #for j in range(len(class_idx)):
+    for j in [0, 1, 2]:
         name = f"{j}_{classes[class_idx[j]]}"
         mask = masks[j]
-        tmp = pcd[mask]
+        mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
+        tmp = pcd[mask2]
         d[name] = tmp
         print(name)
-        viz_utils.show_pcd_plotly(tmp, center=True)
+        # viz_utils.show_pcd_plotly(tmp, center=True)
 
-    # viz_utils.show_pcds_plotly(d)
+    viz_utils.show_pcds_plotly(d, center=True)
+
+    canon_path = constants.NDF_MUGS_PCA_PATH
+    canon_scale = constants.NDF_MUGS_INIT_SCALE
+    canon = utils.CanonObj.from_pickle(canon_path)
+
+    for j in [0, 1, 2]:
+
+        name = f"{j}_{classes[class_idx[j]]}"
+        mask = masks[j]
+        mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
+        tmp = pcd[mask2]
+
+        warp = ObjectWarpingSE3Batch(
+            canon, tmp, torch.device("cuda:0"), **PARAM_1,
+            init_scale=canon_scale)
+        source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
+
+        viz_utils.show_pcds_plotly({
+            "pcd": tmp,
+            "warp": source_pcd_complete
+        }, center=False)
 
 
 parser = argparse.ArgumentParser("Find objects for a particular task.")
 parser.add_argument("save_file")
+parser.add_argument("save_file2")
 main(parser.parse_args())
