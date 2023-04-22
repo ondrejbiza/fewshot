@@ -77,7 +77,7 @@ def main(args):
     with open(args.save_file2, "rb") as f:
         data2 = pickle.load(f)
 
-    i = 2
+    i = 1
 
     print(data[i].keys())
     pcd = data[i]["cloud"].reshape(480, 640, 3)
@@ -90,40 +90,17 @@ def main(args):
     texcoords[:, 0] = np.clip(texcoords[:, 0] * 640, 0, 640 - 1)
     texcoords = texcoords.astype(np.int32)
 
-    # I think I should do this only after I match the quantiles.
-    max_distance = 1000
-    depth[depth > max_distance] = max_distance
-
-    # BGR to RGB
-    image = image[:, :, ::-1]
-
-    depth2 = imread("test_depth.png")
-    depth2 = depth2[:, :, 0]  # All three channels are the same.
-    depth2[depth2 < 1.] = 1.
-    depth2 = 1. / depth2
-
-    depth_q = np.quantile(depth, [0.25, 0.5])
-    depth2_q = np.quantile(depth2, [0.25, 0.5])
-
-    depth2_n = ((depth2 - depth2_q[0]) / (depth2_q[1] - depth2_q[0])) * (depth_q[1] - depth_q[0]) + depth_q[0]
-
-    depth2_q = np.quantile(depth2, [0.25, 0.5])
-
-    depth2_n[depth2_n > max_distance] = max_distance
-
-    proj, width, height = d435_intrinsics()
-    pcd = depth_to_point_cloud(proj, depth)
+    pcd = pcd.reshape(480 * 640, 3)
     # viz_utils.show_pcd_plotly(pcd, center=True)
 
-    pcd = pcd.reshape(480 * 640, 3)
-
     d = {}
-    #for j in range(len(class_idx)):
-    for j in [0, 1, 2]:
+    # for j in range(len(class_idx)):
+    for j in [0, 2]:
         name = f"{j}_{classes[class_idx[j]]}"
         mask = masks[j]
         mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
         tmp = pcd[mask2]
+        tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
         d[name] = tmp
         print(name)
         # viz_utils.show_pcd_plotly(tmp, center=True)
@@ -134,22 +111,25 @@ def main(args):
     canon_scale = constants.NDF_MUGS_INIT_SCALE
     canon = utils.CanonObj.from_pickle(canon_path)
 
-    for j in [0, 1, 2]:
+    complete_pcds = {}
+    for j in [0, 2]:
 
         name = f"{j}_{classes[class_idx[j]]}"
         mask = masks[j]
         mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
         tmp = pcd[mask2]
+        tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
 
-        warp = ObjectWarpingSE3Batch(
+        if len(tmp) > 2000:
+            tmp = utils.farthest_point_sample(tmp, 2000)[0]
+
+        warp = ObjectWarpingSE2Batch(
             canon, tmp, torch.device("cuda:0"), **PARAM_1,
             init_scale=canon_scale)
-        source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
+        source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+        complete_pcds[j] = source_pcd_complete
 
-        viz_utils.show_pcds_plotly({
-            "pcd": tmp,
-            "warp": source_pcd_complete
-        }, center=False)
+    viz_utils.show_pcds_plotly(complete_pcds, center=False)
 
 
 parser = argparse.ArgumentParser("Find objects for a particular task.")
