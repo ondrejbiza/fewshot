@@ -26,6 +26,12 @@ Then, make sure all three cameras are running. You can check that in rviz.
 
 Use Ctrl+C to close main.py and wait. If the shutdown doesn't finish properly, some drivers might keep running and you will need to restart the PC.
 
+### Commands
+
+```python -m scripts.real_world.record_demo bowl_on_mug pick.pkl place.pkl -c```
+
+```python -m scripts.real_world.pick_place bowl_on_mug pick.pkl place.pkl -c```
+
 ### Troubleshooting
 
 * One of the cameras repeatedly doesn't start. First, plug and unplug all USBs from the PC and restart main.py. If that doesn't help, restart the computer.
