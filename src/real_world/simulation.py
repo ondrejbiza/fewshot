@@ -28,13 +28,13 @@ class Simulation:
 
         self.sim_id = pb.connect(flag)
 
-        if use_gui:
-            pb.configureDebugVisualizer(pb.COV_ENABLE_TINY_RENDERER, False, physicsClientId=self.sim_id) # TODO: does this matter?
-            pb.configureDebugVisualizer(pb.COV_ENABLE_SHADOWS, True, physicsClientId=self.sim_id)
-            pb.configureDebugVisualizer(pb.COV_ENABLE_MOUSE_PICKING, False, physicsClientId=self.sim_id) # mouse moves meshes
-            pb.configureDebugVisualizer(pb.COV_ENABLE_KEYBOARD_SHORTCUTS, False, physicsClientId=self.sim_id)
+        # if use_gui:
+        #     pb.configureDebugVisualizer(pb.COV_ENABLE_TINY_RENDERER, False, physicsClientId=self.sim_id) # TODO: does this matter?
+        #     pb.configureDebugVisualizer(pb.COV_ENABLE_SHADOWS, True, physicsClientId=self.sim_id)
+        #     pb.configureDebugVisualizer(pb.COV_ENABLE_MOUSE_PICKING, False, physicsClientId=self.sim_id) # mouse moves meshes
+        #     pb.configureDebugVisualizer(pb.COV_ENABLE_KEYBOARD_SHORTCUTS, False, physicsClientId=self.sim_id)
 
-        pb.resetDebugVisualizerCamera(2, 160, -35, np.zeros(3), physicsClientId=self.sim_id)
+        # pb.resetDebugVisualizerCamera(2, 160, -35, np.zeros(3), physicsClientId=self.sim_id)
 
         self.objects = []
     

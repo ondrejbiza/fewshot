@@ -34,8 +34,8 @@ def cvK2BulletP(K, w, h, near, far):
     B = 2 * near * far / (near - far)
 
     projection_matrix = [
-                        [2/w * f_x,  0,          pp_x,  0],
-                        [0,          2/h * f_y,  pp_y,  0],
+                        [2/w * f_x,  0,          (w - 2*pp_x)/w,  0],
+                        [0,          2/h * f_y,  (2*pp_y - h)/h,  0],
                         [0,          0,          A,              B],
                         [0,          0,          -1,             0]]
     #The transpose is needed for respecting the array structure of the OpenGL
@@ -177,6 +177,8 @@ def main(args):
     canon_scale = constants.NDF_MUGS_INIT_SCALE
     canon = utils.CanonObj.from_pickle(canon_path)
 
+    sim = Simulation(use_gui=True)
+
     complete_pcds = {}
     for j in [0, 2]:
 
@@ -195,49 +197,54 @@ def main(args):
         complete_pcd, _, param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
         complete_pcds[j] = complete_pcd
 
-    # viz_utils.show_pcds_plotly(complete_pcds, center=False)
+        # viz_utils.show_pcds_plotly(complete_pcds, center=False)
 
-    with open(args.pick_demo, "rb") as f:
-        d = pickle.load(f)
-    index = d["index"]
-    pos_robotiq = d["pos_robotiq"]
-    trans_pre_t0_to_t0 = d["trans_pre_t0_to_t0"]
+        with open(args.pick_demo, "rb") as f:
+            d = pickle.load(f)
+        index = d["index"]
+        pos_robotiq = d["pos_robotiq"]
+        trans_pre_t0_to_t0 = d["trans_pre_t0_to_t0"]
 
-    source_pcd_complete = canon.to_pcd(param)
-    source_points = source_pcd_complete[index]
+        source_pcd_complete = canon.to_pcd(param)
+        source_points = source_pcd_complete[index]
 
-    # Pick pose in canonical frame..
-    trans, _, _ = utils.best_fit_transform(pos_robotiq, source_points)
-    # Pick pose in workspace frame.
-    trans_robotiq_to_ws = param.get_transform() @ trans
+        # Pick pose in canonical frame..
+        trans, _, _ = utils.best_fit_transform(pos_robotiq, source_points)
+        # Pick pose in workspace frame.
+        trans_robotiq_to_ws = param.get_transform() @ trans
 
-    sim = Simulation()
-
-    source_mesh = canon.to_mesh(param)
-    source_mesh.export("tmp_source.stl")
-    utils.convex_decomposition(source_mesh, "tmp_source.obj")
-    obj_id = sim.add_object("tmp_source.urdf", param.position, param.quat)
-    robotiq_id = sim.add_object("data/robotiq.urdf", *utils.transform_to_pos_quat(trans_robotiq_to_ws))
+        source_mesh = canon.to_mesh(param)
+        source_mesh.export(f"tmp_source_{j}.stl")
+        utils.convex_decomposition(source_mesh, f"tmp_source_{j}.obj")
+        sim.add_object(f"tmp_source_{j}.urdf", param.position, param.quat)
+        sim.add_object("data/robotiq.urdf", *utils.transform_to_pos_quat(trans_robotiq_to_ws))
 
     with open(args.calibration, "rb") as f:
         d = pickle.load(f)
 
-    # This doesn't work.
-    # I can use getDebugVisualizerCamera to get the default view matrix and debug the projection matrix.
-
     cam2world = d["cam2world"]
     pos, quat = utils.transform_to_pos_quat(cam2world)
+    width = 640
+    height = 480
     view_matrix = cvPose2BulletView(quat, pos)
-    proj_matrix = cvK2BulletP(d435_intrinsics()[0], 640, 480, 0.1, 100)
+    proj_matrix = cvK2BulletP(d435_intrinsics()[0], width, height, 0.01, 100)
 
     image_arr = pb.getCameraImage(
-        640, 480, viewMatrix=view_matrix, projectionMatrix=proj_matrix
+        width, height, viewMatrix=view_matrix, projectionMatrix=proj_matrix
     )
-    rgb = image_arr[2]
-    print(rgb.shape)
+    rgb = image_arr[2][:, :, :3]
 
-    plt.imshow(rgb)
+    mask = np.any(rgb != 255, axis=-1)
+    image[mask] = (0.5 * image[mask] + 0.5 * rgb[mask]).astype(np.uint8)
+
+    plt.imshow(image)
     plt.show()
+
+    # plt.subplot(1, 2, 1)
+    # plt.imshow(rgb)
+    # plt.subplot(1, 2, 2)
+    # plt.imshow(image)
+    # plt.show()
 
 
 # python -m scripts.real_world.experimental.show_dataset2 data/ignore/ondrejs_desk_1_results.pkl data/ignore/ondrejs_desk_1.pkl data/230330/mug_tree_pick.pkl data/ignore/calibration.pickle
