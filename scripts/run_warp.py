@@ -314,7 +314,11 @@ def main(args):
         canon_source_path=canon_source_path,
         canon_target_path=canon_target_path,
         canon_source_scale=canon_source_scale,
-        canon_target_scale=canon_target_scale
+        canon_target_scale=canon_target_scale,
+        ablate_no_warp=args.ablate_no_warp,
+        ablate_no_scale=args.ablate_no_scale,
+        ablate_no_pose_training=args.ablate_no_pose_training,
+        ablate_no_size_reg=args.ablate_no_size_reg,
     )
 
     n_demos = max_demos if args.n_demos == 0 else args.n_demos
@@ -912,6 +916,10 @@ if __name__ == "__main__":
 
     # custom
     parser.add_argument('--demo_selection', default=False, action='store_true')
+    parser.add_argument('--ablate-no-warp', default=False, action='store_true')
+    parser.add_argument('--ablate-no-scale', default=False, action='store_true')
+    parser.add_argument('--ablate-no-pose-training', default=False, action='store_true')
+    parser.add_argument('--ablate-no-size-reg', default=False, action='store_true')
 
     args = parser.parse_args()
 

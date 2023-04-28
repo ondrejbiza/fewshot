@@ -1,3 +1,4 @@
+import copy as cp
 from dataclasses import dataclass
 from typing import Optional
 
@@ -20,16 +21,17 @@ class NDFInterface:
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.03
     wiggle: bool = False
-    ablate_no_warp: bool = True
+    ablate_no_warp: bool = False
     ablate_no_scale: bool = False
     ablate_no_pose_training: bool = False
+    ablate_no_size_reg: bool = False
 
     def __post_init__(self):
 
         self.canon_source = utils.CanonObj.from_pickle(self.canon_source_path)
         self.canon_target = utils.CanonObj.from_pickle(self.canon_target_path)
 
-    def set_demo_info(self, pc_master_dict, demo_idx: int=0, calculate_cost: bool=False, show: bool=False):
+    def set_demo_info(self, pc_master_dict, demo_idx: int=0, calculate_cost: bool=False, show: bool=True):
         """Process a demonstration."""
 
         # Get a single demonstration.
@@ -56,13 +58,17 @@ class NDFInterface:
             "train_poses": not self.ablate_no_pose_training
         }
 
+        param_1 = cp.deepcopy(PARAM_1)
+        if self.ablate_no_size_reg:
+            param_1["object_size_reg"] = 0.
+
         warp = ObjectWarpingSE2Batch(
-            self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
+            self.canon_source, source_pcd, torch.device("cuda:0"), **param_1,
             init_scale=self.canon_source_scale)
         source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
         warp = ObjectWarpingSE2Batch(
-            self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
+            self.canon_target, target_pcd, torch.device("cuda:0"), **param_1,
             init_scale=self.canon_target_scale)
         target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
@@ -112,7 +118,7 @@ class NDFInterface:
             trans_predicted = self.infer_relpose(source_pcd, target_pcd)
             return utils.pose_distance(trans_predicted, source_start_to_final)
 
-    def infer_relpose(self, source_pcd, target_pcd, se3: bool=False, show: bool=False):
+    def infer_relpose(self, source_pcd, target_pcd, se3: bool=False, show: bool=True):
         """Make prediction about the final pose of the source object."""
         if self.pcd_subsample_points is not None and len(source_pcd) > self.pcd_subsample_points:
             source_pcd, _ = utils.farthest_point_sample(source_pcd, self.pcd_subsample_points)
@@ -125,19 +131,23 @@ class NDFInterface:
             "train_poses": not self.ablate_no_pose_training
         }
 
+        param_1 = cp.deepcopy(PARAM_1)
+        if self.ablate_no_size_reg:
+            param_1["object_size_reg"] = 0.
+
         if se3:
             warp = ObjectWarpingSE3Batch(
-                self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
+                self.canon_source, source_pcd, torch.device("cuda:0"), **param_1,
                 init_scale=self.canon_source_scale)
             source_pcd_complete, _, source_param = warp_to_pcd_se3(warp, n_angles=12, n_batches=15, inference_kwargs=inference_kwargs)
         else:
             warp = ObjectWarpingSE2Batch(
-                self.canon_source, source_pcd, torch.device("cuda:0"), **PARAM_1,
+                self.canon_source, source_pcd, torch.device("cuda:0"), **param_1,
                 init_scale=self.canon_source_scale)
             source_pcd_complete, _, source_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
         warp = ObjectWarpingSE2Batch(
-            self.canon_target, target_pcd, torch.device("cuda:0"), **PARAM_1,
+            self.canon_target, target_pcd, torch.device("cuda:0"), **param_1,
             init_scale=self.canon_target_scale)
         target_pcd_complete, _, target_param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs)
 
