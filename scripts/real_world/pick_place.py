@@ -191,18 +191,38 @@ def main(args):
         canon_source.init_scale = constants.NDF_MUGS_INIT_SCALE
         canon_target.init_scale = constants.SIMPLE_TREES_INIT_SCALE
         source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
+        
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
         canon_target = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
         canon_source.init_scale = constants.NDF_BOWLS_INIT_SCALE
         canon_target.init_scale = constants.NDF_MUGS_INIT_SCALE
         source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_pcd=platform_pcd)
+
     elif args.task == "bottle_in_box":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BOTTLES_PCA_PATH)
         canon_target = utils.CanonObj.from_pickle(constants.BOXES_PCA_PATH)
         canon_source.init_scale = constants.NDF_BOTTLES_INIT_SCALE
         canon_target.init_scale = constants.BOXES_INIT_SCALE
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
+
+    elif args.task == "brush_in_bowl":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BRUSHES_INIT_SCALE
+        canon_target.init_scale = constants.NDF_BOWLS_INIT_SCALE      
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
+
+    elif args.task == "brush_on_cube":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_CUBE_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BRUSHES_INIT_SCALE
+        canon_target.init_scale = constants.NDF_CUBE_INIT_SCALE
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
+
+    elif args.task == "cubiods":
+        canon_source = utils.CanonObj.from_pickle()
+
     else:
         raise ValueError("Unknown task.")
 

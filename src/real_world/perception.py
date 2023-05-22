@@ -264,6 +264,23 @@ def bottle_box_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
 
     return bottle_pcd, box_pcd
 
+def brush_box_segementation(cloud: NPF32, max_pc_size: Optional[int]=2000,
+                            platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:
+
+    cloud = center_workspace(cloud)
+    cloud = mask_workspace(cloud)
+
+    brush_pcd, box_pcd = find_bottle_and_box(cloud)
+    if platform_pcd is not None:
+        bottle_pcd = subtract_platform(bottle_pcd, platform_pcd)
+
+    if max_pc_size is not None:
+        if len(bottle_pcd) > max_pc_size:
+            bottle_pcd, _ = utils.farthest_point_sample(bottle_pcd, max_pc_size)
+        if len(box_pcd) > max_pc_size:
+            box_pcd, _ = utils.farthest_point_sample(box_pcd, max_pc_size)
+
+    return bottle_pcd, box_pcd
 
 def platform_segmentation(cloud: NPF32) -> NPF32:
     """Segment platform from the table."""

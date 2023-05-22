@@ -63,6 +63,17 @@ def main(args):
         obj_paths = [f"data/simple_trees/train/{i}.stl" for i in range(10)]
         rotation = None
         num_surface_samples = 2000
+
+    elif args.objects == "brushes":
+        obj_paths = [f"data/data_new/brushes/{i}.stl" for i in range(10)]
+        rotation = None
+        num_surface_samples = 2000
+
+    elif args.objects == "cube":
+        obj_paths = [f"data/data_new/cubiods/{i}.stl" for i in range(10)]
+        rotation = None
+        num_surface_samples = 2000 
+
     elif args.objects == "cuboids":
         base_dir = "data/ndf_objects/distractors/cuboids"
         obj_paths = []
@@ -75,6 +86,9 @@ def main(args):
         num_surface_samples = 2000
     else:
         raise ValueError("Unknown object class.")
+    
+
+    
 
     meshes = []
     for obj_path in obj_paths:

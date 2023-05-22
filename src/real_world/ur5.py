@@ -37,7 +37,7 @@ class UR5:
     tool_frame_id: str = "flange"
 
     def __post_init__(self):
-
+        
         self.tf_proxy = TFProxy()
         self.rviz_pub = RVizPub()
 

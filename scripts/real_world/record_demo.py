@@ -115,7 +115,6 @@ def save_place_contact_points(
     # The source object was perceived on the ground.
     # Move it to where the robot hand is now.
     source_param = cp.deepcopy(source_param)
-
     trans_source_to_b = np.matmul(trans_t0_to_b, trans_source_to_t0)
     trans_source_to_ws = np.linalg.inv(rw_utils.workspace_to_base()) @ trans_source_to_b
     src_pos, src_quat = utils.transform_to_pos_quat(trans_source_to_ws)
@@ -168,24 +167,34 @@ def main(args):
         canon_source.init_scale = constants.NDF_MUGS_INIT_SCALE
         canon_target.init_scale = constants.SIMPLE_TREES_INIT_SCALE
         source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
+
     elif args.task == "bowl_on_mug":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
         canon_target = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
         canon_source.init_scale = constants.NDF_BOWLS_INIT_SCALE
         canon_target.init_scale = constants.NDF_MUGS_INIT_SCALE
         source_pcd, target_pcd = perception.bowl_mug_segmentation(cloud, platform_pcd=platform_pcd)
+        
     elif args.task == "bottle_in_box":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BOTTLES_PCA_PATH)
         canon_target = utils.CanonObj.from_pickle(constants.BOXES_PCA_PATH)
         canon_source.init_scale = constants.NDF_BOTTLES_INIT_SCALE
         canon_target.init_scale = constants.BOXES_INIT_SCALE
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
-    elif args.task == "brushes":
-        canon_source = utils.CanonObj.from_pickle("data/brushes.pkl")
-        canon_target = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+
+    elif args.task == "brush_in_bowl":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
+        canon_source.init_scale = constants.NDF_BRUSHES_INIT_SCALE
+        canon_target.init_scale = constants.NDF_BOWLS_INIT_SCALE
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
+
+    elif args.task == "brush_on_cube":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_CUBE_PCA_PATH)
         canon_source.init_scale = 0.5
-        canon_target.init_scale = constants.NDF_MUGS_INIT_SCALE
-        source_pcd, target_pcd = perception.brush_box_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
+        canon_target.init_scale = constants.NDF_CUBE_INIT_SCALE
+        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
     else:
         raise ValueError("Unknown task.")
 
