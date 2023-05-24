@@ -64,7 +64,7 @@ def cvPose2BulletView(q, t):
                    [0,  -1,    0,  0],
                    [0,   0,   -1,  0],
                    [0,   0,    0,  1]]).reshape(4,4)
-    
+
     # pybullet pse is the inverse of the pose from the ROS-TF
     T=Tc@np.linalg.inv(T)
     # The transpose is needed for respecting the array structure of the OpenGL
@@ -135,23 +135,23 @@ def main(args):
     with open(args.save_file, "rb") as f:
         data = pickle.load(f)
 
-    with open(args.save_file2, "rb") as f:
-        data2 = pickle.load(f)
-
     i = 1
 
     print(data[i].keys())
-    pcd = data[i]["cloud"].reshape(480, 640, 3)
-    image = data[i]["image"][:, :, ::-1]  # BGR to RGB
-    depth = data[i]["depth"]
+    pcd = data[i]["clouds"].reshape(480, 640, 3)
+    image = data[i]["images"][:, :, ::-1]  # BGR to RGB
     masks = data[i]["masks"][:, 0].cpu().numpy()
     class_idx = data[i]["class_idx"]
-    texcoords = data2[i]["texcoords"].reshape(480 * 640, 2)
+    texcoords = data[i]["texcoords"].reshape(480 * 640, 2)
     texcoords[:, 1] = np.clip(texcoords[:, 1] * 480, 0, 480 - 1)
     texcoords[:, 0] = np.clip(texcoords[:, 0] * 640, 0, 640 - 1)
     texcoords = texcoords.astype(np.int32)
+    cam2world = data[i]["cam2world"]
+
+    imsave("1.png", image)
 
     print(image.shape)
+    print(class_idx)
 
     # plt.imshow(image)
     # plt.show()
@@ -160,14 +160,18 @@ def main(args):
     # viz_utils.show_pcd_plotly(pcd, center=True)
 
     d = {}
-    for j in range(len(class_idx)):
-    # for j in [0, 2]:
+    # for j in range(len(class_idx)):
+    for j in [3, 4]:
         name = f"{j}_{classes[class_idx[j]]}"
         mask = masks[j]
         mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
         tmp = pcd[mask2]
         tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
+        if len(tmp) > 2000:
+            tmp = utils.farthest_point_sample(tmp, 2000)[0]
         d[name] = tmp
+        if len(tmp) == 0:
+            continue
         print(name)
         # viz_utils.show_pcd_plotly(tmp, center=True)
 
@@ -179,15 +183,24 @@ def main(args):
 
     sim = Simulation(use_gui=True)
 
+    tmp = np.copy(image)
+    for j in [3, 4]:
+        tmp[masks[j]] = (0.5 * tmp[masks[j]]).astype(np.uint8)
+        tmp[masks[j], 0] += 255 // 2
+
+    imsave("2.png", tmp)
+
+    # plt.imshow(tmp)
+    # plt.show()
+
     complete_pcds = {}
-    for j in [0, 2]:
+    for j in [3, 4]:
 
         name = f"{j}_{classes[class_idx[j]]}"
         mask = masks[j]
         mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
         tmp = pcd[mask2]
         tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
-
         if len(tmp) > 2000:
             tmp = utils.farthest_point_sample(tmp, 2000)[0]
 
@@ -208,7 +221,7 @@ def main(args):
         source_pcd_complete = canon.to_pcd(param)
         source_points = source_pcd_complete[index]
 
-        # Pick pose in canonical frame..
+        # Pick pose in canonical frame.
         trans, _, _ = utils.best_fit_transform(pos_robotiq, source_points)
         # Pick pose in workspace frame.
         trans_robotiq_to_ws = param.get_transform() @ trans
@@ -217,12 +230,8 @@ def main(args):
         source_mesh.export(f"tmp_source_{j}.stl")
         utils.convex_decomposition(source_mesh, f"tmp_source_{j}.obj")
         sim.add_object(f"tmp_source_{j}.urdf", param.position, param.quat)
-        sim.add_object("data/robotiq.urdf", *utils.transform_to_pos_quat(trans_robotiq_to_ws))
+        # sim.add_object("data/robotiq.urdf", *utils.transform_to_pos_quat(trans_robotiq_to_ws))
 
-    with open(args.calibration, "rb") as f:
-        d = pickle.load(f)
-
-    cam2world = d["cam2world"]
     pos, quat = utils.transform_to_pos_quat(cam2world)
     width = 640
     height = 480
@@ -235,7 +244,9 @@ def main(args):
     rgb = image_arr[2][:, :, :3]
 
     mask = np.any(rgb != 255, axis=-1)
-    image[mask] = (0.5 * image[mask] + 0.5 * rgb[mask]).astype(np.uint8)
+    image[mask] = (0.1 * image[mask] + 0.9 * rgb[mask]).astype(np.uint8)
+
+    imsave("3.png", image)
 
     plt.imshow(image)
     plt.show()
@@ -250,7 +261,5 @@ def main(args):
 # python -m scripts.real_world.experimental.show_dataset2 data/ignore/ondrejs_desk_1_results.pkl data/ignore/ondrejs_desk_1.pkl data/230330/mug_tree_pick.pkl data/ignore/calibration.pickle
 parser = argparse.ArgumentParser("Find objects for a particular task.")
 parser.add_argument("save_file")
-parser.add_argument("save_file2")
 parser.add_argument("pick_demo")
-parser.add_argument("calibration")
 main(parser.parse_args())
