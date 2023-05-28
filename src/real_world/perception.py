@@ -340,6 +340,7 @@ def warping(
     rviz_pub: Optional[RVizPub]=None,
     ablate_no_warping: bool=False,
     source_any_rotation: bool=False,
+    target_any_rotation: bool=False,
     source_no_warping: bool=False,
     desk_center: Tuple[float, float, float]=constants.DESK_CENTER,
     grow_source_object: bool=False, grow_target_object: bool=False
@@ -370,10 +371,17 @@ def warping(
                 n_samples=1000, object_size_reg=0.01, init_scale=canon_source.init_scale)
             source_pcd_complete, _, source_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
-    warp = object_warping.ObjectWarpingSE2Batch(
-        canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
-        n_samples=1000, object_size_reg=0.01, init_scale=canon_target.init_scale)
-    target_pcd_complete, _, target_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+    if target_any_rotation:
+        warp = object_warping.ObjectWarpingSE3Batch(
+            canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            n_samples=1000, object_size_reg=0.01, init_scale=canon_target.init_scale)
+        # !!!: Here we use full SO(3), for source we use a hemisphere sampling.
+        target_pcd_complete, _, target_param = object_warping.warp_to_pcd_se3(warp, n_angles=12, n_batches=15)
+    else:
+        warp = object_warping.ObjectWarpingSE2Batch(
+            canon_target, target_pcd, torch.device("cuda:0"), lr=1e-2, n_steps=100,
+            n_samples=1000, object_size_reg=0.01, init_scale=canon_target.init_scale)
+        target_pcd_complete, _, target_param = object_warping.warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
 
     print("Inference time: {:.1f}s.".format(time.time() - perception_start))
 

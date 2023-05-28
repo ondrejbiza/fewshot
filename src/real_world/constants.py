@@ -15,6 +15,7 @@ NDF_BOWLS_PCA_PATH = "data/pcas/230315_ndf_bowls_scale_pca_8_dim_alp_0_01.pkl"
 NDF_BOTTLES_PCA_PATH = "data/pcas/230328_ndf_bottles_scale_pca_8_dim_alp_0_01.pkl"
 SIMPLE_TREES_PCA_PATH = "data/pcas/230315_simple_trees_scale_pca_8_dim_alp_0_01.pkl"
 NDF_BRUSH_PCA_PATH = "data/data_new/pca_brush_ndf.pkl"
+NDF_BRUSH_PCA_PATH_2 = "data/pca_brush_new.pkl"
 BOXES_PCA_PATH = "data/pcas/230315_boxes_scale_pca_8_dim_alp_0_01.pkl"
 NDF_CUBE_PCA_PATH = "data/data_new/pca_cube_ndf.pkl"
 
