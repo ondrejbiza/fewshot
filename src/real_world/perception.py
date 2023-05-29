@@ -208,6 +208,54 @@ def find_bottle_and_box(cloud: NPF32) -> Tuple[NPF32, NPF32]:
     return bottle, box
 
 
+def find_brush_and_bowl(cloud: NPF32) -> Tuple[NPF32, NPF32]:
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(cloud)
+
+    labels = DBSCAN(eps=0.03, min_samples=10).fit_predict(cloud)
+    # labels = np.array(pcd.cluster_dbscan(eps=0.03, min_points=10))
+
+    print("PC lengths (ignoring PCs above the ground).")
+    pcs = []
+    for label in np.unique(labels):
+        if label == -1:
+            # Background label?
+            continue
+        
+        pc = cloud[labels == label]
+        if np.min(pc[..., 2]) > 0.1:
+            # Above ground, probably robot gripper.
+            continue
+
+        print(len(pc))
+
+        pcs.append(pc)
+
+    assert len(pcs) >= 2, "The world must have at least two objects."
+    if len(pcs) > 2:
+        # Pick the two point clouds with the most points.
+        sizes = [len(pc) for pc in pcs]
+        sort = list(reversed(np.argsort(sizes)))
+        pcs = [pcs[sort[0]], pcs[sort[1]]]
+
+    assert len(pcs[0]) > 10, "Too small PC."
+    assert len(pcs[1]) > 10, "Too small PC."
+
+    # Brush is higher than bowl.
+    max1 = np.max(pcs[0][:, 2])
+    max2 = np.max(pcs[1][:, 2])
+
+    if max1 > max2:
+        brush = pcs[0]
+        bowl = pcs[1]
+    else:
+        brush = pcs[1]
+        bowl = pcs[0]
+
+    return brush, bowl
+
+
 def mug_tree_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
                           platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:
 
@@ -263,6 +311,26 @@ def bottle_box_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
             box_pcd, _ = utils.farthest_point_sample(box_pcd, max_pc_size)
 
     return bottle_pcd, box_pcd
+
+
+def brush_bowl_segmentation(cloud: NPF32, max_pc_size: Optional[int]=2000,
+                            platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:
+
+    cloud = center_workspace(cloud)
+    cloud = mask_workspace(cloud)
+
+    brush_pcd, bowl_pcd = find_brush_and_bowl(cloud)
+    if platform_pcd is not None:
+        brush_pcd = subtract_platform(brush_pcd, platform_pcd)
+
+    if max_pc_size is not None:
+        if len(brush_pcd) > max_pc_size:
+            brush_pcd, _ = utils.farthest_point_sample(brush_pcd, max_pc_size)
+        if len(bowl_pcd) > max_pc_size:
+            bowl_pcd, _ = utils.farthest_point_sample(bowl_pcd, max_pc_size)
+
+    return brush_pcd, bowl_pcd
+
 
 def brush_box_segementation(cloud: NPF32, max_pc_size: Optional[int]=2000,
                             platform_pcd: Optional[NPF32]=None) -> Tuple[NPF32, NPF32]:

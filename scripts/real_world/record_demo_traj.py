@@ -183,14 +183,14 @@ def main(args):
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
 
     elif args.task == "brush_in_bowl":
-        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH_2)
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH_3)
         canon_target = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
         canon_source.init_scale = constants.NDF_BRUSHES_INIT_SCALE
         canon_target.init_scale = constants.NDF_BOWLS_INIT_SCALE
-        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
+        source_pcd, target_pcd = perception.brush_bowl_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
 
     elif args.task == "brush_on_cube":
-        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH)
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH_3)
         canon_target = utils.CanonObj.from_pickle(constants.NDF_CUBE_PCA_PATH)
         canon_source.init_scale = 0.5
         canon_target.init_scale = constants.NDF_CUBE_INIT_SCALE
@@ -208,6 +208,7 @@ def main(args):
     # Initial perception.
     out = perception.warping(
         source_pcd, target_pcd, canon_source, canon_target,
+        source_any_rotation=args.any_rotation,
         target_any_rotation=args.target_any_rotation,
         tf_proxy=ur5.tf_proxy, moveit_scene=ur5.moveit_scene, source_save_decomposition=True,
         target_save_decomposition=True, add_source_to_planning_scene=True, add_target_to_planning_scene=True,
@@ -303,7 +304,10 @@ if __name__ == "__main__":
     parser.add_argument("task", type=str, help=constants.TASKS_DESCRIPTION)
     parser.add_argument("pick_save_path", type=str)
     parser.add_argument("place_save_path", type=str)
-    parser.add_argument("--target-any-rotation", default=False, action="store_true")
+
+    parser.add_argument("-a", "--any-rotation", default=False, action="store_true",
+                        help="Try to determine SE(3) object pose. Otherwise, determine a planar pose.")
+    parser.add_argument("-t", "--target-any-rotation", default=False, action="store_true")
     parser.add_argument("-c", "--pick-contacts", default=False, action="store_true")
     parser.add_argument("-p", "--platform", default=False, action="store_true",
                         help="First take a point cloud of a platform. Then subtract the platform from the next point cloud.")
