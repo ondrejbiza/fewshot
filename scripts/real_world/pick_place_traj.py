@@ -99,6 +99,7 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
 
     # Remove mug from planning scene.
     ur5.moveit_scene.remove_object("source")
+    #ur5.moveit_scene.remove_object("platform_pcd")
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
     ur5.gripper.close_gripper()
@@ -139,7 +140,7 @@ def place(
     trans_new_source_to_b = np.matmul(trans_target_to_b, trans_new_source_to_target)
 
     # Wiggle mug out of potential collision.
-    # sim.remove_all_objects()
+    sim.remove_all_objects()
     # source_id = sim.add_object("tmp_source.urdf", *utils.transform_to_pos_quat(trans_new_source_to_b))
     # target_id = sim.add_object("tmp_target.urdf", *utils.transform_to_pos_quat(trans_target_to_b), fixed_base=True)
     # new_m_pos, new_m_quat = sim.wiggle(mug_id, tree_id)
@@ -154,7 +155,9 @@ def place(
     # trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
 
     # Remove mug and tree from the planning scene.
-    # ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
+    ur5.moveit_scene.remove_object("source")
+    sim.remove_object(canon_source)
+    #ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
 
@@ -207,7 +210,7 @@ def main(args):
         canon_target = utils.CanonObj.from_pickle(constants.NDF_BOWLS_PCA_PATH)
         canon_source.init_scale = constants.NDF_BRUSHES_INIT_SCALE
         canon_target.init_scale = constants.NDF_BOWLS_INIT_SCALE      
-        source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)
+        source_pcd, target_pcd = perception.brush_bowl_segmentation(cloud, platform_pcd=platform_pcd)
 
     elif args.task == "brush_on_cube":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH_3)

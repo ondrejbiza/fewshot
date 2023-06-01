@@ -192,7 +192,7 @@ def main(args):
     elif args.task == "brush_on_cube":
         canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH_3)
         canon_target = utils.CanonObj.from_pickle(constants.NDF_CUBE_PCA_PATH)
-        canon_source.init_scale = 0.5
+        canon_source.init_scale = constants.NDF_BRUSHES_INIT_SCALE
         canon_target.init_scale = constants.NDF_CUBE_INIT_SCALE
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
     else:
@@ -289,7 +289,7 @@ def main(args):
             target_pcd, ur5, source_id, target_id, trans_source_to_t0, trans_pre_t0_to_b, canon_source, canon_target,
             source_param, target_param, save_path=tmp_place_path)
         i += 1
-
+      
     # Reset.
     # input("Open gripper?")
     ur5.gripper.open_gripper()
