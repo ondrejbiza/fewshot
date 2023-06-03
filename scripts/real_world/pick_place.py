@@ -1,6 +1,7 @@
 import argparse
 import os
 import pickle
+import time
 
 import numpy as np
 from numpy.typing import NDArray
@@ -76,6 +77,8 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     pos_robotiq = d["pos_robotiq"]
     trans_pre_t0_to_t0 = d["trans_pre_t0_to_t0"]
 
+    t1 = time.time()
+
     source_pcd_complete = canon_source.to_pcd(source_param)
     source_points = source_pcd_complete[index]
 
@@ -94,6 +97,8 @@ def pick_contacts(ur5: UR5, canon_source: utils.CanonObj, source_param: utils.Ob
     trans_post_t0_to_b = rw_utils.workspace_to_base() @ trans_post_t0_to_ws
 
     trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
+
+    print("Pick planning time: {:.2f}s".format(time.time() - t1))
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
 
@@ -122,6 +127,8 @@ def place(
     with open(load_path, "rb") as f:
         place_data = pickle.load(f)
 
+    t1 = time.time()
+
     knns = place_data["knns"]
     deltas = place_data["deltas"]
     target_indices = place_data["target_indices"]
@@ -149,6 +156,8 @@ def place(
 
     trans_t0_to_b = np.matmul(trans_new_source_to_b, np.linalg.inv(trans_source_to_t0))
     trans_pre_t0_to_b = np.matmul(trans_pre_new_source_to_b, np.linalg.inv(trans_source_to_t0))
+
+    print("Place planning time: {:.6f}s".format(time.time() - t1))
 
     # I believe this is the wrong approach to do the pre-place pose:
     # trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
