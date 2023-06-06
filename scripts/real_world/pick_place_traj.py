@@ -155,8 +155,8 @@ def place(
     # trans_pre_t0_to_b = np.matmul(trans_t0_to_b, trans_pre_t0_to_t0)
 
     # Remove mug and tree from the planning scene.
-    ur5.moveit_scene.remove_object("source")
-    sim.remove_object(canon_source)
+    # ur5.moveit_scene.remove_object("source")
+    #sim.remove_object(canon_source)
     #ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_pre_t0_to_b), num_plans=HARD_MOTION_TRIES)
 
     ur5.plan_and_execute_pose_target(*utils.transform_to_pos_quat(trans_t0_to_b), num_plans=EASY_MOTION_TRIES)
@@ -271,8 +271,8 @@ def main(args):
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
     # Disable all collision checking for objects.
-    ur5.moveit_scene.detach_object("source")
-    ur5.moveit_scene.remove_object("source")
+    # ur5.moveit_scene.detach_object("source")
+    # ur5.moveit_scene.remove_object("source")
     ur5.moveit_scene.remove_object("target")
 
     i = 0
