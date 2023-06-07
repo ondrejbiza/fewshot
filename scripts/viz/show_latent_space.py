@@ -82,15 +82,19 @@ def main(args):
     def button2_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
         new_obj = warp_object(canonical_obj, pca, latents, args.scale)
+        mesh_reconstruction = trimesh.base.Trimesh(
+            vertices=new_obj[:len(canonical_mesh_points)], faces=canonical_mesh_faces
+        )
 
-        dir_path = "data/warping_figure_3"
+        dir_path = "data/warping_figure_a_1"
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
         for i in range(1, 1000):
             file_path = os.path.join(dir_path, f"{i}.pcd")
             if not os.path.isfile(file_path):
                 break
-        viz_utils.save_o3d_pcd(new_obj, file_path)   
+        viz_utils.save_o3d_pcd(new_obj, file_path)
+        mesh_reconstruction.export(file_path[:-4] + ".stl")        
 
     for s in sliders:
         s.on_changed(sliders_on_changed)
