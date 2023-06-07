@@ -2,6 +2,7 @@ import argparse
 import copy
 import os
 import pickle
+import time
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
@@ -360,9 +361,11 @@ def main(args):
 
     # Prepare relational descriptors.
 
+    t1 = time.time()
     trans_pick_t0_to_ws, trans_pre_pick_t0_to_ws = pick(
         child_model, source_pcd, args.pick_load_paths, num_samples,
         sigma, opt_iterations, show=args.show)
+    print("Pick planning time: {:.2f}s".format(time.time() - t1))
 
     trans_post_t0_to_ws = rw_utils.get_post_pick_pose(trans_pick_t0_to_ws)
     trans_post_t0_to_b = rw_utils.workspace_to_base() @ trans_post_t0_to_ws
@@ -396,9 +399,11 @@ def main(args):
 
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
+    t1 = time.time()
     trans_place_t0_to_ws, trans_pre_place_t0_to_ws = place(
         args.task, trans_t0_to_ws, child_model, parent_model, in_hand, target_pcd, args.pick_load_paths, args.place_load_paths,
         num_samples, sigma, opt_iterations, reference_point, new_descriptor=args.new_descriptor, show=args.show)
+    print("Place planning time: {:.2f}s".format(time.time() - t1))
 
     trans_place_t0_to_b = np.matmul(trans_ws_to_b, trans_place_t0_to_ws)
     trans_pre_place_t0_to_b = np.matmul(trans_ws_to_b, trans_pre_place_t0_to_ws)

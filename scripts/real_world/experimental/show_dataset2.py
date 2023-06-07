@@ -3,10 +3,12 @@ import pickle
 
 import numpy as np
 import matplotlib.pyplot as plt
-from skimage.io import imsave, imread
+from skimage.io import imsave
 import torch
 import pybullet as pb
 from pyquaternion import Quaternion
+import open3d as o3d
+from sklearn.cluster import DBSCAN
 
 from src import utils, viz_utils
 from src.object_warping import ObjectWarpingSE2Batch, ObjectWarpingSE3Batch, warp_to_pcd_se2, warp_to_pcd_se3, PARAM_1
@@ -14,8 +16,18 @@ from src.real_world import constants
 from src.real_world.simulation import Simulation
 
 
-def cvK2BulletP(K, w, h, near, far):
+DEFAULT_FX = 604.364
+DEFAULT_FY = 603.84
+DEFAULT_PPX = 329.917
+DEFAULT_PPY = 240.609
+DEFAULT_WIDTH = 640
+DEFAULT_HEIGHT = 480
+NUM_SUBSAMPLE_POINTS = 2000
+
+
+def convert_to_pb_projection_matrix(K, w, h, near, far):
     """
+    https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=12901
     cvKtoPulletP converst the K interinsic matrix as calibrated using Opencv
     and ROS to the projection matrix used in openGL and Pybullet.
 
@@ -30,7 +42,7 @@ def cvK2BulletP(K, w, h, near, far):
     f_y = K[1,1]
     pp_x = K[0,2]
     pp_y = K[1,2]
-    A = (near + far)/(near - far)
+    A = (near + far) / (near - far)
     B = 2 * near * far / (near - far)
 
     projection_matrix = [
@@ -42,8 +54,9 @@ def cvK2BulletP(K, w, h, near, far):
     return np.array(projection_matrix).T.reshape(16).tolist()
 
 
-def cvPose2BulletView(q, t):
+def convert_to_pb_view_matrix(q, t):
     """
+    https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=12901
     cvPose2BulletView gets orientation and position as used 
     in ROS-TF and opencv and coverts it to the view matrix used 
     in openGL and pyBullet.
@@ -64,193 +77,258 @@ def cvPose2BulletView(q, t):
                    [0,  -1,    0,  0],
                    [0,   0,   -1,  0],
                    [0,   0,    0,  1]]).reshape(4,4)
-    
+
     # pybullet pse is the inverse of the pose from the ROS-TF
-    T=Tc@np.linalg.inv(T)
+    T = Tc @ np.linalg.inv(T)
     # The transpose is needed for respecting the array structure of the OpenGL
     viewMatrix = T.T.reshape(16)
     return viewMatrix
 
 
-def d435_intrinsics():
-    # TODO: get a real camera matrix from D435.
+def get_proj_matrix(fx, fy, ppx, ppy):
 
-    width = 640
-    height = 480
-
-    # My guess.
-    # fx = 608.6419
-    # fy = 607.1061
-    # ppx = width / 2
-    # ppy = height / 2
-
-    # Color.
-    fx = 604.364
-    fy = 603.84
-    ppx = 329.917
-    ppy = 240.609
-
-    # Depth.
-    # fx = 381.814
-    # fy = 381.814
-    # ppx = 317.193
-    # ppy = 239.334
-
-    proj = np.array([
+    return np.array([
         [fx, 0, ppx],
         [0, fy, ppy],
         [0, 0, 1]
     ], dtype=np.float32)
-    return proj, width, height
 
 
-def depth_to_point_cloud(K, D, depth_scale=1):
-    height, width = D.shape
+def postprocess_point_cloud(pcd, mask, texcoords):
 
-    # Invert the camera matrix
-    K_inv = np.linalg.inv(K)
+    mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
+    tmp = pcd[mask2]
+    tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
 
-    # Create meshgrid for pixel coordinates
-    x, y = np.meshgrid(np.arange(width), np.arange(height))
+    if len(tmp) > 100:
+        labels = DBSCAN(eps=0.03, min_samples=10).fit_predict(tmp)
+        pcds = []
+        for label in np.unique(labels):
+            pcds.append(tmp[labels == label])
+        tmp = pcds[np.argmax([len(tmp2) for tmp2 in pcds])]
 
-    # Normalize the pixel coordinates
-    normalized_pixel_coords = np.stack([x, y, np.ones_like(x)], axis=-1)
+    if len(tmp) > NUM_SUBSAMPLE_POINTS:
+        tmp = utils.farthest_point_sample(tmp, NUM_SUBSAMPLE_POINTS)[0]
+    return tmp
 
-    # Convert depth image to meters
-    depth_meters = D * depth_scale / 1000
 
-    # Multiply the normalized pixel coordinates by the inverse camera matrix
-    camera_coords = np.matmul(normalized_pixel_coords * depth_meters[..., np.newaxis], K_inv.T)
+def warp_to_pcd(canon, pcd, canon_scale):
 
-    # Create the point cloud by reshaping the camera coordinates
-    point_cloud = camera_coords.reshape(-1, 3)
+    warp = ObjectWarpingSE2Batch(
+        canon, pcd, torch.device("cuda:0"), **PARAM_1,
+        init_scale=canon_scale)
+    complete_pcd, _, param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
+    return complete_pcd, param
 
-    return point_cloud
+
+def take_sim_image(cam2world, proj):
+    pos, quat = utils.transform_to_pos_quat(cam2world)
+    view_matrix = convert_to_pb_view_matrix(quat, pos)
+    proj_matrix = convert_to_pb_projection_matrix(
+        proj, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.01, 100)
+
+    image_arr = pb.getCameraImage(
+        DEFAULT_WIDTH, DEFAULT_HEIGHT, viewMatrix=view_matrix, projectionMatrix=proj_matrix
+    )
+    rgb = image_arr[2][:, :, :3]
+    return rgb
+
+
+def project_sim_image(orig_image, sim_image):
+    orig_image = np.copy(orig_image)
+    mask = np.any(sim_image != 255, axis=-1)
+    orig_image[mask] = (0.1 * orig_image[mask] + 0.9 * sim_image[mask]).astype(np.uint8)
+    return orig_image
 
 
 def main(args):
 
-    classes = ['cup', 'bowl', 'mug', 'bottle', 'cardboard', 'box', 'Tripod', 'Baseball bat' , 'Lamp', 'Mug Rack', 'Plate', 'Toaster', 'Spoon']
+    i = args.image_index
+
+    # List of classes given to segment anything.
+    classes = ["cup", "bowl", "mug", "bottle", "cardboard", "box", "Tripod", "Baseball bat",
+               "Lamp", "Mug Rack", "Plate", "Toaster", "Spoon"]
 
     with open(args.save_file, "rb") as f:
         data = pickle.load(f)
 
-    with open(args.save_file2, "rb") as f:
-        data2 = pickle.load(f)
-
-    i = 1
-
-    print(data[i].keys())
-    pcd = data[i]["cloud"].reshape(480, 640, 3)
-    image = data[i]["image"][:, :, ::-1]  # BGR to RGB
-    depth = data[i]["depth"]
+    pcd = data[i]["clouds"].reshape(DEFAULT_HEIGHT, DEFAULT_WIDTH, 3)
+    image = data[i]["images"][:, :, ::-1]  # BGR to RGB
     masks = data[i]["masks"][:, 0].cpu().numpy()
     class_idx = data[i]["class_idx"]
-    texcoords = data2[i]["texcoords"].reshape(480 * 640, 2)
-    texcoords[:, 1] = np.clip(texcoords[:, 1] * 480, 0, 480 - 1)
-    texcoords[:, 0] = np.clip(texcoords[:, 0] * 640, 0, 640 - 1)
+    texcoords = data[i]["texcoords"].reshape(DEFAULT_HEIGHT * DEFAULT_WIDTH, 2)
+    texcoords[:, 1] = np.clip(texcoords[:, 1] * DEFAULT_HEIGHT, 0, DEFAULT_HEIGHT - 1)
+    texcoords[:, 0] = np.clip(texcoords[:, 0] * DEFAULT_WIDTH, 0, DEFAULT_WIDTH - 1)
     texcoords = texcoords.astype(np.int32)
+    cam2world = data[i]["cam2world"]
 
-    print(image.shape)
+    proj = get_proj_matrix(data[i]["color_fx"], data[i]["color_fy"], data[i]["color_ppx"], data[i]["color_ppy"])
 
-    # plt.imshow(image)
-    # plt.show()
+    imsave("1.png", image)
 
-    pcd = pcd.reshape(480 * 640, 3)
-    # viz_utils.show_pcd_plotly(pcd, center=True)
+    pcd = pcd.reshape(DEFAULT_HEIGHT * DEFAULT_WIDTH, 3)
 
     d = {}
-    for j in range(len(class_idx)):
-    # for j in [0, 2]:
+
+    if args.j_index is not None:
+        r = args.j_index
+    else:
+        r = range(len(class_idx))
+
+    pcds = []
+    pcd_classes = []
+
+    for j in r:
+        tmp = postprocess_point_cloud(pcd, masks[j], texcoords)
+        if len(tmp) == 0:
+            continue
+
         name = f"{j}_{classes[class_idx[j]]}"
-        mask = masks[j]
-        mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
-        tmp = pcd[mask2]
-        tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
         d[name] = tmp
         print(name)
-        # viz_utils.show_pcd_plotly(tmp, center=True)
 
-    # viz_utils.show_pcds_plotly(d, center=True)
+        pcds.append(tmp)
+        pcd_classes.append(class_idx[j])
 
-    canon_path = constants.NDF_MUGS_PCA_PATH
-    canon_scale = constants.NDF_MUGS_INIT_SCALE
-    canon = utils.CanonObj.from_pickle(canon_path)
+    if args.viz:
+        viz_utils.show_pcds_plotly(d, center=True)
+
+    mug_canon_path = constants.NDF_MUGS_PCA_PATH
+    mug_canon_scale = constants.NDF_MUGS_INIT_SCALE
+    mug_canon = utils.CanonObj.from_pickle(mug_canon_path)
+    mug_demo_path = "data/230330/mug_tree_pick.pkl"
+
+    bottle_canon_path = constants.NDF_BOTTLES_PCA_PATH
+    bottle_canon_scale = constants.NDF_BOTTLES_INIT_SCALE
+    bottle_canon = utils.CanonObj.from_pickle(bottle_canon_path)
+    bottle_demo_path = "data/230330/bottle_in_box_pick.pkl"
+
+    bowl_canon_path = constants.NDF_BOWLS_PCA_PATH
+    bowl_canon_scale = constants.NDF_BOWLS_INIT_SCALE
+    bowl_canon = utils.CanonObj.from_pickle(bowl_canon_path)
+    bowl_demo_path = "data/230330/bowl_on_mug_pick.pkl"
 
     sim = Simulation(use_gui=True)
 
+    tmp = np.copy(image)
+    for jj, j in enumerate(r):
+        tmp[masks[j]] = (0.5 * tmp[masks[j]]).astype(np.uint8)
+        tmp[masks[j], jj % 3] += 255 // 2
+
+    imsave("2.png", tmp)
+
     complete_pcds = {}
-    for j in [0, 2]:
 
-        name = f"{j}_{classes[class_idx[j]]}"
-        mask = masks[j]
-        mask2 = mask[texcoords[:, 1], texcoords[:, 0]]
-        tmp = pcd[mask2]
-        tmp = tmp[np.sqrt(np.sum(np.square(tmp), axis=-1)) < 0.5]
+    complete_pcds = []
+    params = []
+    for j in range(len(pcds)):
+        tmp = pcds[j]
 
-        if len(tmp) > 2000:
-            tmp = utils.farthest_point_sample(tmp, 2000)[0]
+        if pcd_classes[j] == 2:
+            # bowl
+            canon = mug_canon
+            canon_scale = mug_canon_scale
+        elif pcd_classes[j] == 3:
+            # bottle
+            canon = bottle_canon
+            canon_scale = bottle_canon_scale
+        elif pcd_classes[j] == 1:
+            # bowl
+            canon = bowl_canon
+            canon_scale = bowl_canon_scale
+        else:
+            raise ValueError("We don't know this class.")
 
-        warp = ObjectWarpingSE2Batch(
-            canon, tmp, torch.device("cuda:0"), **PARAM_1,
-            init_scale=canon_scale)
-        complete_pcd, _, param = warp_to_pcd_se2(warp, n_angles=12, n_batches=1)
-        complete_pcds[j] = complete_pcd
+        tmp1, tmp2 = warp_to_pcd(canon, tmp, canon_scale)
+        complete_pcds.append(tmp1)
+        params.append(tmp2)
 
-        # viz_utils.show_pcds_plotly(complete_pcds, center=False)
+    for j in range(len(params)):
 
-        with open(args.pick_demo, "rb") as f:
+        if pcd_classes[j] == 2:
+            # bowl
+            canon = mug_canon
+            canon_scale = mug_canon_scale
+        elif pcd_classes[j] == 3:
+            # bottle
+            canon = bottle_canon
+            canon_scale = bottle_canon_scale
+        elif pcd_classes[j] == 1:
+            # bowl
+            canon = bowl_canon
+            canon_scale = bowl_canon_scale
+        else:
+            raise ValueError("We don't know this class.")
+
+        source_mesh = canon.to_mesh(params[j])
+        source_mesh.export(f"tmp_source_{j}.stl")
+        utils.convex_decomposition(source_mesh, f"tmp_source_{j}.obj")
+        obj_id = sim.add_object(f"tmp_source_{j}.urdf", params[j].position, params[j].quat)
+
+        rgbd = np.array([0., 0., 0., 1.])
+        rgbd[j % 3] = 0.8
+        pb.changeVisualShape(obj_id, -1, rgbaColor=rgbd)
+
+    sim_image = take_sim_image(cam2world, proj)
+    tmp_image = project_sim_image(image, sim_image)
+    imsave("3.png", tmp_image)
+    imsave("3_sim.png", sim_image)
+
+    for j in range(len(params)):
+
+        if pcd_classes[j] == 2:
+            # bowl
+            canon = mug_canon
+            canon_scale = mug_canon_scale
+            demo_path = mug_demo_path
+        elif pcd_classes[j] == 3:
+            # bottle
+            canon = bottle_canon
+            canon_scale = bottle_canon_scale
+            demo_path = bottle_demo_path
+        elif pcd_classes[j] == 1:
+            # bowl
+            canon = bowl_canon
+            canon_scale = bowl_canon_scale
+            demo_path = bowl_demo_path
+        else:
+            raise ValueError("We don't know this class.")
+
+        with open(demo_path, "rb") as f:
             d = pickle.load(f)
         index = d["index"]
         pos_robotiq = d["pos_robotiq"]
-        trans_pre_t0_to_t0 = d["trans_pre_t0_to_t0"]
 
-        source_pcd_complete = canon.to_pcd(param)
+        source_pcd_complete = canon.to_pcd(params[j])
         source_points = source_pcd_complete[index]
 
-        # Pick pose in canonical frame..
+        # Pick pose in canonical frame.
         trans, _, _ = utils.best_fit_transform(pos_robotiq, source_points)
         # Pick pose in workspace frame.
-        trans_robotiq_to_ws = param.get_transform() @ trans
+        trans_robotiq_to_ws = params[j].get_transform() @ trans
 
-        source_mesh = canon.to_mesh(param)
-        source_mesh.export(f"tmp_source_{j}.stl")
-        utils.convex_decomposition(source_mesh, f"tmp_source_{j}.obj")
-        sim.add_object(f"tmp_source_{j}.urdf", param.position, param.quat)
-        sim.add_object("data/robotiq.urdf", *utils.transform_to_pos_quat(trans_robotiq_to_ws))
+        robotiq_id = sim.add_object("data/robotiq.urdf", *utils.transform_to_pos_quat(trans_robotiq_to_ws))
+        fract = 0.5
+        utils.pb_set_joint_positions(robotiq_id, [0, 2, 4, 5, 6, 7], [fract, fract, fract, -fract, fract, -fract])
 
-    with open(args.calibration, "rb") as f:
-        d = pickle.load(f)
+        for k in list(range(pb.getNumJoints(robotiq_id))) + [-1]:
+            rgbd = np.array([0.4, 0.4, 0.4, 1.])
+            pb.changeVisualShape(robotiq_id, k, rgbaColor=rgbd)
 
-    cam2world = d["cam2world"]
-    pos, quat = utils.transform_to_pos_quat(cam2world)
-    width = 640
-    height = 480
-    view_matrix = cvPose2BulletView(quat, pos)
-    proj_matrix = cvK2BulletP(d435_intrinsics()[0], width, height, 0.01, 100)
+    sim_image = take_sim_image(cam2world, proj)
+    tmp_image = project_sim_image(image, sim_image)
+    imsave("4.png", tmp_image)
+    imsave("4_sim.png", sim_image)
 
-    image_arr = pb.getCameraImage(
-        width, height, viewMatrix=view_matrix, projectionMatrix=proj_matrix
-    )
-    rgb = image_arr[2][:, :, :3]
-
-    mask = np.any(rgb != 255, axis=-1)
-    image[mask] = (0.5 * image[mask] + 0.5 * rgb[mask]).astype(np.uint8)
-
-    plt.imshow(image)
-    plt.show()
-
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(rgb)
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(image)
-    # plt.show()
+    if args.viz:
+        plt.imshow(tmp_image)
+        plt.show()
 
 
 # python -m scripts.real_world.experimental.show_dataset2 data/ignore/ondrejs_desk_1_results.pkl data/ignore/ondrejs_desk_1.pkl data/230330/mug_tree_pick.pkl data/ignore/calibration.pickle
 parser = argparse.ArgumentParser("Find objects for a particular task.")
 parser.add_argument("save_file")
-parser.add_argument("save_file2")
-parser.add_argument("pick_demo")
-parser.add_argument("calibration")
+parser.add_argument("image_index", type=int, default=0)
+parser.add_argument("-j", "--j-index", nargs="+", default=None, type=int)
+parser.add_argument("-v", "--viz", default=False, action="store_true")
 main(parser.parse_args())
