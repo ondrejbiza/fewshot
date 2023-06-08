@@ -60,6 +60,11 @@ def main(args):
         canon_target = utils.CanonObj.from_pickle(constants.BOXES_PCA_PATH)
         source_scale = constants.NDF_BOTTLES_INIT_SCALE
         target_scale = constants.BOXES_INIT_SCALE
+    elif args.task == "brush_on_cube":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_BRUSH_PCA_PATH_3)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_CUBE_PCA_PATH)
+        source_scale = constants.NDF_BRUSHES_INIT_SCALE
+        target_scale = constants.NDF_CUBE_INIT_SCALE
     else:
         raise NotImplementedError()
 

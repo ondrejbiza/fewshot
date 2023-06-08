@@ -287,7 +287,7 @@ def main(args):
         place(ur5, canon_source, canon_target, source_param, target_param, trans_source_to_t0, sim, tmp_place_path)
         i += 1
 
-    ur5.gripper.open_gripper()
+    # ur5.gripper.open_gripper()
     ur5.plan_and_execute_joints_target(ur5.home_joint_values)
 
 
