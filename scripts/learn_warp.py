@@ -49,16 +49,19 @@ def main(args):
         obj_paths = [os.path.join(base_dir, x, "models/model_normalized.obj") for x in obj_ids]
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
         num_surface_samples = 10000
+        
     elif args.objects == "ndf_trees":
         base_dir = "data/syn_racks_easy"
         obj_ids = [f"syn_rack_{i}.obj" for i in range(10)]
         obj_paths = [os.path.join(base_dir, obj_id) for obj_id in obj_ids]
         rotation = None
         num_surface_samples = 2000
+
     elif args.objects == "boxes":
         obj_paths = [f"data/boxes/train/{i}.stl" for i in range(10)]
         rotation = None
         num_surface_samples = 2000
+
     elif args.objects == "simple_trees":
         obj_paths = [f"data/simple_trees/train/{i}.stl" for i in range(10)]
         rotation = None

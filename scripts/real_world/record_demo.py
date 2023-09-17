@@ -195,6 +195,14 @@ def main(args):
         canon_source.init_scale = 0.5
         canon_target.init_scale = constants.NDF_CUBE_INIT_SCALE
         source_pcd, target_pcd = perception.bottle_box_segmentation(cloud, platform_pcd=platform_pcd)  # TODO: brush-box segmentation
+    
+    elif args.task == "cube_on_mug":
+        canon_source = utils.CanonObj.from_pickle(constants.NDF_MUGS_PCA_PATH)
+        canon_target = utils.CanonObj.from_pickle(constants.NDF_CUBE_PCA_PATH)
+        canon_source.init_scale = constants.NDF_MUGS_INIT_SCALE
+        canon_target.init_scale = constants.NDF_CUBE_INIT_SCALE
+        source_pcd, target_pcd = perception.mug_tree_segmentation(cloud, platform_pcd=platform_pcd)
+        # canon_source = utils.CanonObj.from_pickle()
     else:
         raise ValueError("Unknown task.")
 
