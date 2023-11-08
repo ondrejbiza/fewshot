@@ -232,8 +232,11 @@ def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=No
 
 
 def farthest_point_sample(point: NPF32, npoint: int) -> Tuple[NPF32, NDArray[np.int32]]:
-    # https://github.com/yanx27/Pointnet_Pointnet2_pytorch
     """
+    Samples the farthest points.
+
+    https://github.com/yanx27/Pointnet_Pointnet2_pytorch
+
     Input:
         xyz: pointcloud data, [N, D]
         npoint: number of samples
