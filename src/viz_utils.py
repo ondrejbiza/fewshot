@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 
 def show_pcd_pyplot(pcd: NDArray, center: bool=False):
-
+    print("VIZUALIZING")
     if center:
         pcd = pcd - np.mean(pcd, axis=0, keepdims=True)
     lmin = np.min(pcd)
@@ -101,11 +101,14 @@ def show_pcds_plotly(pcds: Dict[str, NDArray], center: bool=False, axis_visible:
         "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
         "aspectratio": {"x": 1, "y": 1, "z": 1}
     }
-
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout, showlegend=True)
     fig.show()
     # input("Continue?")
+
+
+# def show_pcds_plotly_subplots(subplot_shape, pcds):
+#     continue
 
 
 def draw_square(img: NDArray, x: int, y: int, square_size=20, copy=False, intensity: float=1.) -> NDArray:

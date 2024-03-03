@@ -7,7 +7,7 @@ torch==1.12.1
 torchtext==0.13.1
 torchvision==0.13.1
 
-pyrealsense2==2.49.0.3474
+# pyrealsense2==2.49.0.3474
 # opencv-python==4.5.4.58
 opencv-contrib-python==4.5.4.58
 open3d==0.14.1

@@ -16,7 +16,7 @@ def main(args):
     trimesh.util.attach_to_log()
 
     if args.objects == "ndf_mugs":
-        base_dir = "data/ndf_objects/mug_centered_obj_normalized"
+        base_dir = "data/ndf_objects_sample/mug_centered_obj_normalized"
         obj_ids = [
             "1a97f3c83016abca21d0de04f408950f", "1c9f9e25c654cbca3c71bf3f4dd78475", "1eaf8db2dd2b710c7d5b1b70ae595e60",
             "3d1754b7cb46c0ce5c8081810641ef6", "4b8b10d03552e0891898dfa8eb8eefff", "4b7888feea81219ab5f4a9188bfa0ef6",
@@ -26,7 +26,7 @@ def main(args):
         rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
         num_surface_samples = 10000
     elif args.objects == "ndf_bowls":
-        base_dir = "data/ndf_objects/bowl_centered_obj_normalized"
+        base_dir = "data/ndf_objects_sample/bowl_centered_obj_normalized"
         obj_ids = [
             "1b4d7803a3298f8477bdcb8816a3fac9", "1fbb9f70d081630e638b4be15b07b442",
             "2a1e9b5c0cead676b8183a4a81361b94", "2c1df84ec01cea4e525b133235812833",

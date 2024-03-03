@@ -32,7 +32,7 @@ CUDA_VISIBLE_DEVICES=$GPU \
     --parent_load_pose_type random_upright --child_load_pose_type random_upright &> outputs/mug_on_tree_upright.txt
 
 CUDA_VISIBLE_DEVICES=$GPU \
-    python -m scripts.run_warp --parent_class syn_rack_easy --child_class mug \
+    python -m scripts.part_based_run_warp --parent_class syn_rack_easy --child_class mug \
     --exp mug_on_rack_upright_pose_new \
     --parent_model_path ndf_vnn/rndf_weights/ndf_rack.pth \
     --child_model_path ndf_vnn/rndf_weights/ndf_mug2.pth \

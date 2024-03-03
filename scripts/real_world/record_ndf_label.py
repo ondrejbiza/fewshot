@@ -9,7 +9,6 @@ from matplotlib.widgets import Slider
 from src import viz_utils
 import src.real_world.utils as rw_utils
 
-
 def update_axis(ax, source_pcd: NDArray, target_pcd: NDArray, T1: NDArray, T2: NDArray, point: NDArray):
 
     ax.clear()

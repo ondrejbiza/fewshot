@@ -3,6 +3,8 @@ import pickle
 from typing import List, Optional, Tuple, Union
 
 from cycpd import deformable_registration
+from torchcpd.constrained_deformable_registration import ConstrainedDeformableRegistration
+from torchcpd.deformable_registration import DeformableRegistration
 import numpy as np
 from numpy.typing import NDArray
 import pybullet as pb
@@ -11,12 +13,17 @@ from sklearn.decomposition import PCA
 import trimesh
 import trimesh.voxel.creation as vcreate
 import torch
-
+from src.modified_cpd import ContactAwareDeformableRegistration, ConstrainedDeformableRegistration
 from src import exceptions, viz_utils
+
+inference_kwargs = {
+            "train_latents": True,
+            "train_scales": True,
+            "train_poses": True,
+        }
 
 NPF32 = NDArray[np.float32]
 NPF64 = NDArray[np.float64]
-
 
 @dataclass
 class ObjParam:
@@ -32,12 +39,21 @@ class ObjParam:
 
 
 @dataclass
-class CanonObj:
-    """Canonical object with shape warping.
-    """
-    canonical_pcd: NPF32
+class CanonPartMetadata:
+    experiment_tag: str 
+    canonical_id: str
+    training_ids: List[str]
+    part_label: Optional[int]
+
+@dataclass
+class CanonPart:
+    """Canonical object with shape warping."""
+    canonical_pcl: NPF32
     mesh_vertices: NPF32
     mesh_faces: NDArray[np.int32]
+    center_transform: NPF32 #For saving the relative transform of parts
+    metadata: CanonPartMetadata
+    contact_points: Optional[List[int]]
     pca: Optional[PCA] = None
 
     def __post_init__(self):
@@ -46,11 +62,11 @@ class CanonObj:
 
     def to_pcd(self, obj_param: ObjParam) -> NPF32:
         if self.pca is not None and obj_param.latent is not None:
-            pcd = self.canonical_pcd + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
+            pcd = self.canonical_pcl + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
         else:
             if self.pca is not None:
                 print("WARNING: Skipping warping because we do not have a latent vector. We however have PCA.")
-            pcd = np.copy(self.canonical_pcd)
+            pcd = np.copy(self.canonical_pcl)
         return pcd * obj_param.scale[None]
 
     def to_transformed_pcd(self, obj_param: ObjParam) -> NPF32:
@@ -70,17 +86,195 @@ class CanonObj:
         vertices = pcd[:len(self.mesh_vertices)]
         return trimesh.Trimesh(vertices, self.mesh_faces)
 
+    # @staticmethod
+    # def from_parts(component_parts, part_names):
+    #      canonical_pcl: NPF32
+    # mesh_vertices: NPF32
+    # mesh_faces: NDArray[np.int32]
+    # center_transform: NPF32 #For saving the relative transform of parts
+    # metadata: CanonPartMetadata
+
+
+
+
+
+
+    # @staticmethod
+    # def from_pickle(load_path: str) -> "CanonObj":
+    #     with open(load_path, "rb") as f:
+    #         data = pickle.load(f)
+    #     pcd = data["canonical_obj"]
+    #     pca = None
+    #     center_transform = np.eye(4)
+    #     if 'center_transform' in data:
+    #         center_transform = data['center_transform']
+    #     if "pca" in data:
+    #         pca = data["pca"]
+    #     mesh_vertices = data["canonical_mesh_points"]
+    #     mesh_faces = data["canonical_mesh_faces"]
+    #     return utislCanonObj(pcd, mesh_vertices, mesh_faces, center_transform, pca)
+
+
+@dataclass
+class CanonObjByParts:
+    """Canonical object with shape warping by parts.
+    """
+    canonical_pcls: dict[str, NPF32]
+    mesh_vertices: dict[str, NPF32]
+    mesh_faces: dict[str, NDArray[np.int32]]
+    part_names: List[str]
+    pca: dict[str, PCA]
+    center_transforms: NPF32
+
+
+    def __post_init__(self):
+        if self.pca is not None:
+            self.n_components = {}
+            for part in self.part_names:
+                self.n_components[part] = self.pca[part].n_components
+
+    def to_pcd(self, obj_params: dict[str, ObjParam],) -> NPF32:
+        pcds = {}
+        for part in self.part_names: 
+            if self.pca[part] is not None and obj_params[part].latent is not None:
+                pcds[part] = self.canonical_pcls[part] + self.pca[part].inverse_transform(obj_params[part].latent).reshape(-1, 3)
+                pcds[part] *= obj_params[part].scale[None]
+            else:
+                if self.pca[part] is not None:
+                    print("WARNING: Skipping warping because we do not have a latent vector. We however have PCA.")
+                    pcds[part] = np.copy(self.canonical_pcls[part])
+                    pcds[part] *= obj_params[part].scale[None]
+        return np.concatenate(list(pcds.values()))
+
+    def to_transformed_pcd(self, obj_params: dict[str, ObjParam],) -> NPF32:
+        pcds = self.to_pcd(obj_params)
+        transformed_pcds = {}
+        transforms = {}
+        for part in self.part_names:
+            transforms[part] = pos_quat_to_transform(obj_params[part].position, obj_params[part].quat)
+            transformed_pcds[part] = transform_pcd(pcds[part], transforms[part])
+        return np.concatenate(list(transformed_pcds.values()))
+
+    def to_mesh(self, obj_params: dict[str, ObjParam]) -> trimesh.Trimesh:
+        pcds = self.to_pcd(obj_params)
+        # The vertices are assumed to be at the start of the canonical_pcl.
+        meshes = {}
+        for part in self.part_names:
+            meshes[part] = trimesh.Trimesh(pcds[part][:len(self.mesh_vertices[part])], self.mesh_faces[part])
+        return trimesh.util.concatenate(list(meshes.values()))
+
+    def to_transformed_mesh(self, obj_params: dict[str, ObjParam]) -> trimesh.Trimesh:
+        pcds = self.to_transformed_pcd(obj_params)
+        # The vertices are assumed to be at the start of the canonical_pcl.
+        meshes = {}
+        for part in self.part_names:
+            meshes[part] = trimesh.Trimesh(pcds[part][:len(self.mesh_vertices[part])], self.mesh_faces[part])
+        return trimesh.util.concatenate(list(meshes.values()))
+
+    @staticmethod
+    def from_pickle(load_path: str, part_names: list[str]) -> "CanonObjByParts":
+        with open(load_path, "rb") as f:
+            data = pickle.load(f)
+        pcd = {}
+        pca = {}
+        mesh_vertices = {}
+        mesh_faces = {}
+        for part in part_names: 
+            pcd[part] = data[part]["canonical_obj"]
+            pca[part] = None
+            if "pca" in data[part]:
+                pca[part] = data[part]["pca"]
+            mesh_vertices[part] = data[part]["canonical_mesh_points"]
+            mesh_faces[part] = data[part]["canonical_mesh_faces"]
+        return CanonObjByParts(pcd, mesh_vertices, mesh_faces, part_names, pca)
+
+
+@dataclass
+class CanonObj:
+    """Canonical object with shape warping.
+    """
+    canonical_pcl: NPF32
+    mesh_vertices: NPF32
+    mesh_faces: NDArray[np.int32]
+    center_transform: NPF32
+    pca: Optional[PCA] = None
+
+
+    def __post_init__(self):
+        if self.pca is not None:
+            self.n_components = self.pca.n_components
+
+    def to_pcd(self, obj_param: ObjParam) -> NPF32:
+        if self.pca is not None and obj_param.latent is not None:
+            pcd = self.canonical_pcl + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
+        else:
+            if self.pca is not None:
+                print("WARNING: Skipping warping because we do not have a latent vector. We however have PCA.")
+            pcd = np.copy(self.canonical_pcl)
+        return pcd * obj_param.scale[None]
+
+    def to_transformed_pcd(self, obj_param: ObjParam) -> NPF32:
+        pcd = self.to_pcd(obj_param)
+        trans = pos_quat_to_transform(obj_param.position, obj_param.quat)
+        return transform_pcd(pcd, trans)
+
+    def to_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
+        pcd = self.to_pcd(obj_param)
+        # The vertices are assumed to be at the start of the canonical_pcl.
+        vertices = pcd[:len(self.mesh_vertices)]
+        return trimesh.Trimesh(vertices, self.mesh_faces)
+
+    def to_transformed_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
+        pcd = self.to_transformed_pcd(obj_param)
+        # The vertices are assumed to be at the start of the canonical_pcl.
+        vertices = pcd[:len(self.mesh_vertices)]
+        return trimesh.Trimesh(vertices, self.mesh_faces)
+
     @staticmethod
     def from_pickle(load_path: str) -> "CanonObj":
         with open(load_path, "rb") as f:
             data = pickle.load(f)
         pcd = data["canonical_obj"]
         pca = None
+        center_transform = np.eye(4)
+        if 'center_transform' in data:
+            center_transform = data['center_transform']
         if "pca" in data:
             pca = data["pca"]
         mesh_vertices = data["canonical_mesh_points"]
         mesh_faces = data["canonical_mesh_faces"]
-        return CanonObj(pcd, mesh_vertices, mesh_faces, pca)
+        return CanonObj(pcd, mesh_vertices, mesh_faces, center_transform, pca)
+
+    @staticmethod
+    def from_parts_pickle(load_path: str, part_names: list[str]) -> dict[str, "CanonObj"]:
+        with open(load_path, "rb") as f:
+            data = pickle.load(f)
+        canon_objs = {}
+        for part in part_names:
+            print(data.keys())
+            pcd = data[part]["canonical_obj"]
+            center_transform = data[part]['center_transform']
+            pca = None
+            if "pca" in data[part]:
+                pca = data[part]["pca"]
+            mesh_vertices = data[part]["canonical_mesh_points"]
+            mesh_faces = data[part]["canonical_mesh_faces"]
+            canon_objs[part] = CanonObj(pcd, mesh_vertices, mesh_faces, center_transform, pca, )
+        return canon_objs
+
+    #Note: this has not been tested
+    @staticmethod
+    def unified_from_parts_pickle(load_path: str, part_names: list[str]) ->  "CanonObj":
+        with open(load_path, "rb") as f:
+            data = pickle.load(f)
+        canon_objs = {}
+        pcd = np.concatenate([data[part]['canonical_obj'] for part in part_names])
+        center_transform = pos_quat_to_transform(np.mean(pcd, axis=0), np.array([0., 0., 0., 1.]))
+        pca = None
+        mesh_vertices = np.concatenate([data[part]["canonical_mesh_points"] for part in part_names])
+        mesh_faces = np.concatenate([data[part]["canonical_mesh_faces"] for part in part_names])
+        canon_obj = CanonObj(pcd, mesh_vertices, mesh_faces, center_transform, pca, )
+        return canon_obj
 
 
 @dataclass
@@ -216,7 +410,7 @@ def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=No
     convex_meshes = trimesh.decomposition.convex_decomposition(
         mesh, resolution=1000000, depth=20, concavity=0.0025, planeDownsampling=4, convexhullDownsampling=4,
         alpha=0.05, beta=0.05, gamma=0.00125, pca=0, mode=0, maxNumVerticesPerCH=256, minVolumePerCH=0.0001,
-        convexhullApproximation=1, oclDeviceID=0
+        convexhullApproximation=1, oclDeviceID=0, debug=True
     )
     # Bug / undocumented feature in Trimesh :<
     if not isinstance(convex_meshes, list):
@@ -226,6 +420,7 @@ def convex_decomposition(mesh: trimesh.base.Trimesh, save_path: Optional[str]=No
         decomposed_scene = trimesh.scene.Scene()
         for i, convex_mesh in enumerate(convex_meshes):
             decomposed_scene.add_geometry(convex_mesh, node_name=f"hull_{i}")
+        print(save_path)
         decomposed_scene.export(save_path, file_type="obj")
 
     return convex_meshes
@@ -332,7 +527,6 @@ def wiggle(source_obj: int, target_obj: int, max_tries: int=10000,
         pb_set_pose(source_obj, solution, quat, sim_id=sim_id)
         return solution, quat
 
-
 def trimesh_load_object(obj_path: str) -> trimesh.Trimesh:
     return trimesh.load(obj_path)
 
@@ -360,11 +554,9 @@ def trimesh_transform(mesh: trimesh.Trimesh, center: bool=True,
     transform = np.matmul(scaling_matrix, np.matmul(rotation_matrix, translation_matrix))
     mesh.apply_transform(transform)
 
-
 def trimesh_create_verts_volume(mesh: trimesh.Trimesh, voxel_size: float=0.015) -> NDArray[np.float32]:
     voxels = vcreate.voxelize(mesh, voxel_size)
     return np.array(voxels.points, dtype=np.float32)
-
 
 def trimesh_create_verts_surface(mesh: trimesh.Trimesh, num_surface_samples: Optional[int]=1500) -> NDArray[np.float32]:
     surf_points, _ = trimesh.sample.sample_surface_even(
@@ -372,12 +564,10 @@ def trimesh_create_verts_surface(mesh: trimesh.Trimesh, num_surface_samples: Opt
     )
     return np.array(surf_points, dtype=np.float32)
 
-
 def trimesh_get_vertices_and_faces(mesh: trimesh.Trimesh) -> Tuple[NDArray[np.float32], NDArray[np.int32]]:
     vertices = np.array(mesh.vertices, dtype=np.float32)
     faces = np.array(mesh.faces, dtype=np.int32)
     return vertices, faces
-
 
 def scale_points_circle(points: List[NDArray[np.float32]], base_scale: float=1.) -> List[NDArray[np.float32]]:
     points_cat = np.concatenate(points)
@@ -392,18 +582,24 @@ def scale_points_circle(points: List[NDArray[np.float32]], base_scale: float=1.)
 
     return new_points
 
+def constrained_cpd_transform(source, target, source_id, target_id, e_alpha=.5, alpha= 2.0):
+    source, target = source.astype(np.float64), target.astype(np.float64)
+    reg = ConstrainedDeformableRegistration(**{ 'X': source, 'Y': target, 'source_id': source_id, 'target_id': target_id, 'contact_weight': 10000000, 'tolerance':0.00001, 'device':'cpu' }, alpha=alpha)
+    reg.register()
+    #Returns the gaussian means and their weights - WG is the warp of source to target
+    return reg.W, reg.G
 
 def cpd_transform(source, target, alpha: float=2.0) -> Tuple[NDArray, NDArray]:
-    # reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 })
+    
     source, target = source.astype(np.float64), target.astype(np.float64)
-    reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 }, alpha=alpha)
+    #reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 }, alpha=alpha)
+    reg = DeformableRegistration(**{ 'X': source, 'Y': target, 'tolerance':0.00001, 'device':'cpu'}, alpha=alpha)
     reg.register()
     #Returns the gaussian means and their weights - WG is the warp of source to target
     return reg.W, reg.G
 
 
 def sst_cost_batch(source: NDArray, target: NDArray) -> float:
-
     idx = np.sum(np.abs(source[None, :] - target[:, None]), axis=2).argmin(axis=0)
     return np.mean(np.linalg.norm(source - target[idx], axis=1))  # TODO: test averaging instead of sum
 
@@ -427,14 +623,129 @@ def sst_cost_batch_pt(source, target):
     # return torch.mean(c, dim=1)
 
 
-def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visualize=False):
-
+def contact_aware_warp_gen(canonical_index, objects, 
+                           object_contact_points, 
+                           scale_factor=1., alpha: float=2, visualize=False):
     source = objects[canonical_index] * scale_factor
+    source_id = object_contact_points[canonical_index]
     targets = []
+    target_contacts = []
     for obj_idx, obj in enumerate(objects):
         if obj_idx != canonical_index:
             targets.append(obj * scale_factor)
+            target_contacts.append(object_contact_points[obj_idx])
 
+    warps = []
+    costs = []
+    for target_idx, target in enumerate(targets):
+    #     print("target {:d}".format(target_idx))
+        target_id = target_contacts[target_idx]
+    #     all_source_ids = []
+    #     all_target_ids = []
+    #     for idx in source_id:
+    #         for idy in target_id:
+    #             all_source_ids.append(idx)
+    #             all_target_ids.append(idy)
+
+        # print(target[target_id][0])
+        # print(len(target[target_id]))
+        # viz_utils.show_pcds_plotly({
+        #         "target": target,
+        #         "source": source,
+        #         "target_contacts": target[target_id],
+        #         "source_contacts": source[source_id],
+        #         "target_contacts_0": np.atleast_2d(target[target_id][0]),
+        #         "source_contacts_0": np.atleast_2d(source[source_id][0]),
+        #         "target_contacts_1": np.atleast_2d(target[target_id][1]),
+        #         "source_contacts_1": np.atleast_2d(source[source_id][1]),
+        #         "target_contacts_2": np.atleast_2d(target[target_id][2]),
+        #         "source_contacts_2": np.atleast_2d(source[source_id][2]),
+        #         "target_contacts_3": np.atleast_2d(target[target_id][3]),
+        #         "source_contacts_3": np.atleast_2d(source[source_id][3]),
+        #     }, center=True)
+
+        if len(source_id) != len(target_id):
+            if len(source_id) > len(target_id):
+                num_rem = np.round(len(source_id)/(len(source_id) - len(target_id)))
+                source_id = np.delete(source_id, [int(num_rem * i) for i in range(len(source_id) - len(target_id))])
+
+        if len(target_id) > len(source_id):
+            num_rem = np.round(len(target_id)/(len(target_id) - len(source_id)))
+            target_id = np.delete(target_id, [int(num_rem * i) for i in range(len(target_id) - len(source_id))])
+
+        alpha=.1
+        w, g = constrained_cpd_transform(target, source, source_id, target_id, e_alpha=.2, alpha=alpha)
+
+        warp = np.dot(g, w)
+        warp = np.hstack(warp)
+
+        tmp = source + warp.reshape(-1, 3)
+        costs.append(sst_cost_batch(tmp, target))
+
+        warps.append(warp)
+
+        if visualize:
+            viz_utils.show_pcds_plotly({
+                "target": target,
+                "warp": source + warp.reshape(-1, 3),
+                "target_contacts": target[target_id],
+                "warp_contacts": source[source_id] + warp.reshape(-1, 3)[source_id]
+            }, center=True)
+
+    return warps, costs
+
+# def aligned_warp_gen(canonical_index, objects, contact_points, scale_factor=1., alpha: float=2.0, visualize=False):
+#     source = objects[canonical_index] * scale_factor
+#     targets = []
+    
+#     for obj_idx, obj in enumerate(objects):
+#         if obj_idx != canonical_index:
+#             targets.append(obj * scale_factor)
+            
+
+#     contacts = []
+#     for obj_idx, obj in enumerate(contact_points):
+#         if obj_idx != canonical_index:
+#             contacts.append(obj)
+
+#     warps = []
+#     costs = []
+
+#     for target_idx, (target, contact) in enumerate(zip(targets, contacts)):
+#         print("target {:d}".format(target_idx))
+
+#         cost_function = lambda source, target, canon_points: contact_constraint(source, target, contact, canon_points, weight=1)
+
+#         warp = ObjectSE3Batch(source, contact_points[canonical_index], target,  'cpu', cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
+#         result, _, params = warp_to_pcd_se3_hemisphere(warp, 50, n_batches=1, inference_kwargs=inference_kwargs) 
+#         fixed_source = transform_pcd(source, pos_quat_to_transform(params.position, params.quat))
+
+#         w, g = cpd_transform(target, fixed_source, alpha=alpha)
+
+#         warp = np.dot(g, w)
+#         warp = np.hstack(warp)
+
+#         tmp = source + warp.reshape(-1, 3)
+#         costs.append(sst_cost_batch(tmp, target))
+
+#         warps.append(warp)
+
+#         if visualize:
+#             viz_utils.show_pcds_plotly({
+#                 "target": target,
+#                 "warp": source + warp.reshape(-1, 3),
+#             }, center=True)
+
+#     return warps, costs
+
+def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visualize=False):
+    source = objects[canonical_index] * scale_factor
+    targets = []
+    
+    for obj_idx, obj in enumerate(objects):
+        if obj_idx != canonical_index:
+            targets.append(obj * scale_factor)
+            
     warps = []
     costs = []
 
@@ -463,7 +774,7 @@ def warp_gen(canonical_index, objects, scale_factor=1., alpha: float=2.0, visual
 def sst_pick_canonical(known_pts: List[NDArray[np.float32]]) -> int:
 
     # GPU acceleration makes this at least 100 times faster.
-    known_pts = [torch.tensor(x, device="cuda:0", dtype=torch.float32) for x in known_pts]
+    known_pts = [torch.tensor(x, device="cpu", dtype=torch.float32) for x in known_pts]
 
     overall_costs = []
     for i in range(len(known_pts)):
@@ -480,13 +791,10 @@ def sst_pick_canonical(known_pts: List[NDArray[np.float32]]) -> int:
     print("overall costs: {:s}".format(str(overall_costs)))
     return np.argmin(overall_costs)
 
-
 def pca_transform(distances, n_dimensions=4):
-
     pca = PCA(n_components=n_dimensions)
-    p_components = pca.fit_transform(np.array(distances))
+    p_components = pca.fit_transform(np.array(distances).squeeze())
     return p_components, pca
-
 
 def rotation_distance(A, B):
     # Compute the relative rotation matrix
@@ -523,3 +831,115 @@ def pose_distance(trans1, trans2):
     total_distance = position_weight * position_distance + orientation_weight * orientation_distance
 
     return total_distance
+
+#Returns the unit vector for vector
+def unit_vector(vector):
+    return vector / np.linalg.norm(vector)
+
+#Returns the angle between vectors
+def angle_between(v1, v2):
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
+def rotation_matrix_from_vectors(vec1, vec2):
+    """ Find the rotation matrix that aligns vec1 to vec2
+    :param vec1: A 3d "source" vector
+    :param vec2: A 3d "destination" vector
+    :return mat: A transform matrix (3x3) which when applied to vec1, aligns it with vec2.
+    """
+    a, b = (vec1 / np.linalg.norm(vec1)).reshape(3), (vec2 / np.linalg.norm(vec2)).reshape(3)
+    v = np.cross(a, b)
+    c = np.dot(a, b)
+    s = np.linalg.norm(v)
+    kmat = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+    rotation_matrix = np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
+    return rotation_matrix
+
+def k_largest_index_argpartition(a, k):
+    idx = np.argpartition(a.ravel(),k)[:k]
+    return np.column_stack(np.unravel_index(idx, a.shape))
+
+def threshold_index_argwhere(a, thresh):
+    idx = np.argwhere(a.ravel()<thresh)
+    return np.column_stack(np.unravel_index(idx, a.shape))
+
+def get_closest_point_pairs(pcl_1: NDArray, pcl_2: NDArray, k: int=20):
+    dists = np.sum(np.square(pcl_1[None] - pcl_2[:, None]), axis=-1)
+    return k_largest_index_argpartition(dists,k)
+
+def get_closest_point_pairs_thresh(pcl_1: NDArray, pcl_2: NDArray, thresh: float=0.005):
+    dists = np.sum(np.square(pcl_1[None] - pcl_2[:, None]), axis=-1)
+    return threshold_index_argwhere(dists,thresh)
+
+def center_pcl(pcl, return_centroid=False):
+    l = pcl.shape[0]
+    centroid = np.mean(pcl, axis=0)
+    pcl = pcl - centroid
+    if return_centroid:
+        return pcl, centroid
+    else:
+        return pcl
+
+from scipy.linalg import lstsq
+
+#Gets the equation and normal for a plane fit to set of points using least squares regression
+#TODO: Struggles with singularities with the vertical plane, should find a way to fix that
+def fit_plane_points(pcl: NDArray, show:bool=False):
+    tmp_A = []
+    tmp_b = []
+    for i in range(len(pcl)):
+        tmp_A.append([pcl[i, 0], pcl[i, 1], 1])
+        tmp_b.append(pcl[i, 2])
+    b = np.matrix(tmp_b).T
+    A = np.matrix(tmp_A)
+
+    fit, residual, rnk, s = lstsq(A, b)
+
+    X,Y,Z = [],[],[]
+    for i in range(3):
+        X.append(i + np.random.uniform())
+        Y.append(i+ np.random.uniform())
+        Z.append((fit[0] * X[-1] + fit[1] * Y[-1] + fit[2])[0])
+
+    X,Y,Z = np.atleast_2d(X), np.atleast_2d(Y), np.atleast_2d(Z)
+    print(np.concatenate([X,Y,Z], axis=0).shape)
+    p0, p1, p2 = np.concatenate([X,Y,Z], axis=0).T
+    x0, y0, z0 = p0
+    x1, y1, z1 = p1
+    x2, y2, z2 = p2
+
+    ux, uy, uz = u = [x1-x0, y1-y0, z1-z0] #first vector
+    vx, vy, vz = v = [x2-x0, y2-y0, z2-z0] #sec vector
+
+    u_cross_v = [uy*vz-uz*vy, uz*vx-ux*vz, ux*vy-uy*vx] #cross product
+
+    point  = np.array(p1)
+    normal = np.array(u_cross_v)
+    d = -point.dot(normal)
+
+
+    if show: 
+        plt.figure()
+        ax = plt.subplot(111, projection='3d')
+        ax.scatter(pcl[:, 0], pcl[:, 1], pcl[:, 2], color='b')
+        ax.set_xlim(-.25, .25)
+        ax.set_ylim(-.25, .25)
+        ax.set_zlim(-.25, .25)
+
+        xlim = ax.get_xlim()
+        print(xlim)
+        ylim = ax.get_ylim()
+        X,Y = np.meshgrid(np.arange(xlim[0], xlim[1], .05),
+                          np.arange(ylim[0], ylim[1], .05))
+        Z = np.zeros(X.shape)
+        for r in range(X.shape[0]):
+            for c in range(X.shape[1]):
+                Z[r,c] = fit[0] * X[r,c] + fit[1] * Y[r,c] + fit[2]
+
+        ax.quiver(0, 0, -.25, normal[0], normal[1], normal[2], color="r")
+        ax.plot_wireframe(X,Y,Z, color='k')
+        plt.show()
+
+    return normal, fit
+

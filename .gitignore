@@ -5,6 +5,7 @@ venv/
 venv_ndf/
 /data/ndf_objects/
 /data/ignore
+/Pointnet_Pointnet2_pytorch/
 /tmp.stl
 /tmp.obj
 /tmp_source.stl

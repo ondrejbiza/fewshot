@@ -37,7 +37,6 @@ from src.real_world import constants
 
 NOISE_VALUE_LIST = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.16, 0.24, 0.32, 0.4]
 
-
 def pb2mc_update(recorder, mc_vis, stop_event, run_event):
     iters = 0
     # while True:
@@ -78,14 +77,16 @@ def main(args):
     demo_files = [fn for fn in sorted(os.listdir(demo_path)) if fn.endswith('.npz')]
     demos = []
     for f in demo_files:
-        demo = np.load(demo_path+'/'+f, allow_pickle=True)
+        demo = np.load(demo_path+'/'+f, mmap_mode='r',allow_pickle=True)
         demos.append(demo)
 
+    #Naming the experiment save file
     expstr = f'exp--{args.exp}_demo-exp--{args.rel_demo_exp}'
     seedstr = 'seed--' + str(args.seed)
     experiment_name = '_'.join([expstr, seedstr])
 
     eval_save_dir_root = osp.join(path_util.get_rndf_eval_data(), args.eval_data_dir, experiment_name)
+    
     eval_save_dir = eval_save_dir_root
     util.safe_makedirs(eval_save_dir_root)
     util.safe_makedirs(eval_save_dir)
@@ -389,6 +390,7 @@ def main(args):
 
         demo_idx = np.random.randint(len(demos))
         demo = demos[demo_idx]
+
         if args.test_on_train:
             parent_id = pc_master_dict['parent']['demo_ids'][demo_idx]
             child_id = pc_master_dict['child']['demo_ids'][demo_idx]
@@ -708,6 +710,7 @@ def main(args):
         final_child_pcd = util.transform_pcd(pc_obs_info['pcd']['child'], relative_trans)
         with recorder.meshcat_scene_lock:
             util.meshcat_pcd_show(mc_vis, final_child_pcd, color=[255, 0, 255], name='scene/final_child_pcd')
+        
         # safeCollisionFilterPair(pc_master_dict['child']['pb_obj_id'], table_id, -1, -1, enableCollision=False)
         safeCollisionFilterPair(pc_master_dict['child']['pb_obj_id'], table_id, -1, table_base_id, enableCollision=False)
 

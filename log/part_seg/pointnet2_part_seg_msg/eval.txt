@@ -1,0 +1,64 @@
+2023-10-23 19:35:53,332 - Model - INFO - PARAMETER ...
+2023-10-23 19:35:53,332 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:36:51,642 - Model - INFO - PARAMETER ...
+2023-10-23 19:36:51,642 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:36:51,667 - Model - INFO - The number of test data is: 2874
+2023-10-23 19:38:01,008 - Model - INFO - PARAMETER ...
+2023-10-23 19:38:01,008 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:38:01,033 - Model - INFO - The number of test data is: 2874
+2023-10-23 19:39:00,780 - Model - INFO - PARAMETER ...
+2023-10-23 19:39:00,780 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:39:00,805 - Model - INFO - The number of test data is: 2874
+2023-10-23 19:39:34,003 - Model - INFO - PARAMETER ...
+2023-10-23 19:39:34,003 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:39:34,028 - Model - INFO - The number of test data is: 2874
+2023-10-23 19:41:22,049 - Model - INFO - PARAMETER ...
+2023-10-23 19:41:22,049 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:41:45,109 - Model - INFO - PARAMETER ...
+2023-10-23 19:41:45,109 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:41:45,117 - Model - INFO - The number of test data is: 38
+2023-10-23 19:50:06,491 - Model - INFO - PARAMETER ...
+2023-10-23 19:50:06,492 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:50:06,499 - Model - INFO - The number of test data is: 38
+2023-10-23 19:50:56,139 - Model - INFO - eval mIoU of Airplane       nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Bag            nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Cap            nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Car            nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Chair          nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Earphone       nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Guitar         nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Knife          nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Lamp           nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Laptop         nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Motorbike      nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Mug            0.860578
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Pistol         nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Rocket         nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Skateboard     nan
+2023-10-23 19:50:56,140 - Model - INFO - eval mIoU of Table          nan
+2023-10-23 19:50:56,140 - Model - INFO - Accuracy is: 0.98377
+2023-10-23 19:50:56,140 - Model - INFO - Class avg accuracy is: nan
+2023-10-23 19:50:56,140 - Model - INFO - Class avg mIOU is: nan
+2023-10-23 19:50:56,141 - Model - INFO - Inctance avg mIOU is: 0.86058
+2023-10-23 19:57:29,479 - Model - INFO - PARAMETER ...
+2023-10-23 19:57:29,479 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 19:57:29,486 - Model - INFO - The number of test data is: 38
+2023-10-23 19:58:15,824 - Model - INFO - eval mIoU of Mug            0.853033
+2023-10-23 19:58:15,826 - Model - INFO - Accuracy is: 0.98170
+2023-10-23 19:58:15,826 - Model - INFO - Class avg accuracy is: nan
+2023-10-23 19:58:15,826 - Model - INFO - Class avg mIOU is: 0.85303
+2023-10-23 19:58:15,826 - Model - INFO - Inctance avg mIOU is: 0.85303
+2023-10-23 20:55:58,446 - Model - INFO - PARAMETER ...
+2023-10-23 20:55:58,446 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 20:55:58,454 - Model - INFO - The number of test data is: 38
+2023-10-23 20:56:22,587 - Model - INFO - PARAMETER ...
+2023-10-23 20:56:22,587 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-23 20:56:22,594 - Model - INFO - The number of test data is: 38
+2023-10-23 21:07:17,280 - Model - INFO - PARAMETER ...
+2023-10-23 21:07:17,281 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-24 14:21:39,586 - Model - INFO - PARAMETER ...
+2023-10-24 14:21:39,586 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-24 14:21:39,594 - Model - INFO - The number of test data is: 38
+2023-10-24 14:21:50,948 - Model - INFO - PARAMETER ...
+2023-10-24 14:21:50,948 - Model - INFO - Namespace(batch_size=24, gpu='0', num_point=2048, log_dir='pointnet2_part_seg_msg', normal=True, num_votes=3)
+2023-10-24 14:21:50,956 - Model - INFO - The number of test data is: 38
