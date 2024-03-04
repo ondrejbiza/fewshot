@@ -93,26 +93,32 @@ def main(args):
 
     slider_axes = []
     z = 0.
-    for _ in range(canon_source.n_components + 1):
+    for _ in range(canon_source.n_components + 3 + 1):
         slider_axes.append(fig.add_axes([0.25, z, 0.65, 0.03]))
-        z += 0.05
+        z += 0.03
     # we start at the bottom and move up
     slider_axes = list(reversed(slider_axes))
 
     sliders = []
+    scale_sliders = []
     for i in range(canon_source.n_components):
         sliders.append(Slider(slider_axes[i], "D{:d}".format(i), smin, smax, valinit=source_param.latent[i]))
-    button = Button(slider_axes[canon_source.n_components], "Save pcd")
+    for i in range(3):
+        scale_sliders.append(Slider(slider_axes[canon_source.n_components + i], "S{:d}".format(i), smin, smax, valinit=source_param.scale[i]))
+    button = Button(slider_axes[canon_source.n_components + 3], "Save pcd")
 
     def sliders_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
-        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=source_param.scale))
+        scale = np.array([s.val for s in scale_sliders])
+
+        source_pcd = canon_source.to_pcd(utils.ObjParam(latent=latents, scale=scale))
         update_axis(ax, warp(source_pcd, target_pcd, knns, deltas, target_indices)[0], target_pcd, vmin, vmax)
 
     def button_on_changed(val):
         latents = np.array([[s.val for s in sliders]])
+        scale = np.array([s.val for s in scale_sliders])
 
-        tmp_source_param = utils.ObjParam(latent=latents, scale=source_param.scale)
+        tmp_source_param = utils.ObjParam(latent=latents, scale=scale)
         source_pcd = canon_source.to_pcd(tmp_source_param)
 
         anchors = source_pcd[knns]
@@ -129,7 +135,7 @@ def main(args):
         tmp_source_param.quat = quat
         source_mesh = canon_source.to_transformed_mesh(tmp_source_param)
 
-        dir_path = "data/warping_figure_7"
+        dir_path = "data/warping_figure_a_2"
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
         i = 1
@@ -145,7 +151,7 @@ def main(args):
         viz_utils.save_o3d_pcd(points_2, os.path.join(dir_path, f"points_target_{i}.pcd"))
         viz_utils.save_o3d_pcd(targets_trans, os.path.join(dir_path, f"points_source_{i}.pcd"))
 
-    for s in sliders:
+    for s in sliders + scale_sliders:
         s.on_changed(sliders_on_changed)
     button.on_clicked(button_on_changed)
 
