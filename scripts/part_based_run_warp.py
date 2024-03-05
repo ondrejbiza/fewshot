@@ -642,8 +642,8 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
     # if not osp.isfile('demo_0_interface_cache.pkl'):
 
-    print(interface.set_demo_info(pc_master_dict, demo_idx=demo_idx, calculate_cost=True))
-    exit(0)
+    demo_cost = interface.set_demo_info(pc_master_dict, demo_idx=demo_idx, calculate_cost=True)
+
     #     pickle.dump(interface, open('demo_0_interface_cache.pkl', 'wb'))
     # else:
     #     interface = pickle.load(open('demo_0_interface_cache.pkl', 'rb'))
@@ -902,6 +902,8 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
         parent_pcd = pc_obs_info['pcd']['parent']
         child_pcd = pc_obs_info['pcd']['child']
+
+        print(pcd_obs_info)
 
         log_info(f'[INTERSECTION], Loading model weights for multi NDF inference')
 

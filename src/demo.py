@@ -25,7 +25,7 @@ class Arrow3D(FancyArrowPatch):
         return np.min(zs)
 
 def save_pick_contact_points(robotiq_id: int, source_id: int, trans_robotiq_to_ws: NDArray,
-                             canon_source: utils.CanonObj, source_param: utils.ObjParam) -> Tuple[NDArray, NDArray[np.int32]]:
+                             canon_source: utils.CanonPart, source_param: utils.ObjParam) -> Tuple[NDArray, NDArray[np.int32]]:
     pb.performCollisionDetection()
     cols = pb.getClosestPoints(robotiq_id, source_id, 0.0)
 
@@ -77,8 +77,8 @@ def get_knn_and_deltas(obj: NDArray, vps: NDArray, k: int=10,
     return knn_list, deltas_list
 
 
-def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.CanonObj,
-                             source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonObj,
+def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.CanonPart,
+                             source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonPart,
                              target_obj_param: utils.ObjParam, delta: float,
                              draw_spheres: bool=False
                              ) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:
@@ -128,8 +128,8 @@ def save_place_nearby_points(source: int, target: int, canon_source_obj: utils.C
     return knns, deltas, i_2
 
 
-def save_place_nearby_points_v2(source: int, target: int, canon_source_obj: utils.CanonObj,
-                                source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonObj,
+def save_place_nearby_points_v2(source: int, target: int, canon_source_obj: utils.CanonPart,
+                                source_obj_param: utils.ObjParam, canon_target_obj: utils.CanonPart,
                                 target_obj_param: utils.ObjParam, delta: float,
                                 draw_spheres: bool=False
                                 ) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:
@@ -174,8 +174,8 @@ def save_place_nearby_points_v2(source: int, target: int, canon_source_obj: util
     return knns, deltas, i_2
 
 #gets closest points for every individual part and returns them
-def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_source_objs: dict[str, utils.CanonObj],
-                                source_obj_params: dict[str, utils.ObjParam], canon_target_obj: utils.CanonObj,
+def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_source_objs: dict[str, utils.CanonPart],
+                                source_obj_params: dict[str, utils.ObjParam], canon_target_obj: utils.CanonPart,
                                 target_obj_param: utils.ObjParam, delta: float,
                                 draw_spheres: bool=True
                                 ) -> Tuple[NDArray[np.int32], NDArray[np.float32], NDArray[np.int32]]:

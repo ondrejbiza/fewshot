@@ -7,7 +7,6 @@ import pickle
 import copy as cp
 from src.object_warping import ALIGNMENT_PARAM, ObjectWarpingSE2Batch, ObjectSE2Batch, ObjectSE3Batch, ObjectWarpingSE3Batch, warp_to_pcd, warp_to_pcd_se2, warp_to_pcd_se3, warp_to_pcd_se3_hemisphere, ALIGNMENT_PARAM
 import torch
-import pytorch3d.ops as ops
 import plotly.graph_objects as go
 from scipy.spatial.transform import Rotation
 
@@ -195,7 +194,7 @@ constr_pcl = utils.center_pcl(pose_constraint_obj.canonical_pcl)
 # exit(0)
 
 pose_constraint_obj.canonical_pcl = constr_pcl
-combined_warp = ObjectSE3Batch(pose_constraint_obj, start_pcl, device='cpu', **param_1,
+combined_warp = ObjectSE3Batch(pose_constraint_obj, start_pcl, device='cuda', **param_1,
                     init_scale=1)
 combined_complete, _, combined_params = warp_to_pcd_se3_hemisphere(combined_warp, n_angles=12, n_batches=1, inference_kwargs=final_inference_kwargs)
 

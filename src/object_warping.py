@@ -179,14 +179,23 @@ class ObjectWarping:
             )
 
             # Saving optimization history for visualization
-            self.transform_history.append(
-                    (self.center_param.detach().cpu().numpy(),
-                    torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
-                    .detach()
-                    .cpu()
-                    .numpy()
-                    ,)
-                )
+            try:
+                self.transform_history.append(
+                        (self.center_param.detach().cpu().numpy(),
+                        torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
+                        .detach()
+                        .cpu()
+                        .numpy()
+                        ,)
+                    )
+            except IndexError:
+                self.transform_history.append(
+                        (self.center_param.detach().cpu().numpy(),
+                        yaw_to_rot_batch_pt(self.pose_param).detach()
+                        .cpu()
+                        .numpy()
+                        ,)
+                    )
             
 
             cost = self.cost_function(self.pcd[None], new_pcd)
@@ -430,7 +439,7 @@ class ObjectWarpingSE2Batch(ObjectWarping):
         new_pcd = (
             torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
         )
-        return new_pcd, new_contacts
+        return new_pcd
 
     def assemble_output(
         self, cost: torch.Tensor
@@ -441,7 +450,7 @@ class ObjectWarpingSE2Batch(ObjectWarping):
         all_parameters = []
 
         with torch.no_grad():
-            new_pcd, new_contact_points = self.create_warped_transformed_pcd(
+            new_pcd = self.create_warped_transformed_pcd(
                 self.components,
                 self.means,
                 self.canonical_pcl,

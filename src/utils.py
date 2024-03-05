@@ -3,10 +3,6 @@ import pickle
 from typing import List, Optional, Tuple, Union
 
 from cycpd import deformable_registration
-from torchcpd.constrained_deformable_registration import (
-    ConstrainedDeformableRegistration,
-)
-from torchcpd.deformable_registration import DeformableRegistration
 import numpy as np
 from numpy.typing import NDArray
 import pybullet as pb
@@ -109,6 +105,7 @@ class CanonPart:
         pcd = data["canonical_obj"]
         contact_points = None
         pca = None
+        metadata = CanonPartMetadata('', '', None, None)
         center_transform = np.eye(4)
         if "center_transform" in data:
             center_transform = data["center_transform"]
@@ -116,7 +113,8 @@ class CanonPart:
             pca = data["pca"]
         mesh_vertices = data["canonical_mesh_points"]
         mesh_faces = data["canonical_mesh_faces"]
-        metadata = data["metadata"]
+        if 'metadata' in data:
+            metadata = data["metadata"]
         if "contact_points" in data:
             contact_points = data["contact_points"]
         return CanonPart(
@@ -477,26 +475,6 @@ def scale_points_circle(
     return new_points
 
 
-def constrained_cpd_transform(
-    source, target, source_id, target_id, e_alpha=0.5, alpha=2.0
-):
-    source, target = source.astype(np.float64), target.astype(np.float64)
-    reg = ConstrainedDeformableRegistration(
-        **{
-            "X": source,
-            "Y": target,
-            "source_id": source_id,
-            "target_id": target_id,
-            "contact_weight": 10000000,
-            "tolerance": 0.00001,
-            "device": "cpu",
-        },
-        alpha=alpha,
-    )
-    reg.register()
-    # Returns the gaussian means and their weights - WG is the warp of source to target
-    return reg.W, reg.G
-
 
 def cpd_transform(source, target, alpha: float = 2.0) -> Tuple[NDArray, NDArray]:
 
@@ -540,94 +518,6 @@ def sst_cost_batch_pt(source, target):
     # diff = torch.sqrt(torch.sum(torch.square(bigtensor), dim=3))
     # c = torch.min(diff, dim=2)[0]
     # return torch.mean(c, dim=1)
-
-
-def contact_aware_warp_gen(
-    canonical_index,
-    objects,
-    object_contact_points,
-    scale_factor=1.0,
-    alpha: float = 2,
-    visualize=False,
-):
-    source = objects[canonical_index] * scale_factor
-    source_id = object_contact_points[canonical_index]
-    targets = []
-    target_contacts = []
-    for obj_idx, obj in enumerate(objects):
-        if obj_idx != canonical_index:
-            targets.append(obj * scale_factor)
-            target_contacts.append(object_contact_points[obj_idx])
-
-    warps = []
-    costs = []
-    for target_idx, target in enumerate(targets):
-        #     print("target {:d}".format(target_idx))
-        target_id = target_contacts[target_idx]
-        #     all_source_ids = []
-        #     all_target_ids = []
-        #     for idx in source_id:
-        #         for idy in target_id:
-        #             all_source_ids.append(idx)
-        #             all_target_ids.append(idy)
-
-        # print(target[target_id][0])
-        # print(len(target[target_id]))
-        # viz_utils.show_pcds_plotly({
-        #         "target": target,
-        #         "source": source,
-        #         "target_contacts": target[target_id],
-        #         "source_contacts": source[source_id],
-        #         "target_contacts_0": np.atleast_2d(target[target_id][0]),
-        #         "source_contacts_0": np.atleast_2d(source[source_id][0]),
-        #         "target_contacts_1": np.atleast_2d(target[target_id][1]),
-        #         "source_contacts_1": np.atleast_2d(source[source_id][1]),
-        #         "target_contacts_2": np.atleast_2d(target[target_id][2]),
-        #         "source_contacts_2": np.atleast_2d(source[source_id][2]),
-        #         "target_contacts_3": np.atleast_2d(target[target_id][3]),
-        #         "source_contacts_3": np.atleast_2d(source[source_id][3]),
-        #     }, center=True)
-
-        if len(source_id) != len(target_id):
-            if len(source_id) > len(target_id):
-                num_rem = np.round(len(source_id) / (len(source_id) - len(target_id)))
-                source_id = np.delete(
-                    source_id,
-                    [int(num_rem * i) for i in range(len(source_id) - len(target_id))],
-                )
-
-        if len(target_id) > len(source_id):
-            num_rem = np.round(len(target_id) / (len(target_id) - len(source_id)))
-            target_id = np.delete(
-                target_id,
-                [int(num_rem * i) for i in range(len(target_id) - len(source_id))],
-            )
-
-        alpha = 0.1
-        w, g = constrained_cpd_transform(
-            target, source, source_id, target_id, e_alpha=0.2, alpha=alpha
-        )
-
-        warp = np.dot(g, w)
-        warp = np.hstack(warp)
-
-        tmp = source + warp.reshape(-1, 3)
-        costs.append(sst_cost_batch(tmp, target))
-
-        warps.append(warp)
-
-        if visualize:
-            viz_utils.show_pcds_plotly(
-                {
-                    "target": target,
-                    "warp": source + warp.reshape(-1, 3),
-                    "target_contacts": target[target_id],
-                    "warp_contacts": source[source_id] + warp.reshape(-1, 3)[source_id],
-                },
-                center=True,
-            )
-
-    return warps, costs
 
 
 def warp_gen(
