@@ -26,8 +26,7 @@ def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate the one-sided Chamfer distance between two batches of point clouds in pytorch."""
     # B x N x K
     diff = torch.sqrt(
-        torch.sum(
-            torch.square(torch.square(source[:, :, None] - target[:, None, :])), dim=3
+        torch.sum(torch.square(source[:, :, None] - target[:, None, :]), dim=3
         )
     )
     diff_flat = diff.view(diff.shape[0] * diff.shape[1], diff.shape[2])
@@ -41,7 +40,7 @@ class ObjectWarping:
 
     def __init__(
         self,
-        canon_obj: utils.CanonObj,
+        canon_obj: utils.CanonPart,
         pcd: NDArray[np.float32],
         device: "cpu",
         lr: float,
@@ -181,16 +180,14 @@ class ObjectWarping:
 
             # Saving optimization history for visualization
             self.transform_history.append(
-                utils.pos_quat_to_transform(
-                    self.center_param.detach().cpu().numpy(),
-                    utils.rotm_to_quat(
-                        torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
-                        .detach()
-                        .cpu()
-                        .numpy()
-                    ),
+                    (self.center_param.detach().cpu().numpy(),
+                    torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
+                    .detach()
+                    .cpu()
+                    .numpy()
+                    ,)
                 )
-            )
+            
 
             cost = self.cost_function(self.pcd[None], new_pcd)
 
@@ -202,7 +199,7 @@ class ObjectWarping:
             cost.sum().backward()
 
             # Saving cost history for visualization
-            self.cost_history.append(cost)
+            self.cost_history.append(cost.detach().cpu().numpy())
             self.optim.step()
 
         with torch.no_grad():

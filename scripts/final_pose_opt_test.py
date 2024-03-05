@@ -5,7 +5,7 @@ import os, os.path as osp
 from rndf_robot.utils import util, path_util
 import pickle 
 import copy as cp
-from src.object_warping import ObjectWarpingSE2Batch, ObjectSE2Batch, ObjectSE3Batch, ObjectWarpingSE3Batch, WarpBatch, warp_to_pcd, warp_to_pcd_se2, warp_to_pcd_se3, warp_to_pcd_se3_hemisphere, PARAM_1
+from src.object_warping import ALIGNMENT_PARAM, ObjectWarpingSE2Batch, ObjectSE2Batch, ObjectSE3Batch, ObjectWarpingSE3Batch, warp_to_pcd, warp_to_pcd_se2, warp_to_pcd_se3, warp_to_pcd_se3_hemisphere, ALIGNMENT_PARAM
 import torch
 import pytorch3d.ops as ops
 import plotly.graph_objects as go
@@ -76,7 +76,7 @@ final_inference_kwargs = {
             "train_poses": True
         }
 
-param_1 = cp.deepcopy(PARAM_1)
+param_1 = cp.deepcopy(ALIGNMENT_PARAM)
 
 
 # pytorch3d.ops.iterative_closest_point()
@@ -112,7 +112,7 @@ transforms = []
 
 random_transform = np.linalg.inv(source_start_to_final)
 start_pcl = utils.center_pcl(start_child_pcd)
-constr_pcl = utils.center_pcl(utils.transform_pcd(pose_constraint_obj.canonical_pcl, random_transform))
+constr_pcl = utils.center_pcl(pose_constraint_obj.canonical_pcl)
 
 # from difficp import ICP6DoF
 
@@ -195,93 +195,46 @@ constr_pcl = utils.center_pcl(utils.transform_pcd(pose_constraint_obj.canonical_
 # exit(0)
 
 pose_constraint_obj.canonical_pcl = constr_pcl
-combined_warp = ObjectSE3Batch(
-                    pose_constraint_obj , [], start_pcl, 'cpu', cost_function=None, **param_1,
+combined_warp = ObjectSE3Batch(pose_constraint_obj, start_pcl, device='cpu', **param_1,
                     init_scale=1)
-combined_complete, _, combined_params = warp_to_pcd_se3_hemisphere(combined_warp, n_angles=50, n_batches=1, inference_kwargs=final_inference_kwargs)
+combined_complete, _, combined_params = warp_to_pcd_se3_hemisphere(combined_warp, n_angles=12, n_batches=1, inference_kwargs=final_inference_kwargs)
+
+
+best_idx = np.argmin(combined_warp.cost_history[-1])
+best_transform_history = []
+step_names = []
+for transform, cost in zip(combined_warp.transform_history, combined_warp.cost_history):
+    step_trans, step_rot = transform
+    best_trans, best_rot = step_trans[best_idx], step_rot[best_idx]
+    best_transform_history.append(utils.transform_pcd(constr_pcl, utils.pos_quat_to_transform(best_trans, utils.rotm_to_quat(best_rot))))
+    step_names.append(f"COST: {cost[best_idx]}")
+
+viz_utils.show_pcds_slider_animation_plotly(
+    moving_pcl_name='Constraint Transformation',
+    moving_pcl_frames=best_transform_history,
+    static_pcls={"Start Pointcloud": start_pcl},
+    step_names=step_names,
+)
 
 
 
 
-# fig = go.Figure()
+aligned_pcd = utils.transform_pcd(constr_pcl, utils.pos_quat_to_transform(combined_params.position, combined_params.quat))#
 
-# # Add traces, one for each slider step
-# for transform in combined_warp.transform_history:
-#     # h_quat = utils.rotm_to_quat(transform.R)
-#     # h_t = utils.pos_quat_to_transform(result.RTs.T, h_quat)
-#     h_pcl = utils.transform_pcd(pose_constraint_obj.canonical_pcl, transform)
-#     fig.add_trace(
-#         go.Scatter3d(visible=False, 
-#             x=h_pcl[:, 0], y=h_pcl[:, 1], z=h_pcl[:, 2],
-#             marker={"size": 5, "color": h_pcl[:, 2], "colorscale": 'viridis'},
-#             mode="markers", opacity=1.),)
-
-# fig.add_trace(
-#         go.Scatter3d( x=start_pcl[:, 0], y=start_pcl[:, 1], z=start_pcl[:, 2],
-#             marker={"size": 5, "color": start_pcl[:, 2], "colorscale": 'plotly3'},
-#             mode="markers", opacity=1.),)
-
-
-
-# # Make 10th trace visible
-# fig.data[10].visible = True
-
-# # Create and add slider
-# steps = []
-# for i in range(len(fig.data)-1):
-#     step = dict(
-#         method="update",
-#         args=[{"visible": [False] * (len(fig.data)-1) + [True]},
-#               {"title": "cost is " + str(combined_warp.cost_history[i])}],  # layout attribute
-#     )
-#     step["args"][0]["visible"][i] = True  # Toggle i'th trace to "visible"
-#     steps.append(step)
-
-# sliders = [dict(
-#     active=10,
-#     currentvalue={"prefix": "Frequency: "},
-#     pad={"t": 50},
-#     steps=steps
-# )]
-
-# fig.update_layout(
-#     sliders=sliders
-# )
-
-
-
-# fig.show()
-
-
-
-#     viz_utils.show_pcds_plotly({'start_child': start_pcl , 
-#                   'result': pcd_result , })
-#     exit(0)
-
-# icp_transform = transforms[np.argmin(errors)]
-# pcd_result = utils.transform_pcd(utils.center_pcl(pose_constraint_obj.canonical_pcl), icp_transform)
-# print(errors)
-
-
-
-aligned_pcd = pose_constraint_obj.to_transformed_pcd(combined_params)#utils.transform_pcd(constr_pcl, utils.pos_quat_to_transform(combined_params.position, combined_params.quat))#
-
-viz_utils.show_pcds_plotly({'start_child': start_child_pcd, 'result':aligned_pcd})
-
+viz_utils.show_pcds_plotly({'start_child': start_pcl, 'result':aligned_pcd})
 
 print(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))
 
 viz_utils.show_pcds_plotly({'start_child': start_child_pcd , 
                 'end_child': final_child_pcd , 
-                'trans_pcd': utils.transform_pcd(start_child_pcd, np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))),
-                'aligned_pcd':pose_constraint_obj.to_transformed_pcd(combined_params),
+                'trans_pcd': utils.transform_pcd(start_pcl, np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))),
+                'trans_final_pcd': utils.transform_pcd(utils.transform_pcd(start_pcl, np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))), pose_constraint_obj.center_transform),
+                'aligned_pcd': pose_constraint_obj.to_transformed_pcd(combined_params),
                 'end_parent': final_parent_pcd, 
                 'constraint': pose_constraint_obj.canonical_pcl})
 
 print(cost_batch_pt(torch.from_numpy(np.expand_dims(aligned_pcd, 0)), torch.from_numpy(np.expand_dims(start_child_pcd, 0))))
 print(cost_batch_pt(torch.from_numpy(np.expand_dims(start_child_pcd, 0)), torch.from_numpy(np.expand_dims(aligned_pcd, 0))))
-
-
 
 
 # load pose constraint object 

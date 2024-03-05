@@ -248,7 +248,7 @@ def show_pcds_slider_animation_plotly(
         step = dict(
             method="update",
             args=[
-                {"visible": [False] * (len(transforms) - 1) + [True]},
+                {"visible": [False] * (len(moving_pcl_frames)) + [True]*len(static_pcls.keys())},
                 {"title": step_names[i]},
             ],
         )
@@ -260,9 +260,7 @@ def show_pcds_slider_animation_plotly(
     ]
 
     fig.update_layout(sliders=sliders)
-
-
-# fig.show()
+    fig.show()
 
 
 def draw_square(
