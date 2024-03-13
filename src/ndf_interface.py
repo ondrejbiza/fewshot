@@ -17,7 +17,7 @@ from typing import List, Optional, Tuple, Union
 from src import demo, utils, viz_utils
 from src.utils import CanonPart, CanonPartMetadata
 from src.pybullet_utils import interpolate, wait_for_interrupt
-from src.object_warping import ObjectWarpingSE2Batch, ObjectSE2Batch, ObjectSE3Batch, ObjectWarpingSE3Batch, warp_to_pcd, warp_to_pcd_se2, warp_to_pcd_se3, warp_to_pcd_se3_hemisphere, PARAM_1
+from src.object_warping import ObjectWarpingSE2Batch, ObjectSE2Batch, ObjectSE3Batch, ObjectWarpingSE3Batch, warp_to_pcd, warp_to_pcd_se2, warp_to_pcd_se3, warp_to_pcd_se3_hemisphere, PARAM_1, ALIGNMENT_PARAM
 from sklearn.decomposition import PCA
 
 
@@ -279,6 +279,7 @@ class NDFPartInterface:
         }
 
         param_1 = cp.deepcopy(PARAM_1)
+        alignment_param = cp.deepcopy(ALIGNMENT_PARAM)
         if self.ablate_no_size_reg:
             param_1["object_size_reg"] = 0.
 
@@ -361,16 +362,16 @@ class NDFPartInterface:
             trans_s_to_t[part] = trans_t_to_b @ trans_cs_to_ct[part] @ np.linalg.inv(trans_s_to_b[part])
         
 
-        viz_utils.show_pcds_plotly({
-            # "cup": canon_pcds['cup'], 
-            # "handle": canon_pcds['handle'],
-            "cup_moved": utils.transform_pcd(source_pcds['cup'], trans_s_to_t['cup']), 
-            "handle_moved": utils.transform_pcd(source_pcds['handle'], trans_s_to_t['handle']),
-            "target": target_pcd, #self.canon_target.to_transformed_pcd(target_param),  
-            "anchors_cup": utils.transform_pcd(utils.transform_pcd(np.concatenate(targets_source['cup']), trans_s_to_b['cup']), trans_s_to_t['cup']),
-            "anchors_handle": utils.transform_pcd(utils.transform_pcd(np.concatenate(targets_source['handle']), trans_s_to_b['handle']), trans_s_to_t['handle']),
-            #"anchors_t": targets_target,
-        }, center=False)
+        # viz_utils.show_pcds_plotly({
+        #     # "cup": canon_pcds['cup'], 
+        #     # "handle": canon_pcds['handle'],
+        #     "cup_moved": utils.transform_pcd(source_pcds['cup'], trans_s_to_t['cup']), 
+        #     "handle_moved": utils.transform_pcd(source_pcds['handle'], trans_s_to_t['handle']),
+        #     "target": target_pcd, #self.canon_target.to_transformed_pcd(target_param),  
+        #     "anchors_cup": utils.transform_pcd(utils.transform_pcd(np.concatenate(targets_source['cup']), trans_s_to_b['cup']), trans_s_to_t['cup']),
+        #     "anchors_handle": utils.transform_pcd(utils.transform_pcd(np.concatenate(targets_source['handle']), trans_s_to_b['handle']), trans_s_to_t['handle']),
+        #     #"anchors_t": targets_target,
+        # }, center=False)
 
         component_pcls = []
         component_mesh_vertices = []
@@ -412,25 +413,62 @@ class NDFPartInterface:
         combined_part.canonical_pcl = centered_combined
 
         combined_warp = ObjectSE3Batch(
-                    combined_part, source_downsampled, self.device, **param_1, init_scale=1)
-        combined_complete, _, combined_params = warp_to_pcd_se3(combined_warp, n_angles=12, n_batches=3, inference_kwargs=final_inference_kwargs)
+                    combined_part, source_downsampled, self.device, **alignment_param, init_scale=1)
+        combined_complete, combined_costs, combined_params = warp_to_pcd_se3(combined_warp, n_angles=12, n_batches=15, inference_kwargs=final_inference_kwargs)
         final_transform = utils.pos_quat_to_transform(np.mean(real_combined, axis=0), (0,0,0,1)) @ \
                           np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat)) @ \
                           utils.pos_quat_to_transform(-np.mean(source_pcd, axis=0), (0,0,0,1))
-                          
-                          #   \
 
         combined_part.canonical_pcl = real_combined
 
+
+        best_idx = np.argmin(combined_warp.cost_history[-1])
+        best_transform_history = []
+        best_transforms = []
+        step_names = []
+        for transform, cost in zip(combined_warp.transform_history, combined_warp.cost_history):
+            best_trans = transform[best_idx]
+            best_transforms.append(best_trans)
+            best_transform_history.append(utils.transform_pcd(centered_combined, best_trans))
+            step_names.append(f"COST: {cost[best_idx]}")
+
+        viz_utils.show_pcds_slider_animation_plotly(
+            moving_pcl_name='Constraint Transformation',
+            moving_pcl_frames=best_transform_history,
+            static_pcls={"Start Pointcloud": source_downsampled},
+            step_names=step_names,
+        )
+
+        viz_utils.show_pcds_video_animation_plotly(
+            moving_pcl_name='Constraint Transformation',
+            moving_pcl_frames=best_transform_history,
+            static_pcls={"Start Pointcloud": source_downsampled},
+            step_names=step_names,
+        )
+        exit(0)
+
+        viz_utils.show_pcds_plotly({'centered constraint': centered_combined,'reverse_transform': utils.transform_pcd(source_downsampled, np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))) })
+        viz_utils.show_pcds_plotly({'transformed constraint': utils.transform_pcd(centered_combined, utils.pos_quat_to_transform(combined_params.position, combined_params.quat)) ,'source_pcd': source_downsampled })
         viz_utils.show_pcds_plotly({'pcd':source_pcd,
-                                    'canon_registration': canon_pcl,
-                                    '.pcl': combined_part.canonical_pcl,
-                                    'untransformed': combined_part.to_pcd(combined_params),
-                                    'transform_registration': combined_part.to_transformed_pcd(combined_params),
+                                    'constraint': combined_part.canonical_pcl,
                                     'trans_pcd':utils.transform_pcd(source_pcd, final_transform),
-                                    'centered??': utils.center_pcl(source_pcd),
+                                    'reverse_transform':utils.transform_pcd(real_combined, np.linalg.inv(final_transform)),
                                     #'t2_trans_pcd':utils.transform_pcd(source_pcd, np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))),
                                     'target':self.canon_target.to_transformed_pcd(target_param)})
+
+        print()
+        print(best_idx)
+        print(best_transforms[-1])
+        print(combined_warp.cost_history[-1][best_idx])
+        print()
+        print(np.argmin(combined_costs))
+        print(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))
+        print(np.min(combined_costs))
+        print()
+        print(combined_costs[best_idx])
+        print()
+        input("Continue?")
+
 
         # Canonical source obj to canonical target obj.
         
@@ -524,6 +562,7 @@ class NDFInterface:
         }
 
         param_1 = cp.deepcopy(PARAM_1)
+        alignment_param = cp.deepcopy(ALIGNMENT_PARAM)
         if self.ablate_no_size_reg:
             param_1["object_size_reg"] = 0.
 

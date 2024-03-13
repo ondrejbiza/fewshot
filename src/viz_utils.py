@@ -76,7 +76,6 @@ def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
     plt.legend()
     plt.show()
 
-
 def show_pcds_plotly(
     pcds: Dict[str, NDArray], center: bool = False, axis_visible: bool = True
 ):
@@ -195,17 +194,34 @@ def show_pcd_grid_plotly(
     fw.show()
 
 
-def show_pcds_slider_animation_plotly(
+import moviepy.editor as mpy
+import io
+import copy as cp
+from PIL import Image
+
+
+def plotly_fig2array(fig):
+    # convert Plotly fig to  an array
+    fig_bytes = fig.to_image(format="png")
+    buf = io.BytesIO(fig_bytes)
+    img = Image.open(buf)
+    img.show()
+    return np.asarray(img)
+
+def show_pcds_video_animation_plotly(
     moving_pcl_name: str,
     moving_pcl_frames: NDArray,
     static_pcls: Dict[str, NDArray],
     step_names: List[str],
 ):
+    video_length=2
+
+    visible = [False] * (len(moving_pcl_frames)) + [True] * len(static_pcls.keys())
 
     fig = go.Figure()
 
     # Add traces, one for each slider step
-    for moving_pcl_frame in moving_pcl_frames:
+    for t, moving_pcl_frame in enumerate(moving_pcl_frames):
         fig.add_trace(
             go.Scatter3d(
                 visible=False,
@@ -219,7 +235,72 @@ def show_pcds_slider_animation_plotly(
                 },
                 mode="markers",
                 opacity=1.0,
-                name=moving_pcl_name,
+                name=f'{moving_pcl_name}, Step {t}',
+            ),
+        )
+
+    for static_name in static_pcls.keys():
+        fig.add_trace(
+            go.Scatter3d(
+                x=static_pcls[static_name][:, 0],
+                y=static_pcls[static_name][:, 1],
+                z=static_pcls[static_name][:, 2],
+                marker={
+                    "size": 5,
+                    "color": static_pcls[static_name][:, 2],
+                    "colorscale": "plotly3",
+                },
+                mode="markers",
+                opacity=1.0,
+                name=static_name,
+            ),
+        )
+
+    def make_frame(t):
+        # z = f(2*np.pi*t/2)
+        i = int(t * len(moving_pcl_frames))
+
+        for j in range(len(moving_pcl_frames)):
+            fig.update_traces(
+                visible=False, selector=dict(name=f'moving_pcl_name_{j}')
+            )
+        
+        fig.update_traces(
+            visible=True, selector=dict(name=f'moving_pcl_name_{i}')
+        )  # These are the updates that usually are performed within Plotly go.Frame definition
+        fig.update_layout(title=step_names[i])
+        fig.show()
+        return plotly_fig2array(fig)
+
+    animation = mpy.VideoClip(make_frame, duration=1)
+    animation.write_gif("my_hat.gif", fps=20)
+
+
+def show_pcds_slider_animation_plotly(
+    moving_pcl_name: str,
+    moving_pcl_frames: NDArray,
+    static_pcls: Dict[str, NDArray],
+    step_names: List[str],
+):
+
+    fig = go.Figure()
+
+    # Add traces, one for each slider step
+    for t, moving_pcl_frame in enumerate(moving_pcl_frames):
+        fig.add_trace(
+            go.Scatter3d(
+                visible=False,
+                x=moving_pcl_frame[:, 0],
+                y=moving_pcl_frame[:, 1],
+                z=moving_pcl_frame[:, 2],
+                marker={
+                    "size": 5,
+                    "color": moving_pcl_frame[:, 2],
+                    "colorscale": "viridis",
+                },
+                mode="markers",
+                opacity=1.0,
+                name=f'moving_pcl_name_{t}',
             ),
         )
 
@@ -248,7 +329,10 @@ def show_pcds_slider_animation_plotly(
         step = dict(
             method="update",
             args=[
-                {"visible": [False] * (len(moving_pcl_frames)) + [True]*len(static_pcls.keys())},
+                {
+                    "visible": [False] * (len(moving_pcl_frames))
+                    + [True] * len(static_pcls.keys())
+                },
                 {"title": step_names[i]},
             ],
         )

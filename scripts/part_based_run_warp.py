@@ -52,6 +52,14 @@ def pb2mc_update(recorder, mc_vis, stop_event, run_event):
         recorder.update_meshcat_current_state(mc_vis)
         time.sleep(1/230.0)
 
+
+def check_segmentation_exists(pcl_id):
+    print(pcl_id)
+    print(type(pcl_id))
+    root = 'Pointnet_Pointnet2_pytorch/data/shapenetcore_partanno_segmentation_benchmark_v0_normal/03797390'
+    fn = os.path.join(root, pcl_id + '.txt')
+    return os.path.exists(fn)
+
 #For loading the part-segmented shapenet mugs
 #That's currently hardcoded into the path
 def load_segmented_pointcloud_from_txt(pcl_id, num_points=2048, 
@@ -710,11 +718,18 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
         if args.test_on_train:
             parent_id = pc_master_dict['parent']['demo_ids'][demo_idx]
-            child_id = pc_master_dict['child']['demo_ids'][demo_idx]
+            while True:
+                child_id = pc_master_dict['child']['demo_ids'][demo_idx]
+                if check_segmentation_exists(child_id):
+                        break
         else:
             parent_id = random.sample(pc_master_dict['parent']['test_ids'], 1)[0]
-            child_id = random.sample(pc_master_dict['child']['test_ids'], 1)[0]
+            while True: 
+                child_id = random.sample(pc_master_dict['child']['test_ids'], 1)[0]
+                if check_segmentation_exists(child_id):
+                    break
 
+       
         if '_dec' in parent_id:
             parent_id = parent_id.replace('_dec', '')
         if '_dec' in child_id:
@@ -746,6 +761,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
         new_parent_scale = None
 
+        poses = {}
         for pc in pcl:
             # get the mesh files we will use
             pc_master_dict[pc]['mesh_file'] = parent_obj_file if pc == 'parent' else child_obj_file
@@ -804,6 +820,8 @@ def main(args, training_mugs, source_part_names, by_parts=False):
                     pose_w_yaw = util.transform_pose(pose, util.pose_from_matrix(rand_yaw_T))
                     pos, ori = util.pose_stamped2list(pose_w_yaw)[:3], util.pose_stamped2list(pose_w_yaw)[3:]
 
+
+            poses[pc] = (pos, ori)
             # convert mesh with vhacd
             obj_obj_file, obj_obj_file_dec = pc_master_dict[pc]['mesh_file'], pc_master_dict[pc]['mesh_file_dec']
 
@@ -903,7 +921,9 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         parent_pcd = pc_obs_info['pcd']['parent']
         child_pcd = pc_obs_info['pcd']['child']
 
-        print(pcd_obs_info)
+        child_parts, start_part_transforms = segment_mug(child_id, utils.pos_quat_to_transform(poses['child'][0], poses['child'][1]))
+
+        #viz_utils.show_pcds_plotly({'child': child_pcd, 'child_cup':child_parts['cup'], 'child_handle':child_parts['handle']})
 
         log_info(f'[INTERSECTION], Loading model weights for multi NDF inference')
 
@@ -912,7 +932,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
             se3 = True
 
         pause_mc_thread(True)
-        relative_trans = interface.infer_relpose(child_pcd, parent_pcd, se3=se3)
+        relative_trans = interface.infer_relpose(child_parts, parent_pcd, se3=se3)
         pause_mc_thread(False)
         #uhhh hm
         #relative pose can come from the centroid
