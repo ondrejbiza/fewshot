@@ -23,7 +23,6 @@ def show_pcd_pyplot(pcd: NDArray, center: bool = False):
     ax.set_zlim(lmin, lmax)
     plt.show()
 
-
 def show_pcd_plotly(pcd: NDArray, center: bool = False, axis_visible: bool = True):
     if center:
         pcd = pcd - np.mean(pcd, axis=0, keepdims=True)
@@ -50,11 +49,10 @@ def show_pcd_plotly(pcd: NDArray, center: bool = False, axis_visible: bool = Tru
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout)
     fig.show()
-    # input("Continue?")
+    return fig
 
 
 def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
-
     if center:
         tmp = np.concatenate(list(pcds.values()), axis=0)
         m = np.mean(tmp, axis=0)
@@ -126,7 +124,7 @@ def show_pcds_plotly(
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout, showlegend=True)
     fig.show()
-    # input("Continue?")
+    return fig
 
 
 from plotly.subplots import make_subplots
@@ -192,6 +190,7 @@ def show_pcd_grid_plotly(
         fw.write_image(save_path)
 
     fw.show()
+    return fw
 
 
 import moviepy.editor as mpy
@@ -205,7 +204,6 @@ def plotly_fig2array(fig):
     fig_bytes = fig.to_image(format="png")
     buf = io.BytesIO(fig_bytes)
     img = Image.open(buf)
-    img.show()
     return np.asarray(img)
 
 def show_pcds_video_animation_plotly(
@@ -213,6 +211,7 @@ def show_pcds_video_animation_plotly(
     moving_pcl_frames: NDArray,
     static_pcls: Dict[str, NDArray],
     step_names: List[str],
+    file_name: str,
 ):
     video_length=2
 
@@ -239,9 +238,11 @@ def show_pcds_video_animation_plotly(
             ),
         )
 
+
     for static_name in static_pcls.keys():
         fig.add_trace(
             go.Scatter3d(
+                visible=True,
                 x=static_pcls[static_name][:, 0],
                 y=static_pcls[static_name][:, 1],
                 z=static_pcls[static_name][:, 2],
@@ -262,18 +263,17 @@ def show_pcds_video_animation_plotly(
 
         for j in range(len(moving_pcl_frames)):
             fig.update_traces(
-                visible=False, selector=dict(name=f'moving_pcl_name_{j}')
+                visible=False, selector=dict(name=f'{moving_pcl_name}, Step {j}')
             )
         
         fig.update_traces(
-            visible=True, selector=dict(name=f'moving_pcl_name_{i}')
+            visible=True, selector=dict(name=f'{moving_pcl_name}, Step {i}')
         )  # These are the updates that usually are performed within Plotly go.Frame definition
         fig.update_layout(title=step_names[i])
-        fig.show()
         return plotly_fig2array(fig)
 
     animation = mpy.VideoClip(make_frame, duration=1)
-    animation.write_gif("my_hat.gif", fps=20)
+    animation.write_gif(f"{file_name}.gif", fps=20)
 
 
 def show_pcds_slider_animation_plotly(
@@ -345,6 +345,7 @@ def show_pcds_slider_animation_plotly(
 
     fig.update_layout(sliders=sliders)
     fig.show()
+    return fig
 
 
 def draw_square(

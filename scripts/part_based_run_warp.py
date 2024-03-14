@@ -322,7 +322,7 @@ def segment_mug(demo_pcl_id, trans):
     start_part_transforms = {'cup': utils.pos_quat_to_transform(demo_cup_center, [0,0,0,1]),# @ trans, 
                               'handle': utils.pos_quat_to_transform(demo_handle_center, [0,0,0,1])}
     adjusted_demo_parts = {'cup': demo_cup, 'handle': demo_handle}
-    return adjusted_demo_parts, start_part_transforms
+    return adjusted_demo_parts, -(mug_seg_ids-37), start_part_transforms
 
 
 def main(args, training_mugs, source_part_names, by_parts=False):
@@ -594,7 +594,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
             trans = utils.pos_quat_to_transform(pc_master_dict[pc]['demo_start_poses'][i][:3], pc_master_dict[pc]['demo_start_poses'][i][3:])
 
             try:
-                adjusted_demo_parts, start_part_transforms = segment_mug(demo_pcl_id, trans)
+                adjusted_demo_parts, _, start_part_transforms = segment_mug(demo_pcl_id, trans)
             except FileNotFoundError as e:
                 print(f"SKIPPING DEMO #{i}, ID: {demo_pcl_id}. NO SEGMENTED FORM FOUND") 
                 pc_master_dict[pc]["demo_start_part_pcds"].append(None)
@@ -705,6 +705,17 @@ def main(args, training_mugs, source_part_names, by_parts=False):
     # start experiment: sample parent and child object on each iteration and infer the relation
     place_success_list = []
 
+    #folder for experiment results
+    experiment_folder = './experiment_results/'
+    experiment_name = 'part_composed_zero_handle_mean_'
+
+    import time
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    experiment_path = experiment_folder + experiment_name + timestr + '/'
+
+    if not os.path.exists(experiment_path):
+        os.makedirs(experiment_path)
+
     for iteration in range(args.start_iteration, args.num_iterations):
         #####################################################################################
         # set up the trial
@@ -736,7 +747,9 @@ def main(args, training_mugs, source_part_names, by_parts=False):
             child_id = child_id.replace('_dec', '')
 
         id_str = f'Parent ID: {parent_id}, Child ID: {child_id}'
+        experiment_id = experiment_path + f'parent_{parent_id}_child_{child_id}'
         log_info(id_str)
+
 
         # make folder for saving this trial
         eval_iter_dir = osp.join(eval_save_dir, f'trial_{iteration}')
@@ -921,7 +934,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         parent_pcd = pc_obs_info['pcd']['parent']
         child_pcd = pc_obs_info['pcd']['child']
 
-        child_parts, start_part_transforms = segment_mug(child_id, utils.pos_quat_to_transform(poses['child'][0], poses['child'][1]))
+        child_parts, child_labels, start_part_transforms = segment_mug(child_id, utils.pos_quat_to_transform(poses['child'][0], poses['child'][1]))
 
         #viz_utils.show_pcds_plotly({'child': child_pcd, 'child_cup':child_parts['cup'], 'child_handle':child_parts['handle']})
 
@@ -930,9 +943,10 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         se3 = False
         if args.child_load_pose_type == "any_pose":
             se3 = True
+        
 
         pause_mc_thread(True)
-        relative_trans = interface.infer_relpose(child_parts, parent_pcd, se3=se3)
+        relative_trans = interface.infer_relpose(child_parts, parent_pcd, se3=se3, experiment_id=experiment_id)
         pause_mc_thread(False)
         #uhhh hm
         #relative pose can come from the centroid
@@ -1200,7 +1214,7 @@ if __name__ == "__main__":
     training_files = [mug_dict for mug_dict in all_mugs_files[:4]]
     
     source_part_names = ['cup', 'handle']
-    by_parts = True
+    by_parts = False
     if by_parts: 
         if not os.path.isfile('data/1234_part_based_mugs_4_dim.pkl'):
             canon_source_path = learn_mug_warps_by_parts(training_mugs, 'data/1234_part_based_mugs_4_dim.pkl')

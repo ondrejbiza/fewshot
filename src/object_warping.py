@@ -36,6 +36,27 @@ def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     c = c_flat.view(diff.shape[0], diff.shape[1])
     return torch.mean(c, dim=1)
 
+def mask_and_cost_batch_pt(target, source_labels, source, target_labels):
+    summed_cost = None
+    weights = [1,1]
+    
+    for label, w in zip(np.unique(source_labels), weights):
+        #viz_utils.show_pcd_plotly(source[:, torch.from_numpy(source_labels)==label].detach().cpu().numpy()[0])
+        # viz_utils.show_pcd_plotly(target.detach().cpu().numpy()[0])
+        # print(target.shape)
+        # print(torch.from_numpy(target_labels).shape)
+        # print(source.shape)
+        # print(torch.from_numpy(source_labels).shape)
+
+        # viz_utils.show_pcd_plotly(target[:, torch.from_numpy(target_labels)==label].detach().cpu().numpy()[0])
+        #print(target[:, torch.from_numpy(source_labels)==label].shape)
+        part_cost = cost_batch_pt(source[:, torch.from_numpy(source_labels)==label], target[:, torch.from_numpy(target_labels)==label])
+        if summed_cost is None:
+            summed_cost = part_cost * w
+        else:
+            summed_cost += part_cost * w
+    #print()
+    return summed_cost
 
 class ObjectWarping:
     """Base class for inference of object shape, pose and scale with gradient descent."""
@@ -48,8 +69,8 @@ class ObjectWarping:
         lr: float,
         n_steps: int,
         cost_function: Callable = cost_batch_pt,
-        canon_labels: Optional[List[int]],
         n_samples: Optional[int] = None,
+        canon_labels: Optional[List[int]] = None,
         object_size_reg: Optional[float] = None,
         init_scale: float = 1.0,
     ):
@@ -65,6 +86,7 @@ class ObjectWarping:
         self.transform_history = None
         self.cost_history = None
         self.final_cost = None
+        self.canon_labels = canon_labels
 
         # This change is to eliminate some of the issues with outliers/doubled points skewing the mean
         # in the future, should probably be addressed some other, better way
@@ -129,6 +151,8 @@ class ObjectWarping:
         components_ = components_.reshape(self.components.shape[0], -1)
         canonical_obj_pt_ = self.canonical_pcl[indices]
         index_order = np.argsort(indices)
+        if self.canon_labels is not None:
+            self.subsampled_canon_labels = self.canon_labels[indices]
         return (
             means_,
             components_,
@@ -201,8 +225,13 @@ class ObjectWarping:
                         ,)
                     )
             
-
-            cost = self.cost_function(self.pcd[None], new_pcd)
+            if self.cost_function == cost_batch_pt:
+                cost = self.cost_function(self.pcd[None], new_pcd)
+            else:
+                if self.n_samples is None:
+                    cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels)
+                else:
+                    cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels)
 
             if self.object_size_reg is not None:
                 size = torch.max(
@@ -221,7 +250,6 @@ class ObjectWarping:
         else: 
             self.cost_history = np.concatenate([self.cost_history, cost_history], axis=1,)
             self.transform_history = np.concatenate([self.transform_history, utils.transform_history_to_mat(transform_history)], axis=1, dtype=object)
-
 
         with torch.no_grad():
             # Compute final cost without subsampling.
@@ -284,6 +312,8 @@ class ObjectWarpingSE3Batch(ObjectWarping):
             )
 
         if initial_latents is None:
+            # initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
+            # print(initial_latents_pt.shape)
             initial_latents_pt = torch.zeros(
                 (n_angles, self.pca.n_components),
                 dtype=torch.float32,
@@ -578,6 +608,8 @@ class ObjectSE3Batch(ObjectWarping):
     ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], torch.Tensor]:
         """Randomly subsample the canonical object, including its PCA projection."""
         indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
+        if self.canon_labels is not None:
+            self.subsampled_canon_labels = self.canon_labels[indices]
         return None, None, self.canonical_pcl[indices]
 
     def assemble_output(
