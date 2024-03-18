@@ -312,13 +312,13 @@ class ObjectWarpingSE3Batch(ObjectWarping):
             )
 
         if initial_latents is None:
-            # initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
-            # print(initial_latents_pt.shape)
-            initial_latents_pt = torch.zeros(
-                (n_angles, self.pca.n_components),
-                dtype=torch.float32,
-                device=self.device,
-            )
+            initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
+            # initial_latents_pt = torch.zeros(
+            #     (n_angles, self.pca.n_components),
+            #     dtype=torch.float32,
+            #     device=self.device,
+            # )
+
         else:
             initial_latents_pt = torch.tensor(
                 initial_latents, dtype=torch.float32, device=self.device
