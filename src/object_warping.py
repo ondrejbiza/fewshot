@@ -15,9 +15,11 @@ PARAM_1 = {"lr": 1e-2,
            "n_samples": 1000, 
            "object_size_reg": 0.01}
 
+
+
 ALIGNMENT_PARAM = {
     "lr": 1e-2,
-    "n_steps": 400,
+    "n_steps": 200,
     "n_samples": 1000,
     "object_size_reg": 0.01,
 }
@@ -34,6 +36,27 @@ def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     c = c_flat.view(diff.shape[0], diff.shape[1])
     return torch.mean(c, dim=1)
 
+def mask_and_cost_batch_pt(target, source_labels, source, target_labels):
+    summed_cost = None
+    weights = [1,1]
+    
+    for label, w in zip(np.unique(source_labels), weights):
+        #viz_utils.show_pcd_plotly(source[:, torch.from_numpy(source_labels)==label].detach().cpu().numpy()[0])
+        # viz_utils.show_pcd_plotly(target.detach().cpu().numpy()[0])
+        # print(target.shape)
+        # print(torch.from_numpy(target_labels).shape)
+        # print(source.shape)
+        # print(torch.from_numpy(source_labels).shape)
+
+        # viz_utils.show_pcd_plotly(target[:, torch.from_numpy(target_labels)==label].detach().cpu().numpy()[0])
+        #print(target[:, torch.from_numpy(source_labels)==label].shape)
+        part_cost = cost_batch_pt(source[:, torch.from_numpy(source_labels)==label], target[:, torch.from_numpy(target_labels)==label])
+        if summed_cost is None:
+            summed_cost = part_cost * w
+        else:
+            summed_cost += part_cost * w
+    #print()
+    return summed_cost
 
 class ObjectWarping:
     """Base class for inference of object shape, pose and scale with gradient descent."""
@@ -47,6 +70,7 @@ class ObjectWarping:
         n_steps: int,
         cost_function: Callable = cost_batch_pt,
         n_samples: Optional[int] = None,
+        canon_labels: Optional[List[int]] = None,
         object_size_reg: Optional[float] = None,
         init_scale: float = 1.0,
     ):
@@ -59,8 +83,10 @@ class ObjectWarping:
         self.object_size_reg = object_size_reg
         self.init_scale = init_scale
         self.cost_function = cost_function
-        self.transform_history = []
-        self.cost_history = []
+        self.transform_history = None
+        self.cost_history = None
+        self.final_cost = None
+        self.canon_labels = canon_labels
 
         # This change is to eliminate some of the issues with outliers/doubled points skewing the mean
         # in the future, should probably be addressed some other, better way
@@ -125,6 +151,8 @@ class ObjectWarping:
         components_ = components_.reshape(self.components.shape[0], -1)
         canonical_obj_pt_ = self.canonical_pcl[indices]
         index_order = np.argsort(indices)
+        if self.canon_labels is not None:
+            self.subsampled_canon_labels = self.canon_labels[indices]
         return (
             means_,
             components_,
@@ -155,8 +183,8 @@ class ObjectWarping:
         )
 
         # Reset transformation and cost histories
-        self.transform_history = []
-        self.cost_history = []
+        transform_history = []
+        cost_history = []
 
         for _ in range(self.n_steps):
 
@@ -180,7 +208,7 @@ class ObjectWarping:
 
             # Saving optimization history for visualization
             try:
-                self.transform_history.append(
+                transform_history.append(
                         (self.center_param.detach().cpu().numpy(),
                         torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
                         .detach()
@@ -189,7 +217,7 @@ class ObjectWarping:
                         ,)
                     )
             except IndexError:
-                self.transform_history.append(
+                transform_history.append(
                         (self.center_param.detach().cpu().numpy(),
                         yaw_to_rot_batch_pt(self.pose_param).detach()
                         .cpu()
@@ -197,8 +225,13 @@ class ObjectWarping:
                         ,)
                     )
             
-
-            cost = self.cost_function(self.pcd[None], new_pcd)
+            if self.cost_function == cost_batch_pt:
+                cost = self.cost_function(self.pcd[None], new_pcd)
+            else:
+                if self.n_samples is None:
+                    cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels)
+                else:
+                    cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels)
 
             if self.object_size_reg is not None:
                 size = torch.max(
@@ -208,13 +241,22 @@ class ObjectWarping:
             cost.sum().backward()
 
             # Saving cost history for visualization
-            self.cost_history.append(cost.detach().cpu().numpy())
+            cost_history.append(cost.detach().cpu().numpy())
             self.optim.step()
+
+        if self.cost_history is None:
+            self.cost_history = cost_history
+            self.transform_history = utils.transform_history_to_mat(transform_history)
+        else: 
+            self.cost_history = np.concatenate([self.cost_history, cost_history], axis=1,)
+            self.transform_history = np.concatenate([self.transform_history, utils.transform_history_to_mat(transform_history)], axis=1, dtype=object)
 
         with torch.no_grad():
             # Compute final cost without subsampling.
             new_pcd = self.create_warped_transformed_pcd(
-                self.components, self.means, self.canonical_pcl
+                components_,
+                means_,
+                canonical_pcl_,#self.components, self.means, self.canonical_pcl
             )
 
             cost = cost_batch_pt(self.pcd[None], new_pcd)
@@ -224,6 +266,7 @@ class ObjectWarping:
                     torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1
                 )[0]
                 cost = cost + self.object_size_reg * size
+                self.final_cost = cost.detach().cpu().numpy()
 
         return self.assemble_output(cost)
 
@@ -269,6 +312,8 @@ class ObjectWarpingSE3Batch(ObjectWarping):
             )
 
         if initial_latents is None:
+            # initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
+            # print(initial_latents_pt.shape)
             initial_latents_pt = torch.zeros(
                 (n_angles, self.pca.n_components),
                 dtype=torch.float32,
@@ -563,6 +608,8 @@ class ObjectSE3Batch(ObjectWarping):
     ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], torch.Tensor]:
         """Randomly subsample the canonical object, including its PCA projection."""
         indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
+        if self.canon_labels is not None:
+            self.subsampled_canon_labels = self.canon_labels[indices]
         return None, None, self.canonical_pcl[indices]
 
     def assemble_output(
@@ -574,7 +621,6 @@ class ObjectSE3Batch(ObjectWarping):
         all_parameters = []
 
         with torch.no_grad():
-
             new_pcd = self.create_warped_transformed_pcd(None, None, self.canonical_pcl)
             rotm = orthogonalize(self.pose_param)
             rotm = torch.bmm(rotm, self.initial_poses)
@@ -721,6 +767,7 @@ class ObjectSE2Batch(ObjectWarping):
         return all_costs, all_new_pcds, all_parameters
 
 
+#TODO I Changed the returns on these for debugging
 def warp_to_pcd_se3(
     object_warping: Union[ObjectWarpingSE3Batch, ObjectSE3Batch],
     n_angles: int = 50,
@@ -742,7 +789,8 @@ def warp_to_pcd_se3(
         all_parameters += batch_parameters
 
     best_idx = np.argmin(all_costs)
-    return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+    return all_new_pcds[best_idx], all_costs, all_parameters[best_idx]
 
 
 def warp_to_pcd_se3_hemisphere(
@@ -767,7 +815,7 @@ def warp_to_pcd_se3_hemisphere(
         all_parameters += batch_parameters
 
     best_idx = np.argmin(all_costs)
-    return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+    return all_new_pcds[best_idx], all_costs, all_parameters[best_idx]
 
 
 def warp_to_pcd_se2(

@@ -338,6 +338,18 @@ def pb_get_pose(body, sim_id: Optional[int] = None) -> Tuple[NPF64, NPF64]:
     return pos, quat
 
 
+def transform_history_to_mat(tf_history):
+    pose_history = []
+    for transform in tf_history:
+        pos, rot = transform
+        quat = rotm_to_quat(rot)
+        transform_mats = []
+        for p, q in zip(pos, quat):
+            transform_mat = pos_quat_to_transform(p, q)
+            transform_mats.append(transform_mat)
+        pose_history.append(transform_mats)
+    return pose_history
+
 def pb_body_collision(
     body1: int, body2: int, sim_id: Optional[int] = None, margin: float = 0.0
 ) -> bool:
