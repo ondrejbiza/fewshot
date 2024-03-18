@@ -1,3 +1,5 @@
+# edited from ondrej_biza/fewshot
+
 import copy
 from typing import Dict, List, Optional
 
@@ -22,6 +24,7 @@ def show_pcd_pyplot(pcd: NDArray, center: bool = False):
     ax.set_ylim(lmin, lmax)
     ax.set_zlim(lmin, lmax)
     plt.show()
+
 
 def show_pcd_plotly(pcd: NDArray, center: bool = False, axis_visible: bool = True):
     if center:
@@ -74,10 +77,10 @@ def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
     plt.legend()
     plt.show()
 
+
 def show_pcds_plotly(
     pcds: Dict[str, NDArray], center: bool = False, axis_visible: bool = True
 ):
-
     colorscales = [
         "Plotly3",
         "Viridis",
@@ -114,6 +117,62 @@ def show_pcds_plotly(
             name=key,
         )
         data.append(pl)
+
+    layout = {
+        "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "yaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "aspectratio": {"x": 1, "y": 1, "z": 1},
+    }
+    fig = go.Figure(data=data)
+    fig.update_layout(scene=layout, showlegend=True)
+    fig.show()
+    return fig
+
+
+def show_meshes_plotly(
+    vertices: Dict[str, NDArray],
+    faces: Dict[str, NDArray],
+    center: bool = False,
+    axis_visible: bool = True,
+):
+    colorscales = [
+        "Plotly3",
+        "Viridis",
+        "Blues",
+        "Greens",
+        "Greys",
+        "Oranges",
+        "Purples",
+        "Reds",
+    ]
+
+    if center:
+        tmp = np.concatenate(list(vertices.values()), axis=0)
+        m = np.mean(tmp, axis=0)
+        vertices = copy.deepcopy(vertices)
+        for k in vertices.keys():
+            vertices[k] = vertices[k] - m[None]
+
+    tmp = np.concatenate(list(pcds.values()), axis=0)
+    lmin = np.min(tmp)
+    lmax = np.max(tmp)
+
+    data = []
+    for idx, key in enumerate(pcds.keys()):
+        v = vertices[key]
+        f = faces[key]
+        colorscale = colorscales[idx % len(colorscales)]
+        mesh = go.Mesh3d(
+            x=v[:, 0],
+            y=v[:, 1],
+            z=v[:, 2],
+            i=f[:, 0],
+            j=f[:, 1],
+            k=f[:, 2],
+            facecolor=colorscale,
+        )
+        data.append(mesh)
 
     layout = {
         "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
@@ -206,6 +265,7 @@ def plotly_fig2array(fig):
     img = Image.open(buf)
     return np.asarray(img)
 
+
 def show_pcds_video_animation_plotly(
     moving_pcl_name: str,
     moving_pcl_frames: NDArray,
@@ -213,7 +273,7 @@ def show_pcds_video_animation_plotly(
     step_names: List[str],
     file_name: str,
 ):
-    video_length=2
+    video_length = 2
 
     visible = [False] * (len(moving_pcl_frames)) + [True] * len(static_pcls.keys())
 
@@ -234,10 +294,9 @@ def show_pcds_video_animation_plotly(
                 },
                 mode="markers",
                 opacity=1.0,
-                name=f'{moving_pcl_name}, Step {t}',
+                name=f"{moving_pcl_name}, Step {t}",
             ),
         )
-
 
     for static_name in static_pcls.keys():
         fig.add_trace(
@@ -263,11 +322,11 @@ def show_pcds_video_animation_plotly(
 
         for j in range(len(moving_pcl_frames)):
             fig.update_traces(
-                visible=False, selector=dict(name=f'{moving_pcl_name}, Step {j}')
+                visible=False, selector=dict(name=f"{moving_pcl_name}, Step {j}")
             )
-        
+
         fig.update_traces(
-            visible=True, selector=dict(name=f'{moving_pcl_name}, Step {i}')
+            visible=True, selector=dict(name=f"{moving_pcl_name}, Step {i}")
         )  # These are the updates that usually are performed within Plotly go.Frame definition
         fig.update_layout(title=step_names[i])
         return plotly_fig2array(fig)
@@ -282,7 +341,6 @@ def show_pcds_slider_animation_plotly(
     static_pcls: Dict[str, NDArray],
     step_names: List[str],
 ):
-
     fig = go.Figure()
 
     # Add traces, one for each slider step
@@ -300,7 +358,7 @@ def show_pcds_slider_animation_plotly(
                 },
                 mode="markers",
                 opacity=1.0,
-                name=f'moving_pcl_name_{t}',
+                name=f"moving_pcl_name_{t}",
             ),
         )
 
@@ -372,14 +430,12 @@ def draw_square(
 
 
 def save_o3d_pcd(pcd: NDArray[np.float32], save_path: str):
-
     pcd_o3d = o3d.geometry.PointCloud()
     pcd_o3d.points = o3d.utility.Vector3dVector(pcd)
     o3d.io.write_point_cloud(save_path, pcd_o3d)
 
 
 def draw_arrow(ax, orig, delta, color):
-
     ax.quiver(
         orig[0],
         orig[1],
@@ -394,7 +450,6 @@ def draw_arrow(ax, orig, delta, color):
 
 
 def show_pose(ax, T):
-
     orig = T[:3, 3]
     rot = T[:3, :3]
     x_arrow = np.matmul(rot, np.array([0.05, 0.0, 0.0]))
