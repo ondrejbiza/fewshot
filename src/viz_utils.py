@@ -1,3 +1,5 @@
+# edited from ondrej_biza/fewshot
+
 import copy
 from typing import Dict, List, Optional
 
@@ -50,11 +52,10 @@ def show_pcd_plotly(pcd: NDArray, center: bool = False, axis_visible: bool = Tru
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout)
     fig.show()
-    # input("Continue?")
+    return fig
 
 
 def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
-
     if center:
         tmp = np.concatenate(list(pcds.values()), axis=0)
         m = np.mean(tmp, axis=0)
@@ -80,7 +81,6 @@ def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
 def show_pcds_plotly(
     pcds: Dict[str, NDArray], center: bool = False, axis_visible: bool = True
 ):
-
     colorscales = [
         "Plotly3",
         "Viridis",
@@ -127,7 +127,63 @@ def show_pcds_plotly(
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout, showlegend=True)
     fig.show()
-    # input("Continue?")
+    return fig
+
+
+def show_meshes_plotly(
+    vertices: Dict[str, NDArray],
+    faces: Dict[str, NDArray],
+    center: bool = False,
+    axis_visible: bool = True,
+):
+    colorscales = [
+        "Plotly3",
+        "Viridis",
+        "Blues",
+        "Greens",
+        "Greys",
+        "Oranges",
+        "Purples",
+        "Reds",
+    ]
+
+    if center:
+        tmp = np.concatenate(list(vertices.values()), axis=0)
+        m = np.mean(tmp, axis=0)
+        vertices = copy.deepcopy(vertices)
+        for k in vertices.keys():
+            vertices[k] = vertices[k] - m[None]
+
+    tmp = np.concatenate(list(pcds.values()), axis=0)
+    lmin = np.min(tmp)
+    lmax = np.max(tmp)
+
+    data = []
+    for idx, key in enumerate(pcds.keys()):
+        v = vertices[key]
+        f = faces[key]
+        colorscale = colorscales[idx % len(colorscales)]
+        mesh = go.Mesh3d(
+            x=v[:, 0],
+            y=v[:, 1],
+            z=v[:, 2],
+            i=f[:, 0],
+            j=f[:, 1],
+            k=f[:, 2],
+            facecolor=colorscale,
+        )
+        data.append(mesh)
+
+    layout = {
+        "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "yaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+        "aspectratio": {"x": 1, "y": 1, "z": 1},
+    }
+    fig = go.Figure(data=data)
+    fig.update_layout(scene=layout, showlegend=True)
+    fig.show()
+    return fig
 
 
 from plotly.subplots import make_subplots
@@ -201,7 +257,6 @@ def show_pcds_slider_animation_plotly(
     static_pcls: Dict[str, NDArray],
     step_names: List[str],
 ):
-
     fig = go.Figure()
 
     # Add traces, one for each slider step
@@ -248,7 +303,10 @@ def show_pcds_slider_animation_plotly(
         step = dict(
             method="update",
             args=[
-                {"visible": [False] * (len(moving_pcl_frames)) + [True]*len(static_pcls.keys())},
+                {
+                    "visible": [False] * (len(moving_pcl_frames))
+                    + [True] * len(static_pcls.keys())
+                },
                 {"title": step_names[i]},
             ],
         )
@@ -261,6 +319,7 @@ def show_pcds_slider_animation_plotly(
 
     fig.update_layout(sliders=sliders)
     fig.show()
+    return fig
 
 
 def draw_square(
@@ -287,14 +346,12 @@ def draw_square(
 
 
 def save_o3d_pcd(pcd: NDArray[np.float32], save_path: str):
-
     pcd_o3d = o3d.geometry.PointCloud()
     pcd_o3d.points = o3d.utility.Vector3dVector(pcd)
     o3d.io.write_point_cloud(save_path, pcd_o3d)
 
 
 def draw_arrow(ax, orig, delta, color):
-
     ax.quiver(
         orig[0],
         orig[1],
@@ -309,7 +366,6 @@ def draw_arrow(ax, orig, delta, color):
 
 
 def show_pose(ax, T):
-
     orig = T[:3, 3]
     rot = T[:3, :3]
     x_arrow = np.matmul(rot, np.array([0.05, 0.0, 0.0]))
