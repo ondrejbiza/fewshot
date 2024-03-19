@@ -707,7 +707,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
     #folder for experiment results
     experiment_folder = './experiment_results/'
-    experiment_name = 'whole_mug_'
+    experiment_name = 'parts_mug_'
 
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -715,6 +715,40 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
     if not os.path.exists(experiment_path):
         os.makedirs(experiment_path)
+
+    # def segment_sim_mug(id, transform):
+    #     sim_mesh_dir = './sim_objects/mugs/'
+
+    #     points_file = osp.join(sim_mesh_dir, child_id + '_mug_points.pkl')
+    #     points = pickle.load(open(points_file, 'rb'))
+    #     seg_id_file = osp.join(sim_mesh_dir, child_id + '_seg_ids.pkl')
+    #     seg_ids = pickle.load(open(seg_id_file, 'rb'))
+    #     child_parts = {f'{i}' for i in np.unique(seg_ids)}
+        
+    #     seg_cup = points[seg_ids==0]
+    #     seg_handle = points[seg_ids==1]
+    #     seg_mug = points
+
+    #     # Hack to scale and repositions the parts, since the segmented pcls are normalized differently
+    #     # from the raw shapenet data
+    #     seg_cup, seg_cup_center = utils.center_pcl(seg_cup, return_centroid=True)
+    #     seg_handle, seg_handle_center = utils.center_pcl(seg_handle, return_centroid=True)
+    #     seg_mug, seg_cup, seg_handle, seg_cup_center, seg_handle_center = utils.scale_points_circle([seg_mug, seg_cup, seg_handle, np.atleast_2d(seg_cup_center), np.atleast_2d(seg_handle_center)], base_scale=0.13)
+        
+    #     seg_cup = util.transform_pcd(seg_cup, utils.pos_quat_to_transform(seg_cup_center, [0,0,0,1]))
+    #     seg_cup = util.transform_pcd(seg_cup, trans)
+    #     seg_handle = util.transform_pcd(seg_handle, utils.pos_quat_to_transform(seg_handle_center, [0,0,0,1]))
+    #     seg_handle = util.transform_pcd(seg_handle, trans)
+
+    #     #TODO: Double check that this is necessary/these values actually change from the transform
+    #     _, seg_cup_center = utils.center_pcl(seg_cup, return_centroid=True)
+    #     _, seg_handle_center = utils.center_pcl(seg_handle, return_centroid=True)
+
+    #     seg_parts = {'cup': seg_cup, 'handle': seg_handle, }
+    #     start_part_transforms = {'cup': utils.pos_quat_to_transform(seg_cup_center, [0,0,0,1]),# @ trans, 
+    #                           'handle': utils.pos_quat_to_transform(seg_handle_center, [0,0,0,1])}
+    #     adjusted_seg_parts = {'cup': seg_cup, 'handle': seg_handle}
+    #     return adjusted_seg_parts, seg_ids, start_part_transforms
 
     for iteration in range(args.start_iteration, args.num_iterations):
         #####################################################################################
@@ -740,6 +774,8 @@ def main(args, training_mugs, source_part_names, by_parts=False):
                 if check_segmentation_exists(child_id):
                     break
 
+        #child_id = '8v9hqiopoomzhbe7'
+
         if '_dec' in parent_id:
             parent_id = parent_id.replace('_dec', '')
         if '_dec' in child_id:
@@ -748,7 +784,6 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         id_str = f'Parent ID: {parent_id}, Child ID: {child_id}'
         experiment_id = experiment_path + f'parent_{parent_id}_child_{child_id}'
         log_info(id_str)
-
 
         # make folder for saving this trial
         eval_iter_dir = osp.join(eval_save_dir, f'trial_{iteration}')
@@ -770,6 +805,12 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         else:
             child_obj_file = osp.join(mesh_data_dirs[child_class], child_id + '.obj')
             child_obj_file_dec = child_obj_file.split('.obj')[0] + '_dec.obj'
+
+        #sim_mesh_dir = 'sim_objects/mugs/'
+
+
+        #child_obj_file = osp.join(sim_mesh_dir, child_id + '_mesh.obj')
+        #child_obj_file_dec = child_obj_file.split('.obj')[0] + '_dec.obj'
 
         new_parent_scale = None
 
@@ -867,6 +908,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
                 base_ori=ori)
 
             # register the object with the meshcat visualizer
+            # TODO: turned off for the sim thing
             recorder.register_object(obj_id, obj_obj_file_dec, scaling=mesh_scale)
 
             # safeCollisionFilterPair(bodyUniqueIdA=obj_id, bodyUniqueIdB=table_id, linkIndexA=-1, linkIndexB=rack_link_id, enableCollision=False)
@@ -1133,7 +1175,6 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
 
 if __name__ == "__main__":
-    print("hery")
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--seed', type=int, default=0)
@@ -1210,7 +1251,7 @@ if __name__ == "__main__":
     training_files = [mug_dict for mug_dict in all_mugs_files[:4]]
     
     source_part_names = ['cup', 'handle']
-    by_parts = False
+    by_parts = True
     if by_parts: 
         if not os.path.isfile('data/1234_part_based_mugs_4_dim.pkl'):
             canon_source_path = learn_mug_warps_by_parts(training_mugs, 'data/1234_part_based_mugs_4_dim.pkl')

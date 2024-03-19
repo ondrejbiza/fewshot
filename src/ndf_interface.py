@@ -1143,9 +1143,9 @@ class NDFInterface:
         # Compute relative transform.
         trans_s_to_t = trans_t_to_b @ trans_cs_to_ct @ np.linalg.inv(trans_s_to_b)
 
-        if final_alignment:
-            #transform the source pcd by s_to_t
-            #use that to make the canon constraint
+        # if final_alignment:
+        #     #transform the source pcd by s_to_t
+        #     #use that to make the canon constraint
 
 
         # TODO move this data saving behind a flag or generally elsewhere

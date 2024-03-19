@@ -1,6 +1,10 @@
 import trimesh
 import numpy as np
-
+import random
+import string
+import pickle
+from scipy.spatial.transform import Rotation
+from src import utils
 
 # Generates a mug mesh from the provided dictionary of parameters
 # With specified height, radius, handle shape, and handle placement
@@ -82,21 +86,51 @@ def attach_handle_to_mug(handle_mesh, cup_mesh, attachment_height, epsilon=0.005
     mug_mesh = trimesh.boolean.union([cup_mesh, handle_mesh])
     mesh_vertices = np.concatenate([cup_mesh.vertices, handle_mesh.vertices])
 
+    cup_sample, _ = trimesh.sample.sample_surface_even(cup_mesh, 1000)
+    handle_sample, _ = trimesh.sample.sample_surface_even(handle_mesh, 1000)
     mesh_points = np.concatenate(
         [
-            trimesh.sample.sample_surface_even(cup_mesh, 1000),
-            trimesh.sample.sample_surface_even(handle_mesh, 1000),
+            mesh_vertices,
+            cup_sample,
+            handle_sample,
         ]
     )
 
+    mug_ids = [0 for _ in range(len(cup_mesh.vertices))] + [1 for _ in range(len(handle_mesh.vertices))] + [0 for _ in range(len(cup_sample))] + [1 for _ in range(len(handle_sample))]
     # Return the mesh
-    return mug_mesh, mesh_vertices, mesh_points  # cup_mesh, handle_mesh
+    return mug_mesh, mesh_points, np.array(mug_ids)
 
 
 if __name__ == "__main__":
     # Tests to verify that mug generation code makes meshes that can be viewed
-    cup_mesh = generate_cup(0.5, 1)
-    handle_mesh = generate_handle(0.1, 0.5, 0.5)
+    cup_mesh = generate_cup(0.5, 1.5)
+    handle_mesh = generate_handle(0.03, 0.5, 0.5)
 
-    mug_mesh = attach_handle_to_mug(handle_mesh, cup_mesh, 0.5).show()
+    mug_mesh, mug_points, mug_ids = attach_handle_to_mug(handle_mesh, cup_mesh, .25)
+
+    rotation = Rotation.from_euler("zyx", [0., 0., -np.pi/2])
+    transform = utils.pos_quat_to_transform([0,0,0], rotation.as_quat())
+    mug_points = utils.transform_pcd(mug_points, transform)
+    mug_points = utils.scale_points_circle([mug_points], 0.65)[0]
+
+    utils.trimesh_transform(
+                    mug_mesh,
+                    scale=.65,
+                    rotation= rotation.as_matrix()
+                )
+
+    object_root = './sim_objects/mugs/'
+    len_id = 16
+    mug_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=len_id))
+    print(mug_id)
+    object_root += f'{mug_id}'
+    mug_mesh.export(object_root+'_mesh.obj')
+    mesh_list = trimesh.decomposition.convex_decomposition(mug_mesh)
+
+    mesh_cd = trimesh.util.concatenate(mesh_list)
+    mesh_cd.export(object_root+'_dec_mesh.obj')
+    pickle.dump(mug_points, open(object_root + '_mug_points.pkl', 'wb'))
+    pickle.dump(mug_ids, open(object_root + '_seg_ids.pkl', 'wb'))
+
+    print(mug_mesh)
     mug_mesh.show()

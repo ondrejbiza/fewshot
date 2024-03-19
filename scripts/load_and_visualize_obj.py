@@ -5,6 +5,7 @@ from rndf_robot.utils import util, path_util
 import numpy as np
 from scipy.spatial.transform import Rotation
 import trimesh
+import pickle
 
 #For loading the part-segmented shapenet mugs
 #That's currently hardcoded into the path
@@ -46,22 +47,26 @@ mesh_root = mesh_data_dirs[obj_class]
 seg_root = 'Pointnet_Pointnet2_pytorch/data/shapenetcore_partanno_segmentation_benchmark_v0_normal/03797390'
 
 #For simulated objects 
-#pcl_root = ?
-#mesh_root = ?
-#seg_root = ?
+pcl_root = 'sim_objects/mugs/a4b3pawyixj5szpb_mug_points.pkl'
+mesh_root = 'sim_objects/mugs/a4b3pawyixj5szpb_mesh.obj'
+seg_root = 'sim_objects/mugs/a4b3pawyixj5szpb_seg_ids.pkl'
 
 #load pcl
 pcl, _, seg_ids = load_segmented_pointcloud_from_txt(obj_id)
 
-#load mesh
-obj_file = osp.join(mesh_data_dirs[obj_class], obj_id, 'models/model_normalized.obj')
-obj_file_dec = obj_file.split('.obj')[0] + '_dec.obj'
-mesh = trimesh.load(obj_file)
-mesh_decomposition = trimesh.load(obj_file_dec)
+sim_pcl = pickle.load(open(pcl_root, 'rb'))
+sim_seg = pickle.load(open(seg_root, 'rb'))
+
+
+# #load mesh
+# obj_file = osp.join(mesh_data_dirs[obj_class], obj_id, 'models/model_normalized.obj')
+# obj_file_dec = obj_file.split('.obj')[0] + '_dec.obj'
+# mesh = trimesh.load(obj_file)
+# mesh_decomposition = trimesh.load(obj_file_dec)
 
 #load segmentation
-viz_utils.show_pcds_plotly({'Full PCL': pcl})
-viz_utils.show_pcds_plotly({f'{i}': pcl[seg_ids==i] for i in np.unique(seg_ids)})
-viz_utils.show_meshes_plotly({"Full Mesh": mesh.vertices}, {"Full Mesh": mesh.faces})
-viz_utils.show_meshes_plotly({"Decomposition": mesh_decomposition.vertices},{"Decomposition": mesh_decomposition.faces})
+viz_utils.show_pcds_plotly({'Full PCL': pcl, 'Full sim PCL': sim_pcl})
+viz_utils.show_pcds_plotly({f'{i}': pcl[seg_ids==i] for i in np.unique(seg_ids)} + {f'sim_{i}': sim_pcl[sim_seg==i] for i in np.unique(sim_seg)})
+#viz_utils.show_meshes_plotly({"Full Mesh": mesh.vertices}, {"Full Mesh": mesh.faces})
+#viz_utils.show_meshes_plotly({"Decomposition": mesh_decomposition.vertices},{"Decomposition": mesh_decomposition.faces})
 
