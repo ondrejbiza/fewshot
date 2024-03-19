@@ -154,12 +154,12 @@ def show_meshes_plotly(
         for k in vertices.keys():
             vertices[k] = vertices[k] - m[None]
 
-    tmp = np.concatenate(list(pcds.values()), axis=0)
+    tmp = np.concatenate(list(vertices.values()), axis=0)
     lmin = np.min(tmp)
     lmax = np.max(tmp)
 
     data = []
-    for idx, key in enumerate(pcds.keys()):
+    for idx, key in enumerate(vertices.keys()):
         v = vertices[key]
         f = faces[key]
         colorscale = colorscales[idx % len(colorscales)]
@@ -170,7 +170,8 @@ def show_meshes_plotly(
             i=f[:, 0],
             j=f[:, 1],
             k=f[:, 2],
-            facecolor=colorscale,
+            colorscale=colorscale,
+            intensity = v[:, 2],
         )
         data.append(mesh)
 

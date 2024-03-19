@@ -707,7 +707,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
     #folder for experiment results
     experiment_folder = './experiment_results/'
-    experiment_name = 'part_composed_zero_handle_mean_'
+    experiment_name = 'whole_mug_'
 
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -740,7 +740,6 @@ def main(args, training_mugs, source_part_names, by_parts=False):
                 if check_segmentation_exists(child_id):
                     break
 
-       
         if '_dec' in parent_id:
             parent_id = parent_id.replace('_dec', '')
         if '_dec' in child_id:
@@ -936,21 +935,18 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
         child_parts, child_labels, start_part_transforms = segment_mug(child_id, utils.pos_quat_to_transform(poses['child'][0], poses['child'][1]))
 
-        #viz_utils.show_pcds_plotly({'child': child_pcd, 'child_cup':child_parts['cup'], 'child_handle':child_parts['handle']})
-
         log_info(f'[INTERSECTION], Loading model weights for multi NDF inference')
 
         se3 = False
         if args.child_load_pose_type == "any_pose":
             se3 = True
         
-
         pause_mc_thread(True)
-        relative_trans = interface.infer_relpose(child_parts, parent_pcd, se3=se3, experiment_id=experiment_id)
+        if by_parts:
+            relative_trans = interface.infer_relpose(child_parts, parent_pcd, se3=se3, experiment_id=experiment_id)
+        else:
+            relative_trans = interface.infer_relpose(child_pcd, parent_pcd, se3=se3, experiment_id=experiment_id)
         pause_mc_thread(False)
-        #uhhh hm
-        #relative pose can come from the centroid
-        #relative orientation comes from ?? is there even one? if not I'm fine just using the centroid for now
         time.sleep(1.0)
 
         # apply the inferred transformation by updating the pose of the child object
