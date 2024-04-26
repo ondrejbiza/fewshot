@@ -14,7 +14,23 @@ from scipy.spatial.transform  import Rotation
 
 import torch
 from torch import nn, optim
+from torch.autograd import Function
 
+
+
+class GetSDF(Function):
+    @staticmethod
+    def forward(ctx, tensor, sdf):
+        ctx.save_for_backward(tensor)
+        output = sdf(tensor)[0]
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        tensor = ctx.saved_tensors
+        # We return as many input gradients as there were arguments.
+        # Gradients of non-Tensor arguments to forward must be None.
+        return torch.ones_like(tensor[0]), None#grad_output.repeat(3,1,1).permute(1,2,0), None
 
 def orthogonalize(x: torch.Tensor) -> torch.Tensor:
     """
@@ -29,20 +45,27 @@ def orthogonalize(x: torch.Tensor) -> torch.Tensor:
     return torch.stack([u0, u1, u2], dim=1)
 
 
+def apply_along_axis(function, x, axis: int = 0):
+    return torch.stack([
+        function(x_i) for x_i in torch.unbind(x, dim=axis)
+    ], dim=axis)
 
 def sdf_from_mesh(mesh):
     pass
 
 def sigmoid(z):
-    return 1/(1 + np.exp(-z))
+    return 1/(1 + torch.exp(-z))
 
 def sample_transformed_sdf(X_h, sdf, center_param, pose_param):
     rotm = orthogonalize(pose_param)
     transformed_X_h = torch.bmm(X_h, rotm.permute((0, 2, 1))) + center_param[:, None]
-    return sdf(transformed_X_h)
+    return GetSDF.apply(transformed_X_h, sdf)
 
-def collision_functional(sdf_1_samples, sdf_2_samples, alpha = 1 ):
-    return sum(sigmoid(-alpha*sdf_1_samples) * sigmoid(-alpha*sdf_2_samples))
+def collision_functional(sdf_1_samples, sdf_2_samples, alpha = .01 ):
+
+    #sigmoid_result = sigmoid(-alpha*sdf_1_samples) * sigmoid(-alpha*sdf_2_samples)
+
+    return torch.sum(sigmoid(-alpha*sdf_1_samples) * sigmoid(-alpha*sdf_2_samples), -1)
 
 def grid_sample(bbox_mins, bbox_maxes, num_axis_samples):
     nx, ny, nz = (num_axis_samples, num_axis_samples, num_axis_samples)
@@ -66,9 +89,9 @@ if __name__ == "__main__":
     warp_file_stamp = '20240202-160637'
 
     #todo: generalize for other objects
-    object_warp_file = f'whole_mug_{warp_file_stamp}'
-    cup_warp_file = f'cup_{warp_file_stamp}'
-    handle_warp_file = f'handle_{warp_file_stamp}'
+    object_warp_file = f'./part_based_warp_models/whole_mug_{warp_file_stamp}'
+    cup_warp_file = f'./part_based_warp_models/cup_{warp_file_stamp}'
+    handle_warp_file = f'./part_based_warp_models/handle_{warp_file_stamp}'
 
     parent_warp_file = "data/pcas/230315_ndf_trees_scale_pca_8_dim_alp_0_01.pkl"
 
@@ -77,13 +100,12 @@ if __name__ == "__main__":
 
     part_canonicals = {}
     whole_child_canonical = pickle.load(open( object_warp_file, 'rb'))
-    whole_parent_canonical = utils.CanonObj.from_pickle(parent_warp_file)
+    whole_parent_canonical = utils.CanonPart.from_pickle(parent_warp_file)
     part_canonicals['cup'] = pickle.load(open( cup_warp_file, 'rb'))
     part_canonicals['handle'] = pickle.load(open( handle_warp_file, 'rb'))
 
     # whole_mesh = trimesh.Trimesh(vertices=whole_object_canonical.mesh_vertices, faces=whole_object_canonical.mesh_faces)
    
-
     target_id='5c7c4cb503a757147dbda56eabff0c47'
     target_whole_mesh = get_mesh(target_id)
     target_part_meshes = get_segmented_mesh(target_id)
@@ -103,8 +125,38 @@ if __name__ == "__main__":
 
 
     from pysdf import SDF
+    import pytorch_volumetric as pv
+
+    import torch.autograd as autograd
+
+
+    trimesh.Trimesh(whole_child_canonical.mesh_vertices, whole_child_canonical.mesh_faces).export('temp_child.obj')
+    trimesh.Trimesh(whole_parent_canonical.mesh_vertices, whole_parent_canonical.mesh_faces).export('temp_parent.obj')
+    child = trimesh.Trimesh(whole_child_canonical.mesh_vertices, whole_child_canonical.mesh_faces)
+    # child.show()
+    # child.fill_holes()
+    print(child.is_watertight)
+    f = trimesh.repair.broken_faces(child, color=[255, 0, 0, 255]) 
+    child.show()
+    #fan = trimesh.stitch(child)
+    print(f)
+    
+
+
+    exit(0)
+
+
+    whole_canon_child_sdf = pv.MeshSDF(pv.MeshObjectFactory('temp_child.obj'))#SDF(whole_child_canonical.mesh_vertices, whole_child_canonical.mesh_faces)
+    whole_canon_parent_sdf = pv.MeshSDF(pv.MeshObjectFactory('temp_parent.obj'))#SDF(whole_parent_canonical.mesh_vertices, whole_parent_canonical.mesh_faces)
+    query_range = np.array([
+        [-0.15, 0.2],
+        [0, 0],
+        [-0.1, 0.2],
+    ])
+    pv.draw_sdf_slice(whole_canon_child_sdf, query_range)
+    input("cd")
+    exit(0)
     whole_canon_child_sdf = SDF(whole_child_canonical.mesh_vertices, whole_child_canonical.mesh_faces)
-    whole_canon_parent_sdf = SDF(whole_parent_canonical.mesh_vertices, whole_parent_canonical.mesh_faces)
 
     #get the bounding box as the max bb of both meshes plus some amount? 
     #load both and just visualize them in a scene together for the sake of clarity
@@ -116,13 +168,27 @@ if __name__ == "__main__":
     bb_min = np.min(np.concatenate([whole_child_canonical.mesh_vertices, whole_parent_canonical.mesh_vertices,], axis=0), axis=0)
 
     print(bb_min, bb_max)
-    optimizer_steps = 1000
+    optimizer_steps = 10
     #whole_warped_sdf = SDF(whole_warped_mesh.vertices, whole_warped_mesh.faces)
 
     #sample a bunch of relative transforms 
-    X_h = torch.from_numpy(grid_sample(bb_min, bb_max, 64))
+    X_h = torch.from_numpy(grid_sample(bb_min, bb_max, 64)).float()
+    n_batches = 1
+    X_h = X_h.repeat(1, 1, 1)
+    print(X_h.shape)
 
-    n_angles = 12
+    viz_utils.show_pcds_plotly({ 'child': whole_child_canonical.canonical_pcl,
+                                 'parent': whole_parent_canonical.canonical_pcl,
+                                 'X_h': X_h[0]})
+
+    better_child_samples = whole_canon_child_sdf(X_h.detach().cpu().numpy()[0]) 
+    print(better_child_samples)
+    print(max(better_child_samples))
+    viz_utils.show_pcds_plotly({ 'X_h': X_h[0], 'child': X_h[0][(better_child_samples+.007)>0],
+                                 })
+    exit(0)
+
+    n_angles = 1
     #setup optimizer
     unit_ortho = np.array([
             [1., 0., 0.],
@@ -137,20 +203,29 @@ if __name__ == "__main__":
 
     params = [center_param, pose_param]
     optim = optim.Adam(params, lr=.01)
-
     for step in range(optimizer_steps):
         center = center_param
         orn = pose_param
         optim.zero_grad()
         child_samples = sample_transformed_sdf(X_h, whole_canon_child_sdf, center_param, pose_param, )
-        parent_samples = whole_canon_parent_sdf(X_h)
+        child_interior = child_samples[0]<0
+        better_child_samples = GetSDF.apply(X_h, whole_canon_child_sdf)
+        parent_samples = GetSDF.apply(X_h, whole_canon_parent_sdf)
+        parent_interior = parent_samples[0][parent_samples[0]<0]
+        viz_utils.show_pcds_plotly({ 'X_h': X_h[0], 'child': X_h[0][better_child_samples[0]<0],
+                                 'parent':X_h[0][parent_samples[0]<0],
+                                 })
 
+        input("continue?")
         cost = collision_functional(child_samples, parent_samples)
         cost.sum().backward()
-        self.optim.step()
+        print(step)
+        print(cost)
+        optim.step()
 
-    with torch.no_grad:
-        viz_utils.show_pcds_plotly({ 'child': utils.transform_pcd(whole_child_canonical.canonical_pcl, utils.pos_quat_to_transform(center_param, utils.rotm_to_quat(pose_param)))
+    with torch.no_grad():
+        rotm = orthogonalize(pose_param)
+        viz_utils.show_pcds_plotly({ 'child': utils.transform_pcd(whole_child_canonical.canonical_pcl, utils.pos_quat_to_transform(center_param, utils.rotm_to_quat(rotm)))
             , 'parent': whole_parent_canonical.canonical_pcl})
 
     # mesh_scale = 0.8

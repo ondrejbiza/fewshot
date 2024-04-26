@@ -11,7 +11,7 @@ from src import utils, viz_utils
 import pdb
 
 PARAM_1 = {"lr": 1e-2, 
-           "n_steps": 100,
+           "n_steps": 200,
            "n_samples": 1000, 
            "object_size_reg": 0.01}
 
@@ -185,6 +185,8 @@ class ObjectWarping:
         # Reset transformation and cost histories
         transform_history = []
         cost_history = []
+        latent_history = []
+        scale_history = []
 
         for _ in range(self.n_steps):
 
@@ -213,9 +215,8 @@ class ObjectWarping:
                         torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
                         .detach()
                         .cpu()
-                        .numpy()
-                        ,)
-                    )
+                        .numpy(),
+                    ))
             except IndexError:
                 transform_history.append(
                         (self.center_param.detach().cpu().numpy(),
@@ -224,6 +225,11 @@ class ObjectWarping:
                         .numpy()
                         ,)
                     )
+            try:
+                latent_history.append(self.latent_param.detach().cpu().numpy())
+            except AttributeError:
+                latent_history.append(None)
+            scale_history.append(self.scale_param.detach().cpu().numpy())
             
             if self.cost_function == cost_batch_pt:
                 cost = self.cost_function(self.pcd[None], new_pcd)
@@ -247,26 +253,33 @@ class ObjectWarping:
         if self.cost_history is None:
             self.cost_history = cost_history
             self.transform_history = utils.transform_history_to_mat(transform_history)
+            self.latent_history = latent_history
+            self.scale_history = scale_history
         else: 
             self.cost_history = np.concatenate([self.cost_history, cost_history], axis=1,)
             self.transform_history = np.concatenate([self.transform_history, utils.transform_history_to_mat(transform_history)], axis=1, dtype=object)
+            try:
+                self.latent_history = np.concatenate([self.latent_history, latent_history], axis=1,)
+            except np.exceptions.AxisError:
+                self.latent_history = latent_history
+            self.scale_history  = np.concatenate([self.scale_history, scale_history], axis=1,)
 
-        with torch.no_grad():
-            # Compute final cost without subsampling.
-            new_pcd = self.create_warped_transformed_pcd(
-                components_,
-                means_,
-                canonical_pcl_,#self.components, self.means, self.canonical_pcl
-            )
+        # with torch.no_grad():
+        #     # Compute final cost without subsampling.
+        #     new_pcd = self.create_warped_transformed_pcd(
+        #         components_,
+        #         means_,
+        #         canonical_pcl_,#self.components, self.means, self.canonical_pcl
+        #     )
 
-            cost = cost_batch_pt(self.pcd[None], new_pcd)
+        #     cost = cost_batch_pt(self.pcd[None], new_pcd)
 
-            if self.object_size_reg is not None:
-                size = torch.max(
-                    torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1
-                )[0]
-                cost = cost + self.object_size_reg * size
-                self.final_cost = cost.detach().cpu().numpy()
+        #     if self.object_size_reg is not None:
+        #         size = torch.max(
+        #             torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1
+        #         )[0]
+        #         cost = cost + self.object_size_reg * size
+        #         self.final_cost = cost.detach().cpu().numpy()
 
         return self.assemble_output(cost)
 
@@ -789,6 +802,9 @@ def warp_to_pcd_se3(
         all_parameters += batch_parameters
 
     best_idx = np.argmin(all_costs)
+    print(f"final best idx: {best_idx}")
+    print(f"final cost: {all_costs[best_idx]}")
+    print(f"initial_transform: {poses[best_idx]}")
 
     return all_new_pcds[best_idx], all_costs, all_parameters[best_idx]
 

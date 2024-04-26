@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import open3d as o3d
 import plotly.graph_objects as go
 
-
 def show_pcd_pyplot(pcd: NDArray, center: bool = False):
     print("VIZUALIZING")
     if center:
@@ -126,7 +125,7 @@ def show_pcds_plotly(
     }
     fig = go.Figure(data=data)
     fig.update_layout(scene=layout, showlegend=True)
-    fig.show()
+    #fig.show()
     return fig
 
 
@@ -135,6 +134,10 @@ def show_meshes_plotly(
     faces: Dict[str, NDArray],
     center: bool = False,
     axis_visible: bool = True,
+    background_visible: bool = True,
+    camera: Optional[Dict[str, Dict[str, float]]] = None,
+    show_legend: bool = True,
+    show: bool = True,
 ):
     colorscales = [
         "Plotly3",
@@ -172,6 +175,7 @@ def show_meshes_plotly(
             k=f[:, 2],
             colorscale=colorscale,
             intensity = v[:, 2],
+            showscale=False
         )
         data.append(mesh)
 
@@ -181,14 +185,29 @@ def show_meshes_plotly(
         "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
         "aspectratio": {"x": 1, "y": 1, "z": 1},
     }
+
+    if not background_visible:
+        layout["bgcolor"] = 'rgba(0,0,0,0)'
     fig = go.Figure(data=data)
-    fig.update_layout(scene=layout, showlegend=True)
-    fig.show()
+    if camera is not None:
+        scene_camera = dict(
+        up=camera['up'],
+        center=dict(x=0, y=0, z=0),
+        eye=camera['eye']
+        )
+        fig.update_layout(scene_camera=scene_camera)
+
+    
+    fig.update_xaxes(showgrid=axis_visible)
+    fig.update_yaxes(showgrid=axis_visible)
+    fig.update_layout(scene=layout, showlegend=show_legend, width=600, height=600)
+    if show:
+        fig.show()
+
+
     return fig
 
-
 from plotly.subplots import make_subplots
-
 
 def show_pcd_grid_plotly(
     rows,
@@ -343,7 +362,6 @@ def show_pcds_slider_animation_plotly(
     step_names: List[str],
 ):
     fig = go.Figure()
-
     # Add traces, one for each slider step
     for t, moving_pcl_frame in enumerate(moving_pcl_frames):
         fig.add_trace(
@@ -403,7 +421,7 @@ def show_pcds_slider_animation_plotly(
     ]
 
     fig.update_layout(sliders=sliders)
-    fig.show()
+    #fig.show()
     return fig
 
 

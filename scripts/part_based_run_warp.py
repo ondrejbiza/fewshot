@@ -52,7 +52,6 @@ def pb2mc_update(recorder, mc_vis, stop_event, run_event):
         recorder.update_meshcat_current_state(mc_vis)
         time.sleep(1/230.0)
 
-
 def check_segmentation_exists(pcl_id):
     print(pcl_id)
     print(type(pcl_id))
@@ -289,6 +288,26 @@ def learn_mug_warps(obj_file_paths, save_path):
             "canonical_mesh_faces": faces[canonical_idx],
         }, f)
     return save_path
+
+def segment_mug_rack(rack_pts):
+    #rack_pts = rack_mesh.vertices
+    #Get the top points 
+    max_z = np.max(rack_pts[:,2]) - .01
+    max_pts = rack_pts[rack_pts[:,2] > max_z]
+    center = np.mean(max_pts, 0)
+
+    rad = max(np.linalg.norm(max_pts-center, axis=-1)) * 5/4
+
+    #rack_pts = utils.trimesh_create_verts_surface(rack_mesh, 2000)
+    trunk = rack_pts[np.linalg.norm(rack_pts[:, :2] - center[:2], axis=-1) < rad]
+    branch = rack_pts[np.linalg.norm(rack_pts[:, :2]- center[:2], axis=-1) > rad]
+    seg_ids = np.zeros_like(rack_pts)
+    seg_ids[np.linalg.norm(rack_pts[:, :2]- center[:2], axis=-1) > rad] = np.ones_like(seg_ids[np.linalg.norm(rack_pts[:, :2]- center[:2], axis=-1) > rad])
+
+    start_part_transforms = {'trunk': utils.pos_quat_to_transform(np.mean(trunk, 0), [0,0,0,1]),# @ trans, 
+                             'branch': utils.pos_quat_to_transform(np.mean(branch, 0), [0,0,0,1])}
+    demo_parts = {'trunk': trunk, 'branch': branch, }
+    return demo_parts, seg_ids, start_part_transforms
 
 def segment_mug(demo_pcl_id, trans):
     segmented_demo_mug, _, mug_seg_ids = load_segmented_pointcloud_from_txt(demo_pcl_id)
@@ -576,34 +595,33 @@ def main(args, training_mugs, source_part_names, by_parts=False):
     else:
         raise ValueError("Unknown experiment.")
 
-
-
     #Replacing the demo pointcloud with the segmented version of the same object
-    for pc in ['child']:
+    for pc in ['child', 'parent']:
         pc_master_dict[pc]["demo_start_part_pcds"] = []
         pc_master_dict[pc]["demo_start_part_poses"] = []
         pc_master_dict[pc]["demo_final_part_poses"] = []
-
-        pc_master_dict[pc]["test_start_part_pcds"] = []
-        pc_master_dict[pc]["test_start_part_poses"] = []
-        pc_master_dict[pc]["test_final_part_poses"] = []
 
         for i in range(len(pc_master_dict[pc]['demo_start_pcds'])):
             demo_pcl_id = pc_master_dict[pc]['demo_ids'][i]
 
             trans = utils.pos_quat_to_transform(pc_master_dict[pc]['demo_start_poses'][i][:3], pc_master_dict[pc]['demo_start_poses'][i][3:])
 
-            try:
-                adjusted_demo_parts, _, start_part_transforms = segment_mug(demo_pcl_id, trans)
-            except FileNotFoundError as e:
-                print(f"SKIPPING DEMO #{i}, ID: {demo_pcl_id}. NO SEGMENTED FORM FOUND") 
-                pc_master_dict[pc]["demo_start_part_pcds"].append(None)
-                pc_master_dict[pc]["demo_start_part_poses"].append(None)
-                pc_master_dict[pc]["demo_final_part_poses"].append(None)
-                continue
+            if pc_master_dict[pc]['class'] == 'mug':
+                try:
+                    adjusted_demo_parts, _, start_part_transforms = segment_mug(demo_pcl_id, trans)
+                except FileNotFoundError as e:
+                    print(f"SKIPPING DEMO #{i}, ID: {demo_pcl_id}. NO SEGMENTED FORM FOUND") 
+                    pc_master_dict[pc]["demo_start_part_pcds"].append(None)
+                    pc_master_dict[pc]["demo_start_part_poses"].append(None)
+                    pc_master_dict[pc]["demo_final_part_poses"].append(None)
+                    continue
+            elif pc_master_dict[pc]['class'] == 'syn_rack_easy':
+                adjusted_demo_parts, _, start_part_transforms = segment_mug_rack(pc_master_dict[pc]['demo_start_pcds'][i])
+
 
             pc_master_dict[pc]["demo_start_part_pcds"].append(adjusted_demo_parts)
             pc_master_dict[pc]["demo_start_part_poses"].append(start_part_transforms)
+
 
                 
     if by_parts: 
@@ -650,13 +668,13 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
     # if not osp.isfile('demo_0_interface_cache.pkl'):
 
-    demo_cost = interface.set_demo_info(pc_master_dict, demo_idx=demo_idx, calculate_cost=True)
+    demo_cost, demo_program = interface.set_demo_info(pc_master_dict, demo_idx=demo_idx, calculate_cost=True)
 
     #     pickle.dump(interface, open('demo_0_interface_cache.pkl', 'wb'))
     # else:
     #     interface = pickle.load(open('demo_0_interface_cache.pkl', 'rb'))
 
-     #####################################################################################
+    #####################################################################################
     # prepare the simuation environment
 
     table_urdf_fname = osp.join(path_util.get_rndf_descriptions(), 'hanging/table/table_manual.urdf')
@@ -707,7 +725,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
     #folder for experiment results
     experiment_folder = './experiment_results/'
-    experiment_name = 'parts_mug_'
+    experiment_name = 'program_compare_'
 
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -716,39 +734,39 @@ def main(args, training_mugs, source_part_names, by_parts=False):
     if not os.path.exists(experiment_path):
         os.makedirs(experiment_path)
 
-    # def segment_sim_mug(id, transform):
-    #     sim_mesh_dir = './sim_objects/mugs/'
+    def segment_sim_mug(id, transform):
+        sim_mesh_dir = './sim_objects/mugs/'
 
-    #     points_file = osp.join(sim_mesh_dir, child_id + '_mug_points.pkl')
-    #     points = pickle.load(open(points_file, 'rb'))
-    #     seg_id_file = osp.join(sim_mesh_dir, child_id + '_seg_ids.pkl')
-    #     seg_ids = pickle.load(open(seg_id_file, 'rb'))
-    #     child_parts = {f'{i}' for i in np.unique(seg_ids)}
+        points_file = osp.join(sim_mesh_dir, child_id + '_mug_points.pkl')
+        points = pickle.load(open(points_file, 'rb'))
+        seg_id_file = osp.join(sim_mesh_dir, child_id + '_seg_ids.pkl')
+        seg_ids = pickle.load(open(seg_id_file, 'rb'))
+        child_parts = {f'{i}' for i in np.unique(seg_ids)}
         
-    #     seg_cup = points[seg_ids==0]
-    #     seg_handle = points[seg_ids==1]
-    #     seg_mug = points
+        seg_cup = points[seg_ids==0]
+        seg_handle = points[seg_ids==1]
+        seg_mug = points
 
-    #     # Hack to scale and repositions the parts, since the segmented pcls are normalized differently
-    #     # from the raw shapenet data
-    #     seg_cup, seg_cup_center = utils.center_pcl(seg_cup, return_centroid=True)
-    #     seg_handle, seg_handle_center = utils.center_pcl(seg_handle, return_centroid=True)
-    #     seg_mug, seg_cup, seg_handle, seg_cup_center, seg_handle_center = utils.scale_points_circle([seg_mug, seg_cup, seg_handle, np.atleast_2d(seg_cup_center), np.atleast_2d(seg_handle_center)], base_scale=0.13)
+        # Hack to scale and repositions the parts, since the segmented pcls are normalized differently
+        # from the raw shapenet data
+        seg_cup, seg_cup_center = utils.center_pcl(seg_cup, return_centroid=True)
+        seg_handle, seg_handle_center = utils.center_pcl(seg_handle, return_centroid=True)
+        seg_mug, seg_cup, seg_handle, seg_cup_center, seg_handle_center = utils.scale_points_circle([seg_mug, seg_cup, seg_handle, np.atleast_2d(seg_cup_center), np.atleast_2d(seg_handle_center)], base_scale=0.13)
         
-    #     seg_cup = util.transform_pcd(seg_cup, utils.pos_quat_to_transform(seg_cup_center, [0,0,0,1]))
-    #     seg_cup = util.transform_pcd(seg_cup, trans)
-    #     seg_handle = util.transform_pcd(seg_handle, utils.pos_quat_to_transform(seg_handle_center, [0,0,0,1]))
-    #     seg_handle = util.transform_pcd(seg_handle, trans)
+        seg_cup = util.transform_pcd(seg_cup, utils.pos_quat_to_transform(seg_cup_center, [0,0,0,1]))
+        seg_cup = util.transform_pcd(seg_cup, trans)
+        seg_handle = util.transform_pcd(seg_handle, utils.pos_quat_to_transform(seg_handle_center, [0,0,0,1]))
+        seg_handle = util.transform_pcd(seg_handle, trans)
 
-    #     #TODO: Double check that this is necessary/these values actually change from the transform
-    #     _, seg_cup_center = utils.center_pcl(seg_cup, return_centroid=True)
-    #     _, seg_handle_center = utils.center_pcl(seg_handle, return_centroid=True)
+        #TODO: Double check that this is necessary/these values actually change from the transform
+        _, seg_cup_center = utils.center_pcl(seg_cup, return_centroid=True)
+        _, seg_handle_center = utils.center_pcl(seg_handle, return_centroid=True)
 
-    #     seg_parts = {'cup': seg_cup, 'handle': seg_handle, }
-    #     start_part_transforms = {'cup': utils.pos_quat_to_transform(seg_cup_center, [0,0,0,1]),# @ trans, 
-    #                           'handle': utils.pos_quat_to_transform(seg_handle_center, [0,0,0,1])}
-    #     adjusted_seg_parts = {'cup': seg_cup, 'handle': seg_handle}
-    #     return adjusted_seg_parts, seg_ids, start_part_transforms
+        seg_parts = {'cup': seg_cup, 'handle': seg_handle, }
+        start_part_transforms = {'cup': utils.pos_quat_to_transform(seg_cup_center, [0,0,0,1]),# @ trans, 
+                              'handle': utils.pos_quat_to_transform(seg_handle_center, [0,0,0,1])}
+        adjusted_seg_parts = {'cup': seg_cup, 'handle': seg_handle}
+        return adjusted_seg_parts, seg_ids, start_part_transforms
 
     for iteration in range(args.start_iteration, args.num_iterations):
         #####################################################################################
@@ -774,7 +792,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
                 if check_segmentation_exists(child_id):
                     break
 
-        #child_id = '8v9hqiopoomzhbe7'
+        #child_id = 'qrwgbiihj5ggz11y'
 
         if '_dec' in parent_id:
             parent_id = parent_id.replace('_dec', '')
@@ -806,11 +824,10 @@ def main(args, training_mugs, source_part_names, by_parts=False):
             child_obj_file = osp.join(mesh_data_dirs[child_class], child_id + '.obj')
             child_obj_file_dec = child_obj_file.split('.obj')[0] + '_dec.obj'
 
-        #sim_mesh_dir = 'sim_objects/mugs/'
-
-
-        #child_obj_file = osp.join(sim_mesh_dir, child_id + '_mesh.obj')
-        #child_obj_file_dec = child_obj_file.split('.obj')[0] + '_dec.obj'
+        # for sim mug experiment
+        # sim_mesh_dir = 'sim_objects/mugs/'
+        # child_obj_file = osp.join(sim_mesh_dir, child_id + '_mesh.obj')
+        # child_obj_file_dec = child_obj_file.split('.obj')[0] + '_dec.obj'
 
         new_parent_scale = None
 
@@ -909,7 +926,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
 
             # register the object with the meshcat visualizer
             # TODO: turned off for the sim thing
-            recorder.register_object(obj_id, obj_obj_file_dec, scaling=mesh_scale)
+            # recorder.register_object(obj_id, obj_obj_file_dec, scaling=mesh_scale)
 
             # safeCollisionFilterPair(bodyUniqueIdA=obj_id, bodyUniqueIdB=table_id, linkIndexA=-1, linkIndexB=rack_link_id, enableCollision=False)
             safeCollisionFilterPair(bodyUniqueIdA=obj_id, bodyUniqueIdB=table_id, linkIndexA=-1, linkIndexB=table_base_id, enableCollision=False)
@@ -975,7 +992,8 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         parent_pcd = pc_obs_info['pcd']['parent']
         child_pcd = pc_obs_info['pcd']['child']
 
-        child_parts, child_labels, start_part_transforms = segment_mug(child_id, utils.pos_quat_to_transform(poses['child'][0], poses['child'][1]))
+        child_parts, child_labels, start_part_transforms = segment_mug(child_id, utils.pos_quat_to_transform(poses['child'][0], poses['child'][1]))#segment_sim_mug
+        parent_parts, _, start_parent_transforms = segment_mug_rack(parent_pcd)
 
         log_info(f'[INTERSECTION], Loading model weights for multi NDF inference')
 
@@ -985,7 +1003,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         
         pause_mc_thread(True)
         if by_parts:
-            relative_trans = interface.infer_relpose(child_parts, parent_pcd, se3=se3, experiment_id=experiment_id)
+            relative_trans = interface.infer_relpose(child_parts, parent_parts, demo_program, se3=se3, experiment_id=experiment_id)
         else:
             relative_trans = interface.infer_relpose(child_pcd, parent_pcd, se3=se3, experiment_id=experiment_id)
         pause_mc_thread(False)
@@ -1026,6 +1044,8 @@ def main(args, training_mugs, source_part_names, by_parts=False):
             safeRemoveConstraint(pc_master_dict['child']['o_cid'])
 
         final_child_pcd = util.transform_pcd(pc_obs_info['pcd']['child'], relative_trans)
+        viz_utils.show_pcds_plotly({'start_child':child_pcd, 'final_child': final_child_pcd, 'parent_pcd': parent_pcd})
+
         with recorder.meshcat_scene_lock:
             util.meshcat_pcd_show(mc_vis, final_child_pcd, color=[255, 0, 255], name='scene/final_child_pcd')
         

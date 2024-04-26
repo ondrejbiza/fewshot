@@ -73,7 +73,8 @@ python -m scripts.run_rndf_no_viz --parent_class mug --child_class bowl \
 --rel_demo_exp release_demos/bowl_on_mug_relation \
 --pybullet_server \
 --opt_iterations 650 \
---num_iterations 200 \
+--num_iterations 20 \
 --n_demos 1 \
+--demo_idx 0 \
 --new_descriptors \
 --parent_load_pose_type random_upright --child_load_pose_type any_pose &> outputs/rndf_bowl_on_mug_any_1_demo1.txt

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 import pickle
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union, Dict
 
-from cycpd import deformable_registration
+from cycpd import deformable_registration as DeformableRegistration
 import numpy as np
 from numpy.typing import NDArray
 import pybullet as pb
@@ -29,6 +29,7 @@ inference_kwargs = {
 NPF32 = NDArray[np.float32]
 NPF64 = NDArray[np.float64]
 
+
 @dataclass
 class ObjParam:
     """Object shape and pose parameters."""
@@ -43,6 +44,7 @@ class ObjParam:
 
 
 # CanonPart replaces CanonObj
+
 
 @dataclass
 class CanonPartMetadata:
@@ -99,13 +101,33 @@ class CanonPart:
         return trimesh.Trimesh(vertices, self.mesh_faces)
 
     @staticmethod
-    def from_pickle(load_path: str) -> "CanonObj":
+    def to_dict(canon_part) -> Dict:
+        return {
+            "canonical_obj_pcl": canon_part.canonical_pcl,
+            "canonical_mesh_points": canon_part.mesh_vertices,
+            "canonical_mesh_faces": canon_part.mesh_faces,
+            "center_transform": canon_part.center_transform,
+            "contact_points": canon_part.contact_points,
+            "metadata_tag": canon_part.metadata.experiment_tag,
+            "metadata_canonical_id": canon_part.metadata.canonical_id,
+            "metadata_training_ids": canon_part.metadata.training_ids,
+            "metadata_part_label": canon_part.metadata.part_label,
+            "pca": canon_part.pca,
+        }
+
+    @staticmethod
+    def from_pickle(load_path: str) -> "CanonPart":
         with open(load_path, "rb") as f:
             data = pickle.load(f)
-        pcd = data["canonical_obj"]
+        pcd = data["canonical_obj_pcl"]
         contact_points = None
         pca = None
-        metadata = CanonPartMetadata('', '', None, None)
+        metadata = CanonPartMetadata(
+            data["metadata_tag"],
+            data["metadata_canonical_id"],
+            data["metadata_training_ids"],
+            data["metadata_part_label"],
+        )
         center_transform = np.eye(4)
         if "center_transform" in data:
             center_transform = data["center_transform"]
@@ -113,10 +135,7 @@ class CanonPart:
             pca = data["pca"]
         mesh_vertices = data["canonical_mesh_points"]
         mesh_faces = data["canonical_mesh_faces"]
-        if 'metadata' in data:
-            metadata = data["metadata"]
-        if "contact_points" in data:
-            contact_points = data["contact_points"]
+        contact_points = data["contact_points"]
         return CanonPart(
             pcd,
             mesh_vertices,
@@ -350,6 +369,7 @@ def transform_history_to_mat(tf_history):
         pose_history.append(transform_mats)
     return pose_history
 
+
 def pb_body_collision(
     body1: int, body2: int, sim_id: Optional[int] = None, margin: float = 0.0
 ) -> bool:
@@ -392,7 +412,6 @@ def wiggle(
     costs = []
 
     for i in range(max_tries):
-
         new_pos = pos + np.random.normal(0, sd, 3)
         pb_set_pose(source_obj, new_pos, quat, sim_id=sim_id)
 
@@ -425,7 +444,6 @@ def trimesh_transform(
     scale: Optional[float] = None,
     rotation: Optional[NDArray] = None,
 ):
-
     # Automatically center. Also possibly rotate and scale.
     translation_matrix = np.eye(4)
     scaling_matrix = np.eye(4)
@@ -487,9 +505,11 @@ def scale_points_circle(
     return new_points
 
 
+def trunc(values, decs=2):
+    return np.trunc(values * 10**decs) / (10**decs)
+
 
 def cpd_transform(source, target, alpha: float = 2.0) -> Tuple[NDArray, NDArray]:
-
     source, target = source.astype(np.float64), target.astype(np.float64)
     # reg = deformable_registration(**{ 'X': source, 'Y': target, 'tolerance':0.00001 }, alpha=alpha)
     reg = DeformableRegistration(
@@ -508,7 +528,6 @@ def sst_cost_batch(source: NDArray, target: NDArray) -> float:
 
 
 def sst_cost_batch_pt(source, target):
-
     # for each vertex in source, find the closest vertex in target
     # we don't need to propagate the gradient here
     source_d, target_d = source.detach(), target.detach()
@@ -571,7 +590,6 @@ def warp_gen(
 
 
 def sst_pick_canonical(known_pts: List[NDArray[np.float32]]) -> int:
-
     # GPU acceleration makes this at least 100 times faster.
     known_pts = [torch.tensor(x, device="cpu", dtype=torch.float32) for x in known_pts]
 
@@ -617,7 +635,6 @@ def rotation_distance(A, B):
 
 
 def pose_distance(trans1, trans2):
-
     pos1, rot1 = transform_to_pos_rot(trans1)
     pos2, rot2 = transform_to_pos_rot(trans2)
 
@@ -697,6 +714,7 @@ def center_pcl(pcl, return_centroid=False):
         return pcl, centroid
     else:
         return pcl
+
 
 # Gets the equation and normal for a plane fit to set of points using least squares regression
 # TODO: Struggles with singularities with the vertical plane, should find a way to fix that

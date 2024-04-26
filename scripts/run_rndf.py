@@ -95,7 +95,10 @@ def main(args):
     # print(f'Parent model name specific: {parent_model_name_specific}, Child model name specific: {child_model_name_specific}')
     print(f'Parent model name specific: {parent_model_name_specific}, Child model name specific: {child_model_name_specific}, EBM name specific: {ebm_model_name_specific}')
     
-    expstr = f'exp--{args.exp}_demo-exp--{args.rel_demo_exp}'
+    import time
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+
+    expstr = f'exp--{args.exp}_demo-exp--{args.rel_demo_exp}_{timestr}'
     # modelstr = f'parent_model--{args.parent_model_path}_child_model--{args.child_model_path}'
     modelstr = f'parent_model--{parent_model_save_path}_child_model--{child_model_save_path}'
     seedstr = 'seed--' + str(args.seed)
@@ -461,7 +464,7 @@ def main(args):
         #####################################################################################
         # set up the trial
         
-        demo_idx = np.random.randint(len(demos))
+        demo_idx = args.demo_idx#np.random.randint(len(demos))
         demo = demos[demo_idx]
         if args.test_on_train:
             parent_id = pc_master_dict['parent']['demo_ids'][demo_idx]
@@ -932,6 +935,7 @@ if __name__ == "__main__":
     parser.add_argument('--parent_class', type=str, required=True)
     parser.add_argument('--child_class', type=str, required=True)
     parser.add_argument('--rel_demo_exp', type=str, required=True)
+    parser.add_argument('--demo_idx', type=int, default=0)
 
     parser.add_argument('--parent_model_path', type=str, required=True)
     parser.add_argument('--child_model_path', type=str, required=True)

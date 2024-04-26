@@ -31,6 +31,7 @@ from src.object_warping import (
     mask_and_cost_batch_pt,
 )
 from sklearn.decomposition import PCA
+import itertools
 
 
 def get_whole_alignment(child, child_mesh_faces, child_mesh_vertices, trans_s_to_t):
@@ -101,8 +102,8 @@ def get_whole_alignment(child, child_mesh_faces, child_mesh_vertices, trans_s_to
 
     combined_complete, combined_costs, combined_params = warp_to_pcd_se3(
         combined_warp,
-        n_angles=12,
-        n_batches=15,
+        n_angles=15,
+        n_batches=12,
         inference_kwargs=final_inference_kwargs,
     )
     final_transform = (
@@ -165,9 +166,9 @@ def get_part_alignment():
     source_downsampled = utils.center_pcl(source_downsampled)
     combined_part.canonical_pcl = centered_combined
 
-    cup_label = np.zeros(component_pcls[0].shape[0])
-    handle_label = np.ones(component_pcls[1].shape[0])
-    canon_part_labels = np.concatenate([cup_label, handle_label])
+    # cup_label = np.zeros(component_pcls[0].shape[0])
+    # handle_label = np.ones(component_pcls[1].shape[0])
+    canon_part_labels = np.array(itertools.chain(*[[i for _ in component_pcls[j].shape[0]] for i, j in enumerate(list(range(len(component_pcls))))]))#np.concatenate([cup_label, handle_label])
 
     if target_labels is not None:
         cost_function = (
@@ -199,8 +200,8 @@ def get_part_alignment():
 
     combined_complete, combined_costs, combined_params = warp_to_pcd_se3(
         combined_warp,
-        n_angles=12,
-        n_batches=15,
+        n_angles=15,
+        n_batches=12,
         inference_kwargs=final_inference_kwargs,
     )
     final_transform = (
@@ -215,16 +216,54 @@ def get_part_alignment():
 
     combined_part.canonical_pcl = real_combined
 
+def generate_slider_viz(warp, static_pcl, tf_pcl, generate_animation=False, experiment_id=None):
+    best_idx = np.argmin(warp.cost_history[-1])
+    # print(f"best_idx: {best_idx}")
+    # print(f"best_cost: {np.min(combined_warp.cost_history[-1])}")
+    # print(f"best_tranform: {combined_warp.transform_history[0, best_idx]}")
+    best_transform_history = []
+    best_transforms = []
+    step_names = []
+
+    tf2_history = []
+    for transform, cost in zip(
+        warp.transform_history, warp.cost_history
+    ):
+        best_trans = transform[best_idx]
+        best_transforms.append(utils.transform_pcd(tf_pcl, best_trans.astype(float)))
+        step_names.append(f"COST: {cost[best_idx]}")
+
+    if generate_animation:
+        viz_utils.show_pcds_video_animation_plotly(
+            moving_pcl_name='Source',
+            moving_pcl_frames=best_transform_history,
+            static_pcls={"Target": static_pcl},
+            step_names=step_names,
+            file_name = experiment_id,
+        )
+
+    # source_downsampled_means = np.mean(np.unique(utils.trunc(source_downsampled), axis=0), axis=0)
+    # source_downsampled = source_downsampled - source_downsampled_means[None]
+
+    slider_fig = viz_utils.show_pcds_slider_animation_plotly(
+        moving_pcl_name="Source",
+        moving_pcl_frames=best_transforms,
+        static_pcls={"Target": static_pcl},
+        step_names=step_names,
+    )
+    return slider_fig
+
 
 @dataclass
 class NDFPartInterface:
     """Interface between my method and the Relational Neural Descriptor Fields code."""
 
-    canon_source_path: str = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
-    canon_target_path: str = "data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl"
+    canon_source_parts_paths: dict = field(default_factory=lambda: {0: None}),
+    canon_target_parts_paths: dict = field(default_factory=lambda: {0: None}),
     canon_source_scale: float = 1.0
     canon_target_scale: float = 1.0
     source_part_names: list = field(default_factory=lambda: ["cup", "handle"])
+    target_part_names: list = field(default_factory=lambda: ["trunk", "branch"])
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.03
     wiggle: bool = False
@@ -235,19 +274,9 @@ class NDFPartInterface:
 
     def __post_init__(self):
 
-        # self.canon_source_parts = utils.CanonPart.from_parts_pickle(self.canon_source_path, self.source_part_names)#utils.CanonPartByParts.from_pickle(self.canon_source_path, self.source_part_names)
-        self.canon_target = utils.CanonPart.from_pickle(self.canon_target_path)
-        warp_file_stamp = "20240202-160637"
-        object_warp_file = f"part_based_warp_models/whole_mug_{warp_file_stamp}"
-        cup_warp_file = f"part_based_warp_models/cup_{warp_file_stamp}"
-        handle_warp_file = f"part_based_warp_models/handle_{warp_file_stamp}"
-        part_canonicals = {}
-        whole_object_canonical = pickle.load(open(object_warp_file, "rb"))
-        part_canonicals["cup"] = pickle.load(open(cup_warp_file, "rb"))
-        part_canonicals["handle"] = pickle.load(open(handle_warp_file, "rb"))
+        self.canon_source_parts = {part: pickle.load(open(self.canon_source_parts_paths[part], 'rb')) for part in self.source_part_names}
+        self.canon_target_parts = {part: pickle.load(open(self.canon_target_parts_paths[part], 'rb')) for part in self.target_part_names}
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-
-        self.canon_source_parts = part_canonicals
 
     def set_demo_info(
         self,
@@ -259,7 +288,6 @@ class NDFPartInterface:
         """Process a demonstration."""
 
         # Get a single demonstration.
-        print(self.device)
         source_pcd = pc_master_dict["child"]["demo_start_pcds"][demo_idx]
         source_pcd_parts = pc_master_dict["child"]["demo_start_part_pcds"][demo_idx]
         source_start_part_poses = pc_master_dict["child"]["demo_start_part_poses"][
@@ -283,58 +311,32 @@ class NDFPartInterface:
             source_final_pos, source_final_quat
         )
 
+        target_start = np.array(
+            pc_master_dict["parent"]["demo_start_poses"][demo_idx], dtype=np.float64
+        )
+        target_final = np.array(
+            pc_master_dict["parent"]["demo_final_poses"][demo_idx], dtype=np.float64
+        )
+
+        target_start_pos, target_start_quat = target_start[:3], target_start[3:]
+        target_final_pos, target_final_quat = target_final[:3], target_final[3:]
+
+        target_final_trans = utils.pos_quat_to_transform(
+            target_final_pos, target_final_quat
+        )
+
         source_start_to_final = source_final_trans @ np.linalg.inv(source_start_trans)
 
         part_start_to_finals = {}
 
-        def get_contact_points(cup_pcl, handle_pcl):
-            knns = utils.get_closest_point_pairs_thresh(
-                cup_pcl, handle_pcl, 0.00003
-            )  # get_closest_point_pairs(cup_pcl, handle_pcl, 11)
-            # viz_utils.show_pcds_plotly({'cup': cup_pcl, 'handle':handle_pcl, 'pts_1': cup_pcl[knns[:,1 ]], 'pts_2': handle_pcl[knns[:, 0]]})
-            contact_points = np.concatenate(
-                [cup_pcl[knns[:, 1]], handle_pcl[knns[:, 0]]]
-            )
-            return (knns[:, 1], knns[:, 0])
-
-        def get_canon_contacts():
-            cup_path = "./scripts/cup_parts/m1.obj"
-            cup_handle_path = "./scripts/handles/m1.obj"
-
-            handle_path = "./scripts/handles/m4.obj"
-            handle_cup_path = "./scripts/cup_parts/m4.obj"
-
-            def load_obj_part(obj_path):
-                mesh = utils.trimesh_load_object(obj_path)
-                rotation = Rotation.from_euler("zyx", [0.0, 0.0, np.pi / 2]).as_matrix()
-                utils.trimesh_transform(
-                    mesh, center=False, scale=None, rotation=rotation
-                )
-                ssp = utils.trimesh_create_verts_surface(mesh, num_surface_samples=2000)
-                return ssp
-
-            canon_cup, canon_cup_handle = load_obj_part(cup_path), load_obj_part(
-                cup_handle_path
-            )
-            canon_handle, canon_handle_cup = load_obj_part(handle_path), load_obj_part(
-                handle_cup_path
-            )
-            canon_cup, canon_cup_handle, canon_handle, canon_handle_cup = (
-                utils.scale_points_circle(
-                    [canon_cup, canon_cup_handle, canon_handle, canon_handle_cup],
-                    base_scale=0.13,
-                )
-            )
-            canon_contact_cup, canon_contact_cup_handle = get_contact_points(
-                self.canon_source_parts["cup"].canonical_pcl, canon_cup_handle
-            )
-            canon_contact_handle_cup, canon_contact_handle = get_contact_points(
-                canon_handle_cup, self.canon_source_parts["handle"].canonical_pcl
-            )
-
-            return canon_contact_cup, canon_contact_handle
-
         target_pcd = pc_master_dict["parent"]["demo_start_pcds"][demo_idx]
+        target_pcd_parts = pc_master_dict["parent"]["demo_start_part_pcds"][demo_idx]
+        target_start_part_poses = pc_master_dict["parent"]["demo_start_part_poses"][
+            demo_idx
+        ]
+        self.target_start_part_poses = target_start_part_poses
+        print(source_pcd_parts.keys())
+
         for part in self.source_part_names:
             if (
                 self.pcd_subsample_points is not None
@@ -343,14 +345,14 @@ class NDFPartInterface:
                 source_pcd_parts[part], _ = utils.farthest_point_sample(
                     source_pcd_parts[part], self.pcd_subsample_points
                 )
-
-        if (
-            self.pcd_subsample_points is not None
-            and len(target_pcd) > self.pcd_subsample_points
-        ):
-            target_pcd, _ = utils.farthest_point_sample(
-                target_pcd, self.pcd_subsample_points
-            )
+        for part in self.target_part_names:
+            if (
+                self.pcd_subsample_points is not None
+                and len(target_pcd_parts[part]) > self.pcd_subsample_points
+            ):
+                target_pcd_parts[part], _ = utils.farthest_point_sample(
+                    target_pcd_parts[part], self.pcd_subsample_points
+                )
 
         # Perception.
         inference_kwargs = {
@@ -365,46 +367,17 @@ class NDFPartInterface:
 
         source_parts = {}
         source_params = {}
-        target_pcd_complete = None
-        target_param = None
+        target_parts = {}
+        target_params = {}
 
-        def cost_batch_pt(source, target):
-            """Calculate the one-sided Chamfer distance between two batches of point clouds in pytorch."""
-            # B x N x K
-            diff = torch.sqrt(
-                torch.sum(torch.square(source[:, :, None] - target[:, None, :]), dim=3)
-            )
-            diff_flat = diff.view(diff.shape[0] * diff.shape[1], diff.shape[2])
-            c_flat = diff_flat[
-                list(range(len(diff_flat))), torch.argmin(diff_flat, dim=1)
-            ]
-            c = c_flat.view(diff.shape[0], diff.shape[1])
-            return torch.mean(c, dim=1)
-
-        def contact_constraint(
-            source, target, source_contact_indices, canon_points, weight=10
-        ):
-            constraint = (
-                cost_batch_pt(canon_points, source[:, source_contact_indices, :])
-                * weight
-            )
-            return cost_batch_pt(source, target) + constraint
-
-        source_contacts = {}
-        canon_contacts = {}
-        source_contacts["cup"], source_contacts["handle"] = get_contact_points(
-            source_pcd_parts["cup"], source_pcd_parts["handle"]
-        )
-        canon_contacts["cup"], canon_contacts["handle"] = get_canon_contacts()
         # Source part warping
         for part in self.source_part_names:
-            if part == "cup":
-                n_angles = 12
-            else:
-                n_angles = 24
-            cost_function = lambda source, target, canon_points: contact_constraint(
-                source, target, source_contacts[part], canon_points, weight=1
-            )
+            n_angles = 15
+
+            canonical_means = np.mean(np.unique(utils.trunc(self.canon_source_parts[part].canonical_pcl), axis=0), axis=0)
+            centered_canonical = self.canon_source_parts[part].canonical_pcl - canonical_means
+            orig_canonical = cp.deepcopy(self.canon_source_parts[part].canonical_pcl)
+            self.canon_source_parts[part].canonical_pcl = centered_canonical
 
             warp = ObjectWarpingSE3Batch(
                 self.canon_source_parts[part],
@@ -413,43 +386,63 @@ class NDFPartInterface:
                 **cp.deepcopy(PARAM_1),
             )
             source_parts[part], _, source_params[part] = warp_to_pcd_se3(
-                warp, n_angles, n_batches=3, inference_kwargs=inference_kwargs
+                warp, n_angles, n_batches=12, inference_kwargs=inference_kwargs
             )
 
-        warp = ObjectWarpingSE2Batch(
-            self.canon_target,
-            target_pcd,
-            self.device,
-            **param_1,
-            init_scale=self.canon_target_scale,
-        )
-        target_pcd_complete, _, target_param = warp_to_pcd_se2(
-            warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs
-        )
+            self.canon_source_parts[part].canonical_pcl = orig_canonical
+            final_transform = utils.pos_quat_to_transform(source_params[part].position, source_params[part].quat) @ utils.pos_quat_to_transform(-canonical_means, (0, 0, 0, 1))
+            full_pos, full_quat = utils.transform_to_pos_quat(final_transform)
+            source_params[part].position, source_params[part].quat = full_pos, full_quat
 
-        state_dict = {
-            "source_parts": source_parts,
-            "source_params": source_params,
-            "target_pcd_complete": target_pcd_complete,
-            "target_param": target_param,
-        }
+        # Target part warping
+        for part in self.target_part_names:
+            n_angles = 15
+
+            canonical_means = np.mean(np.unique(utils.trunc(self.canon_target_parts[part].canonical_pcl), axis=0), axis=0)
+            centered_canonical = self.canon_target_parts[part].canonical_pcl - canonical_means
+            orig_canonical = cp.deepcopy(self.canon_target_parts[part].canonical_pcl)
+            self.canon_target_parts[part].canonical_pcl = centered_canonical
+
+            warp = ObjectWarpingSE3Batch(
+                self.canon_target_parts[part],
+                target_pcd_parts[part],
+                self.device,
+                **cp.deepcopy(PARAM_1),
+            )
+            target_parts[part], _, target_params[part] = warp_to_pcd_se3(
+                warp, n_angles, n_batches=12, inference_kwargs=inference_kwargs
+            )
+
+            self.canon_target_parts[part].canonical_pcl = orig_canonical
+            final_transform = utils.pos_quat_to_transform(target_params[part].position, target_params[part].quat) @ utils.pos_quat_to_transform(-canonical_means, (0, 0, 0, 1))            
+            full_pos, full_quat = utils.transform_to_pos_quat(final_transform)
+            target_params[part].position, target_params[part].quat = full_pos, full_quat
+
+        # viz_utils.show_pcds_plotly({'bowl': source_parts['whole_bowl'], 'cup': target_parts['cup'], 'handle':target_parts['handle'],
+        #                             'real_bowl': source_pcd_parts['whole_bowl'], 'real_cup': target_pcd_parts['cup'], 'real_handle': target_pcd_parts['handle']})
+
 
         if show:
-            viz_utils.show_pcds_plotly(
-                {
-                    "pcd": source_pcd,
-                    "target_cup": source_pcd_parts["cup"],
-                    "target_handle": source_pcd_parts["handle"],
-                    "cup": source_parts["cup"],
-                    "handle": source_parts["handle"],
-                    # "warp": target_pcd
-                },
-                center=False,
-            )
+            print()
+            # viz_utils.show_pcds_plotly(
+            #     {
+            #         "pcd": source_pcd,
+            #         "target_cup": source_pcd_parts["cup"],
+            #         "target_handle": source_pcd_parts["handle"],
+            #         "cup": source_parts["cup"],
+            #         "handle": source_parts["handle"],
+            #         "target_trunk": target_pcd_parts["trunk"],
+            #         "target_branch": target_pcd_parts["branch"],
+            #         "trunk": target_parts["trunk"],
+            #         "branch": target_parts["branch"],
+            #     },
+            #     center=False,
+            # )
 
-        # Move object to final pose.
-        warped_source_meshes = {}
         warped_source_part_pcds = {}
+        warped_target_part_pcds = {}
+        warped_source_meshes = {}
+        warped_target_meshes = {}
         for part in self.source_part_names:
             trans = utils.pos_quat_to_transform(
                 source_params[part].position, source_params[part].quat
@@ -466,13 +459,56 @@ class NDFPartInterface:
                 part
             ].to_transformed_mesh(source_params[part])
 
+        for part in self.target_part_names:
+            trans = utils.pos_quat_to_transform(
+                target_params[part].position, target_params[part].quat
+            )
+
+            warped_target_part_pcds[part] = self.canon_target_parts[
+                part
+            ].to_transformed_pcd(target_params[part])
+            warped_target_meshes[part] = self.canon_target_parts[
+                part
+            ].to_transformed_mesh(target_params[part])
+
+
+        # Move object to final pose.
+        warped_source_meshes = {}
+        warped_source_part_pcds = {}
+
+        warped_target_meshes = {}
+        warped_target_part_pcds = {}
+
+        for part in self.source_part_names:
+
+            warped_source_part_pcds[part] = self.canon_source_parts[
+                part
+            ].to_transformed_pcd(source_params[part])
+            warped_source_meshes[part] = self.canon_source_parts[
+                part
+            ].to_transformed_mesh(source_params[part])
+
+        for part in self.target_part_names:
+
+            warped_target_part_pcds[part] = self.canon_target_parts[
+                part
+            ].to_transformed_pcd(target_params[part])
+            warped_target_meshes[part] = self.canon_target_parts[
+                part
+            ].to_transformed_mesh(target_params[part])
+
+        viz_utils.show_pcds_plotly({'real_demo_bowl': utils.transform_pcd(source_pcd_parts['whole_bowl'], source_start_to_final), 'real_cup': target_pcd_parts['cup'], 'real_handle': target_pcd_parts['handle']})
+
+
         mesh = trimesh.util.concatenate(
             [warped_source_meshes[part] for part in self.source_part_names]
         )
         mesh.export(f"tmp_source.obj")
         utils.convex_decomposition(mesh, f"tmp_source_cd.obj")
 
-        mesh = self.canon_target.to_mesh(target_param)
+        mesh = trimesh.util.concatenate(
+            [warped_target_meshes[part] for part in self.target_part_names]
+        )
         mesh.export("tmp_target.stl")
         utils.convex_decomposition(mesh, "tmp_target.obj")
 
@@ -484,8 +520,11 @@ class NDFPartInterface:
 
         target_pb = pb.loadURDF("tmp_target.urdf", useFixedBase=True)
         pb.resetBasePositionAndOrientation(
-            target_pb, target_param.position, target_param.quat
+            target_pb, target_final_pos, target_final_quat
         )
+
+        source_pcd_complete = np.concatenate([self.canon_source_parts[part].to_transformed_pcd(source_params[part]) for part in self.source_part_names])
+        target_pcd_complete = np.concatenate([self.canon_target_parts[part].to_pcd(target_params[part]) for part in self.target_part_names])
 
         # Save nearby points.
         self.knns, self.deltas, self.target_indices = (
@@ -493,16 +532,33 @@ class NDFPartInterface:
                 self.source_part_names,
                 self.canon_source_parts,
                 source_params,
-                self.canon_target,
-                target_param,
+                self.target_part_names,
+                self.canon_target_parts,
+                target_params,
                 self.nearby_points_delta,
             )
         )
 
-        targets_source = {}
+        targets_source = {part:{} for part in self.source_part_names}
+        targets_target = {part:{} for part in self.source_part_names}
         for part in self.source_part_names:
-            anchors = source_parts[part][self.knns[part]]
-            targets_source[part] = np.mean(anchors + self.deltas[part], axis=1)
+            for target_part in self.target_part_names:
+                if self.knns[part][target_part] is None:
+                    continue
+                anchors = self.canon_source_parts[part].to_pcd(source_params[part])[self.knns[part][target_part]]
+                targets_source[part][target_part] = np.mean(anchors + self.deltas[part][target_part], axis=1)
+                targets_target[part][target_part] = self.canon_target_parts[target_part].to_pcd(target_params[target_part])[self.target_indices[part][target_part]]#self.canon_target.to_pcd(target_param)[self.target_indices[part]]
+                
+        # cup_transform = utils.pos_quat_to_transform(source_params['cup'].position, source_params['cup'].quat)
+        # handle_transform = utils.pos_quat_to_transform(source_params['handle'].position, source_params['handle'].quat)
+
+        # viz_utils.show_pcds_plotly({'cup': source_pcd_parts['cup'], 
+        #                             'cup_targets': utils.transform_pcd(targets_source['cup']['branch'], cup_transform),
+        #                             'handle': source_pcd_parts['handle'],
+        #                             'handle_targets': utils.transform_pcd(targets_source['handle']['branch'], handle_transform), 
+        #                             'tree':target_pcd_complete,
+        #                             'tree targets cup': targets_target['cup']['branch'],
+        #                             'tree_targets_handle': targets_target['handle']['branch']})
 
         # Remove predicted meshes from pybullet.
         pb.removeBody(source_pb)
@@ -512,15 +568,38 @@ class NDFPartInterface:
             print("CALCULATING COST")
 
             # Make a prediction based on the training sample and calculate the distance between it and the ground-truth.
-            trans_predicted = self.infer_relpose(source_pcd_parts, target_pcd, se3=True)
-            cost = utils.pose_distance(trans_predicted, source_start_to_final)
 
-            return cost
+            
+
+            possible_pairs = []
+            for source_part in self.source_part_names:
+                part_pairs = []
+                for target_part in self.target_part_names:
+                    if self.knns[part][target_part] is None:
+                        continue
+                    part_pairs.append((source_part, target_part))
+                possible_pairs.append(part_pairs)
+
+            possible_constraint_programs = list(itertools.product(*possible_pairs))
+
+            costs = []
+            for pair in possible_constraint_programs:
+                print(pair)
+                trans_predicted = self.infer_relpose(source_pcd_parts, target_pcd_parts, pair, se3=True)
+                cost = utils.pose_distance(trans_predicted, source_start_to_final)
+                costs.append(cost)
+
+            min_cost = np.min(np.array(costs))
+            min_pair = possible_constraint_programs[np.argmin(np.array(costs))]
+
+
+        return min_cost, min_pair
 
     def infer_relpose(
         self,
         source_pcds,
-        target_pcd,
+        target_pcds,
+        selected_pairs,
         se3: bool = False,
         show: bool = True,
         experiment_id=None,
@@ -534,13 +613,17 @@ class NDFPartInterface:
                 source_pcds[part], _ = utils.farthest_point_sample(
                     source_pcds[part], self.pcd_subsample_points
                 )
-        if (
-            self.pcd_subsample_points is not None
-            and len(target_pcd) > self.pcd_subsample_points
-        ):
-            target_pcd, _ = utils.farthest_point_sample(
-                target_pcd, self.pcd_subsample_points
-            )
+        for part in self.target_part_names:
+            """Make prediction about the final pose of the source object."""
+            if (
+                self.pcd_subsample_points is not None
+                and len(target_pcds[part]) > self.pcd_subsample_points
+            ):
+                target_pcds[part], _ = utils.farthest_point_sample(
+                    target_pcds[part], self.pcd_subsample_points
+                )
+            print(f'{part} pose: {np.mean(target_pcds[part], axis=0)}')
+        #input("continue relpose?")
 
         inference_kwargs = {
             "train_latents": True,  # not self.ablate_no_warp,
@@ -555,81 +638,78 @@ class NDFPartInterface:
 
         source_parts_complete = {}
         source_params = {}
+        base_handle_tf = None
         for part in self.source_part_names:
+            n_angles = 15
 
-            if part == "cup":
-                n_angles = 12
-
-            else:
-                n_angles = 24
-
-            if se3:
-                warp = ObjectWarpingSE3Batch(
-                    self.canon_source_parts[part],
-                    source_pcds[part],
-                    self.device,
-                    **param_1,
-                    init_scale=self.canon_source_scale,
-                )
-                source_parts_complete[part], _, source_params[part] = (
-                    warp_to_pcd_se3_hemisphere(
-                        warp,
-                        n_angles=n_angles,
-                        n_batches=3,
-                        inference_kwargs=inference_kwargs,
-                    )
-                )
-            else:
-                warp = ObjectWarpingSE2Batch(
-                    self.canon_source_parts[part],
-                    source_pcds[part],
-                    self.device,
-                    **param_1,
-                    init_scale=self.canon_source_scale,
-                )
-                source_parts_complete[part], _, source_params[part] = warp_to_pcd_se2(
+            warp = ObjectWarpingSE3Batch(
+                self.canon_source_parts[part],
+                source_pcds[part],
+                self.device,
+                **param_1,
+                init_scale=self.canon_source_scale,
+            )
+            source_parts_complete[part], _, source_params[part] = (
+                warp_to_pcd_se3_hemisphere(
                     warp,
                     n_angles=n_angles,
-                    n_batches=3,
+                    n_batches=12,
                     inference_kwargs=inference_kwargs,
                 )
+            )
+            
+        # viz_utils.show_pcds_plotly(
+        #     {
+        #         "target handle": source_pcds["handle"],
+        #         "reconstr handle": self.canon_source_parts['handle'].to_transformed_pcd(source_params['handle']),
+        #         "target_cup": source_pcds["cup"],
+        #         "reconstr cup": self.canon_source_parts['cup'].to_transformed_pcd(source_params['cup']),
+        #     }
+        # )
 
-        viz_utils.show_pcds_plotly(
-            {
-                "target handle": source_pcds["handle"],
-                "reconstr handle": source_parts_complete["handle"],
-                "target_cup": source_pcds["handle"],
-                "reconstr cup": source_parts_complete["cup"],
-            }
-        )
+        target_parts_complete = {}
+        target_params = {}
+        for part in self.target_part_names:
+            n_angles = 15
 
-        warp = ObjectWarpingSE2Batch(
-            self.canon_target,
-            target_pcd,
-            self.device,
-            **param_1,
-            init_scale=self.canon_target_scale,
-        )
-        target_pcd_complete, _, target_param = warp_to_pcd_se2(
-            warp, n_angles=12, n_batches=1, inference_kwargs=inference_kwargs
-        )
-
-        state_dict = {
-            "source_parts": source_parts_complete,
-            "source_params": source_params,
-            "target_pcd_complete": target_pcd_complete,
-            "target_param": target_param,
-        }
+            warp = ObjectWarpingSE3Batch(
+                    self.canon_target_parts[part],
+                    target_pcds[part],
+                    self.device,
+                    **param_1,
+                    init_scale=self.canon_target_scale,
+                )
+            target_parts_complete[part], _, target_params[part] = (
+                warp_to_pcd_se3_hemisphere(
+                    warp,
+                    n_angles=n_angles,
+                    n_batches=12,
+                    inference_kwargs=inference_kwargs,
+                )
+            )
 
         source_pcd = np.concatenate(
             [source_pcds[part] for part in self.source_part_names]
         )
-        target_labels = np.array(
-            [0 for _ in range(len(source_pcds["cup"]))]
-            + [1 for _ in range(len(source_pcds["handle"]))]
-        )
+        # source_labels = np.array(
+        #     [0 for _ in range(len(source_pcds["cup"]))]
+        #     + [1 for _ in range(len(source_pcds["handle"]))]
+        # )
+        source_labels = np.array(list(itertools.chain(*[[i for _ in range(len(source_pcds[part]))] for i, part in enumerate(self.source_part_names)])))
         source_pcd_complete = np.concatenate(
             [source_parts_complete[part] for part in self.source_part_names]
+        )
+
+        target_pcd = np.concatenate(
+            [target_pcds[part] for part in self.target_part_names]
+        )
+        # target_labels = np.array(
+        #     [0 for _ in range(len(target_pcds["trunk"]))]
+        #     + [1 for _ in range(len(target_pcds["branch"]))]
+        # )
+        target_labels = np.array(list(itertools.chain(*[[i for _ in range(len(target_pcds[part]))] for i, part in enumerate(self.target_part_names)])))
+        target_pcd_complete = np.concatenate(
+            [target_parts_complete[part] for part in self.target_part_names]
         )
 
         meshes = {}
@@ -658,43 +738,113 @@ class NDFPartInterface:
             [transformed_canon_pcds[part] for part in self.source_part_names]
         )
 
-        # Generating the constraint warp for the final pose alignment optimization
-        targets_source = {key: [] for key in self.source_part_names}
-        targets_target = {key: [] for key in self.source_part_names}
+        target_meshes = {}
+        target_canon_pcds = {}
+        transformed_target_canon_pcds = {}
+        for part in self.target_part_names:
+            trans = utils.pos_quat_to_transform(
+                target_params[part].position, target_params[part].quat
+            )
+
+            pos, quat = utils.transform_to_pos_quat(trans)
+            target_params[part].position = pos
+            target_params[part].quat = quat
+            canon_pcds[part] = self.canon_target_parts[part].to_pcd(target_params[part])
+            transformed_target_canon_pcds[part] = self.canon_target_parts[
+                part
+            ].to_transformed_pcd(target_params[part])
+            target_meshes[part] = self.canon_target_parts[part].to_transformed_mesh(
+                target_params[part]
+            )
+
+        target_mesh = trimesh.util.concatenate(
+            [target_meshes[part] for part in self.target_part_names]
+        )
+        
         trans_cs_to_ct = {}
+        target_pcd_complete = np.concatenate([self.canon_target_parts[part].to_pcd(target_params[part]) for part in self.target_part_names])
+        
+        targets_source = {part:{} for part in self.source_part_names}
+        targets_target = {part:{} for part in self.source_part_names}
+        trans_cs_to_ct = {part:{} for part in self.source_part_names}
         for part in self.source_part_names:
-            anchors = canon_pcds[part][self.knns[part]]
-            targets_source[part].append(np.mean(anchors + self.deltas[part], axis=1))
-            targets_target[part].append(
-                self.canon_target.to_pcd(target_param)[self.target_indices[part]]
-            )
-            trans_cs_to_ct[part], _, _ = utils.best_fit_transform(
-                np.array(targets_source[part]).squeeze(),
-                np.array(targets_target[part]).squeeze(),
-            )
+            for target_part in self.target_part_names:
+                if self.knns[part][target_part] is None:
+                        continue
+                anchors = self.canon_source_parts[part].to_pcd(source_params[part])[self.knns[part][target_part]]
+                targets_source[part][target_part] = np.mean(anchors + self.deltas[part][target_part], axis=1)
+                targets_target[part][target_part] = self.canon_target_parts[target_part].to_pcd(target_params[target_part])[self.target_indices[part][target_part]]#target_pcd_complete[self.target_indices[part]]
+                trans_cs_to_ct[part][target_part], _, _ = utils.best_fit_transform(
+                    np.array(targets_source[part][target_part]).squeeze(),
+                    np.array(targets_target[part][target_part]).squeeze(),
+                )
+
+        source_pcd_complete = np.concatenate([self.canon_source_parts[part].to_transformed_pcd(source_params[part]) for part in self.source_part_names])
+        target_pcd_complete = np.concatenate([self.canon_target_parts[part].to_pcd(target_params[part]) for part in self.target_part_names])
+        
+
+        # cup_transform = utils.pos_quat_to_transform(source_params['cup'].position, source_params['cup'].quat)
+        # handle_transform = utils.pos_quat_to_transform(source_params['handle'].position, source_params['handle'].quat)
+
+        # viz_utils.show_pcds_plotly({'cup': transformed_canon_pcds['cup'], 
+        #                             'cup_targets': utils.transform_pcd(targets_source['cup']['branch'], cup_transform),
+        #                             'handle': transformed_canon_pcds['handle'],
+        #                             'handle_targets': utils.transform_pcd(targets_source['handle']['branch'], handle_transform), 
+        #                             'tree':target_pcd_complete, 
+        #                             'tree targets cup': targets_target['cup']['branch'],
+        #                             'tree_targets_handle': targets_target['handle']['branch']})
+        target_pcd_complete = np.concatenate([self.canon_target_parts[part].to_transformed_pcd(target_params[part]) for part in self.target_part_names])
+
 
         trans_s_to_b = {}
         for part in self.source_part_names:
             trans_s_to_b[part] = utils.pos_quat_to_transform(
                 source_params[part].position, source_params[part].quat
             )
-        trans_t_to_b = utils.pos_quat_to_transform(
-            target_param.position, target_param.quat
-        )
 
-        trans_s_to_t = {}
-        for part in self.source_part_names:
-            trans_s_to_t[part] = (
-                trans_t_to_b @ trans_cs_to_ct[part] @ np.linalg.inv(trans_s_to_b[part])
+        trans_t_to_b = {}
+        for part in self.target_part_names:
+            trans_t_to_b[part] = utils.pos_quat_to_transform(
+                target_params[part].position, target_params[part].quat
             )
+
+        trans_s_to_t = {part:{} for part in self.source_part_names}
+        for part in self.source_part_names:
+            for target_part in self.target_part_names:
+                if self.knns[part][target_part] is None:
+                        continue
+                trans_s_to_t[part][target_part] = (
+                    trans_t_to_b[target_part] @ trans_cs_to_ct[part][target_part] @ np.linalg.inv(trans_s_to_b[part])
+                )
+
+        if show:
+            print()
+            # viz_utils.show_pcds_plotly({'branch': self.canon_target_parts['branch'].to_transformed_pcd(target_params['branch']),
+            #                             'trunk': self.canon_target_parts['trunk'].to_transformed_pcd(target_params['trunk']),
+            #                             'cup': self.canon_source_parts['cup'].to_transformed_pcd(source_params['cup']),
+            #                             'handle': self.canon_source_parts['handle'].to_transformed_pcd(source_params['handle']),
+            #                             'inv_cup': utils.transform_pcd(source_pcds['cup'] , np.linalg.inv(trans_s_to_b['cup'])),
+            #                             'inv_handle': utils.transform_pcd(source_pcds['handle'], np.linalg.inv(trans_s_to_b['handle'])),
+            #                             'canon_cup': self.canon_source_parts['cup'].canonical_pcl,
+            #                             'canon_handle': self.canon_source_parts['handle'].canonical_pcl,
+            #                             'inv_and_cs_cup': utils.transform_pcd(source_pcds['cup'] , trans_cs_to_ct['cup']['branch'] @ np.linalg.inv(trans_s_to_b['cup'])),
+            #                             'inv_and_cs_handle': utils.transform_pcd(source_pcds['handle'] , trans_cs_to_ct['handle']['branch'] @ np.linalg.inv(trans_s_to_b['handle'])),
+            #                             'target_branch': target_pcds['branch'],
+            #                             'target_trunk': target_pcds['trunk'],
+            #                             'canon_trunk': self.canon_target_parts['trunk'].canonical_pcl,
+            #                             'canon_branch': self.canon_target_parts['branch'].canonical_pcl,
+            #                             'source_cup': source_pcds['cup'],
+            #                             'source_handle': source_pcds['handle'],
+            #                             'transformed_handle': utils.transform_pcd(self.canon_source_parts['handle'].to_transformed_pcd(source_params['handle']), trans_s_to_t['handle']['branch']),
+            #                             'transformed_cup': utils.transform_pcd(self.canon_source_parts['cup'].to_transformed_pcd(source_params['cup']), trans_s_to_t['cup']['branch']) })
 
         component_pcls = []
         component_mesh_vertices = []
         component_mesh_faces = []
 
-        for part in self.source_part_names:
+        for pair in selected_pairs:
             component_pcls.append(
-                utils.transform_pcd(source_pcds[part], trans_s_to_t[part])
+                utils.transform_pcd(transformed_canon_pcds[pair[0]], trans_s_to_t[pair[0]][pair[1]])
             )
             component_mesh_vertices.append(meshes[part].vertices)
             component_mesh_faces.append(
@@ -709,6 +859,15 @@ class NDFPartInterface:
         center_transform = utils.pos_quat_to_transform(
             np.mean(canon_pcl, axis=0), np.array([0.0, 0.0, 0.0, 1.0])
         )
+
+        # viz_utils.show_pcds_plotly({'constraint': canon_pcl,
+        #                             # 'tf_cup': utils.transform_pcd(canon_pcl, combined_constraint_transform),
+        #                             'targets_target_cup': targets_target['cup']['branch'], 
+        #                             'targets_target_handle': targets_target['handle']['branch'],
+        #                             # 'targets_source': combined_targets,
+        #                             'target': target_pcd_complete, 
+        #     })
+
         metadata = CanonPartMetadata("none", "none", ["none"], None)
         combined_part = CanonPart(
             canon_pcl,
@@ -726,18 +885,26 @@ class NDFPartInterface:
             "train_poses": True,
         }
 
-        centered_combined = utils.center_pcl(combined_part.canonical_pcl)
+        combined_means = np.mean(np.unique(utils.trunc(combined_part.canonical_pcl), axis=0), axis=0)
+
+        centered_combined = combined_part.canonical_pcl - combined_means
         real_combined = cp.deepcopy(combined_part.canonical_pcl)
 
         source_downsampled, source_downsampled_indices = utils.farthest_point_sample(
             source_pcd, 1000
         )
-        source_downsampled = utils.center_pcl(source_downsampled)
         combined_part.canonical_pcl = centered_combined
 
-        cup_label = np.zeros(component_pcls[0].shape[0])
-        handle_label = np.ones(component_pcls[1].shape[0])
-        canon_part_labels = np.concatenate([cup_label, handle_label])
+        
+
+        if len(component_pcls) == 1:
+            canon_part_labels = np.zeros(component_pcls[0].shape[0])
+        else:
+            # cup_label = np.zeros(component_pcls[0].shape[0])
+            # handle_label = np.ones(component_pcls[1].shape[0])
+            #canon_part_labels = np.concatenate([cup_label, handle_label])
+            canon_part_labels = np.array(list(itertools.chain(*[[i for _ in range(component_pcls[i].shape[0])] for i in range(len(component_pcls))])))
+        print(canon_part_labels.shape)
 
         if target_labels is not None:
             cost_function = (
@@ -769,36 +936,34 @@ class NDFPartInterface:
 
         combined_complete, combined_costs, combined_params = warp_to_pcd_se3(
             combined_warp,
-            n_angles=12,
-            n_batches=15,
+            n_angles=15,
+            n_batches=12,
             inference_kwargs=final_inference_kwargs,
         )
-        final_transform = (
-            utils.pos_quat_to_transform(np.mean(real_combined, axis=0), (0, 0, 0, 1))
-            @ np.linalg.inv(
+        final_transform = (np.linalg.inv(
                 utils.pos_quat_to_transform(
                     combined_params.position, combined_params.quat
-                )
-            )
-            @ utils.pos_quat_to_transform(-np.mean(source_pcd, axis=0), (0, 0, 0, 1))
-        )
+                ) @ utils.pos_quat_to_transform(-combined_means, (0, 0, 0, 1))
+            ))
 
         combined_part.canonical_pcl = real_combined
 
-        # TODO move this data saving behind a flag or generally elsewhere
         if experiment_id is not None:
+            
             best_idx = np.argmin(combined_warp.cost_history[-1])
+            print(f"best_idx: {best_idx}")
+            print(f"best_cost: {np.min(combined_warp.cost_history[-1])}")
+            print(f"best_tranform: {combined_warp.transform_history[0, best_idx]}")
             best_transform_history = []
             best_transforms = []
             step_names = []
+
+            tf2_history = []
             for transform, cost in zip(
                 combined_warp.transform_history, combined_warp.cost_history
             ):
                 best_trans = transform[best_idx]
-                best_transforms.append(best_trans)
-                best_transform_history.append(
-                    utils.transform_pcd(centered_combined, best_trans)
-                )
+                best_transforms.append(utils.transform_pcd(centered_combined, best_trans.astype(float)))
                 step_names.append(f"COST: {cost[best_idx]}")
 
             # viz_utils.show_pcds_video_animation_plotly(
@@ -809,13 +974,17 @@ class NDFPartInterface:
             #     file_name = experiment_id,
             # )
 
+            source_downsampled_means = np.mean(np.unique(utils.trunc(source_downsampled), axis=0), axis=0)
+            source_downsampled = source_downsampled - source_downsampled_means[None]
+
             slider_fig = viz_utils.show_pcds_slider_animation_plotly(
                 moving_pcl_name="Constraint Transformation",
-                moving_pcl_frames=best_transform_history,
+                moving_pcl_frames=best_transforms,
                 static_pcls={"Start Pointcloud": source_downsampled},
                 step_names=step_names,
             )
             pickle.dump(slider_fig, open(experiment_id + "_slider_fig.pkl", "wb"))
+            
 
             result_fig = viz_utils.show_pcds_plotly(
                 {
@@ -828,12 +997,14 @@ class NDFPartInterface:
                         real_combined, np.linalg.inv(final_transform)
                     ),
                     #'t2_trans_pcd':utils.transform_pcd(source_pcd, np.linalg.inv(utils.pos_quat_to_transform(combined_params.position, combined_params.quat))),
-                    "target": self.canon_target.to_transformed_pcd(target_param),
+                    "target": target_pcd_complete,
                 }
             )
+
             pickle.dump(
                 result_fig, open(experiment_id + "_final_transform_fig.pkl", "wb")
             )
+            #input("continue?")
 
         # TODO ask Ondrej what this does
         # Save the mesh and its convex decomposition.
@@ -867,10 +1038,12 @@ class NDFPartInterface:
 class NDFInterface:
     """Interface between my method and the Relational Neural Descriptor Fields code."""
 
-    canon_source_path: str = "data/230213_ndf_mugs_scale_large_pca_8_dim_alp_0.01.pkl"
-    canon_target_path: str = "data/230213_ndf_trees_scale_large_pca_8_dim_alp_2.pkl"
+    canon_source_path: dict = field(default_factory=lambda: {0: None}),
+    canon_target_path: dict = field(default_factory=lambda: {0: None}),
     canon_source_scale: float = 1.0
     canon_target_scale: float = 1.0
+    source_whole_name: list = field(default_factory=lambda: ["whole_mug"])
+    target_whole_name: list = field(default_factory=lambda: ["mug_tree"])
     pcd_subsample_points: Optional[int] = 2000
     nearby_points_delta: float = 0.03
     wiggle: bool = False
@@ -880,8 +1053,8 @@ class NDFInterface:
     ablate_no_size_reg: bool = False
 
     def __post_init__(self):
-        self.canon_source = utils.CanonPart.from_pickle(self.canon_source_path)
-        self.canon_target = utils.CanonPart.from_pickle(self.canon_target_path)
+        self.canon_source = pickle.load(open(self.canon_source_path[self.source_whole_name[0]], 'rb'))
+        self.canon_target = pickle.load(open(self.canon_target_path[self.target_whole_name[0]], 'rb'))
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def set_demo_info(
@@ -941,37 +1114,43 @@ class NDFInterface:
         if self.ablate_no_size_reg:
             param_1["object_size_reg"] = 0.0
 
-        warp = ObjectWarpingSE2Batch(
+        warp = ObjectWarpingSE3Batch(
             self.canon_source,
             source_pcd,
             self.device,
             **param_1,
             init_scale=self.canon_source_scale,
         )
-        source_pcd_complete, _, source_param = warp_to_pcd_se2(
+        source_pcd_complete, _, source_param = warp_to_pcd_se3(
             warp, n_angles=15, n_batches=12, inference_kwargs=inference_kwargs
         )
 
-        warp = ObjectWarpingSE2Batch(
+        #generate_slider_viz(warp, source_pcd, self.canon_source.canonical_pcl, generate_animation=False)
+
+        warp = ObjectWarpingSE3Batch(
             self.canon_target,
             target_pcd,
             self.device,
             **param_1,
             init_scale=self.canon_target_scale,
         )
-        target_pcd_complete, _, target_param = warp_to_pcd_se2(
+        target_pcd_complete, _, target_param = warp_to_pcd_se3(
             warp, n_angles=15, n_batches=12, inference_kwargs=inference_kwargs
         )
+
+        #generate_slider_viz(warp, target_pcd, self.canon_target.canonical_pcl, generate_animation=False).show()
 
         if show:
             viz_utils.show_pcds_plotly(
                 {
-                    "pcd": source_pcd,
-                    "source_pcd": source_pcd_complete,
-                    "warp": target_pcd,
+                    "source_pcd": source_pcd,
+                    "reconstr_source_pcd": source_pcd_complete,
+                    "target_pcd": target_pcd,
+                    "reconstr_target_pcd": target_pcd_complete,
                 },
                 center=False,
             )
+        #input("continue?")
 
         # Move object to final pose.
         trans = utils.pos_quat_to_transform(source_param.position, source_param.quat)
@@ -1023,7 +1202,7 @@ class NDFInterface:
 
         if calculate_cost:
             # Make a prediction based on the training sample and calculate the distance between it and the ground-truth.
-            trans_predicted = self.infer_relpose(source_pcd, target_pcd)
+            trans_predicted = self.infer_relpose(source_pcd, target_pcd, None)
 
             # viz_utils.show_pcds_plotly(
             #     {
@@ -1039,10 +1218,10 @@ class NDFInterface:
             print("FINAL POS")
             print(source_final_pos)
 
-            return utils.pose_distance(trans_predicted, source_start_to_final)
+            return utils.pose_distance(trans_predicted, source_start_to_final), None
 
     def infer_relpose(
-        self, source_pcd, target_pcd, se3: bool = False, show: bool = True, experiment_id=None, final_alignment=False
+        self, source_pcd, target_pcd, demo_program, se3: bool = False, show: bool = True, experiment_id=None, final_alignment=False
     ):
         """Make prediction about the final pose of the source object."""
         if (
@@ -1079,31 +1258,31 @@ class NDFInterface:
                 init_scale=self.canon_source_scale,
             )
             source_pcd_complete, _, source_param = warp_to_pcd_se3(
-                warp, n_angles=12, n_batches=15, inference_kwargs=inference_kwargs
+                warp, n_angles=15, n_batches=12, inference_kwargs=inference_kwargs
             )
         else:
-            warp = ObjectWarpingSE2Batch(
+            warp = ObjectWarpingSE3Batch(
                 self.canon_source,
                 source_pcd,
                 self.device,
                 **param_1,
                 init_scale=self.canon_source_scale,
             )
-            source_pcd_complete, _, source_param = warp_to_pcd_se2(
-                warp, n_angles=12, n_batches=15, inference_kwargs=inference_kwargs
+            source_pcd_complete, _, source_param = warp_to_pcd_se3(
+                warp, n_angles=15, n_batches=12, inference_kwargs=inference_kwargs
             )
 
-        warp = ObjectWarpingSE2Batch(
+        warp = ObjectWarpingSE3Batch(
             self.canon_target,
             target_pcd,
             self.device,
             **param_1,
             init_scale=self.canon_target_scale,
         )
-        target_pcd_complete, _, target_param = warp_to_pcd_se2(
-            warp, n_angles=12, n_batches=15, inference_kwargs=inference_kwargs
+        target_pcd_complete, _, target_param = warp_to_pcd_se3(
+            warp, n_angles=15, n_batches=12, inference_kwargs=inference_kwargs
         )
-
+        show=False
         if show:
             viz_utils.show_pcds_plotly(
                 {"pcd": source_pcd, "warp": source_pcd_complete}, center=False
@@ -1111,14 +1290,15 @@ class NDFInterface:
             viz_utils.show_pcds_plotly(
                 {"pcd": target_pcd, "warp": target_pcd_complete}, center=False
             )
+        #input("Continue2?")
 
         # Save nearby points.
         anchors = self.canon_source.to_pcd(source_param)[self.knns]
         targets_source = np.mean(anchors + self.deltas, axis=1)
         targets_target = self.canon_target.to_pcd(target_param)[self.target_indices]
-        viz_utils.show_pcds_plotly(
-            {"pcd": self.canon_source.to_pcd(source_param), "anchors": targets_source}
-        )
+        # viz_utils.show_pcds_plotly(
+        #     {"pcd": self.canon_source.to_pcd(source_param), "anchors": targets_source}
+        # )
 
         # Canonical source obj to canonical target obj.
         trans_cs_to_ct, _, _ = utils.best_fit_transform(targets_source, targets_target)

@@ -1,6 +1,6 @@
 import os, os.path as osp
 from src import utils, viz_utils
-from src.utils import CanonObj, pos_quat_to_transform, ObjParam
+from src.utils import CanonPart, CanonPartMetadata, pos_quat_to_transform, ObjParam
 import trimesh
 import numpy as np
 import pickle
@@ -34,70 +34,70 @@ from rndf_robot.share.globals import bad_shapenet_mug_ids_list, bad_shapenet_bow
 NPF32 = NDArray[np.float32]
 NPF64 = NDArray[np.float64]
 
-@dataclass
-class CanonPartMetadata:
-    experiment_tag: str 
-    canonical_id: str
-    training_ids: List[str]
-    part_label: Optional[int]
+# @dataclass
+# class CanonPartMetadata:
+#     experiment_tag: str 
+#     canonical_id: str
+#     training_ids: List[str]
+#     part_label: Optional[int]
 
-@dataclass
-class CanonPart:
-    """Canonical object with shape warping."""
-    canonical_pcl: NPF32
-    mesh_vertices: NPF32
-    mesh_faces: NDArray[np.int32]
-    center_transform: NPF32 #For saving the relative transform of parts
-    metadata: CanonPartMetadata
-    contact_points: Optional[List[int]]
-    pca: Optional[PCA] = None
+# @dataclass
+# class CanonPart:
+#     """Canonical object with shape warping."""
+#     canonical_pcl: NPF32
+#     mesh_vertices: NPF32
+#     mesh_faces: NDArray[np.int32]
+#     center_transform: NPF32 #For saving the relative transform of parts
+#     metadata: CanonPartMetadata
+#     contact_points: Optional[List[int]]
+#     pca: Optional[PCA] = None
 
-    def __post_init__(self):
-        if self.pca is not None:
-            self.n_components = self.pca.n_components
+#     def __post_init__(self):
+#         if self.pca is not None:
+#             self.n_components = self.pca.n_components
 
-    def to_pcd(self, obj_param: ObjParam) -> NPF32:
-        if self.pca is not None and obj_param.latent is not None:
-            pcd = self.canonical_pcl + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
-        else:
-            if self.pca is not None:
-                print("WARNING: Skipping warping because we do not have a latent vector. We however have PCA.")
-            pcd = np.copy(self.canonical_pcl)
-        return pcd * obj_param.scale[None]
+#     def to_pcd(self, obj_param: ObjParam) -> NPF32:
+#         if self.pca is not None and obj_param.latent is not None:
+#             pcd = self.canonical_pcl + self.pca.inverse_transform(obj_param.latent).reshape(-1, 3)
+#         else:
+#             if self.pca is not None:
+#                 print("WARNING: Skipping warping because we do not have a latent vector. We however have PCA.")
+#             pcd = np.copy(self.canonical_pcl)
+#         return pcd * obj_param.scale[None]
 
-    def to_transformed_pcd(self, obj_param: ObjParam) -> NPF32:
-        pcd = self.to_pcd(obj_param)
-        trans = utils.pos_quat_to_transform(obj_param.position, obj_param.quat)
-        return utils.transform_pcd(pcd, trans)
+#     def to_transformed_pcd(self, obj_param: ObjParam) -> NPF32:
+#         pcd = self.to_pcd(obj_param)
+#         trans = utils.pos_quat_to_transform(obj_param.position, obj_param.quat)
+#         return utils.transform_pcd(pcd, trans)
 
-    def to_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
-        pcd = self.to_pcd(obj_param)
-        # The vertices are assumed to be at the start of the canonical_pcd.
-        vertices = pcd[:len(self.mesh_vertices)]
-        return trimesh.Trimesh(vertices, self.mesh_faces)
+#     def to_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
+#         pcd = self.to_pcd(obj_param)
+#         # The vertices are assumed to be at the start of the canonical_pcd.
+#         vertices = pcd[:len(self.mesh_vertices)]
+#         return trimesh.Trimesh(vertices, self.mesh_faces)
 
-    def to_transformed_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
-        pcd = self.to_transformed_pcd(obj_param)
-        # The vertices are assumed to be at the start of the canonical_pcd.
-        vertices = pcd[:len(self.mesh_vertices)]
-        return trimesh.Trimesh(vertices, self.mesh_faces)
+#     def to_transformed_mesh(self, obj_param: ObjParam) -> trimesh.Trimesh:
+#         pcd = self.to_transformed_pcd(obj_param)
+#         # The vertices are assumed to be at the start of the canonical_pcd.
+#         vertices = pcd[:len(self.mesh_vertices)]
+#         return trimesh.Trimesh(vertices, self.mesh_faces)
 
-    @staticmethod
-    def from_pickle(load_path: str) -> "CanonObj":
-        with open(load_path, "rb") as f:
-            data = pickle.load(f)
-        pcd = data["canonical_obj"]
-        pca = None
-        center_transform = np.eye(4)
-        if 'center_transform' in data:
-            center_transform = data['center_transform']
-        if "pca" in data:
-            pca = data["pca"]
-        mesh_vertices = data["canonical_mesh_points"]
-        mesh_faces = data["canonical_mesh_faces"]
-        return CanonObj(pcd, mesh_vertices, mesh_faces, center_transform, pca)
+#     @staticmethod
+#     def from_pickle(load_path: str) -> "CanonObj":
+#         with open(load_path, "rb") as f:
+#             data = pickle.load(f)
+#         pcd = data["canonical_obj"]
+#         pca = None
+#         center_transform = np.eye(4)
+#         if 'center_transform' in data:
+#             center_transform = data['center_transform']
+#         if "pca" in data:
+#             pca = data["pca"]
+#         mesh_vertices = data["canonical_mesh_points"]
+#         mesh_faces = data["canonical_mesh_faces"]
+#         return CanonObj(pcd, mesh_vertices, mesh_faces, center_transform, pca)
 
-def load_all_shapenet_files():
+def load_all_shapenet_files(obj_type):
     cfg = get_eval_cfg_defaults()
     config_fname = osp.join(path_util.get_rndf_config(), 'eval_cfgs', 'base_cfg')#args.config)
     if osp.exists(config_fname):
@@ -108,8 +108,8 @@ def load_all_shapenet_files():
     mesh_data_dirs = {
         'mug': 'mug_centered_obj_normalized',
         # 'bottle': 'bottle_centered_obj_normalized',
-        # 'bowl': 'bowl_centered_obj_normalized',
-        # 'syn_rack_easy': 'syn_racks_easy_obj',
+        'bowl': 'bowl_centered_obj_normalized',
+        'syn_rack_easy': 'syn_racks_easy_obj',
         # 'syn_container': 'box_containers_unnormalized'
     }
     mesh_data_dirs = {k: osp.join(path_util.get_rndf_obj_descriptions(), v) for k, v in mesh_data_dirs.items()}
@@ -129,6 +129,7 @@ def load_all_shapenet_files():
         'syn_container': common.euler2quat([0, 0, 0]).tolist(),
     }
 
+    print("Iterating mesh data")
     mesh_names = {}
     for k, v in mesh_data_dirs.items():
         # get train samples
@@ -146,6 +147,7 @@ def load_all_shapenet_files():
         # # log_info('\n\n\n')
 
         mesh_names[k] = objects_filtered
+    print("got em")
 
     obj_classes = list(mesh_names.keys())
 
@@ -158,21 +160,27 @@ def load_all_shapenet_files():
     y_low, y_high = cfg.OBJ_SAMPLE_Y_HIGH_LOW
     table_z = cfg.TABLE_Z
 
-    return mesh_names['mug']
+    return mesh_names[obj_type]
 
 #returns the ids of a sampled set of objects for training
-def sample_training(num_objects, directory="/Users/skye/relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/"):
-    all_shapenet_mugs = load_all_shapenet_files()
+def sample_training(num_objects, obj_type, directory):
+    print('%s_test_object_split.txt' % obj_type)
+    test_ids = np.loadtxt(osp.join(path_util.get_rndf_share(), '%s_test_object_split.txt' % obj_type), dtype=str).tolist()
+    test_ids = [val.split('.')[0] for val in test_ids] 
+
+    all_shapenet_mugs = load_all_shapenet_files(obj_type)
     training_ids = []
     while len(training_ids) < num_training:
         candidate_id = all_shapenet_mugs[np.random.choice(len(all_shapenet_mugs))]
-        if candidate_id not in training_ids:
-            try:
-                load_segmented_pointcloud_from_txt(candidate_id)
-                training_ids.append(candidate_id)
-            except:
-                continue
-
+        if obj_type == 'mug': 
+            if candidate_id not in training_ids and candidate_id not in test_ids:
+                try:
+                    load_segmented_pointcloud_from_txt(candidate_id)
+                    training_ids.append(candidate_id)
+                except:
+                    continue
+        else:
+            training_ids.append(candidate_id)
     return training_ids
 
 def load_segmented_pointcloud_from_txt(pcl_id, num_points=2048, 
@@ -192,9 +200,89 @@ def load_segmented_pointcloud_from_txt(pcl_id, num_points=2048,
    
     return point_set, cls, seg_ids
 
+
+def get_segmented_rack_mesh(rack_mesh):
+    pcl = rack_mesh.vertices
+
+    #Get the top points 
+    max_z = np.max(pcl[:,2]) - .01
+    max_pts = pcl[pcl[:,2] > max_z]
+    center = np.mean(max_pts, 0)
+
+    #get the furthest out point on the branch
+    max_r = np.argmax(np.linalg.norm(pcl[:, :2]-center[:2], axis=-1))
+    max_r_multiple = np.argpartition(np.linalg.norm(pcl[:, :2], axis=-1), -2)[-2:]
+
+    normal = pcl[max_r,:2]/np.linalg.norm(pcl[max_r,:2])
+    normal_3d = np.array([normal[0], normal[1], 0])
+    normal_angle = np.arctan2(normal[1], normal[0])
+
+    rad = max(np.linalg.norm(max_pts[:, :2]-center[:2], axis=-1))
+
+    v = rack_mesh.vertices
+    f = rack_mesh.faces
+
+    x = np.linspace(-.5, .5, 100)
+
+    y = normal[0]/(-normal[1])*(x-(rad*np.cos(normal_angle)+center[0])) + (rad*np.sin(normal_angle)+center[1])
+
+    import plotly.graph_objects as go
+
+    fig = go.Figure(
+    data=[  go.Mesh3d(
+            x=v[:, 0],
+            y=v[:, 1],
+            z=v[:, 2],
+            i=f[:, 0],
+            j=f[:, 1],
+            k=f[:, 2],
+            colorscale="Viridis",
+            intensity = v[:, 2],), go.Scatter3d(x=x, y=y, z=[.5]*100),
+            go.Scatter3d(x=pcl[max_r_multiple][:,0], y=pcl[max_r_multiple][:,1], z=pcl[max_r_multiple][:,2]), 
+            go.Scatter3d(x=[pcl[max_r][0]], y=[pcl[max_r][1]], z=[pcl[max_r][2]]),
+            go.Scatter3d(x=max_pts[:, 0], y=max_pts[:, 1], z=max_pts[:, 2], )]
+        )
+    fig.show()
+    #input("continue?")
+
+
+    rack_trunk = trimesh.intersections.slice_mesh_plane(rack_mesh,
+    -normal_3d,
+    np.array([rad*np.cos(normal_angle)+center[0],rad*np.sin(normal_angle)+center[1],0]))
+    #rack_trunk.show()
+
+    rack_branch = trimesh.intersections.slice_mesh_plane(rack_mesh,
+    normal_3d,
+    np.array([rad*np.cos(normal_angle)+center[0],rad*np.sin(normal_angle)+center[1],0]))
+    #rack_branch.show()
+
+    
+    # print("FACE COUNT")
+    # print(len(rack_branch.faces))
+    # print(len(rack_trunk.faces))
+    # print()
+
+    
+    # rack_pts = utils.trimesh_create_verts_surface(rack_mesh, 1000)
+    # trunk = rack_pts[np.linalg.norm(rack_pts[:, :2] - center[:2], axis=-1) < rad]
+    # branch = rack_pts[np.linalg.norm(rack_pts[:, :2]- center[:2], axis=-1) > rad]
+
+    return {1: rack_branch, 0:rack_trunk}
+
+def get_rack_mesh(pcl_id):
+    obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_easy_obj/{pcl_id}"
+    mesh = utils.trimesh_load_object(obj_file_path)
+    return mesh
+
+def get_bowl(pcl_id):
+    obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/bowl_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
+    mesh = utils.trimesh_load_object(obj_file_path)
+    return mesh
+
+
 def get_segmented_mesh(pcl_id):
     seg_pcl, _, seg_ids = load_segmented_pointcloud_from_txt(pcl_id)
-    obj_file_path = f"/Users/skye/relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
+    obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
     unseg_mesh = utils.trimesh_load_object(obj_file_path)
     utils.trimesh_transform(unseg_mesh, center=True, scale=None, rotation=None)
     unseg_pcl, _ = utils.trimesh_get_vertices_and_faces(unseg_mesh)
@@ -216,7 +304,7 @@ def get_segmented_mesh(pcl_id):
     return part_meshes
 
 def get_mesh(pcl_id):
-    obj_file_path = f"/Users/skye/relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
+    obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
     mesh = utils.trimesh_load_object(obj_file_path)
     return mesh
 
@@ -224,6 +312,8 @@ def get_contact_points(part_1, part_2, part_names):
     knns = utils.get_closest_point_pairs_thresh(part_1, part_2, .00003)#get_closest_point_pairs(cup_pcl, handle_pcl, 11)
     #viz_utils.show_pcds_plotly({'cup': cup_pcl, 'handle':handle_pcl, 'pts_1': cup_knns,}) #'pts_2': handle_pcl[knns[:, 0]]})
     return {part_name[0]: knns[:,1 ], part_name[1]: knns[:, 0]}
+
+
 
 def learn_warps(meshes, n_dimensions, num_surface_samples=10000):
     #rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
@@ -418,31 +508,75 @@ def learn_warps_contact_prealign(meshes,
 
 
 if __name__ == "__main__":
+    print("generating")
 
-    num_training = 5
-    n_dimensions = 3
+    num_training = 6
+    n_dimensions = 4
     #will need to be made more general later somehow
     obj_type = 'mug'
     part_labels = {'cup': 37, 'handle': 36}
     part_names = ['cup', 'handle']
-    training_ids = sample_training(num_training)
+    directory = "../relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/"
+
+    # obj_type = 'syn_rack_easy'
+    # part_labels = {'branch': 1, 'trunk': 0}
+    # part_names = ['branch', 'trunk']
+    # directory = "../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_easy_obj/"
+
+    obj_type = 'bowl'
+    part_labels = {'whole_bowl': 0}
+    part_names = ['whole_bowl']
+    directory = "../relational_ndf/src/rndf_robot/descriptions/objects/bowl_centered_obj_normalized/"
+
+    print("Sampling")
+
+    #training_ids = [43,98,103,91,8,88,49,100,96,97]
+    # all_shapenet_mugs = load_all_shapenet_files(obj_type)
+    # filtered_shapenet_mugs = []
+    # for candidate_id in all_shapenet_mugs:
+    #         try:
+    #             load_segmented_pointcloud_from_txt(candidate_id)
+    #             filtered_shapenet_mugs.append(candidate_id)
+    #         except:
+    #             continue
+
+
+    training_ids = sample_training(num_training, obj_type, directory)
+    #np.array(filtered_shapenet_mugs)[np.array([43,98,103,91,8,88,49,100,96,97])]
     training_whole_meshes = []
     training_part_meshes = {part:[] for part in part_names}
 
-    for obj_id in training_ids:
-        training_whole_meshes.append(get_mesh(obj_id))
-        part_meshes = get_segmented_mesh(obj_id)
-        for part in part_names: 
-            training_part_meshes[part].append(part_meshes[part_labels[part]])
+    print("Loading objects")
+    if obj_type == 'syn_rack_easy':
+        for obj_id in training_ids:
+            training_whole_meshes.append(get_rack_mesh(obj_id))
+            part_meshes = get_segmented_rack_mesh(training_whole_meshes[-1])
+            for part in part_names: 
+                training_part_meshes[part].append(part_meshes[part_labels[part]])
+    elif obj_type == "mug":   
+        for obj_id in training_ids:
+            training_whole_meshes.append(get_mesh(obj_id))
+            part_meshes = get_segmented_mesh(obj_id)
+            for part in part_names: 
+                training_part_meshes[part].append(part_meshes[part_labels[part]])
+    elif obj_type == "bowl":
+        for obj_id in training_ids:
+            training_whole_meshes.append(get_bowl(obj_id))
+        #         part_meshes = get_segmented_rack_mesh(training_whole_meshes[-1])
+        #         for part in part_names: 
+        #             training_part_meshes[part].append(part_meshes[part_labels[part]])
+
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
+    #print("Whole objects")
+    #training_ids = list(training_ids)
 
     #Load whole mugs
     #Whole mug warps
-    whole_obj_warp_name = f"whole_{obj_type}_{timestr}"
+    whole_obj_warp_name = f"whole_{obj_type}_{timestr}_{len(training_ids)}"
     whole_obj_tag = 'none'
     whole_obj_warp_data = learn_warps(training_whole_meshes, n_dimensions=n_dimensions)
-
+    print(whole_obj_warp_data['canonical_idx'])
     whole_obj_metadata = CanonPartMetadata(whole_obj_tag,
                                             training_ids[whole_obj_warp_data['canonical_idx']],
                                             training_ids[:whole_obj_warp_data['canonical_idx']] + training_ids[whole_obj_warp_data['canonical_idx']+1:],
@@ -457,26 +591,29 @@ if __name__ == "__main__":
                                 pca=whole_obj_warp_data['pca'],)
 
     pickle.dump(whole_obj_warps, open(whole_obj_warp_name, 'wb'))
+    print("Part warping")
 
-    part_warps = {}
-    for part in part_names:
-        part_warp_data = learn_warps(training_part_meshes[part], n_dimensions=n_dimensions)
 
-        part_warp_name = f"{part}_{timestr}"
-        part_tag = 'none'
-        part_metadata = CanonPartMetadata(part_tag,
-                                            training_ids[part_warp_data['canonical_idx']],
-                                            training_ids[:part_warp_data['canonical_idx']] + training_ids[part_warp_data['canonical_idx']+1:],
-                                            part_label=None)
 
-        part_warps[part] = CanonPart(part_warp_data['canonical_pcl'], 
-                               part_warp_data['canonical_mesh_points'],
-                               part_warp_data['canonical_mesh_faces'],
-                                part_warp_data['canonical_center_transform'],                                 
-                                contact_points=None,
-                                metadata=part_metadata,
-                                pca=part_warp_data['pca'],)
-        pickle.dump(part_warps[part], open(part_warp_name, 'wb'))
+    # part_warps = {}
+    # for part in part_names:
+    #     part_warp_data = learn_warps(training_part_meshes[part], n_dimensions=n_dimensions)
+
+    #     part_warp_name = f"{part}_{timestr}_{len(training_ids)}"
+    #     part_tag = 'none'
+    #     part_metadata = CanonPartMetadata(part_tag,
+    #                                         training_ids[part_warp_data['canonical_idx']],
+    #                                         training_ids[:part_warp_data['canonical_idx']] + training_ids[part_warp_data['canonical_idx']+1:],
+    #                                         part_label=None)
+
+    #     part_warps[part] = CanonPart(part_warp_data['canonical_pcl'], 
+    #                            part_warp_data['canonical_mesh_points'],
+    #                            part_warp_data['canonical_mesh_faces'],
+    #                             part_warp_data['canonical_center_transform'],                                 
+    #                             contact_points=None,
+    #                             metadata=part_metadata,
+    #                             pca=part_warp_data['pca'],)
+    #     pickle.dump(part_warps[part], open(part_warp_name, 'wb'))
 
 
     # #do the prealigning

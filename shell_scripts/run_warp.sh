@@ -42,6 +42,27 @@ CUDA_VISIBLE_DEVICES=$GPU \
     --opt_iterations 650 \
     --parent_load_pose_type random_upright --child_load_pose_type any_pose &> outputs/mug_on_tree_any.txt
 
+
+ python -m scripts.compare_part_whole --parent_class syn_rack_easy --child_class mug \
+    --exp mug_on_rack_upright_pose_new \
+    --canon_source_file_stamp 20240320-032402\
+    --canon_target_file_stamp 20240412-042732\
+    --is_child_shapenet_obj \
+    --rel_demo_exp release_demos/mug_on_rack_relation \
+    --pybullet_server \
+    --opt_iterations 650 \
+    --parent_load_pose_type random_upright --child_load_pose_type any_pose &> outputs/mug_on_tree_any.txt
+
+python -m scripts.compare_part_whole --parent_class mug --child_class bowl \
+    --exp bowl_on_mug_upright_pose_new \
+    --canon_source_file_stamp 20240418-193110\
+    --canon_target_file_stamp 20240320-032402\
+    --is_parent_shapenet_obj --is_child_shapenet_obj \
+    --rel_demo_exp release_demos/bowl_on_mug_relation --pybullet_server \
+    --opt_iterations 650 \
+    --parent_load_pose_type random_upright --child_load_pose_type any_pose
+
+
 CUDA_VISIBLE_DEVICES=$GPU \
     python -m scripts.run_warp --parent_class syn_container --child_class bottle \
     --exp bottle_in_container_upright_pose_new \

@@ -44,20 +44,20 @@ def generate_cup(radius, height):
 def generate_handle(radius, height, width):
     # Create the three cylinders that make up the handle
     cylinder1 = trimesh.creation.cylinder(radius, height)
-    cylinder2 = trimesh.creation.cylinder(radius, width)
-    cylinder3 = trimesh.creation.cylinder(radius, width)
+    cylinder2 = trimesh.creation.cylinder(radius, width*1.25)
+    cylinder3 = trimesh.creation.cylinder(radius, width*1.25)
     # Translate the cylinders so that they are all connected
 
     # rotate cylinders 2 and 3 to be perpendicular to cylinder 1
 
     cylinder2.apply_transform(
-        trimesh.transformations.rotation_matrix(np.pi / 2, [1, 0, 0])
+        trimesh.transformations.rotation_matrix(-np.pi / 4, [1, 0, 0])
     )
     cylinder3.apply_transform(
-        trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0])
+        trimesh.transformations.rotation_matrix(-3 * np.pi / 4, [1, 0, 0])
     )
-    cylinder2.apply_translation([0, width / 2 - radius, height / 2])
-    cylinder3.apply_translation([0, width / 2 - radius, -height / 2])
+    cylinder2.apply_translation([0, 9 * width / 16 - radius, height / 2 + width/4])
+    cylinder3.apply_translation([0, 9 * width / 16 - radius, -height / 2 - width/4])
     # Join the three cylinders into a single mesh
     handle = trimesh.boolean.union([cylinder1, cylinder2, cylinder3])
     handle.apply_transform(
@@ -79,7 +79,7 @@ def attach_handle_to_mug(handle_mesh, cup_mesh, attachment_height, epsilon=0.005
     handle_mesh.apply_translation([cup_diameter / 2 - epsilon, 0, 0])
 
     # Translate the handle to the attachment height
-    handle_mesh.apply_translation([0, 0, cup_bounds[1, 2] - attachment_height])
+    handle_mesh.apply_translation([0, 0, cup_bounds[1, 2] - (attachment_height * 1.25)])
     # Join the handle to the mug
     print(np.mean(np.asarray(handle_mesh.vertices), 0))
     print(" ")
@@ -104,7 +104,7 @@ def attach_handle_to_mug(handle_mesh, cup_mesh, attachment_height, epsilon=0.005
 if __name__ == "__main__":
     # Tests to verify that mug generation code makes meshes that can be viewed
     cup_mesh = generate_cup(0.5, 1.5)
-    handle_mesh = generate_handle(0.03, 0.5, 0.5)
+    handle_mesh = generate_handle(0.03, 0.3, 0.25)
 
     mug_mesh, mug_points, mug_ids = attach_handle_to_mug(handle_mesh, cup_mesh, .25)
 
