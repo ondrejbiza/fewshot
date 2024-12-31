@@ -110,11 +110,13 @@ def load_all_shapenet_files(obj_type):
         # 'bottle': 'bottle_centered_obj_normalized',
         'bowl': 'bowl_centered_obj_normalized',
         'syn_rack_easy': 'syn_racks_easy_obj',
+        'syn_rack_med_1': 'syn_racks_med_1'
         # 'syn_container': 'box_containers_unnormalized'
     }
     mesh_data_dirs = {k: osp.join(path_util.get_rndf_obj_descriptions(), v) for k, v in mesh_data_dirs.items()}
     bad_ids = {
         'syn_rack_easy': [],
+        'syn_rack_med_1': [],
         'bowl': bad_shapenet_bowls_ids_list,
         'mug': bad_shapenet_mug_ids_list,
         'bottle': bad_shapenet_bottles_ids_list,
@@ -126,6 +128,7 @@ def load_all_shapenet_files(obj_type):
         'bottle': common.euler2quat([np.pi/2, 0, 0]).tolist(),
         'bowl': common.euler2quat([np.pi/2, 0, 0]).tolist(),
         'syn_rack_easy': common.euler2quat([0, 0, 0]).tolist(),
+        'syn_rack_med_1': common.euler2quat([0, 0, 0]).tolist(),
         'syn_container': common.euler2quat([0, 0, 0]).tolist(),
     }
 
@@ -164,9 +167,13 @@ def load_all_shapenet_files(obj_type):
 
 #returns the ids of a sampled set of objects for training
 def sample_training(num_objects, obj_type, directory):
-    print('%s_test_object_split.txt' % obj_type)
-    test_ids = np.loadtxt(osp.join(path_util.get_rndf_share(), '%s_test_object_split.txt' % obj_type), dtype=str).tolist()
-    test_ids = [val.split('.')[0] for val in test_ids] 
+    try:
+        print('%s_test_object_split.txt' % obj_type)
+        test_ids = np.loadtxt(osp.join(path_util.get_rndf_share(), '%s_test_object_split.txt' % obj_type), dtype=str).tolist()
+        test_ids = [val.split('.')[0] for val in test_ids] 
+    except FileNotFoundError:
+        print("Test obj file not found")
+        test_ids = []
 
     all_shapenet_mugs = load_all_shapenet_files(obj_type)
     training_ids = []
@@ -269,9 +276,12 @@ def get_segmented_rack_mesh(rack_mesh):
 
     return {1: rack_branch, 0:rack_trunk}
 
-def get_rack_mesh(pcl_id):
-    obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_easy_obj/{pcl_id}"
-    mesh = utils.trimesh_load_object(obj_file_path)
+
+def get_med_rack_mesh():
+    pass 
+
+def get_rack_mesh(pcl_id, obj_file_path="../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_easy_obj"):
+    mesh = utils.trimesh_load_object(obj_file_path + f"{pcl_id}")
     return mesh
 
 def get_bowl(pcl_id):
@@ -279,11 +289,32 @@ def get_bowl(pcl_id):
     mesh = utils.trimesh_load_object(obj_file_path)
     return mesh
 
+def get_segmented_teapot(pcl_id):
+    parts = ['body', 'handle', 'lid', 'spout']
+    root = '~/fewshot/segmentations/'
+
+    mesh_file = {part: f'kettle_{pcl_id}/kettle_{pcl_id}_{part}.obj' for part in parts}
+    part_meshes = {part: trimesh.load(root + mesh_file[part]) for part in parts}
+
+    return part_meshes
+
+
+def get_teapot(pcl_id):
+    parts = ['body', 'handle', 'lid', 'spout']
+    root = '~/fewshot/segmentations/'
+
+    mesh_file = {part: f'kettle_{pcl_id}/kettle_{pcl_id}_{part}.obj' for part in parts}
+    part_meshes = {part: trimesh.load(root + mesh_file[part]) for part in parts}
+    combined = trimesh.util.concatenate([part_meshes[part] for part in parts])
+
+    return combined
 
 def get_segmented_mesh(pcl_id):
     seg_pcl, _, seg_ids = load_segmented_pointcloud_from_txt(pcl_id)
     obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
     unseg_mesh = utils.trimesh_load_object(obj_file_path)
+    rotation = Rotation.from_euler('xyz', [np.pi/2,0,0]).as_matrix()
+
     utils.trimesh_transform(unseg_mesh, center=True, scale=None, rotation=None)
     unseg_pcl, _ = utils.trimesh_get_vertices_and_faces(unseg_mesh)
 
@@ -314,9 +345,9 @@ def get_contact_points(part_1, part_2, part_names):
     return {part_name[0]: knns[:,1 ], part_name[1]: knns[:, 0]}
 
 
-
 def learn_warps(meshes, n_dimensions, num_surface_samples=10000):
     #rotation = Rotation.from_euler("zyx", [0., 0., np.pi / 2]).as_matrix()
+    rotation = Rotation.from_euler("zyx", [0., 0., 0]).as_matrix()
 
     small_surface_points = []
     surface_points = []
@@ -327,7 +358,9 @@ def learn_warps(meshes, n_dimensions, num_surface_samples=10000):
 
     for mesh in meshes:
         translation_matrix = np.eye(4)
+        utils.trimesh_transform(mesh, center=False, rotation=rotation)
         t = mesh.centroid
+
         sp = utils.trimesh_create_verts_surface(mesh, num_surface_samples=num_surface_samples)
         ssp = utils.trimesh_create_verts_surface(mesh, num_surface_samples=2000)
         mp, f = utils.trimesh_get_vertices_and_faces(mesh)
@@ -510,7 +543,7 @@ def learn_warps_contact_prealign(meshes,
 if __name__ == "__main__":
     print("generating")
 
-    num_training = 6
+    num_training = 10
     n_dimensions = 4
     #will need to be made more general later somehow
     obj_type = 'mug'
@@ -523,12 +556,24 @@ if __name__ == "__main__":
     # part_names = ['branch', 'trunk']
     # directory = "../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_easy_obj/"
 
-    obj_type = 'bowl'
-    part_labels = {'whole_bowl': 0}
-    part_names = ['whole_bowl']
-    directory = "../relational_ndf/src/rndf_robot/descriptions/objects/bowl_centered_obj_normalized/"
+    # obj_type = 'syn_rack_med_1'
+    # part_labels = {'branch': 1, 'trunk': 0}
+    # part_names = ['branch', 'trunk']
+    # directory = "../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_med_1/"
 
-    print("Sampling")
+
+    # obj_type = 'bowl'
+    # part_labels = {'whole_bowl': 0}
+    # part_names = ['whole_bowl']
+    # directory = "../relational_ndf/src/rndf_robot/descriptions/objects/bowl_centered_obj_normalized/"
+
+    #training_ids = sample_training(num_training, obj_type, directory)
+
+    obj_type = 'teapot'
+    part_labels = {'body': 0, 'handle': 1, 'lid': 2, 'spout': 3}
+    part_names = ['body', 'handle', 'lid', 'spout']
+    directory = '~/fewshot/segmentations' 
+    training_ids = [1, 2, 3, 4, 5]
 
     #training_ids = [43,98,103,91,8,88,49,100,96,97]
     # all_shapenet_mugs = load_all_shapenet_files(obj_type)
@@ -541,15 +586,18 @@ if __name__ == "__main__":
     #             continue
 
 
-    training_ids = sample_training(num_training, obj_type, directory)
+    
     #np.array(filtered_shapenet_mugs)[np.array([43,98,103,91,8,88,49,100,96,97])]
     training_whole_meshes = []
     training_part_meshes = {part:[] for part in part_names}
 
     print("Loading objects")
-    if obj_type == 'syn_rack_easy':
+    if obj_type == 'syn_rack_easy' or obj_type == 'syn_rack_med_1':
         for obj_id in training_ids:
-            training_whole_meshes.append(get_rack_mesh(obj_id))
+            if obj_type =='syn_rack_easy':
+                training_whole_meshes.append(get_rack_mesh(obj_id, ))
+            else:
+                training_whole_meshes.append(get_rack_mesh(obj_id, "../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_med_1/"))
             part_meshes = get_segmented_rack_mesh(training_whole_meshes[-1])
             for part in part_names: 
                 training_part_meshes[part].append(part_meshes[part_labels[part]])
@@ -562,9 +610,15 @@ if __name__ == "__main__":
     elif obj_type == "bowl":
         for obj_id in training_ids:
             training_whole_meshes.append(get_bowl(obj_id))
-        #         part_meshes = get_segmented_rack_mesh(training_whole_meshes[-1])
-        #         for part in part_names: 
-        #             training_part_meshes[part].append(part_meshes[part_labels[part]])
+    elif obj_type  == 'teapot':
+        for obj_id in training_ids:
+            training_whole_meshes.append(get_teapot(obj_id))
+            utils.trimesh_transform(training_whole_meshes[-1], center=True, scale=1.75)
+            part_meshes = get_segmented_teapot(obj_id)
+            for part in part_names: 
+                utils.trimesh_transform(part_meshes[part], center=False, scale=1.75)
+                training_part_meshes[part].append(part_meshes[part])
+
 
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -595,25 +649,25 @@ if __name__ == "__main__":
 
 
 
-    # part_warps = {}
-    # for part in part_names:
-    #     part_warp_data = learn_warps(training_part_meshes[part], n_dimensions=n_dimensions)
+    part_warps = {}
+    for part in part_names:
+        part_warp_data = learn_warps(training_part_meshes[part], n_dimensions=n_dimensions)
 
-    #     part_warp_name = f"{part}_{timestr}_{len(training_ids)}"
-    #     part_tag = 'none'
-    #     part_metadata = CanonPartMetadata(part_tag,
-    #                                         training_ids[part_warp_data['canonical_idx']],
-    #                                         training_ids[:part_warp_data['canonical_idx']] + training_ids[part_warp_data['canonical_idx']+1:],
-    #                                         part_label=None)
+        part_warp_name = f"{obj_type}_{part}_{timestr}_{len(training_ids)}"
+        part_tag = 'none'
+        part_metadata = CanonPartMetadata(part_tag,
+                                            training_ids[part_warp_data['canonical_idx']],
+                                            training_ids[:part_warp_data['canonical_idx']] + training_ids[part_warp_data['canonical_idx']+1:],
+                                            part_label=None)
 
-    #     part_warps[part] = CanonPart(part_warp_data['canonical_pcl'], 
-    #                            part_warp_data['canonical_mesh_points'],
-    #                            part_warp_data['canonical_mesh_faces'],
-    #                             part_warp_data['canonical_center_transform'],                                 
-    #                             contact_points=None,
-    #                             metadata=part_metadata,
-    #                             pca=part_warp_data['pca'],)
-    #     pickle.dump(part_warps[part], open(part_warp_name, 'wb'))
+        part_warps[part] = CanonPart(part_warp_data['canonical_pcl'], 
+                               part_warp_data['canonical_mesh_points'],
+                               part_warp_data['canonical_mesh_faces'],
+                                part_warp_data['canonical_center_transform'],                                 
+                                contact_points=None,
+                                metadata=part_metadata,
+                                pca=part_warp_data['pca'],)
+        pickle.dump(part_warps[part], open(part_warp_name, 'wb'))
 
 
     # #do the prealigning

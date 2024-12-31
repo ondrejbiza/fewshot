@@ -41,6 +41,34 @@ from src.ndf_interface import NDFInterface, NDFPartInterface
 from src.real_world import constants
 #from src.demo import get_knn_and_deltas, get_closest_point_pairs, fit_plane_points
 
+def object_is_intersecting(obj1_id, obj2_id, obj1_link_index, obj2_link_index,
+    max_force_threshold=20):
+    """
+    During intersection, normal force is much higher than during contact.  If
+    we use a threshold, we can determine if a teleport is in intersection or
+    if it is placed correctly.
+
+    Args:
+        obj1_id (int): Id of first object to check
+        obj2_id (int): Id of second object to check
+        obj1_link_index (int): Link index for first obj, -1 for base object
+        obj2_link_index (int): Link index for second obj, -1 for base object
+        max_force_threshold (float, optional): Any max normal force above this
+            is an intersection. Defaults to 5.
+
+    Returns:
+        bool: True for intersection, false otherwise.
+    """
+    # contact_points = p.getClosestPoints(bodyA=obj1_id, bodyB=obj2_id, distance=0.002,
+    #     linkIndexA=obj1_link_index, linkIndexB=obj2_link_index)
+    contact_points = p.getContactPoints(bodyA=obj1_id, bodyB=obj2_id,
+        linkIndexA=obj1_link_index, linkIndexB=obj2_link_index)
+
+    # Normal force should be idx 9
+    max_normal_force = max([abs(point[9]) for point in contact_points] + [0])
+
+    print('Max normal force: ', max_normal_force)
+    return max_normal_force > max_force_threshold
 
 def pb2mc_update(recorder, mc_vis, stop_event, run_event):
     iters = 0
@@ -363,7 +391,7 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         demos.append(demo)
 
     #Naming the experiment save file
-    expstr = f'exp--{args.exp}_demo-exp--{args.rel_demo_exp}'
+    expstr = f'intersect_test_exp--{args.exp}_demo-exp--{args.rel_demo_exp}'
     seedstr = 'seed--' + str(args.seed)
     experiment_name = '_'.join([expstr, seedstr])
 
@@ -1083,58 +1111,65 @@ def main(args, training_mugs, source_part_names, by_parts=False):
         eval_img_fname = osp.join(eval_imgs_dir, f'{iteration}.png')
         util.np2img(eval_rgb.astype(np.uint8), eval_img_fname)
 
-        ##########################################################################
-        # upside down check for too much inter-penetration
-        pb_client.set_step_sim(True)
+        # ##########################################################################
+        # # upside down check for too much inter-penetration
+        # pb_client.set_step_sim(True)
 
-        # remove constraints, if there are any
-        safeRemoveConstraint(pc_master_dict['parent']['o_cid'])
-        safeRemoveConstraint(pc_master_dict['child']['o_cid'])
+        # # remove constraints, if there are any
+        # safeRemoveConstraint(pc_master_dict['parent']['o_cid'])
+        # safeRemoveConstraint(pc_master_dict['child']['o_cid'])
 
-        # first, reset everything
-        pb_client.reset_body(parent_obj_id, start_parent_pose[:3], start_parent_pose[3:])
-        pb_client.reset_body(child_obj_id, start_child_pose[:3], start_child_pose[3:])
+        # # first, reset everything
+        # pb_client.reset_body(parent_obj_id, start_parent_pose[:3], start_parent_pose[3:])
+        # pb_client.reset_body(child_obj_id, start_child_pose[:3], start_child_pose[3:])
 
-        # then, compute a new position + orientation for the parent object, that is upside down
-        upside_down_ori_mat = np.matmul(common.euler2rot([np.pi, 0, 0]), upright_parent_ori_mat)
-        upside_down_pose_mat = np.eye(4); upside_down_pose_mat[:-1, :-1] = upside_down_ori_mat; upside_down_pose_mat[:-1, -1] = start_parent_pose[:3]
-        upside_down_pose_mat[2, -1] += 0.15  # move up in z a bit
-        parent_upside_down_pose_list = util.pose_stamped2list(util.pose_from_matrix(upside_down_pose_mat))
+        # # then, compute a new position + orientation for the parent object, that is upside down
+        # upside_down_ori_mat = np.matmul(common.euler2rot([np.pi, 0, 0]), upright_parent_ori_mat)
+        # upside_down_pose_mat = np.eye(4); upside_down_pose_mat[:-1, :-1] = upside_down_ori_mat; upside_down_pose_mat[:-1, -1] = start_parent_pose[:3]
+        # upside_down_pose_mat[2, -1] += 0.15  # move up in z a bit
+        # parent_upside_down_pose_list = util.pose_stamped2list(util.pose_from_matrix(upside_down_pose_mat))
 
-        # reset parent to this state and constrain to world
-        pb_client.reset_body(parent_obj_id, parent_upside_down_pose_list[:3], parent_upside_down_pose_list[3:])
-        ud_cid = constraint_obj_world(parent_obj_id, parent_upside_down_pose_list[:3], parent_upside_down_pose_list[3:])
+        # # reset parent to this state and constrain to world
+        # pb_client.reset_body(parent_obj_id, parent_upside_down_pose_list[:3], parent_upside_down_pose_list[3:])
+        # ud_cid = constraint_obj_world(parent_obj_id, parent_upside_down_pose_list[:3], parent_upside_down_pose_list[3:])
 
-        # get the final relative pose of the child object
-        final_child_pose_parent = util.convert_reference_frame(
-            pose_source=util.pose_from_matrix(final_child_pose_mat),
-            pose_frame_target=util.pose_from_matrix(start_parent_pose_mat),
-            pose_frame_source=util.unit_pose()
-        )
-        # get the final world frame pose of the child object in upside down pose
-        final_child_pose_upside_down = util.convert_reference_frame(
-            pose_source=final_child_pose_parent,
-            pose_frame_target=util.unit_pose(),
-            pose_frame_source=util.pose_from_matrix(upside_down_pose_mat)
-        )
-        final_child_pose_upside_down_list = util.pose_stamped2list(final_child_pose_upside_down)
-        final_child_pose_upside_down_mat = util.matrix_from_pose(final_child_pose_upside_down)
+        # # get the final relative pose of the child object
+        # final_child_pose_parent = util.convert_reference_frame(
+        #     pose_source=util.pose_from_matrix(final_child_pose_mat),
+        #     pose_frame_target=util.pose_from_matrix(start_parent_pose_mat),
+        #     pose_frame_source=util.unit_pose()
+        # )
+        # # get the final world frame pose of the child object in upside down pose
+        # final_child_pose_upside_down = util.convert_reference_frame(
+        #     pose_source=final_child_pose_parent,
+        #     pose_frame_target=util.unit_pose(),
+        #     pose_frame_source=util.pose_from_matrix(upside_down_pose_mat)
+        # )
+        # final_child_pose_upside_down_list = util.pose_stamped2list(final_child_pose_upside_down)
+        # final_child_pose_upside_down_mat = util.matrix_from_pose(final_child_pose_upside_down)
 
-        # reset child to this state
-        pb_client.reset_body(child_obj_id, final_child_pose_upside_down_list[:3], final_child_pose_upside_down_list[3:])
+        # # reset child to this state
+        # pb_client.reset_body(child_obj_id, final_child_pose_upside_down_list[:3], final_child_pose_upside_down_list[3:])
 
-        # turn on the simulation and wait for a couple seconds
-        pb_client.set_step_sim(False)
-        time.sleep(2.0)
+        # # turn on the simulation and wait for a couple seconds
+        # pb_client.set_step_sim(False)
+        # time.sleep(2.0)
 
-        # check if they are still in contact (they shouldn't be)
-        ud_obj_surf_contacts = p.getContactPoints(parent_obj_id, child_obj_id, -1, -1)
-        ud_touching_surf = len(ud_obj_surf_contacts) > 0
-        success_crit_dict['fell_off_upside_down'] = not ud_touching_surf
+        # # check if they are still in contact (they shouldn't be)
+        # ud_obj_surf_contacts = p.getContactPoints(parent_obj_id, child_obj_id, -1, -1)
+        # ud_touching_surf = len(ud_obj_surf_contacts) > 0
+        # success_crit_dict['fell_off_upside_down'] = not ud_touching_surf
 
-        #########################################################################
+        # #########################################################################
 
-        place_success = np.all(np.asarray(list(success_crit_dict.values())))
+        # place_success = np.all(np.asarray(list(success_crit_dict.values())))
+
+        obj_surf_contacts = p.getContactPoints(child_obj_id, parent_obj_id, -1, -1)
+
+        intersecting = object_is_intersecting(child_obj_id, parent_obj_id, -1, -1)
+
+        touching_surf = len(obj_surf_contacts) > 0
+        place_success = touching_surf and not intersecting
 
         place_success_list.append(place_success)
         log_str = 'Iteration: %d, ' % iteration

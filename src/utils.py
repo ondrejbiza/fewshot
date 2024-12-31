@@ -11,6 +11,7 @@ from sklearn.decomposition import PCA
 import trimesh
 import trimesh.voxel.creation as vcreate
 import torch
+import open3d
 from src.modified_cpd import (
     ContactAwareDeformableRegistration,
     ConstrainedDeformableRegistration,
@@ -119,6 +120,8 @@ class CanonPart:
     def from_pickle(load_path: str) -> "CanonPart":
         with open(load_path, "rb") as f:
             data = pickle.load(f)
+        if type(data) != dict:
+            return data
         pcd = data["canonical_obj_pcl"]
         contact_points = None
         pca = None
@@ -188,6 +191,74 @@ class PlaceDemoContactPoints:
     def check_consistent(self):
         assert len(self.source_indices) == len(self.target_indices)
 
+
+def get_part_labels(part_pairs):
+    part_labels = {}
+    for part_pair in part_pairs:
+
+        ordered_part_names = list(part_pair.keys())
+        ordered_part_names.sort()
+
+        dists = np.sum(
+            np.square(part_pair[ordered_part_names[0]][None] - part_pair[ordered_part_names[1]][:, None]),
+            axis=-1,
+        )
+        
+        part_dists = {ordered_part_names[i]: np.min(dists, axis=i) for i in range(len(ordered_part_names))} #np.min
+        for part in ordered_part_names:
+            if part not in part_labels.keys():
+                part_labels[part] = []
+            min_dist = np.min(part_dists[part])
+            part_labels[part].append(np.where(
+                    part_dists[part]-min_dist < np.mean(part_dists[part]-min_dist) * .6,
+                    np.zeros_like(part_dists[part]),
+                    np.ones_like(part_dists[part]),
+                )
+            )
+    return part_labels
+
+
+def get_canon_labels(part_pairs, part_canonicals, part_names):
+
+    if part_pairs is None:
+        part_pairs = [{part_1: part_canonicals[part_1], part_2: part_canonicals[part_2]} for part_1, part_2 in itertools.combinations(part_names, r=2) if part_1 != part_2]
+
+    # Doing adjustment to the centered/scaled parts to accurately approximate these labels
+    part_adjustment = {
+        part: pos_quat_to_transform(
+            part_canonicals[part].center_transform, (0, 0, 0, 1)
+        )
+        for part in part_names
+    }
+
+
+    ten_scaled_parts = scale_points_circle(
+        [part_canonicals[part].canonical_pcl for part in part_names], base_scale=10
+    )
+
+    adjusted_part_canon = {
+        part_names[i]: transform_pcd(ten_scaled_parts[i], part_adjustment[part_names[i]])
+        for i in range(len(part_names))
+    }
+
+    contact_parts = scale_points_circle(
+        [adjusted_part_canon[part] for part in part_names], base_scale=0.1
+    )
+
+    #TODO remove hackiness
+    if part_names[0] == 'body':
+        contact_parts[0] = scale_points_circle([contact_parts[0]], base_scale=.075)[0]
+
+    #Recreating the part pairs with the correct relative poses
+    contact_pairs = []
+    for pair in part_pairs:
+        contact_pairs.append({p: contact_parts[part_names.index(p)] for p in pair.keys()})
+        #viz_utils.show_pcds_plotly({p: contact_parts[part_names.index(p)] for p in pair.keys()}).show()
+
+    canon_labels = get_part_labels(
+        contact_pairs,
+    )  # part_names)
+    return canon_labels
 
 def quat_to_rotm(quat: NPF64) -> NPF64:
     return Rotation.from_quat(quat).as_matrix()
@@ -274,6 +345,42 @@ def best_fit_transform(A: NPF32, B: NPF32) -> Tuple[NPF64, NPF64, NPF64]:
 
     return T, R.astype(np.float64), t.astype(np.float64)
 
+def get_pointcloud_in_cam_frame(rgb, depth, intrinsics):
+
+    height, width = depth.shape
+    xlin = np.linspace(0, width - 1, width)
+    ylin = np.linspace(0, height - 1, height)
+    px, py = np.meshgrid(xlin, ylin)
+    px = (px - intrinsics[0, 2]) * (depth / intrinsics[0, 0])
+    py = (py - intrinsics[1, 2]) * (depth / intrinsics[1, 1])
+
+    points = np.float32([px, py, depth, rgb[..., 0], rgb[..., 1], rgb[..., 2]]).transpose(1, 2, 0)
+    cloud = points.reshape(-1,6)
+    # z_constrain= (cloud[:,2]>0.1) & (cloud[:,2]<1.1)
+    # cloud = cloud[z_constrain]
+    return cloud
+
+def transform(cloud, T, isPosition=True):
+        '''Apply the homogeneous transform T to the point cloud. Use isPosition=False if transforming unit vectors.'''
+        n = cloud.shape[0]
+        cloud = cloud.T
+        augment = np.ones((1, n)) if isPosition else np.zeros((1, n))
+        cloud = np.concatenate((cloud, augment), axis=0)
+        cloud = np.dot(T, cloud)
+        cloud = cloud[0:3, :].T
+        return cloud
+        
+def transform_cloud_to_base(cloud, extrinsics, camera_name):
+    T = extrinsics[camera_name]
+    cloud_RT_base = transform(cloud[:, :3], T)
+    return np.concatenate([cloud_RT_base, cloud[:, 3:]], axis=1)
+
+
+def remove_outliers(cloud):
+    pcd = open3d.geometry.PointCloud()
+    pcd.points = open3d.utility.Vector3dVector(cloud)
+    cl, ind = pcd.remove_radius_outlier(nb_points=64, radius=0.03)
+    return np.array(cl.points)
 
 def convex_decomposition(
     mesh: trimesh.base.Trimesh, save_path: Optional[str] = None
@@ -566,7 +673,7 @@ def warp_gen(
 
     for target_idx, target in enumerate(targets):
         print("target {:d}".format(target_idx))
-
+        
         w, g = cpd_transform(target, source, alpha=alpha)
 
         warp = np.dot(g, w)

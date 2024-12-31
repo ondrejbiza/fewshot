@@ -6,14 +6,14 @@ from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 import torch
 from torch import nn, optim
-
+import copy as cp
 from src import utils, viz_utils
 import pdb
 
 PARAM_1 = {"lr": 1e-2, 
            "n_steps": 200,
            "n_samples": 1000, 
-           "object_size_reg": 0.01}
+           "object_size_reg": 0.05} #.01
 
 
 
@@ -39,22 +39,25 @@ def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 def mask_and_cost_batch_pt(target, source_labels, source, target_labels):
     summed_cost = None
     weights = [1,1]
-    
-    for label, w in zip(np.unique(source_labels), weights):
-        #viz_utils.show_pcd_plotly(source[:, torch.from_numpy(source_labels)==label].detach().cpu().numpy()[0])
-        # viz_utils.show_pcd_plotly(target.detach().cpu().numpy()[0])
-        # print(target.shape)
-        # print(torch.from_numpy(target_labels).shape)
-        # print(source.shape)
-        # print(torch.from_numpy(source_labels).shape)
 
-        # viz_utils.show_pcd_plotly(target[:, torch.from_numpy(target_labels)==label].detach().cpu().numpy()[0])
-        #print(target[:, torch.from_numpy(source_labels)==label].shape)
-        part_cost = cost_batch_pt(source[:, torch.from_numpy(source_labels)==label], target[:, torch.from_numpy(target_labels)==label])
-        if summed_cost is None:
-            summed_cost = part_cost * w
-        else:
-            summed_cost += part_cost * w
+    assert len(source_labels) == len(target_labels)
+    for source_label, target_label in zip(source_labels, target_labels):
+        for label, w in zip(np.unique(source_label), weights):
+            #viz_utils.show_pcd_plotly(source[:, torch.from_numpy(source_labels)==label].detach().cpu().numpy()[0])
+            # viz_utils.show_pcd_plotly(target.detach().cpu().numpy()[0])
+            # print(target.shape)
+            # print(torch.from_numpy(target_labels).shape)
+            # print(source.shape)
+            # print(torch.from_numpy(source_labels).shape)
+
+            # viz_utils.show_pcd_plotly(target[:, torch.from_numpy(target_labels)==label].detach().cpu().numpy()[0])
+            #print(target[:, torch.from_numpy(source_labels)==label].shape)
+            part_cost = cost_batch_pt(source[:, torch.from_numpy(source_label)==label], target[:, torch.from_numpy(target_label)==label])
+            #part_cost += .1 * cost_batch_pt(target[:, torch.from_numpy(target_labels)==label], source[:, torch.from_numpy(source_labels)==label])
+            if summed_cost is None:
+                summed_cost = part_cost * w
+            else:
+                summed_cost += part_cost * w
     #print()
     return summed_cost
 
@@ -152,7 +155,7 @@ class ObjectWarping:
         canonical_obj_pt_ = self.canonical_pcl[indices]
         index_order = np.argsort(indices)
         if self.canon_labels is not None:
-            self.subsampled_canon_labels = self.canon_labels[indices]
+            self.subsampled_canon_labels = [cl[indices] for cl in self.canon_labels]
         return (
             means_,
             components_,
@@ -232,13 +235,21 @@ class ObjectWarping:
             scale_history.append(self.scale_param.detach().cpu().numpy())
             
             if self.cost_function == cost_batch_pt:
+                
+                
                 cost = self.cost_function(self.pcd[None], new_pcd)
+                
             else:
                 if self.n_samples is None:
                     cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels)
                 else:
                     cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels)
 
+            if hasattr(self, 'latent_param'):
+                reg_term = torch.norm(self.latent_param.data - self.initial_latents_pt) * 10# + torch.norm(self.scale_param.data - 1) *100 #+  torch.var(self.scale_param.data)*10 + 
+                cost += reg_term
+
+            
             if self.object_size_reg is not None:
                 size = torch.max(
                     torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1
@@ -249,6 +260,8 @@ class ObjectWarping:
             # Saving cost history for visualization
             cost_history.append(cost.detach().cpu().numpy())
             self.optim.step()
+
+
 
         if self.cost_history is None:
             self.cost_history = cost_history
@@ -326,6 +339,7 @@ class ObjectWarpingSE3Batch(ObjectWarping):
 
         if initial_latents is None:
             initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
+            self.initial_latents_pt = initial_latents_pt
             # initial_latents_pt = torch.zeros(
             #     (n_angles, self.pca.n_components),
             #     dtype=torch.float32,
@@ -347,7 +361,7 @@ class ObjectWarpingSE3Batch(ObjectWarping):
                 initial_scales, dtype=torch.float32, device=self.device
             )
 
-        self.latent_param = nn.Parameter(initial_latents_pt, requires_grad=True)
+        self.latent_param = nn.Parameter(cp.deepcopy(initial_latents_pt), requires_grad=True)
         self.center_param = nn.Parameter(initial_centers_pt, requires_grad=True)
         self.pose_param = nn.Parameter(init_ortho_pt, requires_grad=True)
         self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
@@ -374,6 +388,7 @@ class ObjectWarpingSE3Batch(ObjectWarping):
         deltas = deltas.view((self.latent_param.shape[0], -1, 3))
 
         new_pcd = canonical_pcl[None] + deltas
+        #self.scale_param.clamp(3,3.1)
         new_pcd = new_pcd * self.scale_param[:, None]
         new_pcd = (
             torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
@@ -448,11 +463,13 @@ class ObjectWarpingSE2Batch(ObjectWarping):
             )
 
         if initial_latents is None:
-            initial_latents_pt = torch.zeros(
-                (n_angles, self.pca.n_components),
-                dtype=torch.float32,
-                device=self.device,
-            )
+            initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
+            self.initial_latents_pt = initial_latents_pt
+            # initial_latents_pt = torch.zeros(
+            #     (n_angles, self.pca.n_components),
+            #     dtype=torch.float32,
+            #     device=self.device,
+            # )
         else:
             initial_latents_pt = torch.tensor(
                 initial_latents, dtype=torch.float32, device=self.device
@@ -622,7 +639,7 @@ class ObjectSE3Batch(ObjectWarping):
         """Randomly subsample the canonical object, including its PCA projection."""
         indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
         if self.canon_labels is not None:
-            self.subsampled_canon_labels = self.canon_labels[indices]
+            self.subsampled_canon_labels = [relational_label[indices] for relational_label in self.canon_labels]
         return None, None, self.canonical_pcl[indices]
 
     def assemble_output(

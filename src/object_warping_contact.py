@@ -1,0 +1,916 @@
+from ast import Call
+from typing import List, Optional, Tuple, Union, Callable
+
+import numpy as np
+from numpy.typing import NDArray
+from scipy.spatial.transform import Rotation
+import torch
+from torch import nn, optim
+
+from src import utils, viz_utils
+import pdb
+
+PARAM_1 = {"lr": 1e-2, "n_steps": 400, "n_samples": 1000, "object_size_reg": 0.01}
+
+def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    """Calculate the one-sided Chamfer distance between two batches of point clouds in pytorch."""
+    # B x N x K
+    diff = torch.sqrt(torch.sum(torch.square(torch.square(source[:, :, None] - target[:, None, :])), dim=3))
+    diff_flat = diff.view(diff.shape[0] * diff.shape[1], diff.shape[2])
+    c_flat = diff_flat[list(range(len(diff_flat))), torch.argmin(diff_flat, dim=1)]
+    c = c_flat.view(diff.shape[0], diff.shape[1])
+    return torch.mean(c, dim=1)
+
+class ObjectWarping:
+    """Base class for inference of object shape, pose and scale with gradient descent."""
+
+    def __init__(self, canon_obj: utils.CanonPart, canon_contacts: NDArray[np.float32], pcd: NDArray[np.float32],
+                 device: "cuda", lr: float, n_steps: int, cost_function: Callable=cost_batch_pt, n_samples: Optional[int]=None,
+                 object_size_reg: Optional[float]=None, init_scale: float=1.0):
+        """Generic init functions that save the canonical object and the observed point cloud."""
+        self.device = "cpu"#torch.device("cpu")
+        self.pca = canon_obj.pca
+        self.lr = lr
+        self.n_steps = n_steps
+        self.n_samples = n_samples
+        self.object_size_reg = object_size_reg
+        self.init_scale = init_scale
+        self.cost_function = cost_function
+        self.contact_points = canon_contacts
+        self.transform_history = []
+        self.cost_history = []
+
+        #This change is to eliminate some of the issues with outliers/doubled points skewing the mean
+        #in the future, should probably be addressed some other, better way
+        #either by looking at improving warps, improving sampling, or by improving the transform fit
+        def trunc(values, decs=2):
+            return np.trunc(values*10**decs)/(10**decs)
+        self.global_means = np.mean(np.unique(trunc(pcd), axis=0), axis=0)
+        pcd = pcd - self.global_means[None]
+        self.canonical_pcl = torch.tensor(
+            canon_obj.canonical_pcl, dtype=torch.float32, device=self.device)
+        self.pcd = torch.tensor(pcd, dtype=torch.float32, device=self.device)
+
+        if canon_obj.pca is not None:
+            self.means = torch.tensor(canon_obj.pca.mean_, dtype=torch.float32, device=self.device)
+            self.components = torch.tensor(
+                canon_obj.pca.components_, dtype=torch.float32, device=self.device)
+        else:
+            self.means = None
+            self.components = None
+
+    def initialize_params_and_opt(self, initial_poses: NDArray[np.float32], initial_centers: Optional[NDArray[np.float32]]=None,
+                                  initial_latents: Optional[NDArray[np.float32]]=None, initial_scales: Optional[NDArray[np.float32]]=None,
+                                  train_latents: bool=True, train_centers: bool=True, train_poses: bool=True, train_scales: bool=True):
+        """Initialize parameters to be optimized and the optimizer."""
+        raise NotImplementedError()
+
+    def create_warped_transformed_pcd(self, components: torch.Tensor, means: torch.Tensor, canonical_pcl: torch.Tensor, contact_points: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Warp and transform canonical object."""
+        raise NotImplementedError()
+
+    def assemble_output(self, cost: torch.Tensor) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Assemble all optimized parameters."""
+        raise NotImplementedError()
+
+    def subsample(self, num_samples: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Randomly subsample the canonical object, including its PCA projection."""
+        indices = np.random.randint(0, self.components.shape[1] // 3, num_samples)
+        means_ = self.means.view(-1, 3)[indices].view(-1)
+        components_ = self.components.view(self.components.shape[0], -1, 3)[:, indices]
+        components_ = components_.reshape(self.components.shape[0], -1)
+        canonical_obj_pt_ = self.canonical_pcl[indices]
+        contact_points_ = list(set(self.contact_points).intersection(indices))
+        index_order = np.argsort(indices)
+        for i in range(len(contact_points_)): 
+            contact_points_[i] = index_order[len(indices[np.where(indices<contact_points_[i])])]
+        return means_, components_, canonical_obj_pt_, contact_points_
+
+    def inference(self,
+                  initial_poses: NDArray[np.float32],
+                  initial_centers: Optional[NDArray[np.float32]]=None,
+                  initial_latents: Optional[NDArray[np.float32]]=None,
+                  initial_scales: Optional[NDArray[np.float32]]=None,
+                  train_latents: bool=True,
+                  train_centers: bool=True,
+                  train_poses: bool=True,
+                  train_scales: bool=True,
+                 ) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Run inference for a batch of initial poses."""
+        self.initialize_params_and_opt(
+            initial_poses, initial_centers, initial_latents, initial_scales,
+            train_latents, train_centers, train_poses, train_scales)
+
+        for _ in range(self.n_steps):
+
+            if self.n_samples is not None:
+                #means_, components_, canonical_pcl_,  = self.subsample(self.n_samples)
+                means_, components_, canonical_pcl_, contact_points_ = self.subsample(self.n_samples)
+            else:
+                means_ = self.means
+                components_ = self.components
+                canonical_pcl_ = self.canonical_pcl
+
+            self.optim.zero_grad()
+            #new_pcd = self.create_warped_transformed_pcd(components_, means_, canonical_pcl_,)
+            #self.transform_history.append(utils.pos_quat_to_transform(self.center_param.detach().cpu().numpy(), utils.rotm_to_quat(torch.bmm(orthogonalize(self.pose_param), self.initial_poses)[0].detach().cpu().numpy())))
+            if self.cost_function is not None:
+                new_pcd, new_contacts = self.create_warped_transformed_pcd(components_, means_, canonical_pcl_, contact_points_)
+            if self.cost_function is not None:
+
+                cost = self.cost_function(self.pcd[None], new_pcd, new_contacts)
+            else:
+                cost = cost_batch_pt( self.pcd[None], new_pcd)
+
+            if self.object_size_reg is not None:
+                size = torch.max(torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1)[0]
+                cost = cost + self.object_size_reg * size
+            cost.sum().backward()
+            #self.cost_history.append(cost)
+            self.optim.step()
+
+        with torch.no_grad():
+            # Compute final cost without subsampling.
+            new_pcd, new_contacts = self.create_warped_transformed_pcd(
+               self.components, self.means, self.canonical_pcl, self.contact_points)
+            #new_pcd = self.create_warped_transformed_pcd(self.components, self.means, self.canonical_pcl)
+            if self.cost_function is not None:
+                cost = self.cost_function(self.pcd[None], new_pcd, new_contacts)
+            else:
+                cost = cost_batch_pt(self.pcd[None], new_pcd)
+
+            if self.object_size_reg is not None:
+                size = torch.max(torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1)[0]
+                cost = cost + self.object_size_reg * size
+
+        return self.assemble_output(cost)
+
+
+class ObjectWarpingSE3BatchContact(ObjectWarping):
+    """Object shape and pose warping in SE3."""
+
+    def initialize_params_and_opt(self, initial_poses: NDArray[np.float32],
+                                  initial_centers: Optional[NDArray[np.float32]]=None,
+                                  initial_latents: Optional[NDArray[np.float32]]=None,
+                                  initial_scales: Optional[NDArray[np.float32]]=None,
+                                  train_latents: bool=True,
+                                  train_centers: bool=True,
+                                  train_poses: bool=True,
+                                  train_scales: bool=True):
+
+        n_angles = len(initial_poses)
+
+        # Initial rotation matrices.
+        self.initial_poses = torch.tensor(initial_poses, dtype=torch.float32, device=self.device)
+
+        # This 2x3 vectors will turn into an identity rotation matrix.
+        unit_ortho = np.array([
+            [1., 0., 0.],
+            [0., 1., 0.]
+        ], dtype=np.float32)
+        unit_ortho = np.repeat(unit_ortho[None], n_angles, axis=0)
+        init_ortho_pt = torch.tensor(unit_ortho, dtype=torch.float32, device=self.device)
+
+        if initial_centers is None:
+            initial_centers_pt = torch.zeros((n_angles, 3), dtype=torch.float32, device=self.device)
+        else:
+            initial_centers_pt = torch.tensor(initial_centers - self.global_means[None], dtype=torch.float32, device=self.device)
+
+        if initial_latents is None:
+            initial_latents_pt = torch.zeros((n_angles, self.pca.n_components), dtype=torch.float32, device=self.device)
+        else:
+            initial_latents_pt = torch.tensor(initial_latents, dtype=torch.float32, device=self.device)
+
+        if initial_scales is None:
+            initial_scales_pt = torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale
+        else:
+            initial_scales_pt = torch.tensor(initial_scales, dtype=torch.float32, device=self.device)
+
+        self.latent_param = nn.Parameter(initial_latents_pt, requires_grad=True)
+        self.center_param = nn.Parameter(initial_centers_pt, requires_grad=True)
+        self.pose_param = nn.Parameter(init_ortho_pt, requires_grad=True)
+        self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
+
+        self.params = []
+        if train_latents:
+            self.params.append(self.latent_param)
+        if train_centers:
+            self.params.append(self.center_param)
+        if train_poses:
+            self.params.append(self.pose_param)
+        if train_scales:
+            self.params.append(self.scale_param)
+
+        self.optim = optim.Adam(self.params, lr=self.lr)
+
+    def create_warped_transformed_pcd(self, components: torch.Tensor, means: torch.Tensor,
+                                      canonical_pcl: torch.Tensor, contact_points:torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Warp and transform canonical object. Differentiable."""
+        rotm = orthogonalize(self.pose_param)
+        rotm = torch.bmm(rotm, self.initial_poses)
+        deltas = torch.matmul(self.latent_param, components) + means
+        deltas = deltas.view((self.latent_param.shape[0], -1, 3))
+
+        new_pcd = canonical_pcl[None] + deltas
+        new_pcd = new_pcd * self.scale_param[:, None]
+        new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
+        new_contacts = new_pcd[:, contact_points, :]
+        return new_pcd, new_contacts
+
+    def assemble_output(self, cost: torch.Tensor
+                        ) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Output numpy arrays."""
+        all_costs = []
+        all_new_pcds = []
+        all_parameters = []
+
+        with torch.no_grad():
+
+            new_pcd, new_contact_points = self.create_warped_transformed_pcd(
+                self.components, self.means, self.canonical_pcl, self.contact_points)
+
+
+            # deltas = torch.matmul(self.latent_param, self.components) + self.means
+            # deltas = deltas.view((self.latent_param.shape[0], -1, 3))
+            # # print("MEANS: ")
+            # # print(self.means)
+            # # print()
+            # # print("COMPONENTS")
+            # # print(self.components)
+            # # print()
+            # # print("DELTAS: ")
+            # # print(deltas)
+            # # print()
+            # # print(torch.max(deltas))
+            # # print(torch.min(deltas))
+            # # print(self.latent_param)
+            # # print(self.canonical_pcl.shape)
+            # # print((self.canonical_pcl[None] + deltas).shape)
+            # viz_utils.show_pcds_plotly({'canon': self.canonical_pcl, 'deltaed':(self.canonical_pcl[None] + deltas)[0]})
+
+
+            rotm = orthogonalize(self.pose_param)
+            rotm = torch.bmm(rotm, self.initial_poses)
+
+            new_pcd = new_pcd.cpu().numpy()
+            new_pcd = new_pcd + self.global_means[None, None]
+
+            for i in range(len(self.latent_param)):
+                all_costs.append(cost[i].item())
+                all_new_pcds.append(new_pcd[i])
+
+                position = self.center_param[i].cpu().numpy() + self.global_means
+                position = position.astype(np.float64)
+                quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
+                latent = self.latent_param[i].cpu().numpy()
+                scale = self.scale_param[i].cpu().numpy()
+
+                obj_param = utils.ObjParam(position, quat, latent, scale)
+                all_parameters.append(obj_param)
+
+        return all_costs, all_new_pcds, all_parameters
+
+class ObjectWarpingSE2BatchContact(ObjectWarping):
+    """Object shape and planar pose warping."""
+
+    def initialize_params_and_opt(self, initial_poses: NDArray[np.float32],
+                                  initial_centers: Optional[NDArray[np.float32]]=None,
+                                  initial_latents: Optional[NDArray[np.float32]]=None,
+                                  initial_scales: Optional[NDArray[np.float32]]=None,
+                                  train_latents: bool=True,
+                                  train_centers: bool=True,
+                                  train_poses: bool=True,
+                                  train_scales: bool=True):
+
+        # Initial poses are yaw angles here.
+        n_angles = len(initial_poses)
+        initial_poses_pt = torch.tensor(initial_poses, dtype=torch.float32, device=self.device)
+
+        if initial_centers is None:
+            initial_centers_pt = torch.zeros((n_angles, 3), dtype=torch.float32, device=self.device)
+        else:
+            initial_centers_pt = torch.tensor(initial_centers - self.global_means[None], dtype=torch.float32, device=self.device)
+
+        if initial_latents is None:
+            initial_latents_pt = torch.from_numpy(self.pca.components_ @ (-self.pca.mean_)).float().to(self.device).repeat(n_angles, 1)
+            # initial_latents_pt = torch.zeros((n_angles, self.pca.n_components), dtype=torch.float32, device=self.device)
+        else:
+            initial_latents_pt = torch.tensor(initial_latents, dtype=torch.float32, device=self.device)
+
+        if initial_scales is None:
+            initial_scales_pt = torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale
+        else:
+            initial_scales_pt = torch.tensor(initial_scales, dtype=torch.float32, device=self.device)
+
+        self.latent_param = nn.Parameter(initial_latents_pt, requires_grad=True)
+        self.center_param = nn.Parameter(initial_centers_pt, requires_grad=True)
+        self.pose_param = nn.Parameter(initial_poses_pt, requires_grad=True)
+        self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
+
+        self.params = []
+        if train_latents:
+            self.params.append(self.latent_param)
+        if train_centers:
+            self.params.append(self.center_param)
+        if train_poses:
+            self.params.append(self.pose_param)
+        if train_scales:
+            self.params.append(self.scale_param)
+
+        self.optim = optim.Adam(self.params, lr=self.lr)
+
+    def create_warped_transformed_pcd(self, components: torch.Tensor, means: torch.Tensor,
+                                      canonical_pcl: torch.Tensor, contact_points:torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Warp and transform canonical object. Differentiable."""
+        rotm = yaw_to_rot_batch_pt(self.pose_param)
+        deltas = torch.matmul(self.latent_param, components) + means
+        deltas = deltas.view((self.latent_param.shape[0], -1, 3))
+        new_pcd = canonical_pcl[None] + deltas
+        new_pcd = new_pcd * self.scale_param[:, None]
+        new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
+        new_contacts = new_pcd[:, contact_points, :]
+        return new_pcd, new_contacts
+
+    def assemble_output(self, cost: torch.Tensor) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Output numpy arrays."""
+        all_costs = []
+        all_new_pcds = []
+        all_parameters = []
+
+        with torch.no_grad():
+            new_pcd, new_contact_points = self.create_warped_transformed_pcd(
+                self.components, self.means, self.canonical_pcl, self.contact_points)
+            rotm = yaw_to_rot_batch_pt(self.pose_param)
+
+            new_pcd = new_pcd.cpu().numpy()
+            new_pcd = new_pcd + self.global_means[None, None]
+
+            for i in range(len(self.latent_param)):
+                all_costs.append(cost[i].item())
+                all_new_pcds.append(new_pcd[i])
+
+                position = self.center_param[i].cpu().numpy() + self.global_means
+                position = position.astype(np.float64)
+                quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
+                latent = self.latent_param[i].cpu().numpy()
+                scale = self.scale_param[i].cpu().numpy()
+
+                obj_param = utils.ObjParam(position, quat, latent, scale)
+                all_parameters.append(obj_param)
+
+        return all_costs, all_new_pcds, all_parameters
+
+
+class WarpBatchContact(ObjectWarping):
+    """Object shape and planar pose warping."""
+
+    def initialize_params_and_opt(self, 
+                                  initial_latents: Optional[NDArray[np.float32]]=None,
+                                  initial_scales: Optional[NDArray[np.float32]]=None,
+                                  train_latents: bool=True,
+                                  train_scales: bool=True):
+
+        if initial_latents is None:
+            initial_latents_pt = torch.zeros((1, self.pca.n_components), dtype=torch.float32, device=self.device)
+        else:
+            initial_latents_pt = torch.tensor(initial_latents, dtype=torch.float32, device=self.device)
+
+        if initial_scales is None:
+            initial_scales_pt = torch.ones((1, 3), dtype=torch.float32, device=self.device) * self.init_scale
+        else:
+            initial_scales_pt = torch.tensor(initial_scales, dtype=torch.float32, device=self.device)
+
+        self.latent_param = nn.Parameter(initial_latents_pt, requires_grad=True)
+        self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
+
+        self.params = []
+        if train_latents:
+            self.params.append(self.latent_param)
+        if train_scales:
+            self.params.append(self.scale_param)
+
+        self.optim = optim.Adam(self.params, lr=self.lr)
+
+    def create_warped_transformed_pcd(self, components: torch.Tensor, means: torch.Tensor,
+                                      canonical_pcl: torch.Tensor) -> torch.Tensor:
+        """Warp and transform canonical object. Differentiable."""
+        deltas = torch.matmul(self.latent_param, components) + means
+        deltas = deltas.view((self.latent_param.shape[0], -1, 3))
+        new_pcd = canonical_pcl[None] + deltas
+        new_pcd = new_pcd * self.scale_param[:, None]
+        return new_pcd
+
+    def assemble_output(self, cost: torch.Tensor) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Output numpy arrays."""
+        all_costs = []
+        all_new_pcds = []
+        all_parameters = []
+
+        with torch.no_grad():
+
+            new_pcd = self.create_warped_transformed_pcd(
+                self.components, self.means, self.canonical_pcl)
+
+            new_pcd = new_pcd.cpu().numpy()
+            new_pcd = new_pcd + self.global_means[None, None]
+
+            for i in range(len(self.latent_param)):
+                all_costs.append(cost[i].item())
+                all_new_pcds.append(new_pcd[i])
+
+                latent = self.latent_param[i].cpu().numpy()
+                scale = self.scale_param[i].cpu().numpy()
+
+                obj_param = utils.ObjParam(latent, scale)
+                all_parameters.append(obj_param)
+
+        return all_costs, all_new_pcds, all_parameters
+
+    def inference(self,
+                  initial_latents: Optional[NDArray[np.float32]]=None,
+                  initial_scales: Optional[NDArray[np.float32]]=None,
+                  train_latents: bool=True,
+                  train_scales: bool=True,
+                 ) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        
+        """Run inference for a batch of initial poses."""
+        self.initialize_params_and_opt(
+            initial_latents, initial_scales,
+            train_latents, train_scales)
+
+        for _ in range(self.n_steps):
+
+            if self.n_samples is not None:
+                means_, components_, canonical_pcl_, contact_points_ = self.subsample(self.n_samples)
+            else:
+                means_ = self.means
+                components_ = self.components
+                canonical_pcl_ = self.canonical_pcl
+
+            self.optim.zero_grad()
+            new_pcd = self.create_warped_transformed_pcd(components_, means_, canonical_pcl_)
+            cost = cost_batch_pt(self.pcd[None], new_pcd)
+
+            if self.object_size_reg is not None:
+                size = torch.max(torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1)[0]
+                cost = cost + self.object_size_reg * size
+
+            cost.sum().backward()
+            self.optim.step()
+
+        with torch.no_grad():
+            # Compute final cost without subsampling.
+            new_pcd = self.create_warped_transformed_pcd(
+                self.components, self.means, self.canonical_pcl)
+            cost = cost_batch_pt(self.pcd[None], new_pcd)
+
+            if self.object_size_reg is not None:
+                size = torch.max(torch.sqrt(torch.sum(torch.square(new_pcd), dim=-1)), dim=-1)[0]
+                cost = cost + self.object_size_reg * size
+
+        return self.assemble_output(cost)
+
+    
+
+# class ObjectSE3Batch(ObjectWarping):
+#     """Object pose gradient descent in SE3."""
+
+#     def initialize_params_and_opt(self, initial_poses: NDArray[np.float32],
+#                                   initial_centers: Optional[NDArray[np.float32]]=None,
+#                                   initial_latents: Optional[NDArray[np.float32]]=None,
+#                                   initial_scales: Optional[NDArray[np.float32]]=None,
+#                                   train_latents: bool=True,
+#                                   train_centers: bool=True,
+#                                   train_poses: bool=True,
+#                                   train_scales: bool=True):
+
+#         n_angles = len(initial_poses)
+
+#         # Initial rotation matrices.
+#         self.initial_poses = torch.tensor(initial_poses, dtype=torch.float32, device=self.device)
+
+#         # This 2x3 vectors will turn into an identity rotation matrix.
+#         unit_ortho = np.array([
+#             [1., 0., 0.],
+#             [0., 1., 0.]
+#         ], dtype=np.float32)
+#         unit_ortho = np.repeat(unit_ortho[None], n_angles, axis=0)
+#         init_ortho_pt = torch.tensor(unit_ortho, dtype=torch.float32, device=self.device)
+
+#         if initial_centers is None:
+#             initial_centers_pt = torch.zeros((n_angles, 3), dtype=torch.float32, device=self.device)
+#         else:
+#             initial_centers_pt = torch.tensor(initial_centers - self.global_means[None], dtype=torch.float32, device=self.device)
+
+#         if initial_scales is None:
+#             initial_scales_pt = torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale
+#         else:
+#             initial_scales_pt = torch.tensor(initial_scales, dtype=torch.float32, device=self.device)
+
+#         self.center_param = nn.Parameter(initial_centers_pt, requires_grad=True)
+#         self.pose_param = nn.Parameter(init_ortho_pt, requires_grad=True)
+#         self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
+
+#         self.params = []
+#         if train_centers:
+#             self.params.append(self.center_param)
+#         if train_poses:
+#             self.params.append(self.pose_param)
+#         if train_scales:
+#             self.params.append(self.scale_param)
+
+#         self.optim = optim.Adam(self.params, lr=self.lr)
+
+#     def create_warped_transformed_pcd(self, components: Optional[torch.Tensor], means: Optional[torch.Tensor], canonical_pcl: torch.Tensor, contact_points = torch.Tensor) -> torch.Tensor:
+#         """Transform canonical object. Differentiable."""
+#         rotm = orthogonalize(self.pose_param)
+#         rotm = torch.bmm(rotm, self.initial_poses)
+#         new_pcd = torch.repeat_interleave(canonical_pcl[None], len(self.pose_param), dim=0)
+#         new_pcd = new_pcd * self.scale_param[:, None]
+#         new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
+#         new_contacts = new_pcd[:, contact_points, :]
+#         return new_pcd, new_contacts
+
+
+#     def subsample(self, num_samples: int) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], torch.Tensor, torch.Tensor]:
+#         """Randomly subsample the canonical object, including its PCA projection."""
+#         indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
+#         canonical_obj_pt_ = self.canonical_pcl[indices]
+#         contact_points_ = list(set(self.contact_points).intersection(indices))
+#         index_order = np.argsort(indices)
+#         for i in range(len(contact_points_)): 
+#             contact_points_[i] = index_order[len(indices[np.where(indices<contact_points_[i])])]
+#         return None, None, self.canonical_pcl[indices], contact_points_
+
+#     def assemble_output(self, cost: torch.Tensor
+#                         ) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+#         """Output numpy arrays."""
+#         all_costs = []
+#         all_new_pcds = []
+#         all_parameters = []
+
+#         with torch.no_grad():
+#             new_pcd, new_contacts = self.create_warped_transformed_pcd(None, None, self.canonical_pcl, self.contact_points)
+#             rotm = orthogonalize(self.pose_param)
+#             rotm = torch.bmm(rotm, self.initial_poses)
+
+#             new_pcd = new_pcd.cpu().numpy()
+#             new_pcd = new_pcd + self.global_means[None, None]
+
+#             for i in range(len(self.center_param)):
+#                 all_costs.append(cost[i].item())
+#                 all_new_pcds.append(new_pcd[i])
+
+#                 position = self.center_param[i].cpu().numpy() + self.global_means
+#                 position = position.astype(np.float64)
+#                 quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
+#                 scale = self.scale_param[i].cpu().numpy()
+
+#                 obj_param = utils.ObjParam(position, quat, None, scale)
+
+#                 all_parameters.append(obj_param)
+
+#         return all_costs, all_new_pcds, all_parameters
+
+class ObjectSE3BatchContact(ObjectWarping):
+    """Object pose gradient descent in SE3."""
+
+    def initialize_params_and_opt(self, initial_poses: NDArray[np.float32],
+                                  initial_centers: Optional[NDArray[np.float32]]=None,
+                                  initial_latents: Optional[NDArray[np.float32]]=None,
+                                  initial_scales: Optional[NDArray[np.float32]]=None,
+                                  train_latents: bool=True,
+                                  train_centers: bool=True,
+                                  train_poses: bool=True,
+                                  train_scales: bool=True):
+
+        n_angles = len(initial_poses)
+
+        # Initial rotation matrices.
+        self.initial_poses = torch.tensor(initial_poses, dtype=torch.float32, device=self.device)
+
+        # This 2x3 vectors will turn into an identity rotation matrix.
+        unit_ortho = np.array([
+            [1., 0., 0.],
+            [0., 1., 0.]
+        ], dtype=np.float32)
+        unit_ortho = np.repeat(unit_ortho[None], n_angles, axis=0)
+        init_ortho_pt = torch.tensor(unit_ortho, dtype=torch.float32, device=self.device)
+
+        if initial_centers is None:
+            initial_centers_pt = torch.zeros((n_angles, 3), dtype=torch.float32, device=self.device)
+        else:
+            initial_centers_pt = torch.tensor(initial_centers - self.global_means[None], dtype=torch.float32, device=self.device)
+
+        if initial_scales is None:
+            initial_scales_pt = torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale
+        else:
+            initial_scales_pt = torch.tensor(initial_scales, dtype=torch.float32, device=self.device)
+
+        self.center_param = nn.Parameter(initial_centers_pt, requires_grad=True)
+        self.pose_param = nn.Parameter(init_ortho_pt, requires_grad=True)
+        self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
+
+        self.params = []
+        if train_centers:
+            self.params.append(self.center_param)
+        if train_poses:
+            self.params.append(self.pose_param)
+        if train_scales:
+            self.params.append(self.scale_param)
+
+        self.optim = optim.Adam(self.params, lr=self.lr)
+
+    def create_warped_transformed_pcd(self, components: Optional[torch.Tensor], means: Optional[torch.Tensor], canonical_pcd: torch.Tensor) -> torch.Tensor:
+        """Transform canonical object. Differentiable."""
+        rotm = orthogonalize(self.pose_param)
+        rotm = torch.bmm(rotm, self.initial_poses)
+        new_pcd = torch.repeat_interleave(canonical_pcd[None], len(self.pose_param), dim=0)
+        new_pcd = new_pcd * self.scale_param[:, None]
+        new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
+        return new_pcd
+
+    def subsample(self, num_samples: int) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], torch.Tensor]:
+        """Randomly subsample the canonical object, including its PCA projection."""
+        indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
+        return None, None, self.canonical_pcl[indices]
+
+    def assemble_output(self, cost: torch.Tensor
+                        ) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Output numpy arrays."""
+        all_costs = []
+        all_new_pcds = []
+        all_parameters = []
+
+        with torch.no_grad():
+
+            new_pcd = self.create_warped_transformed_pcd(None, None, self.canonical_pcl)
+            rotm = orthogonalize(self.pose_param)
+            rotm = torch.bmm(rotm, self.initial_poses)
+
+            new_pcd = new_pcd.cpu().numpy()
+            new_pcd = new_pcd + self.global_means[None, None]
+
+            for i in range(len(self.center_param)):
+                all_costs.append(cost[i].item())
+                all_new_pcds.append(new_pcd[i])
+
+                position = self.center_param[i].cpu().numpy() + self.global_means
+                position = position.astype(np.float64)
+                quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
+                scale = self.scale_param[i].cpu().numpy()
+
+                obj_param = utils.ObjParam(position, quat, None, scale)
+
+                all_parameters.append(obj_param)
+
+        return all_costs, all_new_pcds, all_parameters
+
+
+
+class ObjectSE2BatchContact(ObjectWarping):
+    """Object pose gradient descent in SE2."""
+
+    def initialize_params_and_opt(self, initial_poses: NDArray[np.float32],
+                                  initial_centers: Optional[NDArray[np.float32]]=None,
+                                  initial_latents: Optional[NDArray[np.float32]]=None,
+                                  initial_scales: Optional[NDArray[np.float32]]=None,
+                                  train_latents: bool=True,
+                                  train_centers: bool=True,
+                                  train_poses: bool=True,
+                                  train_scales: bool=True):
+
+        n_angles = len(initial_poses)
+        initial_poses_pt = torch.tensor(initial_poses, dtype=torch.float32, device=self.device)
+
+        if initial_centers is None:
+            initial_centers_pt = torch.zeros((n_angles, 3), dtype=torch.float32, device=self.device)
+        else:
+            initial_centers_pt = torch.tensor(initial_centers - self.global_means[None], dtype=torch.float32, device=self.device)
+
+        if initial_scales is None:
+            initial_scales_pt = torch.ones((n_angles, 3), dtype=torch.float32, device=self.device) * self.init_scale
+        else:
+            initial_scales_pt = torch.tensor(initial_scales, dtype=torch.float32, device=self.device)
+
+        self.center_param = nn.Parameter(initial_centers_pt, requires_grad=True)
+        self.pose_param = nn.Parameter(initial_poses_pt, requires_grad=True)
+        self.scale_param = nn.Parameter(initial_scales_pt, requires_grad=True)
+
+        self.params = []
+        if train_centers:
+            self.params.append(self.center_param)
+        if train_poses:
+            self.params.append(self.pose_param)
+        if train_scales:
+            self.params.append(self.scale_param)
+
+        self.optim = optim.Adam(self.params, lr=self.lr)
+
+    def create_warped_transformed_pcd(self, components: Optional[torch.Tensor], means: Optional[torch.Tensor], canonical_pcl: torch.Tensor, contact_points: torch.Tensor) -> torch.Tensor:
+        """Warp and transform canonical object. Differentiable."""
+        rotm = yaw_to_rot_batch_pt(self.pose_param)
+        new_pcd = torch.repeat_interleave(canonical_pcl[None], len(self.pose_param), dim=0)
+        new_pcd = new_pcd * self.scale_param[:, None]
+        new_pcd = torch.bmm(new_pcd, rotm.permute((0, 2, 1))) + self.center_param[:, None]
+        new_contacts = new_pcd[:, contact_points, :]
+        return new_pcd, new_contacts
+
+    def subsample(self, num_samples: int) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], torch.Tensor, torch.Tensor]:
+        """Randomly subsample the canonical object, including its PCA projection."""
+        indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
+        canonical_obj_pt_ = self.canonical_pcl[indices]
+        contact_points_ = list(set(self.contact_points).intersection(indices))
+        index_order = np.argsort(indices)
+        for i in range(len(contact_points_)): 
+            contact_points_[i] = index_order[len(indices[np.where(indices<contact_points_[i])])]
+        return None, None, self.canonical_pcl[indices], contact_points_
+
+    def assemble_output(self, cost: torch.Tensor
+                        ) -> Tuple[List[float], List[NDArray[np.float32]], List[utils.ObjParam]]:
+        """Output numpy arrays."""
+        all_costs = []
+        all_new_pcds = []
+        all_parameters = []
+
+        with torch.no_grad():
+
+            new_pcd, new_contacts = self.create_warped_transformed_pcd(None, None, self.canonical_pcl, self.contact_points)
+            rotm = yaw_to_rot_batch_pt(self.pose_param)
+
+            new_pcd = new_pcd.cpu().numpy()
+            new_pcd = new_pcd + self.global_means[None, None]
+
+            for i in range(len(self.center_param)):
+                all_costs.append(cost[i].item())
+                all_new_pcds.append(new_pcd[i])
+
+                position = self.center_param[i].cpu().numpy() + self.global_means
+                position = position.astype(np.float64)
+                quat = utils.rotm_to_quat(rotm[i].cpu().numpy())
+                scale = self.scale_param[i].cpu().numpy()
+
+                obj_param = utils.ObjParam(position, quat, None, scale)
+   
+                all_parameters.append(obj_param)
+
+        return all_costs, all_new_pcds, all_parameters
+
+
+def warp_to_pcd_se3_contact(object_warping: Union[ObjectWarpingSE3BatchContact, ObjectSE3BatchContact], n_angles: int=50,
+                    n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
+
+    poses = random_rots(n_angles * n_batches)
+
+    all_costs, all_new_pcds, all_parameters = [], [], []
+
+    for batch_idx in range(n_batches):
+
+        poses_batch = poses[batch_idx * n_angles: (batch_idx + 1) * n_angles]
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(poses_batch, **inference_kwargs)
+        all_costs += batch_costs
+        all_new_pcds += batch_new_pcds
+        all_parameters += batch_parameters
+
+    best_idx = np.argmin(all_costs)
+    return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def warp_to_pcd_se3_hemisphere_contact(object_warping: Union[ObjectWarpingSE3BatchContact, ObjectSE3BatchContact],
+                               n_angles: int=50, n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
+
+    poses = random_rots_hemisphere(n_angles * n_batches)
+
+    all_costs, all_new_pcds, all_parameters = [], [], []
+
+    for batch_idx in range(n_batches):
+
+        poses_batch = poses[batch_idx * n_angles: (batch_idx + 1) * n_angles]
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(poses_batch, **inference_kwargs)
+        all_costs += batch_costs
+        all_new_pcds += batch_new_pcds
+        all_parameters += batch_parameters
+
+    best_idx = np.argmin(all_costs)
+    return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def warp_to_pcd_se2_contact(object_warping: Union[ObjectWarpingSE2BatchContact, ObjectSE2BatchContact], n_angles: int=50,
+                    n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
+
+    start_angles = []
+    for i in range(n_angles * n_batches):
+        angle = i * (2 * np.pi / (n_angles * n_batches))
+        start_angles.append(angle)
+    start_angles = np.array(start_angles, dtype=np.float32)[:, None]
+
+    all_costs, all_new_pcds, all_parameters = [], [], []
+
+    for batch_idx in range(n_batches):
+
+        start_angles_batch = start_angles[batch_idx * n_angles: (batch_idx + 1) * n_angles]
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(start_angles_batch, **inference_kwargs)
+        all_costs += batch_costs
+        all_new_pcds += batch_new_pcds
+        all_parameters += batch_parameters
+
+    best_idx = np.argmin(all_costs)
+    return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+# def align_to_pcd_se2(object_warping: ObjectSE2Batch, n_angles: int=50,
+#                     n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
+
+#     start_angles = []
+#     for i in range(n_angles * n_batches):
+#         angle = i * (2 * np.pi / (n_angles * n_batches))
+#         start_angles.append(angle)
+#     start_angles = np.array(start_angles, dtype=np.float32)[:, None]
+
+#     all_costs, all_new_pcds, all_parameters = [], [], []
+
+#     for batch_idx in range(n_batches):
+
+#         start_angles_batch = start_angles[batch_idx * n_angles: (batch_idx + 1) * n_angles]
+#         batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(start_angles_batch, **inference_kwargs)
+#         all_costs += batch_costs
+#         all_new_pcds += batch_new_pcds
+#         all_parameters += batch_parameters
+
+#     best_idx = np.argmin(all_costs)
+#     return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+
+def warp_to_pcd_contact(object_warping: Union[ObjectWarpingSE2BatchContact, ObjectSE2BatchContact], n_batches: int=3, inference_kwargs={}) -> Tuple[NDArray, float, utils.ObjParam]:
+    all_costs, all_new_pcds, all_parameters = [], [], []
+
+    for batch_idx in range(n_batches):
+        batch_costs, batch_new_pcds, batch_parameters = object_warping.inference(**inference_kwargs)
+        all_costs += batch_costs
+        all_new_pcds += batch_new_pcds
+        all_parameters += batch_parameters
+
+    best_idx = np.argmin(all_costs)
+    return all_new_pcds[best_idx], all_costs[best_idx], all_parameters[best_idx]
+
+def orthogonalize(x: torch.Tensor) -> torch.Tensor:
+    """
+    Produce an orthogonal frame from two vectors
+    x: [B, 2, 3]
+    """
+    #u = torch.zeros([x.shape[0],3,3], dtype=torch.float32, device=x.device)
+    u0 = x[:, 0] / torch.norm(x[:, 0], dim=1)[:, None]
+    u1 = x[:, 1] - (torch.sum(u0 * x[:, 1], dim=1))[:, None] * u0
+    u1 = u1 / torch.norm(u1, dim=1)[:, None]
+    u2 = torch.cross(u0, u1, dim=1)
+    return torch.stack([u0, u1, u2], dim=1)
+
+
+def cost_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    """Calculate the one-sided Chamfer distance between two point clouds in pytorch."""
+    diff = torch.sqrt(torch.sum(torch.square(source[:, None] - target[None, :]), dim=2))
+    c = diff[list(range(len(diff))), torch.argmin(diff, dim=1)]
+    return torch.mean(c)
+
+
+def random_rots(num: int) -> NDArray[np.float64]:
+    """Sample random rotation matrices."""
+    return Rotation.random(num=num).as_matrix().astype(np.float64)
+
+
+def random_rots_hemisphere(num: int) -> NDArray[np.float32]:
+    """TODO: Double check this is correct."""
+    rots = random_rots(num * 10)
+    z = np.array([0., 0., 1.], dtype=np.float32)
+    out = np.einsum("bnk,kl->bnl", rots, z[:, None])[:, :, 0]
+    mask = out[..., 2] >= 0
+    return rots[mask][:num]
+
+
+def yaw_to_rot_pt(yaw: torch.Tensor) -> torch.Tensor:
+    """Yaw angle to a rotation matrix in pytorch."""
+    c = torch.cos(yaw)
+    s = torch.sin(yaw)
+
+    t0 = torch.zeros(1, device=c.device)
+    t1 = torch.ones(1, device=c.device)
+
+    return torch.stack([
+        torch.cat([c, -s, t0]),
+        torch.cat([s, c, t0]),
+        torch.cat([t0, t0, t1])
+    ], dim=0)
+
+
+def yaw_to_rot_batch_pt(yaw: torch.Tensor) -> torch.Tensor:
+    """Yaw angle to a batch of rotation matrices in pytorch."""
+    c = torch.cos(yaw)
+    s = torch.sin(yaw)
+
+    t0 = torch.zeros((yaw.shape[0], 1), device=c.device)
+    t1 = torch.ones((yaw.shape[0], 1), device=c.device)
+
+    return torch.stack([
+        torch.cat([c, -s, t0], dim=1),
+        torch.cat([s, c, t0], dim=1),
+        torch.cat([t0, t0, t1], dim=1)
+    ], dim=1)

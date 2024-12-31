@@ -1,5 +1,6 @@
 
-from src.object_warping import ObjectSE3Batch, ObjectWarpingSE3Batch, warp_to_pcd_se3_hemisphere, PARAM_1
+from src.object_warping import ObjectSE3Batch, ObjectWarpingSE3Batch, warp_to_pcd_se3_hemisphere, PARAM_1, mask_and_cost_batch_pt
+from src.object_warping_contact import ObjectSE3BatchContact, ObjectWarpingSE3BatchContact, warp_to_pcd_se3_hemisphere_contact
 import numpy as np
 from src import utils, viz_utils
 from rndf_robot.config.default_eval_cfg import get_eval_cfg_defaults
@@ -20,6 +21,8 @@ inference_kwargs = {
             "train_scales": True,
             "train_poses": True,
         }
+
+device = 'cuda'
 
 #For loading the part-segmented shapenet mugs
 #That's currently hardcoded into the path
@@ -53,7 +56,7 @@ def furthest_point_sample(contacts, pointcloud, num_points):
     return sampled_contacts
 
 def get_contact_points(cup_pcl, handle_pcl, part_names): 
-    knns = utils.get_closest_point_pairs_thresh(cup_pcl, handle_pcl, .0004)#get_closest_point_pairs(cup_pcl, handle_pcl, 11)
+    knns = utils.get_closest_point_pairs_thresh(cup_pcl, handle_pcl, .0006)#get_closest_point_pairs(cup_pcl, handle_pcl, 11)
     viz_utils.show_pcds_plotly({'cup': cup_pcl, 'handle': handle_pcl, })#'pts_1': cup_knns,}) #'pts_2': handle_pcl[knns[:, 0]]})
     return {part_names[0]: knns[:,1 ], part_names[1]: knns[:, 0]}
 
@@ -66,6 +69,17 @@ def cost_batch_pt(source, target):
     c = c_flat.view(diff.shape[0], diff.shape[1])
     return torch.mean(c, dim=1)
 
+def clipped_cost_batch_pt(source, target, thresh=.05): 
+    """Calculate the one-sided Chamfer distance between two batches of point clouds in pytorch."""
+    # B x N x K
+    diff = torch.sqrt(torch.sum(torch.square(source[:, :, None] - target[:, None, :]), dim=3))
+    diff_flat = diff.view(diff.shape[0] * diff.shape[1], diff.shape[2])
+    c_flat = diff_flat[list(range(len(diff_flat))), torch.argmin(diff_flat, dim=1)]
+    c = c_flat.view(diff.shape[0], diff.shape[1])
+
+    c[c < thresh] -= c[c < thresh]
+    return torch.mean(c, dim=1)
+
 def contact_constraint(source, target, source_contact_indices, canon_points, weight=.1):  
     #ax = plt.subplot(111, projection='3d')  
     displayable_target = target.detach().numpy()
@@ -74,7 +88,8 @@ def contact_constraint(source, target, source_contact_indices, canon_points, wei
     displayable_source = source.detach().numpy()
     displayable_source_points = displayable_source[:, source_contact_indices, :]
     #print(displayable_source_points.shape)
-    constraint = cost_batch_pt(canon_points, source[:, source_contact_indices, :]) * weight
+    constraint = clipped_cost_batch_pt(canon_points, source[:, source_contact_indices, :]) * weight
+
     #print(constraint)
     # for i in range(len(target)):
     #     ax.scatter(displayable_target[i, :, 0], displayable_target[i, :, 1], displayable_target[i, :, 2], alpha=.05)
@@ -91,35 +106,35 @@ def contact_constraint(source, target, source_contact_indices, canon_points, wei
 
 #input training set and warp from that training set 
 
-def optimize_alignment_se2(target, source, with_contact=False, target_contacts=[], source_contact=[], n_angles=150, weight=1):
+def optimize_alignment_se2(target, source, with_contact=False, target_contacts=[], source_contact=[], n_angles=8, weight=1):
     if with_contact: 
         cost_function = lambda source, target, canon_points: contact_constraint(source, target, target_contacts, canon_points, weight=weight)
-        warp = ObjectSE2Batch(source, source_contact, target,  'cpu', cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
+        warp = ObjectSE2Batch(source, source_contact, target,  device, cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
         result, _, alignment_params= warp_to_pcd_se2(warp, n_angles, n_batches=1, inference_kwargs=inference_kwargs) 
     else: 
-        warp = ObjectSE2Batch(source, [], target,  'cpu', cost_function=None, **cp.deepcopy(PARAM_1),) 
+        warp = ObjectSE2Batch(source, [], target,  device, cost_function=None, **cp.deepcopy(PARAM_1),) 
         result, _, alignment_params= warp_to_pcd_se2(warp, n_angles, n_batches=1, inference_kwargs=inference_kwargs) 
     return alignment_params
 
-def optimize_alignment(target, source, with_contact=False, target_contacts=[], source_contact=[], n_angles=150, weight=1):
+def optimize_alignment(target, source, with_contact=False, target_contacts=[], source_contact=[], n_angles=8, weight=1):
     if with_contact: 
         cost_function = lambda source, target, canon_points: contact_constraint(source, target, target_contacts, canon_points, weight=weight)
-        warp = ObjectSE3Batch(source, source_contact, target,  'cpu', cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
+        warp = ObjectSE3Batch(source, source_contact, target,  device, cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
         result, _, alignment_params= warp_to_pcd_se3_hemisphere(warp, n_angles, n_batches=1, inference_kwargs=inference_kwargs) 
     else: 
-        warp = ObjectSE3Batch(source, [], target,  'cpu', cost_function=None, **cp.deepcopy(PARAM_1),) 
+        warp = ObjectSE3Batch(source, [], target,  device, cost_function=None, **cp.deepcopy(PARAM_1),) 
         result, _, alignment_params= warp_to_pcd_se3_hemisphere(warp, n_angles, n_batches=1, inference_kwargs=inference_kwargs) 
         print(f"ALIGNMENT PARAMS: {alignment_params}" )
     return alignment_params
 #
-def optimize_alignment_and_warp(target, source, with_contact=False, target_contacts=[], source_contacts=[], n_angles=150, weight=1):
+def optimize_alignment_and_warp(target, source, with_contact=False, target_contacts=[], source_contacts=[], n_angles=8, weight=1):
     if with_contact: 
         cost_function = lambda source, target, canon_points: contact_constraint(source, target, target_contacts, canon_points, weight=weight)
-        warp = ObjectWarpingSE3Batch(source, source_contacts, target,  'cpu', cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
-        result, _, warping_params= warp_to_pcd_se3_hemisphere(warp, n_angles, n_batches=1, inference_kwargs=inference_kwargs) 
+        warp = ObjectWarpingSE3BatchContact(source, source_contacts, target,  device, cost_function=cost_function, **cp.deepcopy(PARAM_1),) 
+        result, _, warping_params= warp_to_pcd_se3_hemisphere_contact(warp, n_angles, n_batches=12, inference_kwargs=inference_kwargs) 
     else: 
-        warp = ObjectWarpingSE3Batch(source, [], target,  'cpu', cost_function=None, **cp.deepcopy(PARAM_1),) 
-        result, _, warping_params= warp_to_pcd_se3_hemisphere(warp, n_angles, n_batches=1, inference_kwargs=inference_kwargs) 
+        warp = ObjectWarpingSE3Batch(source, target, device, **cp.deepcopy(PARAM_1),) 
+        result, _, warping_params= warp_to_pcd_se3_hemisphere(warp, n_angles, n_batches=12, inference_kwargs=inference_kwargs) 
         print(f"WARPING PARAMS: {warping_params}" )
     return warping_params
 
@@ -171,6 +186,46 @@ def part_based_warping_contact(target_parts, target_contacts, canonical_parts, p
         warped_meshes[part] = canon_obj.to_transformed_mesh(alignment_params)
     return warped_pcls, warped_meshes
 
+def part_based_warping_labels(target_parts, target_part_labels, canonical_parts, canonical_labels, part_names, weight=.01):
+    warped_pcls = {}
+    warped_meshes = {}
+    n_angles = 15
+    for part in part_names:
+        target, target_labels, source, canon_part_labels = target_parts[part], target_part_labels[part], canonical_parts[part], canonical_labels[part]
+
+        cost_function = (
+                lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+                    target,
+                    target_labels,
+                    source,
+                    canon_part_labels,
+                )
+            )
+        fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target, 
+                                    'source_labels_0': source.canonical_pcl[canon_part_labels == 0], 
+                                    'source_labels_1': source.canonical_pcl[canon_part_labels == 1], 
+                                    'target_labels_0': target[target_labels == 0], 
+                                    'target_labels_1': target[target_labels == 1]})
+        fig.show()
+
+        warp = ObjectWarpingSE3Batch(
+            source,
+            target,
+            device,
+            canon_labels=canon_part_labels,
+            cost_function=cost_function,
+            **cp.deepcopy(PARAM_1),
+            init_scale=1,
+        )
+
+        result, _, warping_params= warp_to_pcd_se3_hemisphere(warp, n_angles, n_batches=12, inference_kwargs=inference_kwargs) 
+        warped_pcls[part] = source.to_transformed_pcd(warping_params)
+        warped_meshes[part] = source.to_transformed_mesh(warping_params)
+
+        fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target, 'reconstruction': warped_pcls[part]})
+        fig.show()
+    return warped_pcls, warped_meshes
+
 def part_based_warping_no_contact(target_parts, canonical_parts, part_names):
     aligned_pcls = {}
     aligned_meshes = {}
@@ -195,10 +250,10 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 def display_all_pointclouds(pcls, names, target_pcl, target_name, warp_identifier):
-    fig = make_subplots(rows=3, cols=3,
-                        specs=[[{'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'},],
-                               [{'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'},],
-                               [{'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'},]])
+    fig = make_subplots(rows=3, cols=4,
+                        specs=[[{'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'},],
+                               [{'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'},],
+                               [{'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'}, {'type': 'scatter3d'},]])
 
     colorscales = ["Plotly3", "Viridis", "Blues", "Greens", "Greys", "Oranges", "Purples", "Reds"]
     whole_colorscale = 'Greens'
@@ -216,11 +271,19 @@ def display_all_pointclouds(pcls, names, target_pcl, target_name, warp_identifie
 
         fig.add_trace(
             go.Scatter3d(
-                x=pcls[names[0]][:, 0], y=pcls[names[0]][:, 1], z=pcls[names[0]][:, 2],
-                marker={"size": 5, "color": pcls[names[0]][:, 0], "colorscale": whole_colorscale},
-                mode="markers", opacity=1., name=names[0]),
+                x=target_pcl[:, 0], y=target_pcl[:, 1], z=target_pcl[:, 2],
+                marker={"size": 5, "color": target_pcl[:, 0], "colorscale": target_colorscale},
+                mode="markers", opacity=1., name=target_name),
             row=row, col=2
         )
+
+        # fig.add_trace(
+        #     go.Scatter3d(
+        #         x=pcls[names[0]][:, 0], y=pcls[names[0]][:, 1], z=pcls[names[0]][:, 2],
+        #         marker={"size": 5, "color": pcls[names[0]][:, 0], "colorscale": whole_colorscale},
+        #         mode="markers", opacity=1., name=names[0]),
+        #     row=row, col=2
+        # )
 
         # fig.add_trace(
         #     go.Scatter3d(
@@ -246,21 +309,21 @@ def display_all_pointclouds(pcls, names, target_pcl, target_name, warp_identifie
             row=row, col=3
         )
 
-    # fig.add_trace(
-    #     go.Scatter3d(
-    #         x=pcls[names[3]]['cup'][:, 0], y=pcls[names[3]]['cup'][:, 1], z=pcls[names[3]]['cup'][:, 2],
-    #         marker={"size": 5, "color": pcls[names[3]]['cup'][:, 2], "colorscale": colorscale},
-    #         mode="markers", opacity=1., name=names[3]),
-    #     row=2, col=2
-    # )
+        fig.add_trace(
+            go.Scatter3d(
+                x=pcls[names[2]]['cup'][:, 0], y=pcls[names[2]]['cup'][:, 1], z=pcls[names[2]]['cup'][:, 2],
+                marker={"size": 5, "color": pcls[names[2]]['cup'][:, 2], "colorscale": parts_colorscale},
+                mode="markers", opacity=1., name=names[2]),
+            row=row, col=4
+        )
 
-    # fig.add_trace(
-    #     go.Scatter3d(
-    #         x=pcls[names[3]]['handle'][:, 0], y=pcls[names[3]]['handle'][:, 1], z=pcls[names[3]]['handle'][:, 2],
-    #         marker={"size": 5, "color": pcls[names[3]]['handle'][:, 2], "colorscale": colorscale},
-    #         mode="markers", opacity=1., name=names[3]),
-    #     row=2, col=2
-    # )
+        fig.add_trace(
+            go.Scatter3d(
+                x=pcls[names[2]]['handle'][:, 0], y=pcls[names[2]]['handle'][:, 1], z=pcls[names[2]]['handle'][:, 2],
+                marker={"size": 5, "color": pcls[names[2]]['handle'][:, 2], "colorscale": parts_colorscale},
+                mode="markers", opacity=1., name=names[2]),
+            row=row, col=4
+        )
 
     # fig.add_trace(
     #     go.Scatter3d(
@@ -288,30 +351,30 @@ def display_all_pointclouds(pcls, names, target_pcl, target_name, warp_identifie
 
     with fw.batch_update():
         fw.layout.update(width=800, height=600) 
-        for camera in [fw.layout.scene1.camera, fw.layout.scene2.camera, fw.layout.scene3.camera]:
+        for camera in [fw.layout.scene1.camera, fw.layout.scene2.camera, fw.layout.scene3.camera, fw.layout.scene4.camera]:
             camera.up=dict(x=0, y=1, z=0)   
             camera.eye=dict(x=2.5, y=1.75, z=1)   
 
     #fw.update_layout(height=600, width=800, title_text=f"Object {target_name} Warping Comparison ")
     #fw.write_image(f"downsampled_contact_warps/demo_target_{target_id}_warp_{warp_identifier}_corner.png")
-    #fw.show()
+    fw.show()
 
     with fw.batch_update():
         fw.layout.update(width=800, height=600) 
-        for camera in [fw.layout.scene4.camera, fw.layout.scene5.camera, fw.layout.scene6.camera]:
+        for camera in [fw.layout.scene5.camera, fw.layout.scene6.camera, fw.layout.scene7.camera, fw.layout.scene8.camera,]:
             camera.eye=dict(x=2.5, y=0, z=0)   
 
     #fw.update_layout(height=600, width=800, title_text=f"Object {target_name} Warping Comparison ")
     #fw.write_image(f"downsampled_contact_warps/demo_target_{target_id}_warp_{warp_identifier}_side.png")
-    #fw.show()
+    fw.show()
 
     with fw.batch_update():
         fw.layout.update(width=800, height=600) 
-        for camera in [fw.layout.scene7.camera, fw.layout.scene8.camera, fw.layout.scene9.camera]:
+        for camera in [fw.layout.scene9.camera, fw.layout.scene10.camera, fw.layout.scene11.camera, fw.layout.scene12.camera,]:
             camera.eye=dict(x=0, y=2.5, z=0)   
 
-    fw.update_layout(height=1000, width=1000, title_text=f"Object {target_name} Warping Comparison ")
-    fw.write_image(f"downsampled_contact_warps/all_demo_target_{target_id}_warp_{warp_identifier}_top.png")
+    fw.update_layout(title_text=f"Object {target_name} Warping Comparison ")
+    #fw.write_image(f"downsampled_contact_warps/all_demo_target_{target_id}_warp_{warp_identifier}_top.png")
 
     # def cam_change(layout, camera):
     #     fw.layout.scene2.camera = camera
@@ -323,12 +386,12 @@ def display_all_pointclouds(pcls, names, target_pcl, target_name, warp_identifie
 
 if __name__ == "__main__":
 
-    warp_file_stamp = '20240202-160637'
+    warp_file_stamp = '20240425-234145_10'
 
     #todo: generalize for other objects
-    object_warp_file = f'whole_mug_{warp_file_stamp}'
-    cup_warp_file = f'cup_{warp_file_stamp}'
-    handle_warp_file = f'handle_{warp_file_stamp}'
+    object_warp_file = f'./part_based_warp_models/whole_mug_{warp_file_stamp}'
+    cup_warp_file = f'./part_based_warp_models/cup_{warp_file_stamp}'
+    handle_warp_file = f'./part_based_warp_models/handle_{warp_file_stamp}'
 
     part_names = ['cup', 'handle']
     part_labels = {'cup': 37, 'handle':36}
@@ -352,10 +415,29 @@ if __name__ == "__main__":
     
     canon_contacts = get_contact_points(contact_cup, contact_handle, part_names)
 
-    _, cup_contact_indices = utils.farthest_point_sample(part_canonicals['cup'].canonical_pcl[canon_contacts['cup']], 2)
-    _, handle_contact_indices = utils.farthest_point_sample(part_canonicals['handle'].canonical_pcl[canon_contacts['handle']], 2)
-    canon_contacts['cup'] = canon_contacts['cup'][cup_contact_indices]
-    canon_contacts['handle'] = canon_contacts['handle'][handle_contact_indices]
+    def get_part_labels(cup, handle, part_names):
+        #get distances between all points on both parts
+        #for each part 
+        
+        dists = np.sum(np.square(cup[None] - handle[:, None]), axis=-1)
+        cup_dists = np.min(dists, axis=0)
+        handle_dists = np.min(dists, axis=1)
+
+        cup_labels = np.where(cup_dists < np.mean(cup_dists), np.zeros_like(cup_dists), np.ones_like(cup_dists))
+        handle_labels = np.where(handle_dists < np.mean(handle_dists) * .8, np.zeros_like(handle_dists), np.ones_like(handle_dists))
+        return {'cup': cup_labels, 'handle': handle_labels}
+
+
+    canon_labels = get_part_labels(contact_cup, contact_handle, part_names)
+
+    fig = viz_utils.show_pcds_plotly({'cup':contact_cup, 'handle':contact_handle, 
+                                'cup_contacts':  contact_cup[canon_contacts['cup']], 'handle_contacts':  contact_handle[canon_contacts['handle']]})
+    fig.show()
+
+    # _, cup_contact_indices = utils.farthest_point_sample(part_canonicals['cup'].canonical_pcl[canon_contacts['cup']], 2)
+    # _, handle_contact_indices = utils.farthest_point_sample(part_canonicals['handle'].canonical_pcl[canon_contacts['handle']], 2)
+    # canon_contacts['cup'] = canon_contacts['cup'][cup_contact_indices]
+    # canon_contacts['handle'] = canon_contacts['handle'][handle_contact_indices]
 
     part_canonicals['cup'].contact_points = canon_contacts['cup']
     part_canonicals['handle'].contact_points = canon_contacts['handle']
@@ -369,15 +451,16 @@ if __name__ == "__main__":
     #get all the shapenet pointclouds
     #sample a target from shapenet
 
-    all_shapenet_mugs = load_all_shapenet_files()
+    all_shapenet_mugs = load_all_shapenet_files('mug')
     while True: 
         target_id = all_shapenet_mugs[np.random.choice(len(all_shapenet_mugs))]
         if target_id == whole_object_canonical.metadata.canonical_id or target_id in whole_object_canonical.metadata.training_ids:
             continue
         try: 
-            target_id='5c7c4cb503a757147dbda56eabff0c47'
+            #target_id='5c7c4cb503a757147dbda56eabff0c47'
             # target_id = whole_object_canonical.metadata.canonical_id
             #target_id = '8b1dca1414ba88cb91986c63a4d7a99a'
+            target_id = '387b695db51190d3be276203d0b1a33f'
             target_whole_mesh = get_mesh(target_id)
             target_part_meshes = get_segmented_mesh(target_id)
             break
@@ -416,31 +499,35 @@ if __name__ == "__main__":
         #                                 k=target_part_meshes[part_labels[part]].faces[:,2], opacity=0.50)])
         # fig.show()
 
-    target_whole = utils.trimesh_create_verts_surface(target_whole_mesh, num_surface_samples=2000)
-    target_parts = {part:utils.trimesh_create_verts_surface(target_part_meshes[part_labels[part]], num_surface_samples=2000) for part in part_names}
-    viz_utils.show_pcds_plotly({"whole": target_whole, "cup": target_parts['cup'], "handle":target_parts['handle']})
+    target_whole = utils.trimesh_create_verts_surface(target_whole_mesh, num_surface_samples=1000)
+    target_parts = {part:utils.trimesh_create_verts_surface(target_part_meshes[part_labels[part]], num_surface_samples=1000) for part in part_names}
+    #viz_utils.show_pcds_plotly({"whole": target_whole, "cup": target_parts['cup'], "handle":target_parts['handle']})
 
     target_contacts = get_contact_points(target_parts['cup'], target_parts['handle'], part_names)
-    
-    _, cup_contact_indices = utils.farthest_point_sample(target_parts['cup'][target_contacts['cup']], 2)
-    _, handle_contact_indices = utils.farthest_point_sample(target_parts['handle'][target_contacts['handle']], 2)
-    target_contacts['cup'] = target_contacts['cup'][cup_contact_indices]
-    target_contacts['handle'] = target_contacts['handle'][handle_contact_indices]
+    target_labels = get_part_labels(target_parts['cup'], target_parts['handle'], part_names)
 
-    # viz_utils.show_pcds_plotly({'cup':target_parts['cup'], 'handle':target_parts['handle'], 
-    #                             'cup_contacts':  target_parts['cup'][target_contacts['cup']], 'handle_contacts':  target_parts['handle'][target_contacts['handle']]})
+
+    
+    # _, cup_contact_indices = utils.farthest_point_sample(target_parts['cup'][target_contacts['cup']], 2)
+    # _, handle_contact_indices = utils.farthest_point_sample(target_parts['handle'][target_contacts['handle']], 2)
+    # target_contacts['cup'] = target_contacts['cup'][cup_contact_indices]
+    # target_contacts['handle'] = target_contacts['handle'][handle_contact_indices]
+
+    fig = viz_utils.show_pcds_plotly({'cup':target_parts['cup'], 'handle':target_parts['handle'], 
+                                'cup_contacts':  target_parts['cup'][target_contacts['cup']], 'handle_contacts':  target_parts['handle'][target_contacts['handle']]})
+    fig.show()
     # exit(0)
     target_parts['cup'], target_parts['handle'] = utils.scale_points_circle([target_parts[part] for part in part_names], base_scale=.1)
     # viz_utils.show_pcds_plotly({'canon_cup': part_canonicals['handle'].canonical_pcl, 'target_handle': target_parts['handle']})
 
     names = ['Whole Warped',
              #'Part Aligned (no contacts)', 
-             'Part Warped', ]
+             'Part Warped',
              # 'Part Aligned (contacts)', 
-             # 'Part Warped (contacts)']
+             'Part Warped (contacts)']
 
     #whole alignment only (no contact points)
-    whole_warped, _ = whole_object_warping(target_whole, whole_object_canonical)
+    #whole_warped, _ = whole_object_warping(target_whole, whole_object_canonical)
     #whole_aligned, _ = whole_object_alignment(target_whole, whole_object_canonical)
     #whole warp + alignment (no contact points)
     
@@ -475,12 +562,13 @@ if __name__ == "__main__":
     #parts_aligned_contact, parts_aligned_mesh = part_based_alignment_contact(target_parts, target_contacts, part_canonicals, part_names)
     #part based alignment plus warping (with contact points)
     #parts_warped_contact, parts_warped_mesh = part_based_warping_contact(target_parts, target_contacts, part_canonicals, part_names)
+    parts_warped_contact, parts_warped_mesh = part_based_warping_labels(target_parts, target_labels, part_canonicals, canon_labels, part_names)
 
-    result_pcls = {'Whole Warped': whole_warped,#whole_warped}#whole_aligned, 
+    result_pcls = {'Whole Warped': None,#whole_warped,#whole_warped}#whole_aligned, 
                    #'Part Aligned (no contacts)': parts_aligned,
-                   'Part Warped': parts_warped,}
+                   'Part Warped': parts_warped,
                    # 'Part Aligned (contacts)': parts_aligned_contact,
-                   # 'Part Warped (contacts)': parts_warped_contact,}
+                   'Part Warped (contacts)': parts_warped_contact,}
    
     # transform = np.eye(4)
     # transform[:3, :3] = np.linalg.inv(rotation)

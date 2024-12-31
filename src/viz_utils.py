@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import open3d as o3d
 import plotly.graph_objects as go
 
+
 def show_pcd_pyplot(pcd: NDArray, center: bool = False):
     print("VIZUALIZING")
     if center:
@@ -54,7 +55,11 @@ def show_pcd_plotly(pcd: NDArray, center: bool = False, axis_visible: bool = Tru
     return fig
 
 
-def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
+def show_pcds_pyplot(
+    pcds: Dict[str, NDArray],
+    center: bool = False,
+    colors: Optional[Dict[str, str]] = None,
+):
     if center:
         tmp = np.concatenate(list(pcds.values()), axis=0)
         m = np.mean(tmp, axis=0)
@@ -69,7 +74,17 @@ def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
     for label, pcd in pcds.items():
-        ax.scatter(pcd[:, 0], pcd[:, 1], pcd[:, 2], label=label)
+        if colors is not None:
+            ax.scatter(
+                pcd[:, 0], pcd[:, 1], pcd[:, 2], label=label, color=colors[label]
+            )
+        else:
+            ax.scatter(
+                pcd[:, 0],
+                pcd[:, 1],
+                pcd[:, 2],
+                label=label,
+            )
     ax.set_xlim(lmin, lmax)
     ax.set_ylim(lmin, lmax)
     ax.set_zlim(lmin, lmax)
@@ -78,7 +93,13 @@ def show_pcds_pyplot(pcds: Dict[str, NDArray], center: bool = False):
 
 
 def show_pcds_plotly(
-    pcds: Dict[str, NDArray], center: bool = False, axis_visible: bool = True
+    pcds: Dict[str, NDArray],
+    center: bool = False,
+    axis_visible: bool = True,
+    colors: Optional[Dict[str, str]] = None,
+    show_legend = True,
+    markers = None,
+    camera = None
 ):
     colorscales = [
         "Plotly3",
@@ -105,14 +126,25 @@ def show_pcds_plotly(
     data = []
     for idx, key in enumerate(pcds.keys()):
         v = pcds[key]
-        colorscale = colorscales[idx % len(colorscales)]
+        if colors is not None:
+            colorscale = colors[key]
+        else:
+            colorscale = colorscales[idx % len(colorscales)]
+
+        if markers is not None:
+            marker = markers[key] | {"color":v[:, 2], "colorscale": colorscale}
+        else:
+            marker={"size": 5,
+                    "color": v[:, 2],
+                    "colorscale": colorscale,
+                        }
+
         pl = go.Scatter3d(
             x=v[:, 0],
             y=v[:, 1],
             z=v[:, 2],
-            marker={"size": 5, "color": v[:, 2], "colorscale": colorscale},
+            marker=marker,
             mode="markers",
-            opacity=1.0,
             name=key,
         )
         data.append(pl)
@@ -124,9 +156,15 @@ def show_pcds_plotly(
         "aspectratio": {"x": 1, "y": 1, "z": 1},
     }
     fig = go.Figure(data=data)
-    fig.update_layout(scene=layout, showlegend=True)
-    #fig.show()
+    if camera is None:
+        camera = fig.layout.scene.camera
+        camera.up =  dict(x=0, y=1, z=0)
+        camera.eye = dict(x=6.28, y=0, z=1)
+    fig.update_layout(scene=layout, scene_camera=camera, showlegend=show_legend)
+
+    # fig.show()
     return fig
+
 
 
 def show_meshes_plotly(
@@ -138,6 +176,7 @@ def show_meshes_plotly(
     camera: Optional[Dict[str, Dict[str, float]]] = None,
     show_legend: bool = True,
     show: bool = True,
+    pcds = None,
 ):
     colorscales = [
         "Plotly3",
@@ -174,48 +213,71 @@ def show_meshes_plotly(
             j=f[:, 1],
             k=f[:, 2],
             colorscale=colorscale,
-            intensity = v[:, 2],
-            showscale=False
+            intensity=v[:, 2],
+            showscale=False,
         )
         data.append(mesh)
 
-    layout = {
-        "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+    if pcds is not None:
+        for idx, key in enumerate(pcds.keys()):
+            v = pcds[key]
+            # if colors is not None:
+            #     colorscale = colors[key]
+            # else:
+            #     colorscale = colorscales[idx % len(colorscales)]
+
+            # if markers is not None:
+            #     marker = markers[key] | {"color":v[:, 2], "colorscale": colorscale}
+            # else:
+            #     marker={"size": 5,
+            #             "color": v[:, 2],
+            #             "colorscale": colorscale,
+            #                 }
+
+            pl = go.Scatter3d(
+                x=v[:, 0],
+                y=v[:, 1],
+                z=v[:, 2],
+                # marker=marker,
+                mode="markers",
+                name=key,
+            )
+            data.append(pl)
+
+    layout = {  "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
         "yaxis": {"visible": axis_visible, "range": [lmin, lmax]},
         "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
-        "aspectratio": {"x": 1, "y": 1, "z": 1},
-    }
-
-    if not background_visible:
-        layout["bgcolor"] = 'rgba(0,0,0,0)'
+        "aspectratio": {"x": 1, "y": 1, "z": 1},}
     fig = go.Figure(data=data)
-    if camera is not None:
-        scene_camera = dict(
-        up=camera['up'],
-        center=dict(x=0, y=0, z=0),
-        eye=camera['eye']
-        )
-        fig.update_layout(scene_camera=scene_camera)
+    if camera is None:
+        camera = fig.layout.scene.camera
+        camera.up =  dict(x=0, y=0, z=1)
+        camera.eye = dict(x=1.6, y=.6, z=.8)
+    fig.update_layout(scene=layout, scene_camera=camera, showlegend=show_legend)
 
-    
     fig.update_xaxes(showgrid=axis_visible)
     fig.update_yaxes(showgrid=axis_visible)
     fig.update_layout(scene=layout, showlegend=show_legend, width=600, height=600)
     if show:
         fig.show()
 
-
     return fig
 
+
+
 from plotly.subplots import make_subplots
+
 
 def show_pcd_grid_plotly(
     rows,
     cols,
-    pcls: Dict[str, NDArray],
+    pcls: Dict[str, Dict[str, NDArray]],
     names: List[str],
-    colorscales: Optional[List[str]] = None,
+    subplot_titles = List[str],
+    markers=None,
+    #colorscales: Optional[List[str]] = None,
     camera_views: Optional[List[Dict[str, dict]]] = None,
+    get_images = False,
     save_image: bool = False,
     save_path: bool = False,
 ):
@@ -223,33 +285,61 @@ def show_pcd_grid_plotly(
         rows=rows,
         cols=cols,
         specs=[[{"type": "scatter3d"} for i in range(cols)] for j in range(rows)],
+        horizontal_spacing = 0.00,
+        vertical_spacing = 0.00,
+        subplot_titles=subplot_titles,
     )
+    layout = {}
+    axis_visible = False
 
     for row in range(rows):
         for col in range(cols):
-            if colorscales is not None:
-                colorscale = colorscales[row * cols + col]
-            else:
-                colorscale = "viridis"
-            name = names[rows * cols + col]
+            # if colorscales is not None:
+            #     colorscale = colorscales[row * cols + col]
+            # else:
+            #     colorscale = "viridis"
+            name = names[row * cols + col]
 
-            fig.add_trace(
-                go.Scatter3d(
-                    x=pcls[name][:, 0],
-                    y=pcls[name][:, 1],
-                    z=pcls[name][:, 2],
+            tmp = np.concatenate(list(pcls[name].values()), axis=0)
+            epsilon = .005
+            lmin = np.min(tmp) - epsilon
+            lmax = np.max(tmp) + epsilon
+
+            for pcl_name in pcls[name].keys():
+                if markers is not None:
+                    marker = markers[name][pcl_name] | {"color": np.ones_like(pcls[name][pcl_name][:, 2]) * .5,}
+                else:
                     marker={
-                        "size": 5,
-                        "color": pcls[name][:, 0],
-                        "colorscale": colorscale,
-                    },
-                    mode="markers",
-                    opacity=1.0,
-                    name=name,
-                ),
-                row=row + 1,
-                col=col + 1,
-            )
+                            "size": 5,
+                            "color": pcls[name][pcl_name][:, 2],
+                            "colorscale": 'viridis',
+                        },
+                fig.add_trace(
+                    go.Scatter3d(
+                        x=pcls[name][pcl_name][:, 0],
+                        y=pcls[name][pcl_name][:, 1],
+                        z=pcls[name][pcl_name][:, 2],
+                        marker=marker,
+                        mode="markers",
+                        name=pcl_name,
+                    ),
+                    row=row + 1,
+                    col=col + 1,
+                )
+
+            layout = layout | {
+                "xaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+                "yaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+                "zaxis": {"visible": axis_visible, "range": [lmin, lmax]},
+                "aspectratio": {"x": 1, "y": 1, "z": 1},}
+            plot_index = row * cols + col + 1 if row * cols + col > 0 else ''
+            eval(f"fig.layout.scene{plot_index}.xaxis").update({"visible": axis_visible, "range": [lmin, lmax]})
+            eval(f"fig.layout.scene{plot_index}.yaxis").update({"visible": axis_visible, "range": [lmin, lmax]})
+            eval(f"fig.layout.scene{plot_index}.zaxis").update({"visible": axis_visible, "range": [lmin, lmax]})
+            #fig.layout[f"title_text{plot_index}"] = subplot_titles[row*cols + col]
+            #eval(f"fig.layout.scene{plot_index}").update({'aspectmode': "data"})
+
+    fig.update_annotations(font_size=25)
     fw = go.FigureWidget(fig)
 
     if camera_views is not None:
@@ -264,7 +354,10 @@ def show_pcd_grid_plotly(
                 camera.up = camera_views[i]["up"]  # dict(x=0, y=1, z=0)
                 camera.eye = camera_views[i]["eye"]  # dict(x=2.5, y=1.75, z=1)
 
-        fw.update_layout(height=1000, width=1000)
+        fw.update_layout(scene=layout, height=1000, width=1000)
+
+
+
     if save_image:
         fw.write_image(save_path)
 
@@ -421,7 +514,7 @@ def show_pcds_slider_animation_plotly(
     ]
 
     fig.update_layout(sliders=sliders)
-    #fig.show()
+    # fig.show()
     return fig
 
 
@@ -454,7 +547,111 @@ def save_o3d_pcd(pcd: NDArray[np.float32], save_path: str):
     o3d.io.write_point_cloud(save_path, pcd_o3d)
 
 
-def draw_arrow(ax, orig, delta, color):
+
+import plotly.graph_objects as go
+import numpy as np
+# rotation util code is from mujoco_worldgen/util/rotation.py
+_FLOAT_EPS = np.finfo(np.float64).eps
+_EPS4 = _FLOAT_EPS * 4.0
+
+
+def mat2euler(mat):
+    """ Convert Rotation Matrix to Euler Angles.  See rotation.py for notes """
+    mat = np.asarray(mat, dtype=np.float64)
+    assert mat.shape[-2:] == (3, 3), "Invalid shape matrix {}".format(mat)
+
+    cy = np.sqrt(mat[..., 2, 2] * mat[..., 2, 2] + mat[..., 1, 2] * mat[..., 1, 2])
+    condition = cy > _EPS4
+    euler = np.empty(mat.shape[:-1], dtype=np.float64)
+    euler[..., 2] = np.where(condition,
+                             -np.arctan2(mat[..., 0, 1], mat[..., 0, 0]),
+                             -np.arctan2(-mat[..., 1, 0], mat[..., 1, 1]))
+    euler[..., 1] = np.where(condition,
+                             -np.arctan2(-mat[..., 0, 2], cy),
+                             -np.arctan2(-mat[..., 0, 2], cy))
+    euler[..., 0] = np.where(condition,
+                             -np.arctan2(mat[..., 1, 2], mat[..., 2, 2]),
+                             0.0)
+    return euler
+
+def quat2mat(quat):
+    """ Convert Quaternion to Euler Angles.  See rotation.py for notes """
+    assert quat.shape[-1] == 4, "Invalid shape quat {}".format(quat)
+
+    w, x, y, z = quat[..., 0], quat[..., 1], quat[..., 2], quat[..., 3]
+    Nq = np.sum(quat * quat, axis=-1)
+    s = 2.0 / Nq
+    X, Y, Z = x * s, y * s, z * s
+    wX, wY, wZ = w * X, w * Y, w * Z
+    xX, xY, xZ = x * X, x * Y, x * Z
+    yY, yZ, zZ = y * Y, y * Z, z * Z
+
+    mat = np.empty(quat.shape[:-1] + (3, 3), dtype=np.float64)
+    mat[..., 0, 0] = 1.0 - (yY + zZ)
+    mat[..., 0, 1] = xY - wZ
+    mat[..., 0, 2] = xZ + wY
+    mat[..., 1, 0] = xY + wZ
+    mat[..., 1, 1] = 1.0 - (xX + zZ)
+    mat[..., 1, 2] = yZ - wX
+    mat[..., 2, 0] = xZ - wY
+    mat[..., 2, 1] = yZ + wX
+    mat[..., 2, 2] = 1.0 - (xX + yY)
+    return np.where((Nq > _FLOAT_EPS)[..., np.newaxis, np.newaxis], mat, np.eye(3))
+
+def quat2euler(quat):
+    """ Convert Quaternion to Euler Angles.  See rotation.py for notes """
+    return mat2euler(quat2mat(quat))
+
+def make_arrow_plotly(x, y, z, color):
+    datum = [
+    {
+        'x': x,
+        'y': y,
+        'z': z,
+        'mode': "lines",
+        'line': {
+            'color': color,
+            'width': 5
+        }
+    },
+    {
+        "type": "cone",
+        'x': [x[1]],
+        'y': [y[1]],
+        'z': [z[1]],
+        'u': [0.3*(x[1]-x[0])],
+        'v': [0.3*(y[1]-y[0])],
+        'w': [0.3*(z[1]-z[0])],
+        'anchor': "tip", # make cone tip be at endpoint
+        'hoverinfo': "none",
+        'colorscale': [[0, color], [1, color]], # color all cones blue
+        'showscale': False,
+    }]
+
+    traces = [go.Scatter3d(**datum[0]), go.Cone(**datum[1])] #, 
+    return traces
+
+
+def make_quiver(start_points, end_points, colors):
+    arrows = []
+    for start,end,color in zip(start_points, end_points, colors):
+        arrows += make_arrow_plotly((start[0], end[0]),(start[1], end[1]),(start[2], end[2]),color)
+    return arrows
+
+def make_axis_plotly(transform, magnitude=1):
+    start_points = [transform[:3, 3] for _ in range(3)]
+    rot_mat = transform[:3, :3]
+    z_end_point = np.matmul(np.array([[0,0,1]])*magnitude, rot_mat) + start_points[0]
+    y_end_point = np.matmul(np.array([[0,1,0]])*magnitude, rot_mat) + start_points[0]
+    x_end_point = np.matmul(np.array([[1,0,0]])*magnitude, rot_mat) + start_points[0]
+    end_points = [x_end_point[0], y_end_point[0], z_end_point[0]]
+    colors = ['red', 'green', 'blue']
+    print(start_points)
+    print(end_points)
+    return make_quiver(start_points, end_points , colors)
+    
+
+def draw_arrow_plt(ax, orig, delta, color):
     ax.quiver(
         orig[0],
         orig[1],
@@ -474,6 +671,6 @@ def show_pose(ax, T):
     x_arrow = np.matmul(rot, np.array([0.05, 0.0, 0.0]))
     y_arrow = np.matmul(rot, np.array([0.0, 0.05, 0.0]))
     z_arrow = np.matmul(rot, np.array([0.0, 0.0, 0.05]))
-    draw_arrow(ax, orig, x_arrow, "red")
-    draw_arrow(ax, orig, y_arrow, "green")
-    draw_arrow(ax, orig, z_arrow, "blue")
+    draw_arrow_plt(ax, orig, x_arrow, "red")
+    draw_arrow_plt(ax, orig, y_arrow, "green")
+    draw_arrow_plt(ax, orig, z_arrow, "blue")

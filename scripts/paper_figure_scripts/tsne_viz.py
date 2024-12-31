@@ -17,7 +17,7 @@ from sklearn import neighbors
 import plotly.express as px
 import pickle
 from src.object_warping import PARAM_1, ObjectWarpingSE3Batch, warp_to_pcd_se3
-
+from PIL import Image
 import webbrowser
 
 import plotly
@@ -30,8 +30,8 @@ canon_source_scale = 1
 mesh_data_dirs = {
     "mug": "mug_centered_obj_normalized",
     # 'bottle': 'bottle_centered_obj_normalized',
-    #'bowl': 'bowl_centered_obj_normalized',
-    #'syn_rack_easy': 'syn_racks_easy_obj',
+    'bowl': 'bowl_centered_obj_normalized',
+    'syn_rack_easy': 'syn_racks_easy_obj',
     # 'syn_container': 'box_containers_unnormalized'
 }
 mesh_data_dirs = {
@@ -86,7 +86,45 @@ def check_segmentation_exists(pcl_id):
     return os.path.exists(fn)
 
 
-def get_object_images(mesh_files):
+def get_syn_rack_images(mesh_files):
+    for pcl_id in mesh_files:
+        obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/syn_racks_easy_obj/{pcl_id}.obj"
+        mesh = utils.trimesh_load_object(obj_file_path)
+        # load mesh
+        fig = viz_utils.show_meshes_plotly(
+            {"mesh": mesh.vertices},
+            {"mesh": mesh.faces},
+            center=True,
+            axis_visible=False,
+            background_visible=False,
+            camera={"up": dict(x=0, y=1, z=0), "eye": dict(x=2.5, y=1.75, z=1)},
+            show_legend=False,
+            show=False,
+        )
+        fig.write_image(f"mesh_images/syn_racks/{pcl_id}.png")
+        # input("continue?")
+        # save image somewhere
+
+def get_bowl_images(mesh_files):
+    for pcl_id in mesh_files:
+        obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/bowl_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
+        mesh = utils.trimesh_load_object(obj_file_path)
+        # load mesh
+        fig = viz_utils.show_meshes_plotly(
+            {"mesh": mesh.vertices},
+            {"mesh": mesh.faces},
+            center=True,
+            axis_visible=False,
+            background_visible=False,
+            camera={"up": dict(x=0, y=1, z=0), "eye": dict(x=2.5, y=1.75, z=1)},
+            show_legend=False,
+            show=False,
+        )
+        fig.write_image(f"mesh_images/bowls/{pcl_id}.png")
+        # input("continue?")
+        # save image somewhere
+
+def get_mug_images(mesh_files):
     for pcl_id in mesh_files:
         obj_file_path = f"../relational_ndf/src/rndf_robot/descriptions/objects/mug_centered_obj_normalized/{pcl_id}/models/model_normalized.obj"
         mesh = utils.trimesh_load_object(obj_file_path)
@@ -433,18 +471,23 @@ def circlify_image(img):
 def color_adjust_image(img, cost, cost_thresh, idx, training_ids):
     img = np.array(img)
     if idx in training_ids:
-        img[:, :, 0] = np.zeros_like(img[:, :, 0])
-        img[:, :, 1] = np.zeros_like(img[:, :, 0])
+        img[:, :, 0] = img[:, :, 0]//2
+        img[:, :, 1] = img[:, :, 1]//2
+        img[:, :, 2] = np.ones_like(img[:, :, 3]) * 200
+        img[:, :, 3] = np.where(img[:,:,3] != 0, np.ones_like(img[:, :, 3]) * 50,  img[:, :, 3])
         return Image.fromarray(img)
 
     if cost is not None and cost >= cost_thresh:
-        img[:, :, 0] = np.zeros_like(img[:, :, 0])
-        img[:, :, 2] = np.zeros_like(img[:, :, 0])
+        img[:, :, 0] = img[:, :, 0]//2
+        img[:, :, 2] = img[:, :, 1]//2
+        img[:, :, 1] = np.ones_like(img[:, :, 3]) * 200
         # img += np.array([0, 100, 0, 0 ], dtype='uint8')
         # img = np.clip(img, 0, 255)
     else:
-        img[:, :, 1] = np.zeros_like(img[:, :, 0])
-        img[:, :, 2] = np.zeros_like(img[:, :, 0])
+        img[:, :, 1] = img[:, :, 0]//2
+        img[:, :, 2] = img[:, :, 1]//2
+        img[:, :, 0] = np.ones_like(img[:, :, 3]) * 200
+        #img[:, :, 2] = np.zeros_like(img[:, :, 0])
         # img += np.array([100, 0, 0, 0], dtype='uint8')
         # img = np.clip(img, 0, 255)
     return Image.fromarray(img)
@@ -504,6 +547,19 @@ def get_part_embeddings(part_embeddings, part_names, pcl_ids):
                 layer="above",
             )
         )
+    fig.update_annotations(font_size=25)
+    fig.update_layout(xaxis=dict(
+        title=dict(
+            text="v1"
+        )
+    ),)
+
+    fig.update_layout(yaxis=dict(
+        title=dict(
+            text="v2"
+        )
+    ),)
+
     fig.show()
 
 
@@ -533,8 +589,8 @@ def get_object_embeddings(object_embeddings, pcl_ids):
                 yanchor="middle",
                 x=embedding[0],
                 y=embedding[1],
-                sizex=x_range / 2,
-                sizey=y_range / 2,
+                sizex=x_range / 4,
+                sizey=y_range / 4,
                 sizing="contain",
                 opacity=0.8,
                 layer="above",
@@ -543,7 +599,10 @@ def get_object_embeddings(object_embeddings, pcl_ids):
     fig.show()
 
 
-def get_part_cost_graph(part_embeddings, part_costs, cost_thresh, pcl_ids):
+def get_two_sided_chamfer_distance():
+    pass  
+
+def get_part_cost_graph(part_embeddings, part_costs, cost_thresh, pcl_ids, training_ids):
     # embedding_info = None
     # for part in part_names:
     #     X_embedded = TSNE(
@@ -553,6 +612,7 @@ def get_part_cost_graph(part_embeddings, part_costs, cost_thresh, pcl_ids):
     #         embedding_info = X_embedded
     #     else:
     #         embedding_info = np.concatenate([embedding_info, X_embedded], axis=1)
+    print(training_ids)
     embedding_info = np.concatenate([np.atleast_2d(part_embeddings['cup'][:, 0]).T, np.atleast_2d(part_embeddings['handle'][:,0]).T], axis=1)
     
 
@@ -575,7 +635,7 @@ def get_part_cost_graph(part_embeddings, part_costs, cost_thresh, pcl_ids):
                     circlify_image(Image.open(f"mesh_images/mugs/{pcl_id}.png")),
                     cost,
                     cost_thresh,
-                    i, diagonal_idxs,
+                    pcl_ids[i], training_ids,
                 ),
                 xref="x",
                 yref="y",
@@ -583,17 +643,37 @@ def get_part_cost_graph(part_embeddings, part_costs, cost_thresh, pcl_ids):
                 yanchor="middle",
                 x=embedding_info[i,0],#part_embeddings['cup'][i, 0],
                 y=embedding_info[i,1],#part_embeddings['handle'][i, 0],
-                sizex=x_range / 2,
-                sizey=y_range / 2,
+                sizex=x_range / 2.5,
+                sizey=y_range / 2.5,
                 sizing="contain",
-                opacity=0.8,
+                #opacity=0.8,
                 layer="above",
             )
         )
+    fig.update_layout(
+        title=dict(text="Part Decomposition Shape Warping",  x=0.5,  font=dict(size=25)),
+    )
+    fig.update_layout(xaxis=dict(
+        title=dict(
+            text="v1",
+            font=dict(size=25),
+        )
+    ),)
+
+    fig.update_layout(yaxis=dict(
+        title=dict(
+            text="v2",
+            font=dict(size=25)
+        )
+    ),)
+
+    fig.update_xaxes(range=[-2.5, 1])
+    fig.update_yaxes(range=[-2.6, -0.8])
+    fig.write_image("part_costs.png")
     fig.show()
 
 
-def get_whole_cost_graph(object_embeddings, object_costs, cost_thresh, pcl_ids):
+def get_whole_cost_graph(object_embeddings, object_costs, cost_thresh, pcl_ids, training_ids):
     # object_embeddings = TSNE(
     #     n_components=2, learning_rate="auto", init="random", perplexity=3
     # ).fit_transform(object_warps)
@@ -613,6 +693,65 @@ def get_whole_cost_graph(object_embeddings, object_costs, cost_thresh, pcl_ids):
                     circlify_image(Image.open(f"mesh_images/mugs/{pcl_id}.png")),
                     cost,
                     cost_thresh,
+                    pcl_ids[i], training_ids,
+                ),
+                xref="x",
+                yref="y",
+                xanchor="center",
+                yanchor="middle",
+                x=embedding[0],
+                y=embedding[1],
+                sizex=x_range / 4,
+                sizey=y_range / 4,
+                sizing="contain",
+                layer="above",
+            )
+        )
+
+    fig.update_layout(
+        title=dict(text="Whole Object Shape Warping",  x=0.5,  font=dict(size=25)),
+    )
+    fig.update_xaxes(range=[-2.5, 1])
+    fig.update_yaxes(range=[-2.6, -0.8])
+    fig.write_image("whole_costs.png")
+    fig.update_layout(xaxis=dict(
+        title=dict(
+            text="v1",
+            font=dict(size=25),
+        )
+    ),)
+
+    fig.update_layout(yaxis=dict(
+        title=dict(
+            text="v2",
+            font=dict(size=25)
+        )
+    ),)
+    fig.write_image("whole_costs.png")
+
+    fig.show()
+    
+def get_rndf_cost_graph(object_embeddings, training_object_embeddings, object_costs, cost_thresh, pcl_ids, training_ids):
+    # object_embeddings = TSNE(
+    #     n_components=2, learning_rate="auto", init="random", perplexity=3
+    # ).fit_transform(object_warps)
+    fig = px.scatter(
+        x=object_embeddings[:, 0],
+        y=object_embeddings[:, 1],
+    )
+    fig.update_traces(marker_color="rgba(0,0,0,0)")
+    x_range = np.max(object_embeddings[:, 0]) - np.min(object_embeddings[:, 0])
+    y_range = np.max(object_embeddings[:, 0]) - np.min(object_embeddings[:, 0])
+
+    for i in range(len(training_ids)):
+        embedding = training_object_embeddings[i]
+        fig.add_layout_image(
+            dict(
+                source=color_adjust_image(
+                    circlify_image(Image.open(f"mesh_images/mugs/{training_ids[i]}.png")),
+                    0,
+                    .5,
+                    training_ids[i], training_ids,
                 ),
                 xref="x",
                 yref="y",
@@ -623,54 +762,239 @@ def get_whole_cost_graph(object_embeddings, object_costs, cost_thresh, pcl_ids):
                 sizex=x_range / 2,
                 sizey=y_range / 2,
                 sizing="contain",
-                opacity=0.8,
                 layer="above",
             )
         )
+
+
+
+    for i in range(len(pcl_ids)):
+        pcl_id, embedding, cost = pcl_ids[i], object_embeddings[i], object_costs[i]
+        fig.add_layout_image(
+            dict(
+                source=color_adjust_image(
+                    circlify_image(Image.open(f"mesh_images/mugs/{pcl_id}.png")),
+                    cost,
+                    cost_thresh,
+                    pcl_ids[i], training_ids,
+                ),
+                xref="x",
+                yref="y",
+                xanchor="center",
+                yanchor="middle",
+                x=embedding[0],
+                y=embedding[1],
+                sizex=x_range / 2,
+                sizey=y_range / 2,
+                sizing="contain",
+                layer="above",
+            )
+        )
+
+    fig.update_layout(
+        title=dict(text="Relational Neural Descriptor Fields",  x=0.5, font=dict(size=25)),
+
+        )
+    fig.update_layout(xaxis=dict(
+        title=dict(
+            text="v1",
+            font=dict(size=25),
+        )
+    ),)
+
+    fig.update_layout(yaxis=dict(
+        title=dict(
+            text="v2",
+            font=dict(size=25)
+        )
+    ),)
+
+    
+
+    fig.update_xaxes(range=[-2.5, 1])
+    fig.update_yaxes(range=[-2.6, -0.8])
+    fig.write_image("rndf_costs.png")
     fig.show()
 
+def get_lndf_cost_graph(object_embeddings, training_object_embeddings, object_costs, cost_thresh, pcl_ids, training_ids):
+    # object_embeddings = TSNE(
+    #     n_components=2, learning_rate="auto", init="random", perplexity=3
+    # ).fit_transform(object_warps)
+    fig = px.scatter(
+        x=object_embeddings[:, 0],
+        y=object_embeddings[:, 1],
+    )
+    fig.update_traces(marker_color="rgba(0,0,0,0)")
+    x_range = np.max(object_embeddings[:, 0]) - np.min(object_embeddings[:, 0])
+    y_range = np.max(object_embeddings[:, 0]) - np.min(object_embeddings[:, 0])
+
+    for i in range(len(training_ids)):
+        embedding = training_object_embeddings[i]
+        fig.add_layout_image(
+            dict(
+                source=color_adjust_image(
+                    circlify_image(Image.open(f"mesh_images/mugs/{training_ids[i]}.png")),
+                    0,
+                    .5,
+                    training_ids[i], training_ids,
+                ),
+                xref="x",
+                yref="y",
+                xanchor="center",
+                yanchor="middle",
+                x=embedding[0],
+                y=embedding[1],
+                sizex=x_range/2.5 ,
+                sizey=y_range/2.5 ,
+                sizing="contain",
+                layer="above",
+            )
+        )
+
+
+    for i in range(len(pcl_ids)):
+        pcl_id, embedding, cost = pcl_ids[i], object_embeddings[i], object_costs[i]
+        fig.add_layout_image(
+            dict(
+                source=color_adjust_image(
+                    circlify_image(Image.open(f"mesh_images/mugs/{pcl_id}.png")),
+                    cost,
+                    cost_thresh,
+                    pcl_ids[i], training_ids,
+                ),
+                xref="x",
+                yref="y",
+                xanchor="center",
+                yanchor="middle",
+                x=embedding[0],
+                y=embedding[1],
+                sizex=x_range/2.5 ,
+                sizey=y_range/2.5 ,
+                sizing="contain",
+                layer="above",
+            )
+        )
+    
+    fig.update_layout(
+        title=dict(text="Local Neural Descriptor Fields",  x=0.5,  font=dict(size=25)),
+    )
+    fig.update_layout(xaxis=dict(
+        title=dict(
+            text="v1",
+            font=dict(size=25),
+        )
+    ),)
+
+    fig.update_layout(yaxis=dict(
+        title=dict(
+            text="v2",
+            font=dict(size=25)
+        )
+    ),)
+
+
+    fig.update_xaxes(range=[-2.5, 1])
+    fig.update_yaxes(range=[-2.6, -0.8])
+    fig.write_image("lndf_costs.png")
+    fig.show()
+        
 def get_experiment_results():
     results_dict = {}
     whole_results_dict = {}
-    root_dir = '/home/rthomp12/relational_ndf/src/rndf_robot/eval_data/eval_data/exp--bowl_on_mug_upright_pose_new_demo-exp--release_demos/'
-    exp_dir = 'bowl_on_mug_relation_20240425-001929_seed--0/'
+    rndf_results_dict = {}
+    lndf_results_dict = {}
+    
+    exp_type = 'mug_on_rack'#'bowl_on_mug'#
+    root_dir = f'/home/rthomp12/relational_ndf/src/rndf_robot/eval_data/eval_data/intersect_test_exp--{exp_type}_sweep_demo-exp--release_demos/'
 
-    objects_raw = os.listdir(root_dir+exp_dir) 
-    trial_folders = [fn for fn in objects_raw if (fn.split('_')[0] == 'trial')]
-    for folder in trial_folders:
-        experiment_file = root_dir + exp_dir + folder + '/parts_based_success_rate_relation.npz'
-        result = np.load(experiment_file)
-        parent_id = str(result['parent_id'])
-        if parent_id in results_dict.keys():
-            if result['place_success']:
-                results_dict[parent_id].append(1)
-            else:
-                results_dict[parent_id].append(0)
-        else:
-            if result['place_success']:
-                results_dict[parent_id] = [1]
-            else:
-                results_dict[parent_id] = [0]
+    #root_dir = f'/home/rthomp12/relational_ndf/src/rndf_robot/eval_data/eval_data/exp--{exp_type}_upright_pose_new_demo-exp--release_demos/'
+    experiment_folders = os.listdir(root_dir) 
+    rndf_folders = [folder for folder in experiment_folders if 'rndf' in folder]
+    lndf_folders = [folder for folder in experiment_folders if 'lndf' in folder]
+    part_whole_folders = [folder for folder in experiment_folders if 'rndf' not in folder and 'lndf' not in folder and folder != 'old']
+    
+    #part and whole results
+    for exp_folder in part_whole_folders:
+        # print(exp_folder)
+        # objects_raw = os.listdir(root_dir+exp_folder) 
 
-        experiment_file = root_dir + exp_dir + folder + '/whole_success_rate_relation.npz'
-        result = np.load(experiment_file)
-        parent_id = str(result['parent_id'])
-        if parent_id in whole_results_dict.keys():
-            if result['place_success']:
-                whole_results_dict[parent_id].append(1)
-            else:
-                whole_results_dict[parent_id].append(0)
-        else:
-            if result['place_success']:
-                whole_results_dict[parent_id] = [1]
-            else:
-                whole_results_dict[parent_id] = [0]
+        exp_folder += '/'# + objects_raw[0] + '/'
+
+        objects_raw = os.listdir(root_dir+exp_folder) 
+        trial_folders = [fn for fn in objects_raw if (fn.split('_')[0] == 'trial')]
+
+        for folder in trial_folders:
+            #print(folder)
+            try:
+                experiment_file = root_dir + exp_folder + folder + '/parts_based_success_rate_relation.npz'
+                result = np.load(experiment_file, allow_pickle=True)
+                
+                child_id = str(result['child_id'])
+                if child_id in results_dict.keys():
+                    results_dict[child_id].append(1 if result['place_success'] else 0)
+                else:
+                    results_dict[child_id] = [1] if result['place_success'] else [0]
+            except FileNotFoundError:
+                continue
+                
+            try:
+                experiment_file = root_dir + exp_folder + folder + '/whole_success_rate_relation.npz'
+                result = np.load(experiment_file, allow_pickle=True)
+                
+                child_id = str(result['child_id'])
+                if child_id in whole_results_dict.keys():
+                    whole_results_dict[child_id].append(1 if result['place_success'] else 0)
+                else:
+                    whole_results_dict[child_id] = [1] if result['place_success'] else [0]
+            except FileNotFoundError:
+                continue
 
     results_nums = {id_number:sum(results_dict[id_number])/len(results_dict[id_number]) for id_number in results_dict.keys()}
     whole_nums = {id_number:sum(whole_results_dict[id_number])/len(whole_results_dict[id_number]) for id_number in whole_results_dict.keys()}
-    return results_nums, whole_nums
 
-print("Iterating mesh data")
+    for exp_folder in rndf_folders:
+        exp_folder += '/'
+        exp_folder += os.listdir(root_dir+exp_folder)[0]
+        exp_folder += '/'
+        objects_raw = os.listdir(root_dir+exp_folder) 
+        trial_folders = [fn for fn in objects_raw if (fn.split('_')[0] == 'trial')]
+        for folder in trial_folders:
+            #print(folder)
+            try:
+                experiment_file = root_dir + exp_folder + folder + '/success_rate_relation.npz'
+                result = np.load(experiment_file, allow_pickle=True)
+                
+                child_id = str(result['child_id'])
+                if child_id in rndf_results_dict.keys():
+                    rndf_results_dict[child_id].append(1 if result['place_success'] else 0)
+                else:
+                    rndf_results_dict[child_id] = [1] if result['place_success'] else [0]
+            except FileNotFoundError:
+                continue
+
+    for exp_folder in lndf_folders:
+        exp_folder += '/'
+        objects_raw = os.listdir(root_dir+exp_folder) 
+        trial_folders = [fn for fn in objects_raw if (fn.split('_')[0] == 'trial')]
+        for folder in trial_folders:
+            #print(folder)
+            try:
+                experiment_file = root_dir + exp_folder + folder + '/success_rate_relation.npz'
+                result = np.load(experiment_file, allow_pickle=True)
+                
+                child_id = str(result['child_id'])
+                if child_id in lndf_results_dict.keys():
+                    lndf_results_dict[child_id].append(1 if result['place_success'] else 0)
+                else:
+                    lndf_results_dict[child_id] = [1] if result['place_success'] else [0]
+            except FileNotFoundError:
+                continue
+
+    rndf_nums = {id_number:sum(rndf_results_dict[id_number])/len(rndf_results_dict[id_number]) for id_number in rndf_results_dict.keys()}
+    lndf_nums = {id_number:sum(lndf_results_dict[id_number])/len(lndf_results_dict[id_number]) for id_number in lndf_results_dict.keys()}
+    return results_nums, whole_nums, rndf_nums, lndf_nums
+
+
 
 cfg = get_eval_cfg_defaults()
 config_fname = osp.join(
@@ -701,14 +1025,15 @@ for k, v in mesh_data_dirs.items():
             segmentable_filtered.append(obj)
 
     mesh_names[k] = segmentable_filtered  # objects_filtered
-print("got em")
+
+# get_syn_rack_images(mesh_names.keys())
 
 warp_file_stamp = "20240320-032402"
 
 # todo: generalize for other objects
-object_warp_file = f"./part_based_warp_models/whole_mug_{warp_file_stamp}"
-cup_warp_file = f"./part_based_warp_models/cup_{warp_file_stamp}"
-handle_warp_file = f"./part_based_warp_models/handle_{warp_file_stamp}"
+object_warp_file = f"./part_based_warp_models/old/whole_mug_{warp_file_stamp}"
+cup_warp_file = f"./part_based_warp_models/old/cup_{warp_file_stamp}"
+handle_warp_file = f"./part_based_warp_models/old/handle_{warp_file_stamp}"
 
 part_names = ["cup", "handle"]
 part_labels = {"cup": 37, "handle": 36}
@@ -738,21 +1063,21 @@ obj_type = "mug"
 #get_whole_reconstructions(whole_object_canonical, part_names, warp_file_stamp, mesh_names[obj_type])
 # get_part_reconstructions(part_canonicals, part_names, warp_file_stamp, mesh_names[obj_type])
 
-whole_costs = np.load(f"whole_mug_costs_resampled_{warp_file_stamp}.npy")
-cost_thresh = np.mean(whole_costs)
-print(cost_thresh)
-whole_costs = np.load(f"whole_mug_costs_{warp_file_stamp}.npy")
-cost_thresh = np.mean(whole_costs)
-print(cost_thresh)
+# whole_costs = np.load(f"whole_mug_costs_resampled_{warp_file_stamp}.npy")
+# cost_thresh = np.mean(whole_costs)
+# print(cost_thresh)
+# whole_costs = np.load(f"whole_mug_costs_{warp_file_stamp}.npy")
+# cost_thresh = np.mean(whole_costs)
+# print(cost_thresh)
 
-cup_costs = np.load(f"cup_costs_{warp_file_stamp}.npy")
-handle_costs = np.load(f"handle_costs_{warp_file_stamp}.npy")
-part_costs = (cup_costs + handle_costs) / 2
+# cup_costs = np.load(f"cup_costs_{warp_file_stamp}.npy")
+# handle_costs = np.load(f"handle_costs_{warp_file_stamp}.npy")
+# part_costs = (cup_costs + handle_costs) / 2
 
-result_nums, whole_nums = get_experiment_results()
+result_nums, whole_nums, rndf_nums, lndf_nums = get_experiment_results()
 
-#whole_params = pickle.load(open(f'whole_mug_params_resampled_{warp_file_stamp}', 'rb'))
-# cup_params = pickle.load(open(f'cup_params_{warp_file_stamp}', 'rb'))
+whole_params = pickle.load(open(f'whole_mug_params_resampled_{warp_file_stamp}', 'rb'))
+cup_params = pickle.load(open(f'cup_params_{warp_file_stamp}', 'rb'))
 part_params = pickle.load(open(f'handle_params_{warp_file_stamp}', 'rb'))
 
 #whole_embeddings = np.array([param.latents for param in whole_params])
@@ -768,17 +1093,18 @@ part_warps = {}
 for part in part_names:
     part_warps[part] = np.load(f"all_{part}_warps.pkl.npy")
 
-#whole_embeddings = PCA(n_components=2).fit_transform(warps)
+whole_embeddings = PCA(n_components=2).fit_transform(warps)
 part_embeddings = {}
 # for part in part_names:
 #     part_embeddings[part] = PCA(n_components=2).fit_transform(part_warps[part])
 part_embeddings['cup'] = cup_embeddings
 part_embeddings['handle'] = handle_embeddings
 
-# filtered_whole_mesh_names = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in whole_nums.keys()]
-# filtered_whole_mesh_idxs = [i for i, mesh_name in enumerate(mesh_names[obj_type]) if mesh_name in whole_nums.keys()]
-# filtered_whole_embeddings = whole_embeddings[filtered_whole_mesh_idxs]
-# fake_whole_costs = [whole_nums[mesh_name] for mesh_name in filtered_whole_mesh_names]
+filtered_whole_mesh_names = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in whole_nums.keys()]
+filtered_whole_mesh_idxs = [i for i, mesh_name in enumerate(mesh_names[obj_type]) if mesh_name in whole_nums.keys()]
+
+filtered_whole_embeddings = whole_embeddings[filtered_whole_mesh_idxs]
+fake_whole_costs = [whole_nums[mesh_name] for mesh_name in filtered_whole_mesh_names]
 
 
 filtered_mesh_names = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in result_nums.keys()]
@@ -786,13 +1112,62 @@ filtered_mesh_idxs = [i for i, mesh_name in enumerate(mesh_names[obj_type]) if m
 filtered_cup_embeddings = part_embeddings['cup'][filtered_mesh_idxs]
 filtered_handle_embeddings = part_embeddings['handle'][filtered_mesh_idxs]
 fake_mesh_costs = [result_nums[mesh_name] for mesh_name in filtered_mesh_names]
-#part_embeddings = {'cup': filtered_cup_embeddings, 'handle': filtered_handle_embeddings}
 
-#get_whole_cost_graph(whole_embeddings, fake_whole_costs, .8, filtered_whole_mesh_names)
-# get_part_cost_graph(part_embeddings, fake_mesh_costs, .8, filtered_mesh_names)
-# exit(0)
+whole_part_embeddings = {'cup': filtered_cup_embeddings, 'handle': filtered_handle_embeddings}
+training_ids = whole_object_canonical.metadata.training_ids
+
+
+filtered_rndf_mesh_names = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in rndf_nums.keys()]
+filtered_rndf_mesh_idxs = [i for i, mesh_name in enumerate(mesh_names[obj_type]) if mesh_name in rndf_nums.keys()]
+rndf_costs = [rndf_nums[mesh_name] for mesh_name in filtered_rndf_mesh_names]
+rndf_part_embeddings = {'cup': part_embeddings['cup'][filtered_rndf_mesh_idxs], 'handle': part_embeddings['handle'][filtered_rndf_mesh_idxs]}
+rndf_training_ids  = np.loadtxt('./scripts/mug_train_object_split.txt', dtype=str)
+filtered_rndf_training_ids = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in rndf_training_ids]
+rndf_training_part_idxs =  [i for i, mesh_name in enumerate(mesh_names[obj_type]) if mesh_name in rndf_training_ids]
+rndf_training_part_embeddings = {'cup': part_embeddings['cup'][rndf_training_part_idxs], 'handle': part_embeddings['handle'][rndf_training_part_idxs]}
+
+filtered_lndf_mesh_names = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in lndf_nums.keys()]
+filtered_lndf_mesh_idxs = [i for i, mesh_name in enumerate(mesh_names[obj_type]) if mesh_name in lndf_nums.keys()]
+lndf_costs = [lndf_nums[mesh_name] for mesh_name in filtered_lndf_mesh_names]
+lndf_part_embeddings = {'cup': part_embeddings['cup'][filtered_lndf_mesh_idxs], 'handle': part_embeddings['handle'][filtered_lndf_mesh_idxs]}
+lndf_training_ids  = np.loadtxt('./scripts/lndf_mug_train_object_split.txt', dtype=str)
+filtered_lndf_training_ids = [mesh_name for mesh_name in mesh_names[obj_type] if mesh_name in lndf_training_ids]
+lndf_training_part_idxs =  [i for i, mesh_name in enumerate(mesh_names[obj_type]) if mesh_name in lndf_training_ids]
+lndf_training_part_embeddings = {'cup': part_embeddings['cup'][lndf_training_part_idxs], 'handle': part_embeddings['handle'][lndf_training_part_idxs]}
+
+print(rndf_training_ids)
+
+print(whole_nums)
+get_whole_cost_graph(np.concatenate([np.atleast_2d(whole_part_embeddings['cup'][:, 0]).T, np.atleast_2d(whole_part_embeddings['handle'][:,0]).T], axis=1), fake_whole_costs, .8, filtered_whole_mesh_names, training_ids)
+get_part_cost_graph(whole_part_embeddings, fake_mesh_costs, .8, filtered_mesh_names, training_ids)
+get_rndf_cost_graph(np.concatenate([np.atleast_2d(rndf_part_embeddings['cup'][:, 0]).T, np.atleast_2d(rndf_part_embeddings['handle'][:,0]).T], axis=1), 
+                                    np.concatenate([np.atleast_2d(rndf_training_part_embeddings['cup'][:, 0]).T, np.atleast_2d(rndf_training_part_embeddings['handle'][:,0]).T], axis=1),
+                                    rndf_costs, .8, filtered_rndf_mesh_names, filtered_rndf_training_ids)
+get_lndf_cost_graph(np.concatenate([np.atleast_2d(lndf_part_embeddings['cup'][:, 0]).T, np.atleast_2d(lndf_part_embeddings['handle'][:,0]).T], axis=1), 
+                                    np.concatenate([np.atleast_2d(lndf_training_part_embeddings['cup'][:, 0]).T, np.atleast_2d(lndf_training_part_embeddings['handle'][:,0]).T], axis=1),
+                                    lndf_costs, .8, filtered_lndf_mesh_names, filtered_lndf_training_ids)
+
 
 warp_ids = [43,98,103,91,8,88,49,100,96,97]
 
+def image_grid(imgs, rows, cols):
+    assert len(imgs) == rows*cols
+
+    w, h = imgs[0].size
+    grid = Image.new('RGB', size=(cols*w, rows*h))
+    grid_w, grid_h = grid.size
+    
+    for i, img in enumerate(imgs):
+        grid.paste(img, box=(i%cols*w, i//cols*h))
+    return grid
+
+rndf_image = Image.open('rndf_costs.png') 
+lndf_image = Image.open('lndf_costs.png') 
+whole_image = Image.open('whole_costs.png') 
+part_image = Image.open('part_costs.png') 
+
+final_figure = image_grid([rndf_image, lndf_image, whole_image, part_image], 2, 2)
+final_figure.save('graph_figure.png')
+
 # get_object_embeddings(whole_embeddings, mesh_names[obj_type])
-get_part_embeddings(part_embeddings, part_names, mesh_names[obj_type])
+# get_part_embeddings(part_embeddings, part_names, mesh_names[obj_type])

@@ -189,13 +189,14 @@ def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_sou
         target_pcds[part] = canon_target_objs[part].to_transformed_pcd(target_obj_params[part])
     target_pcd = np.concatenate([target_pcds[part] for part in target_part_names])
 
-    #viz_utils.show_pcds_plotly({'source': source_pcd, 'target':target_pcd})
+    # fig = viz_utils.show_pcds_plotly({'source': source_pcd, 'target':target_pcd})
+    # fig.show()
 
     part_knns = {part:{} for part in source_part_names}
     part_deltas = {part:{} for part in source_part_names}
     part_i_2 = {part:{} for part in source_part_names}
 
-    pos_targets = {}
+    pos_targets = {part: {} for part in source_part_names}
 
     part_labels = []
     total_points_source = {part:{} for part in source_part_names}
@@ -207,17 +208,18 @@ def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_sou
             print("@@", np.min(dist))
             indices = np.where(dist <= delta)
             pos_source = source_pcds[part][indices[0]]
-            pos_targets[target_part] = target_pcds[target_part][indices[1]]
+            pos_targets[part][target_part] = target_pcds[target_part][indices[1]]
             #pos_target = target_pcd[indices[1]]
-            print(pos_source.shape)
-            print( pos_targets[target_part].shape)
+            # print(pos_source.shape)
+            # print(pos_targets[target_part].shape)
 
             #assert len(pos_source) > 0, "No nearby points in demonstration."
             if len(pos_source) == 0:
                 total_points_source[part][target_part] = None
                 total_points_target[part][target_part] = None
                 continue
-
+            print(part)
+            print(target_part)
             print("# nearby points:", len(pos_source))
             if len(pos_source) < 10:
                 print("WARNING: Too few nearby points.")
@@ -225,7 +227,7 @@ def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_sou
             max_pairs = 100
             if len(pos_source) > max_pairs:
                 pos_source, indices2 = utils.farthest_point_sample(pos_source, max_pairs)
-                pos_targets[target_part] = pos_targets[target_part][indices2]
+                pos_targets[part][target_part] = pos_targets[part][target_part][indices2]
 
             part_labels += [part for _ in range(len(pos_source))]
             # if total_points_source is None:
@@ -235,7 +237,7 @@ def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_sou
             #     total_points_source = np.concatenate([total_points_source, pos_source], axis=0)
             #     total_points_target = np.concatenate([total_points_target, pos_targets[target_part]], axis=0)
             total_points_source[part][target_part] = pos_source
-            total_points_target[part][target_part] = pos_targets[target_part]
+            total_points_target[part][target_part] = pos_targets[part][target_part]
 
 
 #TODO figure out how to split and save the target indices for reconstructing the target object'
@@ -259,13 +261,13 @@ def save_place_nearby_points_by_parts_v2(source_part_names: list[str], canon_sou
 
             #     pos_target_target_coords = np.concatenate([pos_target_target_coords, utils.transform_pcd(pos_targets[target_part], np.linalg.inv(target_obj_params[target_part].get_transform()))])
             #     pos_target_source_coords = np.concatenate([pos_target_source_coords, utils.transform_pcd(pos_targets[target_part], np.linalg.inv(source_obj_params[part].get_transform()))])
-            pos_target_target_coords[part][target_part] = utils.transform_pcd(pos_targets[target_part], np.linalg.inv(target_obj_params[target_part].get_transform()))
-            pos_target_source_coords[part][target_part] = utils.transform_pcd(pos_targets[target_part], np.linalg.inv(source_obj_params[part].get_transform()))
+            pos_target_target_coords[part][target_part] = utils.transform_pcd(pos_targets[part][target_part], np.linalg.inv(target_obj_params[target_part].get_transform()))
+            pos_target_source_coords[part][target_part] = utils.transform_pcd(pos_targets[part][target_part], np.linalg.inv(source_obj_params[part].get_transform()))
 
             full_source_pcd = canon_source_objs[part].to_pcd(source_obj_params[part])
             full_target_pcd = canon_target_objs[target_part].to_pcd(target_obj_params[target_part])
 
-            knns, deltas = get_knn_and_deltas(full_source_pcd, pos_target_source_coords[part][target_part])
+            knns, deltas = get_knn_and_deltas(full_source_pcd, pos_target_source_coords[part][target_part])#
 
             dist_2 = np.sqrt(np.sum(np.square(full_target_pcd[:, None] - pos_target_target_coords[part][target_part][None]), axis=2))
             #viz_utils.show_pcds_plotly({'full_target_pcd': full_target_pcd, 'pos_target_target_coords': pos_target_target_coords[part][target_part]})
