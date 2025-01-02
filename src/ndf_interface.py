@@ -106,6 +106,23 @@ def get_canon_labels(part_pairs, part_canonicals, part_names):
     )  # part_names)
     return canon_labels
 
+
+def get_pca_descriptors(part_pcls, part_names):
+    n_descriptors = 1
+    part_pcas = {}
+    part_labels = {part: [] for part in part_names}
+    for part in part_names: 
+        part_pcas[part] = PCA(n_components=2)
+        components = part_pcas[part].fit_transform(part_pcls[part]).T
+        for i in range(n_descriptors):
+            component_mean = np.mean(components[i, :])
+            part_labels[part].append(np.where(
+                    components[i,:] > component_mean,
+                    np.zeros_like(part_pcls[part][:, 0]),
+                    np.ones_like(part_pcls[part][:, 0]),
+                ))
+    return part_labels
+
 def get_whole_alignment(child, child_mesh_faces, child_mesh_vertices, trans_s_to_t):
     # Building the final alignment constraint pointcloud
     canon_pcl = utils.transform_pcd(child, trans_s_to_t)
@@ -918,44 +935,73 @@ class NDFPartInterface:
         source_params = {}
         base_handle_tf = None
 
+        canon_source_part_labels = {}
+        source_part_labels = {}
+
+        canon_target_part_labels = {}
+        target_part_labels = {}
+
         if len(self.source_part_names) > 1:
-            canon_source_part_labels = get_canon_labels(None, 
+            canon_source_part_labels['relational'] = get_canon_labels(None, 
                 self.canon_source_parts, self.source_part_names
             )
-            source_part_labels = get_part_labels(
+            source_part_labels['relational'] = get_part_labels(
                 [{part_1: source_pcds[part_1], part_2: source_pcds[part_2]} for part_1, part_2 in itertools.combinations(self.source_part_names, r=2) if part_1 != part_2], 
                 #{part: source_pcds[part] for part in self.source_part_names},
                 #part_names=self.source_part_names,
             )
 
+            canon_source_part_labels['variational'] = get_pca_descriptors({part: self.canon_source_parts[part].canonical_pcl for part in self.source_part_names},
+                                                                           self.source_part_names)
+            source_part_labels['variational'] = get_pca_descriptors(source_pcds, self.source_part_names)
+
         if len(self.target_part_names) > 1:
-            canon_target_part_labels = get_canon_labels(None, 
+            canon_target_part_labels['relational'] = get_canon_labels(None, 
                 self.canon_target_parts, self.target_part_names
             )
-            target_part_labels = get_part_labels(
+            target_part_labels['relational'] = get_part_labels(
                 [{part_1: target_pcds[part_1], part_2:target_pcds[part_2]} for part_1, part_2 in itertools.combinations(self.target_part_names, r=2) if part_1 != part_2], 
                 #{part: target_pcds[part] for part in self.target_part_names},
                 #part_names=self.target_part_names,
             )
+            canon_target_part_labels['variational'] = get_pca_descriptors({part: self.canon_target_parts[part].canonical_pcl for part in self.target_part_names}, 
+                                                                           self.target_part_names)
+            target_part_labels['variational'] = get_pca_descriptors(target_pcds, self.target_part_names)
 
         for part in self.source_part_names:
             n_angles = 15
             if len(self.source_part_names) > 1:
                 target, target_labels, source, canon_part_labels = (
                     source_pcds[part],
-                    source_part_labels[part],
+                    {'variational': source_part_labels['variational'][part], 
+                     'relational':  source_part_labels['relational'][part]},
                     self.canon_source_parts[part],
-                    canon_source_part_labels[part],
+                    {'variational': canon_source_part_labels['variational'][part], 
+                     'relational':canon_source_part_labels['relational'][part]},
                 )
 
             cost_function = (
-                lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+                lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
                     target,
-                    target_labels,
+                    target_labels['relational'],
                     source,
-                    canon_part_labels,
-                )
+                    canon_part_labels['relational'],
+                ) + mask_and_cost_batch_pt(
+                    target,
+                    target_labels['variational'],
+                    source,
+                    canon_part_labels['variational'],
+                ) #+ torch.norm(latent_param - initial_latents) * shape_weight
             )
+
+            # cost_function = (
+            #     lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+            #         target,
+            #         target_labels,
+            #         source,
+            #         canon_part_labels,
+            #     )
+            # )
             # fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target,
             # 'source_labels_0': source.canonical_pcl[canon_part_labels == 0],
             # 'source_labels_1': source.canonical_pcl[canon_part_labels == 1],
@@ -1034,17 +1080,24 @@ class NDFPartInterface:
 
             target, target_labels, source, canon_part_labels = (
                 target_pcds[part],
-                target_part_labels[part],
+                {'variational': target_part_labels['variational'][part], 
+                 'relational':  target_part_labels['relational'][part]},
                 self.canon_target_parts[part],
-                canon_target_part_labels[part],
+                {'variational': canon_target_part_labels['variational'][part], 
+                 'relational':canon_target_part_labels['relational'][part]},
             )
 
             cost_function = (
-                lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+                lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
                     target,
-                    target_labels,
+                    target_labels['relational'],
                     source,
-                    canon_part_labels,
+                    canon_part_labels['relational'],
+                ) + mask_and_cost_batch_pt(
+                    target,
+                    target_labels['variational'],
+                    source,
+                    canon_part_labels['variational'],
                 )
             )
             # fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target,
@@ -1278,6 +1331,7 @@ class NDFPartInterface:
                     @ trans_cs_to_ct[part][target_part]
                     @ np.linalg.inv(trans_s_to_b[part])
                 )
+        print(trans_s_to_t)
         # show = True
         if show:
             print()
@@ -1785,7 +1839,13 @@ class NDFInterface:
         show: bool = True,
         experiment_id=None,
         final_alignment=False,
+        knn_pkl=None,
     ):
+        if knn_pkl is not None:
+            demo_dict = pickle.load(open(knn_pkl, "rb"))
+            self.knns = demo_dict["knns"]
+            self.deltas = demo_dict["deltas"]
+            self.target_indices = demo_dict["target_indices"]
         """Make prediction about the final pose of the source object."""
         if (
             self.pcd_subsample_points is not None

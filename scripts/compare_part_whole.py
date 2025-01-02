@@ -665,7 +665,7 @@ def main(args):
     import time
 
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    expstr = f"intersect_test_exp--{args.exp}_demo-exp--{args.rel_demo_exp}_{timestr}"
+    expstr = f"rel_affected_exp--{args.exp}_demo-exp--{args.rel_demo_exp}_{timestr}"
     seedstr = "seed--" + str(args.seed)
     experiment_name = "_".join([expstr, seedstr])
 

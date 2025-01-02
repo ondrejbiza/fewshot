@@ -40,6 +40,8 @@ def mask_and_cost_batch_pt(target, source_labels, source, target_labels):
     summed_cost = None
     weights = [1,1]
 
+    # print(len(source_labels))
+    # print(len(target_labels))
     assert len(source_labels) == len(target_labels)
     for source_label, target_label in zip(source_labels, target_labels):
         for label, w in zip(np.unique(source_label), weights):
@@ -155,7 +157,7 @@ class ObjectWarping:
         canonical_obj_pt_ = self.canonical_pcl[indices]
         index_order = np.argsort(indices)
         if self.canon_labels is not None:
-            self.subsampled_canon_labels = [cl[indices] for cl in self.canon_labels]
+            self.subsampled_canon_labels = {key: [cl[indices] for cl in self.canon_labels[key]] for key in self.canon_labels.keys()}
         return (
             means_,
             components_,
@@ -241,13 +243,13 @@ class ObjectWarping:
                 
             else:
                 if self.n_samples is None:
-                    cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels)
+                    cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels, self.latent_param.data, self.scale_param.data, self.initial_latents_pt)
                 else:
-                    cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels)
+                    cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels, self.latent_param.data, self.scale_param.data, self.initial_latents_pt)
 
-            if hasattr(self, 'latent_param'):
-                reg_term = torch.norm(self.latent_param.data - self.initial_latents_pt) * 10# + torch.norm(self.scale_param.data - 1) *100 #+  torch.var(self.scale_param.data)*10 + 
-                cost += reg_term
+            # if hasattr(self, 'latent_param'):
+            #     reg_term = torch.norm(self.latent_param.data - self.initial_latents_pt) * 10# + torch.norm(self.scale_param.data - 1) *100 #+  torch.var(self.scale_param.data)*10 + 
+            #     cost += reg_term
 
             
             if self.object_size_reg is not None:

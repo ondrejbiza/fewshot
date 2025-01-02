@@ -290,7 +290,7 @@ def show_pcd_grid_plotly(
         subplot_titles=subplot_titles,
     )
     layout = {}
-    axis_visible = False
+    axis_visible = True
 
     for row in range(rows):
         for col in range(cols):
@@ -307,13 +307,13 @@ def show_pcd_grid_plotly(
 
             for pcl_name in pcls[name].keys():
                 if markers is not None:
-                    marker = markers[name][pcl_name] | {"color": np.ones_like(pcls[name][pcl_name][:, 2]) * .5,}
+                    marker = markers[name][pcl_name] | {"color": pcls[name][pcl_name][:, 2]}#np.ones_like(pcls[name][pcl_name][:, 2]) * .5,}
                 else:
                     marker={
                             "size": 5,
                             "color": pcls[name][pcl_name][:, 2],
                             "colorscale": 'viridis',
-                        },
+                        }
                 fig.add_trace(
                     go.Scatter3d(
                         x=pcls[name][pcl_name][:, 0],
@@ -342,19 +342,20 @@ def show_pcd_grid_plotly(
     fig.update_annotations(font_size=25)
     fw = go.FigureWidget(fig)
 
-    if camera_views is not None:
-        all_cameras = [
-            eval(f"fw.layout.scene{i}.camera") for i in range(1, row * cols + 1, 1)
-        ]
+    # if camera_views is not None:
+    #     all_cameras = [
+    #         eval(f"fw.layout.scene{i}.camera") for i in range(1, rows * cols + 1, 1)
+    #     ]
 
-        with fw.batch_update():
-            fw.layout.update(width=800, height=600)
-            for i in range(len(all_cameras)):
-                camera = all_cameras[i]
-                camera.up = camera_views[i]["up"]  # dict(x=0, y=1, z=0)
-                camera.eye = camera_views[i]["eye"]  # dict(x=2.5, y=1.75, z=1)
+    #     with fw.batch_update():
+    #         #fw.layout.update(width=800, height=600)
+    #         for i in range(len(all_cameras)):
+    #             camera = all_cameras[i]
+    #             camera.up = camera_views[i]["up"]  # dict(x=0, y=1, z=0)
+    #             camera.eye = camera_views[i]["eye"]  # dict(x=2.5, y=1.75, z=1)
+    #             camera.center = camera_views[i]["center"]
 
-        fw.update_layout(scene=layout, height=1000, width=1000)
+    #    # fw.update_layout(scene=layout, height=1000, width=1000)
 
 
 
