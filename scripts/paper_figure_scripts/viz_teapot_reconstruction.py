@@ -144,7 +144,7 @@ for part in meshes.keys():
 
 
 teapot_pcl = viz_utils.show_pcds_plotly(
-    {part: part_pcls[part] for part in part_pcls.keys()}
+    {part: part_pcls[part] for part in part_pcls.keys()}, axis_visible=False
 )
 teapot_pcl.show()
 
@@ -258,7 +258,7 @@ colors = {
 }
 
 
-viz_utils.show_pcds_plotly(all_labeled_parts, colors=colors).show()
+viz_utils.show_pcds_plotly(all_labeled_parts, colors=colors, axis_visible=False).show()
 
 teapot_part_model_files = {'body': 'part_based_warp_models/body_dict_20241031-012841_5', 
                           'lid': 'part_based_warp_models/lid_dict_20241031-012841_5',
@@ -277,6 +277,7 @@ canon_adjacent_part_pairs = [
     {"body": teapot_part_canon_models["body"], "lid": teapot_part_canon_models["lid"]},
     {"body": teapot_part_canon_models["body"], "spout": teapot_part_canon_models["spout"]},
     {"body": teapot_part_canon_models["body"], "handle": teapot_part_canon_models["handle"]},
+    {"handle": teapot_part_canon_models["handle"], "lid": teapot_part_canon_models["lid"]},
     {"lid": teapot_part_canon_models["lid"], "spout": teapot_part_canon_models["spout"]}
 
 
@@ -355,7 +356,7 @@ canon_viz_components = {
 rotation = Rotation.from_euler("zyx", [0., 0., np.pi/8]).as_quat()
 
 for key in ["canon_body_spout_1_spout", "canon_body_spout_0_spout","canon_lid_spout_1_spout", "canon_lid_spout_0_spout"]:
-    canon_viz_components[key] = utils.transform_pcd(canon_viz_components[key], utils.pos_quat_to_transform([0,0,0], rotation))
+    canon_viz_components[key] = utils.transform_pcd(canon_viz_components[key], utils.pos_quat_to_transform([0,0,-0.2], rotation))
 
 
 
@@ -383,12 +384,12 @@ canon_viz_colors = { \
 canon_viz_markers = { \
     "body_spout_1_spout": target_marker,
     "body_spout_0_spout": target_marker,
-    "canon_body_spout_1_spout": canon_marker ,
-    "canon_body_spout_0_spout": canon_marker ,
+    "canon_body_spout_1_spout": target_marker ,
+    "canon_body_spout_0_spout": target_marker ,
     "lid_spout_1_spout": target_marker,
     "lid_spout_0_spout": target_marker,
-    "canon_lid_spout_1_spout": canon_marker ,
-    "canon_lid_spout_0_spout": canon_marker ,
+    "canon_lid_spout_1_spout": target_marker ,
+    "canon_lid_spout_0_spout": target_marker ,
     }
 
 
@@ -396,9 +397,9 @@ canon_viz_markers = { \
 print(all_labeled_canon_parts)
 
 
-viz_utils.show_pcds_plotly(canon_viz_components, colors=canon_viz_colors, markers=canon_viz_markers).show()
+viz_utils.show_pcds_plotly(canon_viz_components, colors=canon_viz_colors, markers=canon_viz_markers, axis_visible=False).show()
 
-exit(0)
+
 
 #show the teapot part to be reconstructed with labels, let's do the spout
 #show the canon one
@@ -408,32 +409,8 @@ teapot_part_labels = get_part_labels(
 )
 
 
-teapot_part_names = ['spout']
+teapot_part_names = ['lid', 'body', 'handle', 'spout']
 
-
-
-# Reconstructions
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-whole_teapot_reconstruction = None
-
-n_angles = 15
-
-
-warp = ObjectWarpingSE3Batch(
-            teapot_whole_canon_model,
-            whole_pcl,
-            'cuda',
-            **cp.deepcopy(PARAM_1),
-        )
-
-teapot_reconstruction, _, _ = warp_to_pcd_se3(
-        warp, n_angles, n_batches=12, inference_kwargs=inference_kwargs
-    )
-
-
-viz_utils.show_pcds_plotly({'target_teapot': whole_pcl, 'canon_teapot':  teapot_whole_canon_model.canonical_pcl, 'teapot': teapot_reconstruction}).show()
 
 #teapot_part_names = ["body"]
 n_angles = 15
@@ -442,11 +419,11 @@ for target_part in teapot_part_names:
     canon = teapot_part_canon_models[target_part]
 
     cost_function = (
-        lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+        lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
             target,
             teapot_part_labels[target_part],
             source,
-            canon_part_labels,
+            canon_part_labels['relational'],
         )
     )
     
@@ -454,7 +431,7 @@ for target_part in teapot_part_names:
             canon,
             part_pcls[target_part],
             'cuda',
-            canon_labels=canon_teapot_labels[target_part],
+            canon_labels={'relational': canon_teapot_labels[target_part]},
             cost_function=cost_function,
             **cp.deepcopy(PARAM_1),
         )
@@ -463,6 +440,61 @@ for target_part in teapot_part_names:
     )
 
 print("DONE SHOW PLEASE")    
+
+all_labeled_reconstruction_parts = {}
+for part_pair, ordered_part_pair in zip(viz_canon_part_pairs, viz_canon_ordered_part_pairs):
+    part_labels = get_canon_labels(
+                [part_pair], teapot_part_canon_models, teapot_part_names, 
+            )
+
+
+    all_labeled_reconstruction_parts = (
+        all_labeled_reconstruction_parts
+        | {
+            f"canon_{ordered_part_pair[0]}_{ordered_part_pair[1]}_0_{part}":teapot_reconstructions[part][
+                part_labels[part][0] == 0
+            ]
+            for part in part_pair.keys()
+        }
+        | {
+            f"canon_{ordered_part_pair[0]}_{ordered_part_pair[1]}_1_{part}": teapot_reconstructions[part][
+                part_labels[part][0] == 1
+            ]
+            for part in part_pair.keys()
+        }
+    )
+
+canon_spout_mean = np.mean(np.concatenate([all_labeled_reconstruction_parts["canon_body_spout_1_spout"], \
+                                           all_labeled_reconstruction_parts["canon_body_spout_0_spout"], \
+                                           all_labeled_reconstruction_parts["canon_lid_spout_1_spout"], \
+                                           all_labeled_reconstruction_parts["canon_lid_spout_0_spout"]]), axis=0)
+
+canon_viz_components = {
+    "body_spout_1_spout": all_labeled_parts["body_spout_1_spout"] - spout_mean,
+    "body_spout_0_spout": all_labeled_parts["body_spout_0_spout"] - spout_mean,
+    "lid_spout_1_spout": all_labeled_parts["lid_spout_1_spout"] - spout_mean,
+    "lid_spout_0_spout": all_labeled_parts["lid_spout_0_spout"] - spout_mean,
+    } | {
+    "canon_body_spout_1_spout": all_labeled_reconstruction_parts["canon_body_spout_1_spout"] - canon_spout_mean,
+    "canon_body_spout_0_spout": all_labeled_reconstruction_parts["canon_body_spout_0_spout"] - canon_spout_mean,
+    "canon_lid_spout_1_spout": all_labeled_reconstruction_parts["canon_lid_spout_1_spout"] - canon_spout_mean,
+    "canon_lid_spout_0_spout": all_labeled_reconstruction_parts["canon_lid_spout_0_spout"] - canon_spout_mean,
+    }
+
+
+viz_utils.show_pcds_plotly(canon_viz_components, colors=canon_viz_colors, markers=canon_viz_markers, axis_visible=False).show()
+
+rotation = Rotation.from_euler("zyx", [0., 0., np.pi/8]).as_quat()
+
+for key in ["canon_body_spout_1_spout", "canon_body_spout_0_spout","canon_lid_spout_1_spout", "canon_lid_spout_0_spout"]:
+    canon_viz_components[key] = utils.transform_pcd(canon_viz_components[key], utils.pos_quat_to_transform([0,0,-0.2], rotation))
+
+exit(0)
+
+
+
+
+
 
 
 viz_utils.show_pcds_plotly({part: teapot_reconstructions[part] for part in teapot_part_names}).show()

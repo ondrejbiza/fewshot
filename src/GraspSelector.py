@@ -182,7 +182,7 @@ def test(pcl, num_samples):
     #     likely to succeed to least likely.
     sampled_poses = gs.getRankedGraspPoses()
     #Shuffle poses
-    #random.shuffle(sampled_poses)
+    random.shuffle(sampled_poses)
     desired_sampled_poses = sampled_poses[:num_samples]
     desired_sampled_poses = [gpg.translateFrameNegativeZ(p, gs.dist_from_point_to_ee_link) for p in desired_sampled_poses]
 
@@ -204,7 +204,7 @@ def test(pcl, num_samples):
 
     #pickle.dump(desired_sampled_poses, open("./grasps/"+task+".pkl","wb"))
 
-    gs.visualizeGraspPoses(desired_sampled_poses)
+    #gs.visualizeGraspPoses(desired_sampled_poses)
     return desired_sampled_poses
 
 if __name__ == '__main__':

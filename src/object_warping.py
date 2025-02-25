@@ -34,9 +34,11 @@ def cost_batch_pt(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     diff_flat = diff.view(diff.shape[0] * diff.shape[1], diff.shape[2])
     c_flat = diff_flat[list(range(len(diff_flat))), torch.argmin(diff_flat, dim=1)]
     c = c_flat.view(diff.shape[0], diff.shape[1])
+
+
     return torch.mean(c, dim=1)
 
-def mask_and_cost_batch_pt(target, source_labels, source, target_labels):
+def mask_and_cost_batch_pt(target, source_labels, source, target_labels, two_sided=False):
     summed_cost = None
     weights = [1,1]
 
@@ -54,7 +56,13 @@ def mask_and_cost_batch_pt(target, source_labels, source, target_labels):
 
             # viz_utils.show_pcd_plotly(target[:, torch.from_numpy(target_labels)==label].detach().cpu().numpy()[0])
             #print(target[:, torch.from_numpy(source_labels)==label].shape)
+            # print(source_label.shape)
+            # print(label.shape)
+            # print(target_label.shape)
+            # print(target.shape)
             part_cost = cost_batch_pt(source[:, torch.from_numpy(source_label)==label], target[:, torch.from_numpy(target_label)==label])
+            if two_sided:
+                part_cost += cost_batch_pt(target[:, torch.from_numpy(target_label)==label], source[:, torch.from_numpy(source_label)==label], )
             #part_cost += .1 * cost_batch_pt(target[:, torch.from_numpy(target_labels)==label], source[:, torch.from_numpy(source_labels)==label])
             if summed_cost is None:
                 summed_cost = part_cost * w
@@ -216,7 +224,7 @@ class ObjectWarping:
             # Saving optimization history for visualization
             try:
                 transform_history.append(
-                        (self.center_param.detach().cpu().numpy(),
+                        (self.center_param.detach().cpu().numpy() + self.global_means,
                         torch.bmm(orthogonalize(self.pose_param), self.initial_poses)
                         .detach()
                         .cpu()
@@ -224,7 +232,7 @@ class ObjectWarping:
                     ))
             except IndexError:
                 transform_history.append(
-                        (self.center_param.detach().cpu().numpy(),
+                        (self.center_param.detach().cpu().numpy() + self.global_means,
                         yaw_to_rot_batch_pt(self.pose_param).detach()
                         .cpu()
                         .numpy()
@@ -235,17 +243,22 @@ class ObjectWarping:
             except AttributeError:
                 latent_history.append(None)
             scale_history.append(self.scale_param.detach().cpu().numpy())
-            
+
             if self.cost_function == cost_batch_pt:
-                
-                
                 cost = self.cost_function(self.pcd[None], new_pcd)
-                
             else:
-                if self.n_samples is None:
-                    cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels, self.latent_param.data, self.scale_param.data, self.initial_latents_pt)
+                if not hasattr(self, 'latent_param'):
+                    latent_param, initial_latents = None, None
+                    if self.n_samples is None:
+                        cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels,)
+                    else:
+                        cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels, )
                 else:
-                    cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels, self.latent_param.data, self.scale_param.data, self.initial_latents_pt)
+                    latent_param, initial_latents = self.latent_param.data, self.initial_latents_pt
+                    if self.n_samples is None:
+                        cost = self.cost_function(self.pcd[None], new_pcd, self.canon_labels, latent_param, self.scale_param.data, initial_latents)
+                    else:
+                        cost = self.cost_function(self.pcd[None], new_pcd, self.subsampled_canon_labels, latent_param, self.scale_param.data, initial_latents)
 
             # if hasattr(self, 'latent_param'):
             #     reg_term = torch.norm(self.latent_param.data - self.initial_latents_pt) * 10# + torch.norm(self.scale_param.data - 1) *100 #+  torch.var(self.scale_param.data)*10 + 
@@ -641,7 +654,12 @@ class ObjectSE3Batch(ObjectWarping):
         """Randomly subsample the canonical object, including its PCA projection."""
         indices = np.random.randint(0, self.canonical_pcl.shape[0], num_samples)
         if self.canon_labels is not None:
-            self.subsampled_canon_labels = [relational_label[indices] for relational_label in self.canon_labels]
+            if type(self.canon_labels) == list:
+                self.canon_labels = self.canon_labels[0]
+            for key in self.canon_labels.keys():
+                if len(self.canon_labels[key].shape) == 2:
+                    self.canon_labels[key] = self.canon_labels[key][0]
+            self.subsampled_canon_labels = {key: [self.canon_labels[key][indices]] for key in self.canon_labels.keys()}
         return None, None, self.canonical_pcl[indices]
 
     def assemble_output(

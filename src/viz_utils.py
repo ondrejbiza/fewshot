@@ -307,7 +307,7 @@ def show_pcd_grid_plotly(
 
             for pcl_name in pcls[name].keys():
                 if markers is not None:
-                    marker = markers[name][pcl_name] | {"color": pcls[name][pcl_name][:, 2]}#np.ones_like(pcls[name][pcl_name][:, 2]) * .5,}
+                    marker = markers[name][pcl_name] | {'color': np.ones_like(pcls[name][pcl_name][:, 2]) * .5,}
                 else:
                     marker={
                             "size": 5,
@@ -342,20 +342,19 @@ def show_pcd_grid_plotly(
     fig.update_annotations(font_size=25)
     fw = go.FigureWidget(fig)
 
-    # if camera_views is not None:
-    #     all_cameras = [
-    #         eval(f"fw.layout.scene{i}.camera") for i in range(1, rows * cols + 1, 1)
-    #     ]
+    if camera_views is not None:
+        all_cameras = [
+            eval(f"fw.layout.scene{i}.camera") for i in range(1, rows * cols + 1, 1)
+        ]
+        with fw.batch_update():
+            #fw.layout.update(width=800, height=600)
+            for i in range(len(all_cameras)):
+                camera = all_cameras[i]
+                camera.up = camera_views[i]["up"]  # dict(x=0, y=1, z=0)
+                camera.eye = camera_views[i]["eye"]  # dict(x=2.5, y=1.75, z=1)
+                camera.center = camera_views[i]["center"]
 
-    #     with fw.batch_update():
-    #         #fw.layout.update(width=800, height=600)
-    #         for i in range(len(all_cameras)):
-    #             camera = all_cameras[i]
-    #             camera.up = camera_views[i]["up"]  # dict(x=0, y=1, z=0)
-    #             camera.eye = camera_views[i]["eye"]  # dict(x=2.5, y=1.75, z=1)
-    #             camera.center = camera_views[i]["center"]
-
-    #    # fw.update_layout(scene=layout, height=1000, width=1000)
+    fw.update_layout(scene=layout, height=1000, width=1000)
 
 
 
@@ -517,6 +516,53 @@ def show_pcds_slider_animation_plotly(
     fig.update_layout(sliders=sliders)
     # fig.show()
     return fig
+
+def transform_pcd(pcd, trans, is_position: bool = True):
+    n = pcd.shape[0]
+    cloud = cp.deepcopy(pcd.T)
+    augment = np.ones((1, n)) if is_position else np.zeros((1, n))
+    cloud = np.concatenate((cloud, augment), axis=0)
+    cloud = np.dot(trans.astype(np.float32), cloud)
+    cloud = cloud[0:3, :].T
+    return cloud
+
+
+def generate_slider_viz(
+    warp, static_pcl, tf_pcl, generate_animation=False, experiment_id=None
+):
+    best_idx = np.argmin(warp.cost_history[-1])
+    # print(f"best_idx: {best_idx}")
+    # print(f"best_cost: {np.min(combined_warp.cost_history[-1])}")
+    # print(f"best_tranform: {combined_warp.transform_history[0, best_idx]}")
+    best_transform_history = []
+    best_transforms = []
+    step_names = []
+
+    tf2_history = []
+    for transform, cost in zip(warp.transform_history, warp.cost_history):
+        best_trans = transform[best_idx]
+        best_transforms.append(transform_pcd(tf_pcl, best_trans.astype(float)))
+        step_names.append(f"COST: {cost[best_idx]}")
+
+    if generate_animation:
+        show_pcds_video_animation_plotly(
+            moving_pcl_name="Source",
+            moving_pcl_frames=best_transform_history,
+            static_pcls={"Target": static_pcl},
+            step_names=step_names,
+            file_name=experiment_id,
+        )
+
+    # source_downsampled_means = np.mean(np.unique(utils.trunc(source_downsampled), axis=0), axis=0)
+    # source_downsampled = source_downsampled - source_downsampled_means[None]
+
+    slider_fig = show_pcds_slider_animation_plotly(
+        moving_pcl_name="Source",
+        moving_pcl_frames=best_transforms,
+        static_pcls={"Target": static_pcl},
+        step_names=step_names,
+    )
+    return slider_fig
 
 
 def draw_square(

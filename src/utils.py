@@ -45,8 +45,6 @@ class ObjParam:
 
 
 # CanonPart replaces CanonObj
-
-
 @dataclass
 class CanonPartMetadata:
     experiment_tag: str
@@ -376,11 +374,89 @@ def transform_cloud_to_base(cloud, extrinsics, camera_name):
     return np.concatenate([cloud_RT_base, cloud[:, 3:]], axis=1)
 
 
-def remove_outliers(cloud):
+def remove_outliers(cloud, radius=.03):
     pcd = open3d.geometry.PointCloud()
     pcd.points = open3d.utility.Vector3dVector(cloud)
-    cl, ind = pcd.remove_radius_outlier(nb_points=64, radius=0.03)
+    cl, ind = pcd.remove_radius_outlier(nb_points=64, radius=radius)
     return np.array(cl.points)
+
+def project_3d_bounding_box(
+    gripper_pose: np.ndarray,
+    extrinsics: np.ndarray,
+    intrinsics: np.ndarray,
+    size: float
+):
+    """
+    Projects the 3D corners of a cubic bounding box (side = size),
+    centered at and oriented with the gripper_pose, onto the 2D camera image.
+
+    Returns:
+    --------
+    corners_2d : (8 x 2) ndarray
+        (u, v) pixel coordinates of the 8 bounding-box corners.
+    corners_camera_3d : (8 x 3) ndarray
+        (x, y, z) coordinates in the camera frame (for 3D plotting).
+    """
+
+    # 1. Define the 8 corners in the local (gripper) coordinate frame.
+    half = size / 2.0
+    # Each row is (x, y, z) of a corner, relative to the gripper center.
+    # TODO: We only need the last coordinate. The rest are for visualization only.
+    local_corners = np.array([
+        [ half,  half,  half],
+        [ half,  half, -half],
+        [ half, -half,  half],
+        [ half, -half, -half],
+        [-half,  half,  half],
+        [-half,  half, -half],
+        [-half, -half,  half],
+        [-half, -half, -half],
+        [0., 0., 0.]
+    ])
+
+    # 2. Convert to homogeneous coordinates (x, y, z, 1).
+    ones = np.ones((local_corners.shape[0], 1))
+    local_corners_hom = np.hstack([local_corners, ones])  # (8 x 4)
+
+    move_down = np.eye(4)
+    move_down[:3, 3] = [0., 0., 0.05]
+    local_corners_hom = (move_down @ local_corners_hom.T).T
+
+    # 3. Transform corners from gripper frame to world frame.
+    corners_world = (gripper_pose @ local_corners_hom.T).T  # (8 x 4)
+
+    # print("gripper", gripper_pose)
+    # print("corners world", corners_world)
+
+    # 4. Transform corners from world frame to camera frame.
+    corners_camera = (np.linalg.inv(extrinsics) @ corners_world.T).T  # (8 x 4)
+    # print("corners camera", corners_camera)
+    # print("extrinsics", extrinsics)
+
+    # 5. Project the corners in the camera frame to 2D image coordinates.
+    corners_2d = []
+    corners_camera_3d = []
+    for corner_cam in corners_camera:
+        x_c, y_c, z_c, w_c = corner_cam
+        # Save the 3D point in camera coordinates
+        corners_camera_3d.append([x_c, y_c, z_c])
+
+        if z_c <= 0:
+            # If the corner is behind the camera, mark as invalid or skip.
+            corners_2d.append([np.nan, np.nan])
+            continue
+
+        # Convert to normalized image-plane coordinates (x/z, y/z).
+        x_norm = x_c / z_c
+        y_norm = y_c / z_c
+
+        # Apply intrinsics: K * [x_norm, y_norm, 1]
+        uv_hom = intrinsics @ np.array([x_norm, y_norm, 1.0])
+        u = uv_hom[0] / uv_hom[2]
+        v = uv_hom[1] / uv_hom[2]
+        corners_2d.append([u, v])
+
+    return np.array(corners_2d), np.array(corners_camera_3d)
 
 def convex_decomposition(
     mesh: trimesh.base.Trimesh, save_path: Optional[str] = None
@@ -463,6 +539,52 @@ def pb_get_pose(body, sim_id: Optional[int] = None) -> Tuple[NPF64, NPF64]:
     quat = np.array(quat, dtype=np.float64)
     return pos, quat
 
+
+def generate_slider_viz(
+    warp, static_pcl, tf_pcl, use_latents=False, model=None, static_mask=None, tf_mask=None, generate_animation=False, experiment_id=None
+):
+    best_idx = np.argmin(warp.cost_history[-1])
+    # print(f"best_idx: {best_idx}")
+    # print(f"best_cost: {np.min(combined_warp.cost_history[-1])}")
+    # print(f"best_tranform: {combined_warp.transform_history[0, best_idx]}")
+    best_transform_history = []
+    best_transforms = []
+    step_names = []
+
+    tf2_history = []
+    for i, cost in enumerate(warp.cost_history):
+        transform = warp.transform_history[i]
+        best_trans = transform[best_idx]
+        if use_latents:
+            position, quat = transform_to_pos_quat(best_trans)
+            scale = warp.scale_history[i][best_idx]
+            latent = warp.latent_history[i][best_idx]
+            obj_param = ObjParam(position, quat, latent, scale)
+            tfd_pcl = model.to_transformed_pcd(obj_param)
+        else:
+            tfd_pcl = transform_pcd(tf_pcl, best_trans.astype(float))
+        best_transforms.append(tfd_pcl[tf_mask] if tf_mask is not None else tfd_pcl,)
+        step_names.append(f"COST: {cost[best_idx]}")
+
+    if generate_animation:
+        viz_utils.show_pcds_video_animation_plotly(
+            moving_pcl_name="Source",
+            moving_pcl_frames=best_transform_history,
+            static_pcls={"Target": static_pcl[static_mask] if static_mask is not None else static_pcl},
+            step_names=step_names,
+            file_name=experiment_id,
+        )
+
+    # source_downsampled_means = np.mean(np.unique(utils.trunc(source_downsampled), axis=0), axis=0)
+    # source_downsampled = source_downsampled - source_downsampled_means[None]
+
+    slider_fig = viz_utils.show_pcds_slider_animation_plotly(
+        moving_pcl_name="Source",
+        moving_pcl_frames=best_transforms,
+        static_pcls={"Target": static_pcl},
+        step_names=step_names,
+    )
+    return slider_fig
 
 def transform_history_to_mat(tf_history):
     pose_history = []

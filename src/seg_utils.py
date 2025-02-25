@@ -3,6 +3,14 @@ import matplotlib.pyplot as plt
 from segment_anything import build_sam, SamPredictor 
 import math
 import open3d as o3d
+import torch
+import torchvision.transforms as transforms
+import matplotlib
+from PIL import Image
+from pytorch_lightning import seed_everything
+from sklearn.decomposition import PCA
+from sklearn.neighbors import NearestNeighbors
+from matplotlib.patches import ConnectionPatch
 
 COLORS = {
     "Deep_Red": [1.0, 0.0, 0.0],
@@ -36,6 +44,241 @@ COLORS = {
 
 # Create a reverse lookup for color names
 COLOR_LOOKUP = {tuple(value): key for key, value in COLORS.items()}
+
+def trans_points_crop_to_full(points, min_x, min_y):
+  """Transforms coordinates from a cropped image to a full image."""
+  new_points = np.copy(points)
+  new_points[:, 0] += min_x
+  new_points[:, 1] += min_y
+  return new_points
+
+def trans_mask_full_to_crop(mask, min_y, max_y, min_x, max_x):
+  """Crops a segmentation mask."""
+  return mask[min_y: max_y, min_x: max_x]
+
+from ipywidgets import widgets 
+
+class ClickSegGui():
+    def __init__(self):
+        self.fig = None
+        self.ax = None
+        self.textbox = None
+        self.part = None
+        self.camera_name = None
+        self.points = None
+        self.color = None
+        self.colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
+
+
+    def on_click(self, event):
+        ix, iy = int(event.xdata), int(event.ydata)
+        print(f"Coordinates: x={ix}, y={iy}")
+        self.points.append([ix, iy])
+
+        # Plot an 'X' marker at the clicked coordinates
+        self.ax.plot(ix, iy, marker='x', markersize=10, color=self.color, zorder=2)
+        self.fig.canvas.draw()  # Update the figure to show the new marker
+
+    def plot_map_with_points(self, all_image_points, gripper_points, camera_names, part_names, images):
+        self.part = part_names[0]
+        self.camera_name = camera_names[0]
+        self.points = all_image_points[self.camera_name][self.part]
+        self.color = 'red'
+
+        buttons = widgets.RadioButtons(
+            options=part_names + ['gripper'],
+            disabled=False
+        )
+        
+        display(buttons)
+
+        def radio(value):
+            part = value['new']
+            if part == 'gripper':
+                self.points = gripper_points[self.camera_name]
+                self.color = self.colors[len(part_names)]
+            else:
+                self.points = all_image_points[self.camera_name][value['new']]
+                self.color = self.colors[part_names.index(value['new'])]
+            
+            
+        buttons.observe(radio, names = 'value')
+        
+        buttons2 = widgets.RadioButtons(
+            options=camera_names,
+            disabled=False
+        )
+        
+        display(buttons2)
+
+        def radio2(value):
+            self.camera_name=value['new']
+            part_points = all_image_points[self.camera_name]
+            self.points = part_points[self.part]
+            
+            for p in part_names: 
+                all_image_points[self.camera_name][p] = []
+            gripper_points[self.camera_name] = []
+            self.ax.imshow(images[self.camera_name], cmap=cmap, zorder=1)
+            self.fig.canvas.draw()
+            
+        buttons2.observe(radio2, names='value')
+        
+        self.fig, self.ax = plt.subplots(figsize=(10, 10))
+        cmap = matplotlib.colors.ListedColormap(['black', 'white'])
+        #textbox = matplotlib.widgets.TextBox(ax, 'temp',)
+
+        self.ax.imshow(images[self.camera_name], cmap=cmap, zorder=1)
+
+        #plt.legend()
+        plt.show()
+
+        # Connect the click event
+        cid = self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+
+
+def crop_to_bounds(min_x, max_x, min_y, max_y, height, width):
+    min_x = max(0, min_x)
+    min_y = max(0, min_y)
+    
+    max_x = min(width, max_x)
+    max_y = min(height, max_y)
+
+    return min_x, max_x, min_y, max_y
+
+def top_k_pixels(image, K):
+    """
+    Given an image as a NumPy array and a number K, this function returns the K pixel coordinates (x, y)
+    and their values with the highest values in the image """
+    # Flatten the image array and get the indices of the top K values
+    flat_image = image.flatten()
+    indices = np.argpartition(flat_image, -K)[-K:]
+    
+    # Get the actual values
+    values = flat_image[indices]
+    
+    # Convert flat indices back to 2D coordinates
+    rows, cols = image.shape[:2] # Assuming image could potentially have more dimensions (like color channels)
+    coordinates = np.array([np.unravel_index(index, (rows, cols)) for index in indices])
+    
+    # Combine coordinates and values into a list of tuples
+    return coordinates, values
+
+def farthest_point_sampling(mask, K):
+    """
+    Selects K points from a binary mask that are maximally separated from each other.
+    The function begins by selecting a random point from the masked area and then
+    iteratively chooses the next point that is the farthest away from all previously
+    selected points. This process ensures a spread of points across the masked region.
+    
+    Parameters:
+    mask (numpy.ndarray): A boolean array where True indicates pixels eligible for selection.
+    K (int): The number of points to select.
+    
+    Returns:
+    numpy.ndarray: An array of coordinates for the K selected points.
+    """
+    mask = mask.numpy()
+    # Ensure the input mask is a boolean array
+    mask = mask.astype(bool)
+
+    # Extract the indices of the masked region
+    masked_indices = np.argwhere(mask)
+
+    # Select the first point randomly from the masked indices
+    selected_indices = [masked_indices[np.random.choice(len(masked_indices))]]
+
+    for _ in range(K-1):
+        # Compute distances from all masked points to all selected points
+        distances = np.sqrt(((masked_indices[:, None, :] - np.array(selected_indices)[None, :, :]) ** 2).sum(axis=2))
+
+        # Get the minimum distance to the selected points for each masked point
+        min_distances = distances.min(axis=1)
+
+        # Choose the point that has the maximum of the minimum distances
+        next_index = masked_indices[np.argmax(min_distances)]
+        selected_indices.append(next_index)
+        
+    coordinates = np.array(selected_indices)
+    return coordinates
+
+class Dinov2Matcher:
+
+  def __init__(self, repo_name="facebookresearch/dinov2", model_name="dinov2_vitb14", img_input_size=448, device="cuda"):
+    self.repo_name = repo_name
+    self.model_name = model_name
+    self.smaller_edge_size = img_input_size
+    self.device = device
+    self.model = torch.hub.load(repo_or_dir=repo_name, model=model_name).to(self.device)
+    self.model.eval()
+    print(img_input_size)
+
+    self.transform = transforms.Compose([
+        transforms.Resize(size=img_input_size, interpolation=transforms.InterpolationMode.BICUBIC, antialias=True),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)), # imagenet defaults
+      ])
+
+  # https://github.com/facebookresearch/dinov2/blob/255861375864acdd830f99fdae3d9db65623dafe/notebooks/features.ipynb
+  def prepare_image(self, rgb_image_numpy):
+    image = Image.fromarray(rgb_image_numpy)
+    #print(rgb_image_numpy.shape)
+    image_tensor = self.transform(image)
+    #print(image_tensor.shape)
+    resize_scale = image.width / image_tensor.shape[2]
+
+    # Crop image to dimensions that are a multiple of the patch size
+    height, width = image_tensor.shape[1:] # C x H x W
+    cropped_width, cropped_height = width - width % self.model.patch_size, height - height % self.model.patch_size # crop a bit from right and bottom parts
+    image_tensor = image_tensor[:, :cropped_height, :cropped_width]
+
+    grid_size = (cropped_height // self.model.patch_size, cropped_width // self.model.patch_size)
+    return image_tensor, grid_size, resize_scale
+
+  def prepare_mask(self, mask_image_numpy, grid_size, resize_scale):
+    cropped_mask_image_numpy = mask_image_numpy[:int(grid_size[0]*self.model.patch_size*resize_scale), :int(grid_size[1]*self.model.patch_size*resize_scale)]
+    image = Image.fromarray(cropped_mask_image_numpy)
+    resized_mask = image.resize((grid_size[1], grid_size[0]), resample=Image.Resampling.NEAREST)
+    resized_mask = np.asarray(resized_mask).flatten()
+    return resized_mask
+
+  def extract_features(self, image_tensor):
+    with torch.inference_mode():
+      image_batch = image_tensor.unsqueeze(0).to(self.device)
+      tokens = self.model.get_intermediate_layers(image_batch)[0].squeeze()
+    return tokens.cpu().numpy()
+
+  def idx_to_source_position(self, idx, grid_size, resize_scale):
+    row = (idx // grid_size[1])*self.model.patch_size*resize_scale + (self.model.patch_size * resize_scale) / 2
+    col = (idx % grid_size[1])*self.model.patch_size*resize_scale + (self.model.patch_size * resize_scale) / 2
+    return row, col
+
+  def get_embedding_visualization(self, tokens, grid_size, resized_mask=None):
+    seed_everything(0)
+    pca = PCA(n_components=3)
+
+    if resized_mask is not None:
+      print(tokens.shape)
+      tokens = tokens[resized_mask]
+      print(tokens.shape)
+
+    reduced_tokens = pca.fit_transform(tokens.astype(np.float32))
+
+    if resized_mask is not None:
+      tmp_tokens = np.zeros((*resized_mask.shape, 3), dtype=reduced_tokens.dtype)
+      tmp_tokens[resized_mask] = reduced_tokens
+      reduced_tokens = tmp_tokens
+
+    reduced_tokens = reduced_tokens.reshape((*grid_size, -1))
+    normalized_tokens = (reduced_tokens-np.min(reduced_tokens))/(np.max(reduced_tokens)-np.min(reduced_tokens))
+    return normalized_tokens
+
+
+  def visualize_cosine_values(tokens, grid_size):
+    tokens = tokens.reshape((*grid_size, -1))
+    normalized_tokens = (tokens-np.min(tokens))/(np.max(tokens)-np.min(tokens))
+    return normalized_tokens
+
 
 def top_k_pixels(image, K):
     """

@@ -211,7 +211,7 @@ def pca_plus_relational_descriptor(variational_child_part_labels, relational_chi
             variational_child_part_labels[target_part],
             source,
             canon_part_labels['variational'],
-        ) *.25 #+ torch.norm(latent_param - initial_latents) * shape_weight
+        ) #+ torch.norm(latent_param - initial_latents) * shape_weight
     )
 
     return cost_function

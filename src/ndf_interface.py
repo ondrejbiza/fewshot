@@ -107,21 +107,32 @@ def get_canon_labels(part_pairs, part_canonicals, part_names):
     return canon_labels
 
 
-def get_pca_descriptors(part_pcls, part_names):
-    n_descriptors = 1
-    part_pcas = {}
+def get_z_descriptors(part_pcls, part_names):
     part_labels = {part: [] for part in part_names}
     for part in part_names: 
-        part_pcas[part] = PCA(n_components=2)
-        components = part_pcas[part].fit_transform(part_pcls[part]).T
-        for i in range(n_descriptors):
-            component_mean = np.mean(components[i, :])
-            part_labels[part].append(np.where(
-                    components[i,:] > component_mean,
-                    np.zeros_like(part_pcls[part][:, 0]),
-                    np.ones_like(part_pcls[part][:, 0]),
-                ))
+        z_mean = np.mean(part_pcls[part][:,2])
+        
+        part_labels[part].append(np.where(
+                part_pcls[part][:,2] > z_mean,
+                np.zeros_like(part_pcls[part][:, 0]),
+                np.ones_like(part_pcls[part][:, 0]),
+            ))
     return part_labels
+
+    # n_descriptors = 1
+    # part_pcas = {}
+    # part_labels = {part: [] for part in part_names}
+    # for part in part_names: 
+    #     part_pcas[part] = PCA(n_components=2)
+    #     components = part_pcas[part].fit_transform(part_pcls[part]).T
+    #     for i in range(n_descriptors):
+    #         component_mean = np.mean(components[i, :])
+    #         part_labels[part].append(np.where(
+    #                 components[i,:] > component_mean,
+    #                 np.zeros_like(part_pcls[part][:, 0]),
+    #                 np.ones_like(part_pcls[part][:, 0]),
+    #             ))
+    # return part_labels
 
 def get_whole_alignment(child, child_mesh_faces, child_mesh_vertices, trans_s_to_t):
     # Building the final alignment constraint pointcloud
@@ -308,43 +319,6 @@ def get_part_alignment():
 
     combined_part.canonical_pcl = real_combined
 
-
-def generate_slider_viz(
-    warp, static_pcl, tf_pcl, generate_animation=False, experiment_id=None
-):
-    best_idx = np.argmin(warp.cost_history[-1])
-    # print(f"best_idx: {best_idx}")
-    # print(f"best_cost: {np.min(combined_warp.cost_history[-1])}")
-    # print(f"best_tranform: {combined_warp.transform_history[0, best_idx]}")
-    best_transform_history = []
-    best_transforms = []
-    step_names = []
-
-    tf2_history = []
-    for transform, cost in zip(warp.transform_history, warp.cost_history):
-        best_trans = transform[best_idx]
-        best_transforms.append(utils.transform_pcd(tf_pcl, best_trans.astype(float)))
-        step_names.append(f"COST: {cost[best_idx]}")
-
-    if generate_animation:
-        viz_utils.show_pcds_video_animation_plotly(
-            moving_pcl_name="Source",
-            moving_pcl_frames=best_transform_history,
-            static_pcls={"Target": static_pcl},
-            step_names=step_names,
-            file_name=experiment_id,
-        )
-
-    # source_downsampled_means = np.mean(np.unique(utils.trunc(source_downsampled), axis=0), axis=0)
-    # source_downsampled = source_downsampled - source_downsampled_means[None]
-
-    slider_fig = viz_utils.show_pcds_slider_animation_plotly(
-        moving_pcl_name="Source",
-        moving_pcl_frames=best_transforms,
-        static_pcls={"Target": static_pcl},
-        step_names=step_names,
-    )
-    return slider_fig
 
 
 @dataclass
@@ -890,6 +864,8 @@ class NDFPartInterface:
         show: bool = True,
         experiment_id=None,
         knn_pkl=None,
+        child_params=None,
+        parent_params=None,
         return_part_transforms = False,
         return_constraint_pcl = False
     ):
@@ -951,9 +927,9 @@ class NDFPartInterface:
                 #part_names=self.source_part_names,
             )
 
-            canon_source_part_labels['variational'] = get_pca_descriptors({part: self.canon_source_parts[part].canonical_pcl for part in self.source_part_names},
+        canon_source_part_labels['variational'] = get_z_descriptors({part: self.canon_source_parts[part].canonical_pcl for part in self.source_part_names},
                                                                            self.source_part_names)
-            source_part_labels['variational'] = get_pca_descriptors(source_pcds, self.source_part_names)
+        source_part_labels['variational'] = get_z_descriptors(source_pcds, self.source_part_names)
 
         if len(self.target_part_names) > 1:
             canon_target_part_labels['relational'] = get_canon_labels(None, 
@@ -964,105 +940,109 @@ class NDFPartInterface:
                 #{part: target_pcds[part] for part in self.target_part_names},
                 #part_names=self.target_part_names,
             )
-            canon_target_part_labels['variational'] = get_pca_descriptors({part: self.canon_target_parts[part].canonical_pcl for part in self.target_part_names}, 
+        canon_target_part_labels['variational'] = get_z_descriptors({part: self.canon_target_parts[part].canonical_pcl for part in self.target_part_names}, 
                                                                            self.target_part_names)
-            target_part_labels['variational'] = get_pca_descriptors(target_pcds, self.target_part_names)
+        target_part_labels['variational'] = get_z_descriptors(target_pcds, self.target_part_names)
+        
+        if child_params is None:
+            for part in self.source_part_names:
+                n_angles = 15
+                if len(self.source_part_names) > 1:
+                    target, target_labels, source, canon_part_labels = (
+                        source_pcds[part],
+                        {'variational': source_part_labels['variational'][part], 
+                        'relational':  source_part_labels['relational'][part]},
+                        self.canon_source_parts[part],
+                        {'variational': canon_source_part_labels['variational'][part], 
+                        'relational':canon_source_part_labels['relational'][part]},
+                    )
 
-        for part in self.source_part_names:
-            n_angles = 15
-            if len(self.source_part_names) > 1:
-                target, target_labels, source, canon_part_labels = (
-                    source_pcds[part],
-                    {'variational': source_part_labels['variational'][part], 
-                     'relational':  source_part_labels['relational'][part]},
-                    self.canon_source_parts[part],
-                    {'variational': canon_source_part_labels['variational'][part], 
-                     'relational':canon_source_part_labels['relational'][part]},
+                cost_function = (
+                    lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
+                        target,
+                        target_labels['relational'],
+                        source,
+                        canon_part_labels['relational'],
+                    ) + mask_and_cost_batch_pt(
+                        target,
+                        target_labels['variational'],
+                        source,
+                        canon_part_labels['variational'],
+                    ) #+ torch.norm(latent_param - initial_latents) * shape_weight
                 )
 
-            cost_function = (
-                lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
-                    target,
-                    target_labels['relational'],
-                    source,
-                    canon_part_labels['relational'],
-                ) + mask_and_cost_batch_pt(
-                    target,
-                    target_labels['variational'],
-                    source,
-                    canon_part_labels['variational'],
-                ) #+ torch.norm(latent_param - initial_latents) * shape_weight
-            )
+                # cost_function = (
+                #     lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+                #         target,
+                #         target_labels,
+                #         source,
+                #         canon_part_labels,
+                #     )
+                # )
+                # fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target,
+                # 'source_labels_0': source.canonical_pcl[canon_part_labels == 0],
+                # 'source_labels_1': source.canonical_pcl[canon_part_labels == 1],
+                # 'target_labels_0': target[target_labels == 0],
+                # 'target_labels_1': target[target_labels == 1]})
+                # fig.show()
+                if len(self.source_part_names) > 1:
+                    warp = ObjectWarpingSE3Batch(
+                        self.canon_source_parts[part],
+                        source_pcds[part],
+                        self.device,
+                        canon_labels=canon_part_labels,
+                        cost_function=cost_function,
+                        **cp.deepcopy(PARAM_1),
+                        init_scale=1,
+                    )
+                else:
+                    warp = ObjectWarpingSE3Batch(
+                        self.canon_source_parts[part],
+                        source_pcds[part],
+                        self.device,
+                        **param_1,
+                        init_scale=self.canon_source_scale,
+                    )
 
-            # cost_function = (
-            #     lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
-            #         target,
-            #         target_labels,
-            #         source,
-            #         canon_part_labels,
-            #     )
-            # )
-            # fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target,
-            # 'source_labels_0': source.canonical_pcl[canon_part_labels == 0],
-            # 'source_labels_1': source.canonical_pcl[canon_part_labels == 1],
-            # 'target_labels_0': target[target_labels == 0],
-            # 'target_labels_1': target[target_labels == 1]})
-            # fig.show()
-            if len(self.source_part_names) > 1:
-                warp = ObjectWarpingSE3Batch(
-                    self.canon_source_parts[part],
-                    source_pcds[part],
-                    self.device,
-                    canon_labels=canon_part_labels,
-                    cost_function=cost_function,
-                    **cp.deepcopy(PARAM_1),
-                    init_scale=1,
+                # warp = ObjectWarpingSE2Batch(
+                #     self.canon_source_parts[part],
+                #     source_pcds[part],
+                #     self.device,
+                #     canon_labels=canon_part_labels,
+                #     cost_function=cost_function,
+                #     **cp.deepcopy(PARAM_1),
+                #     init_scale=1,
+                # )
+                # source_parts_complete[part], _, source_params[part] = (
+                #     warp_to_pcd_se2(
+                #         warp,
+                #         n_angles=n_angles,
+                #         n_batches=12,
+                #         inference_kwargs=inference_kwargs,
+                #     )
+                # )
+
+                # warp = ObjectWarpingSE3Batch(
+                #     self.canon_source_parts[part],
+                #     source_pcds[part],
+                #     self.device,
+                #     **param_1,
+                #     init_scale=self.canon_source_scale,
+                # )
+
+                (
+                    source_parts_complete[part],
+                    _,
+                    source_params[part],
+                ) = warp_to_pcd_se3_hemisphere(
+                    warp,
+                    n_angles=n_angles,
+                    n_batches=12,
+                    inference_kwargs=inference_kwargs,
                 )
-            else:
-                warp = ObjectWarpingSE3Batch(
-                    self.canon_source_parts[part],
-                    source_pcds[part],
-                    self.device,
-                    **param_1,
-                    init_scale=self.canon_source_scale,
-                )
-
-            # warp = ObjectWarpingSE2Batch(
-            #     self.canon_source_parts[part],
-            #     source_pcds[part],
-            #     self.device,
-            #     canon_labels=canon_part_labels,
-            #     cost_function=cost_function,
-            #     **cp.deepcopy(PARAM_1),
-            #     init_scale=1,
-            # )
-            # source_parts_complete[part], _, source_params[part] = (
-            #     warp_to_pcd_se2(
-            #         warp,
-            #         n_angles=n_angles,
-            #         n_batches=12,
-            #         inference_kwargs=inference_kwargs,
-            #     )
-            # )
-
-            # warp = ObjectWarpingSE3Batch(
-            #     self.canon_source_parts[part],
-            #     source_pcds[part],
-            #     self.device,
-            #     **param_1,
-            #     init_scale=self.canon_source_scale,
-            # )
-
-            (
-                source_parts_complete[part],
-                _,
-                source_params[part],
-            ) = warp_to_pcd_se3_hemisphere(
-                warp,
-                n_angles=n_angles,
-                n_batches=12,
-                inference_kwargs=inference_kwargs,
-            )
+        else:
+            source_params = child_params
+            source_parts_complete = {part: self.canon_source_parts[part].to_transformed_pcd(source_params[part]) for part in self.source_part_names}
 
         # viz_utils.show_pcds_plotly(
         #     {
@@ -1075,71 +1055,75 @@ class NDFPartInterface:
 
         target_parts_complete = {}
         target_params = {}
-        for part in self.target_part_names:
-            n_angles = 8
+        if parent_params is None:
+            for part in self.target_part_names:
+                n_angles = 8
 
-            target, target_labels, source, canon_part_labels = (
-                target_pcds[part],
-                {'variational': target_part_labels['variational'][part], 
-                 'relational':  target_part_labels['relational'][part]},
-                self.canon_target_parts[part],
-                {'variational': canon_target_part_labels['variational'][part], 
-                 'relational':canon_target_part_labels['relational'][part]},
-            )
-
-            cost_function = (
-                lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
-                    target,
-                    target_labels['relational'],
-                    source,
-                    canon_part_labels['relational'],
-                ) + mask_and_cost_batch_pt(
-                    target,
-                    target_labels['variational'],
-                    source,
-                    canon_part_labels['variational'],
-                )
-            )
-            # fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target,
-            # 'source_labels_0': source.canonical_pcl[canon_part_labels == 0],
-            # 'source_labels_1': source.canonical_pcl[canon_part_labels == 1],
-            # 'target_labels_0': target[target_labels == 0],
-            # 'target_labels_1': target[target_labels == 1]})
-            # fig.show()
-
-            if len(self.target_part_names) > 1:
-                warp = ObjectWarpingSE2Batch(
-                    self.canon_target_parts[part],
+                target, target_labels, source, canon_part_labels = (
                     target_pcds[part],
-                    self.device,
-                    canon_labels=canon_part_labels,
-                    cost_function=cost_function,
-                    **cp.deepcopy(PARAM_1),
-                    init_scale=1,
-                )
-            else:
-                warp = ObjectWarpingSE2Batch(
+                    {'variational': target_part_labels['variational'][part], 
+                    'relational':  target_part_labels['relational'][part]},
                     self.canon_target_parts[part],
-                    target_pcds[part],
-                    self.device,
-                    **cp.deepcopy(PARAM_1),
-                    init_scale=1,
+                    {'variational': canon_target_part_labels['variational'][part], 
+                    'relational':canon_target_part_labels['relational'][part]},
                 )
 
-            # warp = ObjectWarpingSE3Batch(#ObjectWarpingSE3Batch(
-            #         self.canon_target_parts[part],
-            #         target_pcds[part],
-            #         self.device,
-            #         **param_1,
-            #         init_scale=self.canon_target_scale,
-            #     )
+                cost_function = (
+                    lambda source, target, canon_part_labels, latent_param, scale_param, initial_latents: mask_and_cost_batch_pt(
+                        target,
+                        target_labels['relational'],
+                        source,
+                        canon_part_labels['relational'],
+                    ) + mask_and_cost_batch_pt(
+                        target,
+                        target_labels['variational'],
+                        source,
+                        canon_part_labels['variational'],
+                    )
+                )
+                # fig = viz_utils.show_pcds_plotly({'source': source.canonical_pcl, 'target': target,
+                # 'source_labels_0': source.canonical_pcl[canon_part_labels == 0],
+                # 'source_labels_1': source.canonical_pcl[canon_part_labels == 1],
+                # 'target_labels_0': target[target_labels == 0],
+                # 'target_labels_1': target[target_labels == 1]})
+                # fig.show()
 
-            target_parts_complete[part], _, target_params[part] = warp_to_pcd_se2(
-                warp,
-                n_angles=n_angles,
-                n_batches=12,
-                inference_kwargs=inference_kwargs,
-            )
+                if len(self.target_part_names) > 1:
+                    warp = ObjectWarpingSE2Batch(
+                        self.canon_target_parts[part],
+                        target_pcds[part],
+                        self.device,
+                        canon_labels=canon_part_labels,
+                        cost_function=cost_function,
+                        **cp.deepcopy(PARAM_1),
+                        init_scale=1,
+                    )
+                else:
+                    warp = ObjectWarpingSE2Batch(
+                        self.canon_target_parts[part],
+                        target_pcds[part],
+                        self.device,
+                        **cp.deepcopy(PARAM_1),
+                        init_scale=1,
+                    )
+
+                # warp = ObjectWarpingSE3Batch(#ObjectWarpingSE3Batch(
+                #         self.canon_target_parts[part],
+                #         target_pcds[part],
+                #         self.device,
+                #         **param_1,
+                #         init_scale=self.canon_target_scale,
+                #     )
+
+                target_parts_complete[part], _, target_params[part] = warp_to_pcd_se2(
+                    warp,
+                    n_angles=n_angles,
+                    n_batches=12,
+                    inference_kwargs=inference_kwargs,
+                )
+        else:
+            target_params = parent_params
+            target_parts_complete = {part: self.canon_target_parts[part].to_transformed_pcd(target_params[part]) for part in self.target_part_names}
 
             # warp = ObjectWarpingSE2Batch(#ObjectWarpingSE3Batch(
             #         self.canon_target_parts[part],
@@ -1408,6 +1392,7 @@ class NDFPartInterface:
                 meshes[part].faces
                 + sum([len(pcl) for pcl in component_mesh_vertices[:-1]])
             )
+        
 
         # Building the final alignment constraint pointcloud
         canon_pcl = np.concatenate(component_pcls, axis=0)
@@ -1471,17 +1456,37 @@ class NDFPartInterface:
                     )
                 )
             )
+            
         print(canon_part_labels.shape)
-
+        canon_part_labels = {'relational': canon_part_labels}
         if source_labels is not None:
-            cost_function = (
-                lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
-                    source,
-                    canon_part_labels,
-                    target,
-                    [source_labels[source_downsampled_indices]],
-                )
-            )
+            canon_part_labels['variational'] = np.concatenate([canon_source_part_labels['variational'][pair[0]] for pair in selected_pairs], -1)
+            constraint_variational = np.concatenate([source_part_labels['variational'][pair[0]] for pair in selected_pairs], -1)
+            print(constraint_variational.shape)
+
+            if len(self.source_part_names) > 1:
+                cost_function = (
+                    lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+                        source,
+                        canon_part_labels['relational'],
+                        target,
+                        [source_labels[source_downsampled_indices]],
+                    ) + mask_and_cost_batch_pt(
+                        source,
+                        canon_part_labels['variational'],
+                        target,
+                        [constraint_variational[0][source_downsampled_indices]],
+                    )
+                ) 
+            else:
+                cost_function = (
+                    lambda source, target, canon_part_labels: mask_and_cost_batch_pt(
+                        source,
+                        canon_part_labels['variational'],
+                        target,
+                        [constraint_variational[0][source_downsampled_indices]],
+                    )
+                ) 
 
             combined_warp = ObjectSE3Batch(
                 combined_part,
@@ -1501,7 +1506,7 @@ class NDFPartInterface:
                 init_scale=1,
             )
 
-        combined_complete, combined_costs, combined_params = warp_to_pcd_se3(
+        combined_complete, combined_costs, combined_params = warp_to_pcd_se3_hemisphere(
             combined_warp,
             n_angles=15,
             n_batches=12,
